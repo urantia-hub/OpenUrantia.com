@@ -6,7 +6,6 @@
     "build": "next build",
     "dev": "next dev",
     "lint": "next lint",
-    "prebuild": "npx ts-node --skip-project -r tsconfig-paths/register ./scripts/fetchUrantiaBook.ts",
     "start": "next start"
   },
   "dependencies": {
