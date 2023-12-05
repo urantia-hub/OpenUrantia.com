@@ -43,7 +43,7 @@ const ReadPage = ({ partsData }: TOCPageProps) => {
         {partSponsorship && (
           <p className="text-md my text-gray-400">{partSponsorship}</p>
         )}
-        <ul className="mt-6">
+        <ul className="mt-6 pb-3">
           {relevantPapers.map((paper) => (
             <li key={paper.globalId} className="mb-2 flex items-baseline">
               <pre
@@ -71,13 +71,13 @@ const ReadPage = ({ partsData }: TOCPageProps) => {
     .sort((a, b) => parseInt(a.partId) - parseInt(b.partId));
 
   return (
-    <div className="flex flex-col min-h-screen">
-      <HeadTag titlePrefix="Table of Contents - Open Urantia" />
+    <div className="flex flex-col min-h-screen bg-black">
+      <HeadTag titlePrefix="Table of Contents" />
 
       <Header />
 
       <main className="flex-grow container mx-auto px-4 my-4 max-w-4xl">
-        <h1 className="text-base mt-2 mb-4 text-center">Table of Contents</h1>
+        <h1 className="text-base mt-2 text-center">Table of Contents</h1>
         {sortedParts.map((part, index) =>
           renderPart(
             partsData,

@@ -8,7 +8,7 @@ type HeadTagProps = {
 const HeadTag = ({ metaDescription, titlePrefix }: HeadTagProps) => {
   return (
     <Head>
-      <title>{titlePrefix ? `${titlePrefix} | ` : ""}Open Urantia</title>
+      <title>{titlePrefix ? `${titlePrefix} | ` : ""}OpenUrantia</title>
       <link rel="icon" href="/logo.png" />
       <meta
         name="description"

@@ -115,3 +115,12 @@ footer a:hover {
   }
 }
 
+.homepage {
+  background-attachment: fixed;
+  background-color: #000000;
+  background-image: url('/background.png');
+  background-position: top;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+

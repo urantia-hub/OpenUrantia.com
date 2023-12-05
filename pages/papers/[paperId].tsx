@@ -95,7 +95,7 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
 
       <main className="flex-grow container mx-auto px-4 my-4 max-w-3xl paper-content">
         {/* Navigation links for previous and next papers */}
-        <div className="flex justify-between mt-1 mb-4">
+        <div className="flex justify-between mt-2 mb-4">
           {prevPaperId ? (
             <Link className="flex-1" href={`/papers/${prevPaperId}`}>
               ← Paper {prevPaperId}
