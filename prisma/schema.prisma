@@ -1,0 +1,68 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Account {
+  access_token       String?  @db.Text
+  expires_at         Int?
+  id                 String  @id @default(cuid())
+  id_token           String?  @db.Text
+  provider           String
+  providerAccountId  String
+  refresh_token      String?  @db.Text
+  scope              String?
+  session_state      String?
+  token_type         String?
+  type               String
+  userId             String
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+
+  @@map("accounts")
+}
+
+model Session {
+  expires      DateTime
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model User {
+  createdAt     DateTime  @default(now())
+  email         String?   @unique
+  emailVerified DateTime?
+  id            String    @id @default(cuid())
+  image         String?
+  name          String?
+  updatedAt     DateTime  @updatedAt
+
+  accounts      Account[]
+  sessions      Session[]
+
+  @@map("users")
+}
+
+model VerificationToken {
+  expires    DateTime
+  identifier String
+  token      String   @unique
+
+  @@unique([identifier, token])
+
+  @@map("verification_tokens")
+}
