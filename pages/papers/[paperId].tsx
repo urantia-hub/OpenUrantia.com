@@ -4,6 +4,7 @@ import { useSession } from "next-auth/react";
 import { useState } from "react";
 // Relative modules.
 import Comment from "@/components/Comment";
+import Explain from "@/components/Explain";
 import Footer from "@/components/Footer";
 import HeadTag from "@/components/HeadTag";
 import Header from "@/components/Header";
@@ -36,6 +37,8 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
   // Modal states.
   const [selectedGlobalIdComment, setSelectedGlobalIdComment] =
     useState<string>("");
+  const [selectedGlobalIdExplain, setSelectedGlobalIdExplain] =
+    useState<string>("");
   const [selectedGlobalIdRelatedWorks, setSelectedGlobalIdRelatedWorks] =
     useState<string>("");
   const [selectedGlobalIdShare, setSelectedGlobalIdShare] =
@@ -45,6 +48,15 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
   if (!paperData) {
     return <Spinner />;
   }
+
+  // Helpers for Explain.
+  const onExplainClose = () => {
+    setSelectedGlobalIdExplain("");
+  };
+
+  const onExplainClick = (globalId: string) => () => {
+    setSelectedGlobalIdExplain(globalId);
+  };
 
   // Helpers for Comment.
   const onCommentClose = () => {
@@ -212,6 +224,14 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
                           ? "Copied!"
                           : "Copy"}
                       </button>
+                      <span className="mr-2">|</span>
+                      <button
+                        className="bg-transparent border-none p-0 m-0 mr-2 focus:outline-none text-gray-400 text-sm hover:text-white transition duration-300 ease-in-out"
+                        onClick={onExplainClick(node.globalId)}
+                        type="button"
+                      >
+                        Explain
+                      </button>
                       {session && (
                         <>
                           <span className="mr-2">|</span>
@@ -287,6 +307,11 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
   const nextPaperId = currentPaperId < 196 ? currentPaperId + 1 : null;
 
   // Calculate nodes for modals.
+  const explainNode = selectedGlobalIdExplain
+    ? paperData.data.results.find(
+        (node) => node.globalId === selectedGlobalIdExplain
+      )
+    : undefined;
   const commentNode = selectedGlobalIdComment
     ? paperData.data.results.find(
         (node) => node.globalId === selectedGlobalIdComment
@@ -312,6 +337,11 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
       />
 
       <Header />
+
+      {/* Explain Modal */}
+      {selectedGlobalIdExplain && (
+        <Explain onClose={onExplainClose} node={explainNode} />
+      )}
 
       {/* Comment Modal */}
       {selectedGlobalIdComment && (

@@ -70,10 +70,10 @@ footer a:hover {
 }
 
 .spinner {
-  margin: 50px auto;
-  width: 40px;
   height: 40px;
+  margin: 50px auto;
   position: relative;
+  width: 40px;
 }
 
 .dot1, .dot2 {

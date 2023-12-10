@@ -1,6 +1,11 @@
-const Spinner = () => {
+type SpinnerProps = {
+  className?: string;
+  style?: Record<string, any>;
+};
+
+const Spinner = (props: SpinnerProps) => {
   return (
-    <div className="spinner">
+    <div className={`${props.className} spinner`} style={props.style}>
       <div className="dot1"></div>
       <div className="dot2"></div>
     </div>
