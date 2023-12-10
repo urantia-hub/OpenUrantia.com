@@ -118,7 +118,7 @@ model SharedNode {
 model User {
   createdAt     DateTime  @default(now())
   email         String?   @unique
-  emailVerified DateTime?
+  emailVerified Boolean?
   id            String    @id @default(cuid())
   image         String?
   name          String?
