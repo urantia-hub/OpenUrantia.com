@@ -51,7 +51,7 @@ const Comment = ({ onClose, node }: CommentProps) => {
 
   return (
     <Modal onClose={onClose}>
-      <Todo />
+      {/* <Todo /> */}
       <div className="flex flex-col p-4">
         <h2 className="text-2xl mb-2">Make a note</h2>
         {!node && <Spinner />}

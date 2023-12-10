@@ -1,9 +1,14 @@
 // Node modules.
+import { useState } from "react";
 import Link from "next/link";
 // Relative modules.
 import Modal from "@/components/Modal";
-import Todo from "@/components/Todo";
-import Spinner from "./Spinner";
+import Spinner from "@/components/Spinner";
+
+const constructShareUrl = (node: UBNode) => {
+  // Replace this with actual URL construction logic
+  return `https://openurantia.com/papers/${node.paperId}#${node.globalId}`;
+};
 
 type ShareProps = {
   onClose?: () => void;
@@ -11,6 +16,13 @@ type ShareProps = {
 };
 
 const Share = ({ onClose, node }: ShareProps) => {
+  // State.
+  const [copied, setCopied] = useState<boolean>(false);
+
+  // Create links.
+  const shareUrl = node ? constructShareUrl(node) : "";
+  const shareText = node ? `Check out this content:\n\n${node.text}` : "";
+
   return (
     <Modal onClose={onClose}>
       <>
@@ -24,39 +36,37 @@ const Share = ({ onClose, node }: ShareProps) => {
                 <p className="text-gray-400 text-sm mb-1">{node?.globalId}</p>{" "}
                 <p>{node?.htmlText}</p>
               </div>
-              <div className="flex justify-between mt-4 mb-2">
+              <div className="flex justify-center mt-4 mb-2">
                 <Link
-                  className="bg-white text-black py-1.5 px-4 shadow-lg hover:bg-gray-400 transition duration-300 ease-in-out"
-                  href="https://www.x.com"
+                  className="bg-white text-black py-1.5 px-4 mr-4 shadow-lg hover:bg-gray-400 transition duration-300 ease-in-out"
+                  href={`https://x.com/intent/tweet?text=${encodeURIComponent(
+                    shareText
+                  )}&url=${encodeURIComponent(shareUrl)}`}
                   rel="noreferrer noopener"
                   target="_blank"
                 >
                   Share on X
                 </Link>
                 <Link
-                  className="bg-white text-black py-1.5 px-4 shadow-lg hover:bg-gray-400 transition duration-300 ease-in-out"
-                  href="https://www.facebook.com"
+                  className="bg-white text-black py-1.5 px-4 mr-4 shadow-lg hover:bg-gray-400 transition duration-300 ease-in-out"
+                  href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
+                    shareUrl
+                  )}`}
                   rel="noreferrer noopener"
                   target="_blank"
                 >
                   Share on Facebook
                 </Link>
-                <Link
+                <button
                   className="bg-white text-black py-1.5 px-4 shadow-lg hover:bg-gray-400 transition duration-300 ease-in-out"
-                  href="https://www.instagram.com"
-                  rel="noreferrer noopener"
-                  target="_blank"
+                  onClick={() => {
+                    navigator.clipboard.writeText(node.text as string);
+                    setCopied(true);
+                  }}
+                  type="button"
                 >
-                  Share on Instagram
-                </Link>
-                <Link
-                  className="bg-white text-black py-1.5 px-4 shadow-lg hover:bg-gray-400 transition duration-300 ease-in-out"
-                  href="https://www.whatsapp.com"
-                  rel="noreferrer noopener"
-                  target="_blank"
-                >
-                  Share on WhatsApp
-                </Link>
+                  {copied ? "Copied!" : "Copy Link"}
+                </button>
               </div>
             </>
           )}
@@ -65,5 +75,20 @@ const Share = ({ onClose, node }: ShareProps) => {
     </Modal>
   );
 };
+
+export async function getStaticProps() {
+  // Fetch data from your API
+  const res = await fetch(
+    `${process.env.URANTIA_DEV_API_HOST}/api/v1/urantia-book/toc`
+  );
+  const jsonData = await res.json();
+  const partsData = jsonData.data.results;
+
+  return {
+    props: {
+      partsData,
+    },
+  };
+}
 
 export default Share;

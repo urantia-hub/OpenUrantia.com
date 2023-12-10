@@ -14,7 +14,7 @@ const RelatedWorks = ({ onClose, node }: RelatedWorksProps) => {
   return (
     <Modal onClose={onClose}>
       <>
-        <Todo />
+        {/* <Todo /> */}
         <div className="flex flex-col p-4">
           <h2 className="text-2xl mb-2">Related works</h2>
           {!node && <Spinner />}

@@ -19,7 +19,7 @@ const Header = () => {
         {session ? (
           <>
             <Link href="/profile" className="mr-6">
-              Go to Profile
+              Profile
             </Link>
             <button
               onClick={() => signOut()}
