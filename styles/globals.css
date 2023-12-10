@@ -124,3 +124,51 @@ footer a:hover {
   background-size: cover;
 }
 
+.modal {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  justify-content: center;
+  right: 0;
+  padding: 0 20px;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 10;
+}
+
+.modal .background {
+  backdrop-filter: blur(17px);
+  background: rgba(255, 255, 255, 0.03);
+  height: 100%;
+  mix-blend-mode: normal;
+  position: absolute;
+  width: 100%;
+}
+
+.modal .content-outer {
+
+}
+
+.modal .content {
+  background: #000000;
+  box-shadow: 0px 6px 12px 5px rgba(2, 2, 2, 0.05);
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100% - 40px);
+  max-width: 780px;
+  position: relative;
+  width: 100%;
+}
+
+@media (max-width: 950px) {
+  .modal .content {
+    max-height: calc(100% - 120px);
+  }
+}
+
+.todo {
+  /* backdrop-filter: blur(2px); */
+  background: rgba(0, 0, 0, 0.9);
+  mix-blend-mode: normal;
+}

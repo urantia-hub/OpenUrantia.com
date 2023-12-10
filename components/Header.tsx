@@ -1,6 +1,8 @@
 // Node modules.
 import Link from "next/link";
 import { signIn, signOut, useSession } from "next-auth/react";
+// Relative modules.
+import LogoText from "@/components/LogoText";
 
 const Header = () => {
   const { data: session } = useSession();
@@ -8,11 +10,12 @@ const Header = () => {
   return (
     <header className="container mx-auto flex justify-between items-center py-6 px-4 border-b border-zinc-700 z-10">
       <Link href="/" className="no-underline hover:no-underline">
-        <h1 className="text-3xl font-bold tracking-wider">
-          <span className="font-thin">Open</span>Urantia
-        </h1>
+        <LogoText />
       </Link>
       <div className="flex items-center">
+        <Link href="/read" className="mr-6">
+          Read
+        </Link>
         {session ? (
           <>
             <Link href="/profile" className="mr-6">

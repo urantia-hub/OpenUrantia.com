@@ -1,26 +1,32 @@
 // Node modules.
 import React, { useState, useEffect } from "react";
+import Image from "next/image";
 // Relative modules.
 import HeadTag from "@/components/HeadTag";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { User } from "@prisma/client";
+import Spinner from "@/components/Spinner";
+import { useRouter } from "next/router";
 
 const Profile = () => {
   // State to store user data
   const [userData, setUserData] = useState<User | null>(null);
+  const router = useRouter();
 
   // Fetch user data on component mount
   useEffect(() => {
     const fetchUserData = async () => {
-      // Replace with your API endpoint
       const response = await fetch("/api/user");
-      const data = await response.json();
-      console.log("data", data);
-      setUserData(data);
+      const user = await response.json();
+      if (!user) {
+        router.replace("/");
+        return;
+      }
+      setUserData(user);
     };
 
-    fetchUserData();
+    void fetchUserData();
   }, []);
 
   // Function to handle form submission
@@ -31,13 +37,22 @@ const Profile = () => {
 
   return (
     <div className="flex flex-col min-h-screen bg-black text-white">
-      <HeadTag titlePrefix="User Profile" />
+      <HeadTag titlePrefix="Settings" />
 
       <Header />
 
       <main className="flex-grow container mx-auto px-4 py-10">
         <section className="text-center space-y-6">
-          <h1 className="text-3xl font-bold">User Profile</h1>
+          <h1 className="text-3xl font-bold">Settings</h1>
+
+          {userData?.image && (
+            <Image
+              alt="profile"
+              height={50}
+              src={userData.image as string}
+              width={50}
+            />
+          )}
 
           {userData ? (
             <form onSubmit={handleSubmit} className="space-y-4">
@@ -46,12 +61,11 @@ const Profile = () => {
                   Name
                 </label>
                 <input
-                  type="text"
-                  name="name"
-                  id="name"
-                  defaultValue={userData.name || ""}
                   className="mt-1 block w-full"
-                  // Additional input styling here
+                  defaultValue={userData.name || ""}
+                  id="name"
+                  name="name"
+                  type="text"
                 />
               </div>
               <div>
@@ -59,12 +73,11 @@ const Profile = () => {
                   Email
                 </label>
                 <input
-                  type="email"
-                  name="email"
-                  id="email"
-                  defaultValue={userData.email || ""}
                   className="mt-1 block w-full"
-                  // Additional input styling here
+                  defaultValue={userData.email || ""}
+                  id="email"
+                  name="email"
+                  type="email"
                 />
               </div>
               {/* Add more fields as needed */}
@@ -76,7 +89,7 @@ const Profile = () => {
               </button>
             </form>
           ) : (
-            <p>Loading...</p>
+            <Spinner />
           )}
         </section>
       </main>
