@@ -1,7 +1,9 @@
 // UBNode modules.
-import { useState } from "react";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
+import { useState } from "react";
 // Relative modules.
+import Comment from "@/components/Comment";
 import Footer from "@/components/Footer";
 import HeadTag from "@/components/HeadTag";
 import Header from "@/components/Header";
@@ -18,6 +20,8 @@ type PaperPageProps = {
 };
 
 const PaperPage = ({ paperData }: PaperPageProps) => {
+  const { data: session } = useSession();
+
   // Toggled states.
   const [copiedGlobalIds, setCopiedGlobalIds] = useState<string[]>([]);
   const [expandedGlobalIds, setExpandedGlobalIds] = useState<string[]>([]);
@@ -30,6 +34,8 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
   );
 
   // Modal states.
+  const [selectedGlobalIdComment, setSelectedGlobalIdComment] =
+    useState<string>("");
   const [selectedGlobalIdRelatedWorks, setSelectedGlobalIdRelatedWorks] =
     useState<string>("");
   const [selectedGlobalIdShare, setSelectedGlobalIdShare] =
@@ -40,6 +46,16 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
     return <Spinner />;
   }
 
+  // Helpers for Comment.
+  const onCommentClose = () => {
+    setSelectedGlobalIdComment("");
+  };
+
+  const onCommentClick = (globalId: string) => () => {
+    setSelectedGlobalIdComment(globalId);
+  };
+
+  // Helpers for Related.
   const onRelatedWorksClose = () => {
     setSelectedGlobalIdRelatedWorks("");
   };
@@ -48,6 +64,7 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
     setSelectedGlobalIdRelatedWorks(globalId);
   };
 
+  // Helpers for Share.
   const onShareClose = () => {
     setSelectedGlobalIdShare("");
   };
@@ -56,6 +73,7 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
     setSelectedGlobalIdShare(globalId);
   };
 
+  // Helpers for node ellipsis ⋯
   const onNodeSettingsClose = (globalId: string) => {
     // Remove globalId from expanded list.
     const updatedNodeSettingsIds = expandedGlobalIds.filter(
@@ -194,14 +212,18 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
                           ? "Copied!"
                           : "Copy"}
                       </button>
-                      <span className="mr-2">|</span>
-                      <button
-                        className="bg-transparent border-none p-0 m-0 mr-2 focus:outline-none text-gray-400 text-sm hover:text-white transition duration-300 ease-in-out"
-                        onClick={onRelatedWorksClick(node.globalId)}
-                        type="button"
-                      >
-                        Comment
-                      </button>
+                      {session && (
+                        <>
+                          <span className="mr-2">|</span>
+                          <button
+                            className="bg-transparent border-none p-0 m-0 mr-2 focus:outline-none text-gray-400 text-sm hover:text-white transition duration-300 ease-in-out"
+                            onClick={onCommentClick(node.globalId)}
+                            type="button"
+                          >
+                            Comment
+                          </button>
+                        </>
+                      )}
                       <span className="mr-2">|</span>
                       <button
                         className="bg-transparent border-none p-0 m-0 focus:outline-none mr-2 text-gray-400 text-sm hover:text-white transition duration-300 ease-in-out"
@@ -218,14 +240,18 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
                       >
                         Share
                       </button>
-                      <span className="mr-2">|</span>
-                      <button
-                        className="bg-transparent border-none p-0 m-0 focus:outline-none text-gray-400 text-sm hover:text-white transition duration-300 ease-in-out"
-                        onClick={onSaveClick(node.globalId)}
-                        type="button"
-                      >
-                        {deriveSaveText(node.globalId)}
-                      </button>
+                      {session && (
+                        <>
+                          <span className="mr-2">|</span>
+                          <button
+                            className="bg-transparent border-none p-0 m-0 focus:outline-none text-gray-400 text-sm hover:text-white transition duration-300 ease-in-out"
+                            onClick={onSaveClick(node.globalId)}
+                            type="button"
+                          >
+                            {deriveSaveText(node.globalId)}
+                          </button>
+                        </>
+                      )}
                     </div>
                   )}
                   <button
@@ -261,6 +287,11 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
   const nextPaperId = currentPaperId < 196 ? currentPaperId + 1 : null;
 
   // Calculate nodes for modals.
+  const commentNode = selectedGlobalIdComment
+    ? paperData.data.results.find(
+        (node) => node.globalId === selectedGlobalIdComment
+      )
+    : undefined;
   const relatedWorksNode = selectedGlobalIdRelatedWorks
     ? paperData.data.results.find(
         (node) => node.globalId === selectedGlobalIdRelatedWorks
@@ -281,6 +312,11 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
       />
 
       <Header />
+
+      {/* Comment Modal */}
+      {selectedGlobalIdComment && (
+        <Comment onClose={onCommentClose} node={commentNode} />
+      )}
 
       {/* Related Works Modal */}
       {selectedGlobalIdRelatedWorks && (

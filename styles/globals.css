@@ -36,9 +36,13 @@ input, textarea, select, button {
 }
 
 /* Apply a focus ring for accessibility */
-input:focus, textarea:focus, select:focus, button:focus {
+input:focus, select:focus, button:focus {
   outline: 4px solid #444;
   outline-offset: 2px;
+}
+
+textarea:focus {
+  outline: none;
 }
 
 /* General link styles */

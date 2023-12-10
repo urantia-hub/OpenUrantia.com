@@ -27,25 +27,33 @@ const Share = ({ onClose, node }: ShareProps) => {
               <div className="flex justify-between mt-4 mb-2">
                 <Link
                   className="bg-white text-black py-1.5 px-4 shadow-lg hover:bg-gray-400 transition duration-300 ease-in-out"
-                  href="/"
+                  href="https://www.x.com"
+                  rel="noreferrer noopener"
+                  target="_blank"
                 >
                   Share on X
                 </Link>
                 <Link
                   className="bg-white text-black py-1.5 px-4 shadow-lg hover:bg-gray-400 transition duration-300 ease-in-out"
-                  href="/"
+                  href="https://www.facebook.com"
+                  rel="noreferrer noopener"
+                  target="_blank"
                 >
                   Share on Facebook
                 </Link>
                 <Link
                   className="bg-white text-black py-1.5 px-4 shadow-lg hover:bg-gray-400 transition duration-300 ease-in-out"
-                  href="/"
+                  href="https://www.instagram.com"
+                  rel="noreferrer noopener"
+                  target="_blank"
                 >
                   Share on Instagram
                 </Link>
                 <Link
                   className="bg-white text-black py-1.5 px-4 shadow-lg hover:bg-gray-400 transition duration-300 ease-in-out"
-                  href="/"
+                  href="https://www.whatsapp.com"
+                  rel="noreferrer noopener"
+                  target="_blank"
                 >
                   Share on WhatsApp
                 </Link>
