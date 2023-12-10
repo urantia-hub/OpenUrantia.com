@@ -11,24 +11,73 @@ datasource db {
 }
 
 model Account {
-  access_token       String?  @db.Text
-  expires_at         Int?
-  id                 String  @id @default(cuid())
-  id_token           String?  @db.Text
-  provider           String
-  providerAccountId  String
-  refresh_token      String?  @db.Text
-  scope              String?
-  session_state      String?
-  token_type         String?
-  type               String
-  userId             String
+  access_token      String? @db.Text
+  expires_at        Int?
+  id                String  @id @default(cuid())
+  id_token          String? @db.Text
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  scope             String?
+  session_state     String?
+  token_type        String?
+  type              String
+  userId            String
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
-
   @@map("accounts")
+}
+
+model NodeComment {
+  createdAt               DateTime @default(now())
+  globalId                String
+  id                      String   @id @default(cuid())
+  paperId                 String
+  paperSectionId          String
+  paperSectionParagraphId String
+  text                    String
+  updatedAt               DateTime @updatedAt
+  userId                  String
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("node_comments")
+}
+
+model NodeReference {
+  authors                 String[]
+  createdAt               DateTime  @default(now())
+  description             String?
+  globalId                String
+  id                      String    @id @default(cuid())
+  link                    String?
+  page                    String?
+  paperId                 String
+  paperSectionId          String
+  paperSectionParagraphId String
+  publishedAt             DateTime?
+  title                   String?
+  updatedAt               DateTime  @updatedAt
+
+  @@map("node_references")
+}
+
+model SavedNode {
+  createdAt               DateTime @default(now())
+  globalId                String
+  id                      String   @id @default(cuid())
+  paperId                 String
+  paperSectionId          String
+  paperSectionParagraphId String
+  updatedAt               DateTime @updatedAt
+  userId                  String
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([globalId, userId])
+  @@map("saved_nodes")
 }
 
 model Session {
@@ -37,9 +86,33 @@ model Session {
   sessionToken String   @unique
   userId       String
 
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("sessions")
+}
+
+enum SharedNodePlatform {
+  FACEBOOK
+  INSTAGRAM
+  WHATSAPP
+  X
+}
+
+model SharedNode {
+  count                   Int
+  createdAt               DateTime           @default(now())
+  globalId                String
+  id                      String             @id @default(cuid())
+  paperId                 String
+  paperSectionId          String
+  paperSectionParagraphId String
+  platform                SharedNodePlatform
+  updatedAt               DateTime           @updatedAt
+  userId                  String
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("shared_nodes")
 }
 
 model User {
@@ -51,8 +124,11 @@ model User {
   name          String?
   updatedAt     DateTime  @updatedAt
 
-  accounts      Account[]
-  sessions      Session[]
+  accounts     Account[]
+  nodeComments NodeComment[]
+  savedNodes   SavedNode[]
+  sessions     Session[]
+  shareNodes   SharedNode[]
 
   @@map("users")
 }
@@ -63,6 +139,5 @@ model VerificationToken {
   token      String   @unique
 
   @@unique([identifier, token])
-
   @@map("verification_tokens")
 }
