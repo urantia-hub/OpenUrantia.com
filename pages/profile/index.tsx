@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 // Relative modules.
 import HeadTag from "@/components/HeadTag";
-import Header from "@/components/Header";
+import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { User } from "@prisma/client";
 import Spinner from "@/components/Spinner";
@@ -39,9 +39,9 @@ const Profile = () => {
     <div className="flex flex-col min-h-screen bg-black text-white">
       <HeadTag titlePrefix="Settings" />
 
-      <Header />
+      <Navbar />
 
-      <main className="flex-grow container mx-auto px-4 py-10">
+      <main className="mt-28 flex-grow container mx-auto px-4 py-10">
         <section className="text-center space-y-6">
           <h1 className="text-3xl font-bold">Settings</h1>
 

@@ -3,19 +3,19 @@ import Link from "next/link";
 // Relative modules.
 import Footer from "@/components/Footer";
 import HeadTag from "@/components/HeadTag";
-import Header from "@/components/Header";
+import Navbar from "@/components/Navbar";
 
 const HomePage = () => {
   return (
     <div className="homepage flex flex-col min-h-screen text-white">
       <HeadTag />
 
-      <Header />
+      <Navbar />
 
-      <main className="flex-grow container mx-auto px-4 py-10">
+      <main className="mt-28 flex-grow container mx-auto px-4 py-10">
         <section className="text-center space-y-6 md:pb-24 sm:pb-0">
           <h1 className="text-7xl font-bold">The Urantia Book</h1>
-          <p className="text-lg mx-auto leading-relaxed max-w-2xl pb-14">
+          <p className="text-lg mx-auto leading-relaxed max-w-2xl pb-10">
             <span className="font-bold">
               <span className="font-thin">Open</span>Urantia
             </span>{" "}

@@ -7,7 +7,7 @@ import Comment from "@/components/Comment";
 import Explain from "@/components/Explain";
 import Footer from "@/components/Footer";
 import HeadTag from "@/components/HeadTag";
-import Header from "@/components/Header";
+import Navbar from "@/components/Navbar";
 import RelatedWorks from "@/components/RelatedWorks";
 import Share from "@/components/Share";
 import Spinner from "@/components/Spinner";
@@ -338,7 +338,7 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
         titlePrefix={`Paper ${nodes[0].paperId} - ${nodes[0].paperTitle}`}
       />
 
-      <Header />
+      <Navbar />
 
       {/* Explain Modal */}
       {selectedGlobalIdExplain && (
@@ -360,7 +360,7 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
         <Share onClose={onShareClose} node={shareNode} />
       )}
 
-      <main className="flex-grow container mx-auto px-4 my-4 max-w-3xl paper-content">
+      <main className="mt-28 flex-grow container mx-auto px-4 my-4 max-w-3xl paper-content">
         {/* Navigation links for previous and next papers */}
         <div className="flex justify-between mt-2 mb-4">
           {prevPaperId ? (

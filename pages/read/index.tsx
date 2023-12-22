@@ -1,5 +1,5 @@
 import Link from "next/link";
-import Header from "@/components/Header";
+import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import HeadTag from "@/components/HeadTag";
 
@@ -74,9 +74,9 @@ const ReadPage = ({ partsData }: TOCPageProps) => {
     <div className="flex flex-col min-h-screen bg-black">
       <HeadTag titlePrefix="Table of Contents" />
 
-      <Header />
+      <Navbar />
 
-      <main className="flex-grow container mx-auto px-4 my-4 max-w-4xl">
+      <main className="mt-28 flex-grow container mx-auto px-4 my-4 max-w-4xl">
         <h1 className="text-base mt-2 text-center">Table of Contents</h1>
         {sortedParts.map((part, index) =>
           renderPart(

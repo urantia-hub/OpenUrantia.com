@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 // Relative modules.
 import HeadTag from "@/components/HeadTag";
-import Header from "@/components/Header";
+import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { SavedNode, User } from "@prisma/client";
 import Spinner from "@/components/Spinner";
@@ -54,9 +54,9 @@ const Quotes = () => {
     <div className="flex flex-col min-h-screen bg-black text-white">
       <HeadTag titlePrefix="Favorited Quotes" />
 
-      <Header />
+      <Navbar />
 
-      <main className="flex-grow container mx-auto px-4 my-4 max-w-3xl paper-content">
+      <main className="mt-28 flex-grow container mx-auto px-4 my-4 max-w-3xl paper-content">
         {/* Navigation links for previous and next papers */}
         <div className="flex justify-between mt-2 mb-4">
           <h1 className="text-3xl font-bold">Favorited Quotes</h1>
