@@ -13,15 +13,16 @@ const HomePage = () => {
       <Header />
 
       <main className="flex-grow container mx-auto px-4 py-10">
-        <section className="text-center space-y-6">
-          <h1 className="text-5xl font-bold">
-            <span className="font-thin">Open</span>Urantia
-          </h1>
+        <section className="text-center space-y-6 md:pb-24 sm:pb-0">
+          <h1 className="text-7xl font-bold">The Urantia Book</h1>
           <p className="text-lg mx-auto leading-relaxed max-w-2xl pb-14">
-            OpenUrantia.com offers an engaging platform to read the Urantia
-            Book. We are actively developing new features to enhance your
-            experience, including AI-driven insights, progress tracking, and a
-            global community for spiritual growth. Stay tuned!
+            <span className="font-bold">
+              <span className="font-thin">Open</span>Urantia
+            </span>{" "}
+            offers an engaging platform to read the Urantia Book. We are
+            actively developing new features to enhance your experience,
+            including AI-driven insights, progress tracking, and a global
+            community for spiritual growth. Stay tuned!
           </p>
           <Link
             className="bg-white text-black font-bold py-3 px-6 rounded-full shadow-lg hover:bg-gray-400 transition duration-300 ease-in-out"

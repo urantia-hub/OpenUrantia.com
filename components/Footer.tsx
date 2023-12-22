@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 const Footer = () => {
   return (
     <footer className="border-t border-zinc-800 py-4 text-xs bg-gradient-to-b from-gray-900 to-black">
@@ -8,9 +10,14 @@ const Footer = () => {
           </span>
         </div>
         <div className="flex gap-4"></div>
-        <div>
-          <span className="text-gray-400">All systems normal.</span>
-        </div>
+        <Link
+          className="text-gray-400 text-sm"
+          href="https://stats.uptimerobot.com/6qzJEHV7rN"
+          rel="noopener noreferrer"
+          target="_blank"
+        >
+          Status
+        </Link>
       </div>
     </footer>
   );

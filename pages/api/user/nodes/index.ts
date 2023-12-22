@@ -1,44 +1,11 @@
 // Node modules.
 import type { NextApiRequest, NextApiResponse } from "next";
-import { getServerSession } from "next-auth/next";
+import { User } from "@prisma/client";
 // Relative modules.
 import SavedNodeService from "@/services/savedNode";
-import UserService from "@/services/user";
-import { User } from "@prisma/client";
-import { authOptions } from "@/pages/api/auth/[...nextauth]";
+import getSessionDetails from "@/utils/getSessionDetails";
 
 const savedNodeService = new SavedNodeService();
-const userService = new UserService();
-
-// Handler for the API endpoints.
-export default async function handle(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
-  const session = await getServerSession(req, res, authOptions);
-  if (!session?.user?.email) {
-    return res.status(401).json({ message: "Unauthorized" });
-  }
-
-  // Retrieve the user ID from the database
-  const user = await userService.find({
-    where: { email: session?.user?.email },
-  });
-  if (!user) {
-    return res.status(404).json({ message: "User not found" });
-  }
-
-  const { method } = req;
-  switch (method) {
-    case "GET":
-      return handleGet(req, res, user);
-    case "POST":
-      return handlePost(req, res, user);
-    default:
-      res.setHeader("Allow", ["GET", "POST"]);
-      res.status(405).end(`Method ${method} Not Allowed`);
-  }
-}
 
 // GET handler
 async function handleGet(
@@ -46,11 +13,35 @@ async function handleGet(
   res: NextApiResponse,
   user: User
 ) {
+  // Handle fetching all saved nodes for a user.
   const savedNodes = await savedNodeService.findMany({
     where: { userId: user.id },
     orderBy: { createdAt: "desc" },
   });
-  res.status(200).json(savedNodes);
+
+  // Fetch the paperSectionParagraphId details for each saved node.
+  const paperSectionParagraphId = savedNodes.map(
+    (savedNode) => savedNode.paperSectionParagraphId
+  );
+  const nodesDetails =
+    await savedNodeService.getNodesByPaperSectionParagraphIds(
+      paperSectionParagraphId
+    );
+  console.log("nodesDetails", nodesDetails);
+
+  // Add the paperSectionParagraphId details to each saved node.
+  const savedNodesWithDetails = savedNodes.map((savedNode) => {
+    const nodeDetail = nodesDetails.find(
+      (nodeDetail: UBNode) =>
+        nodeDetail.paperSectionParagraphId === savedNode.paperSectionParagraphId
+    );
+    return {
+      ...savedNode,
+      details: nodeDetail,
+    };
+  });
+
+  res.status(200).json(savedNodesWithDetails);
 }
 
 // POST handler
@@ -81,4 +72,24 @@ async function handlePost(
     },
   });
   res.status(201).json(savedNode);
+}
+
+// Handler for the API endpoints.
+export default async function handle(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
+  const sessionDetails = await getSessionDetails(req, res);
+  if (!sessionDetails) return;
+
+  const { method } = req;
+  switch (method) {
+    case "GET":
+      return handleGet(req, res, sessionDetails.user);
+    case "POST":
+      return handlePost(req, res, sessionDetails.user);
+    default:
+      res.setHeader("Allow", ["GET", "POST"]);
+      res.status(405).end(`Method ${method} Not Allowed`);
+  }
 }

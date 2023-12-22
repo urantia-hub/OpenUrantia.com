@@ -3,6 +3,7 @@ import { SavedNode, Prisma, PrismaClient } from "@prisma/client";
 // Relative modules.
 import BaseService from "@/services/base";
 import prisma from "@/prisma/client";
+import axios from "axios";
 
 type SavedNodeServiceDependencies = {
   model: PrismaClient["savedNode"];
@@ -62,6 +63,24 @@ export class SavedNodeService implements BaseService<SavedNode> {
 
   async upsert(args: Prisma.SavedNodeUpsertArgs): Promise<SavedNode> {
     return await this.model.upsert(args);
+  }
+
+  async getNodesByPaperSectionParagraphIds(
+    paperSectionParagraphIds: string[]
+  ): Promise<any> {
+    try {
+      const response = await axios.get(
+        `${
+          process.env.URANTIA_DEV_API_HOST
+        }/api/v1/urantia-book/paragraphs?paperSectionParagraphIds=${paperSectionParagraphIds.join(
+          ","
+        )}`
+      );
+      return response.data?.data?.results;
+    } catch (error) {
+      console.error("Unable to fetch nodes by paperSectionParagraphIds", error);
+      return [];
+    }
   }
 }
 

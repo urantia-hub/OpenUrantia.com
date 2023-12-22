@@ -100,7 +100,7 @@ export async function getStaticProps() {
     `${process.env.URANTIA_DEV_API_HOST}/api/v1/urantia-book/toc`
   );
   const jsonData = await res.json();
-  const partsData = jsonData.data.results;
+  const partsData = jsonData?.data?.results || [];
 
   return {
     props: {
