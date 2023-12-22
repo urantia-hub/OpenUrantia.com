@@ -2,7 +2,7 @@ import Link from "next/link";
 
 const Footer = () => {
   return (
-    <footer className="border-t border-zinc-800 py-4 text-xs bg-gradient-to-b from-gray-900 to-black">
+    <footer className="py-4 text-xs bg-gradient-to-b to-gray-1000 from-black">
       <div className="flex justify-between items-center container mx-auto px-4">
         <div>
           <span className="text-gray-400">

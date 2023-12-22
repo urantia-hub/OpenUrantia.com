@@ -1,6 +1,6 @@
 import { signIn, useSession } from "next-auth/react";
 import Link from "next/link";
-import Header from "@/components/Header";
+import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import HeadTag from "@/components/HeadTag";
 import { useRouter } from "next/router";
@@ -17,9 +17,9 @@ export default function Login() {
   return (
     <div className="flex flex-col min-h-screen bg-black">
       <HeadTag titlePrefix="Login" />
-      <Header />
+      <Navbar />
 
-      <main className="flex flex-col flex-grow justify-center items-center px-4 my-4">
+      <main className="mt-28 flex flex-col flex-grow justify-center items-center px-4 my-4">
         {session ? (
           <>
             <p className="text-base mt-2 text-center">
