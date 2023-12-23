@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Spinner from "./Spinner";
 
 const Footer = () => {
   return (
@@ -11,12 +12,16 @@ const Footer = () => {
         </div>
         <div className="flex gap-4"></div>
         <Link
-          className="text-gray-400 text-sm"
+          className="flex items-center text-green-400 text-sm hover:text-green-500"
           href="https://stats.uptimerobot.com/6qzJEHV7rN"
           rel="noopener noreferrer"
           target="_blank"
         >
-          Status
+          <span className="relative flex h-2 w-2 mr-2">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+          </span>{" "}
+          All systems normal.
         </Link>
       </div>
     </footer>

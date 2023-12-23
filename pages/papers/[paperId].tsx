@@ -395,7 +395,7 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
 
         {/* Navigation links for previous and next papers */}
         <div className="flex justify-between mb-12">
-          {prevPaperId ? (
+          {prevPaperId >= 0 ? (
             <Link href={`/papers/${prevPaperId}`}>← Paper {prevPaperId}</Link>
           ) : (
             <span />
