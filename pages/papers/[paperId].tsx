@@ -337,11 +337,11 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
     <div className="flex flex-col min-h-screen bg-black text-white">
       <HeadTag
         metaDescription={nodes[0].paperTitle}
-        titlePrefix={`${
+        titlePrefix={
           parseInt(nodes[0].paperId) > 0
-            ? `Paper ${nodes[0].paperId}`
+            ? `Paper ${nodes[0].paperId} - ${nodes[0].paperTitle}`
             : "Foreword"
-        } - ${nodes[0].paperTitle}`}
+        }
       />
 
       <Navbar />
