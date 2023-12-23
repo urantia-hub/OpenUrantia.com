@@ -305,7 +305,6 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
 
   // Parse the current paperId as a number
   const currentPaperId = parseInt(nodes[0].paperId);
-  console.log("currentPaperId", currentPaperId);
 
   // Calculate the next and previous paper IDs
   const prevPaperId = currentPaperId > 0 ? currentPaperId - 1 : -1;
