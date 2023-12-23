@@ -181,3 +181,7 @@ footer a:hover {
   background: rgb(2 132 199);
   font-style: normal;
 }
+
+[id] { /* Target all elements with an ID */
+  scroll-margin-top: 60px;
+}

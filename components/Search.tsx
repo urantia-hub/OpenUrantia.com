@@ -104,7 +104,7 @@ const Search = ({ onClose }: SearchProps) => {
 
   const renderLeadingPaperText = (result: SearchResult) => {
     if (parseInt(result.paperId) > 0) {
-      return `Paper ${result.paperId} - ${result.paperTitle}`;
+      return `Paper ${result.paperId}: ${result.paperTitle}`;
     } else {
       return "Foreword";
     }
@@ -118,10 +118,16 @@ const Search = ({ onClose }: SearchProps) => {
     }
   };
 
+  const renderGlobalId = (result: SearchResult) => {
+    // Only take what's after the `:`
+    const globalId = result.globalId.split(":")[1];
+    return globalId;
+  };
+
   const renderLeadingText = (result: SearchResult) => {
     return `${renderLeadingPaperText(result)} - ${renderLeadingSectionText(
       result
-    )} (${result.globalId})`;
+    )} (${renderGlobalId(result)})`;
   };
 
   const deriveSearchStatus = () => {
@@ -199,12 +205,13 @@ const Search = ({ onClose }: SearchProps) => {
         </div>
 
         {/* Results */}
-        <div className="flex flex-col">
+        <div className="flex flex-col max-h-[calc(100vh-200px)] overflow-y-auto">
           {results?.map((result) => (
             <Link
               className="mb-6 text-left hover:no-underline"
               key={result.globalId}
               href={`/papers/${result.paperId}#${result.globalId}`}
+              onClick={onClose}
             >
               <div className="leading-relaxed">
                 <div className="flex flex-col block mb-1 text-gray-400 text-xs">

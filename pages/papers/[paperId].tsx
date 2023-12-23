@@ -1,7 +1,8 @@
 // UBNode modules.
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 // Relative modules.
 import Comment from "@/components/Comment";
 import Explain from "@/components/Explain";
@@ -22,6 +23,24 @@ type PaperPageProps = {
 
 const PaperPage = ({ paperData }: PaperPageProps) => {
   const { data: session } = useSession();
+  const router = useRouter();
+
+  useEffect(() => {
+    const hash = router.asPath.split("#")[1];
+    if (hash) {
+      const element = document.getElementById(hash);
+      if (element) {
+        element.classList.add("text-yellow-200");
+        element.classList.add("transition");
+        element.classList.add("duration-500");
+
+        // Optional: Remove the class after the animation ends
+        setTimeout(() => {
+          element.classList.remove("text-yellow-200");
+        }, 500); // Adjust the timeout to match the animation duration
+      }
+    }
+  }, [router.asPath]);
 
   // Toggled states.
   const [expandedGlobalIds, setExpandedGlobalIds] = useState<string[]>([]);
@@ -225,7 +244,7 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
           >
             <div className="text-lg leading-relaxed">
               <div className="flex items-center justify-between block mb-2 text-gray-400 text-sm">
-                <span>{node.globalId}</span>
+                <span>{node.globalId?.split(":")[1]}</span>
                 <div className="flex items-center">
                   {expandedGlobalIds.includes(node.globalId) && (
                     <div className="flex items-center mr-2">
@@ -287,7 +306,7 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
                   </button>
                 </div>
               </div>
-              <p
+              <div
                 dangerouslySetInnerHTML={{ __html: node.htmlText as string }}
               />
             </div>
