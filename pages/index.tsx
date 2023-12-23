@@ -25,8 +25,8 @@ const HomePage = () => {
             community for spiritual growth. Stay tuned!
           </p>
           <Link
-            className="bg-white text-black font-bold py-3 px-6 rounded-full shadow-lg hover:bg-gray-400 transition duration-300 ease-in-out"
-            href="/read"
+            className="bg-white text-black font-bold py-3 px-6 rounded-full shadow-lg hover:bg-blue-100 transition duration-300 ease-in-out"
+            href="/papers/0"
           >
             Start Reading
           </Link>

@@ -197,7 +197,9 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
       case "paper": {
         return (
           <div key={node.globalId} className="mb-12 text-center">
-            <p className="text-xl mb-2">Paper {node.paperId}</p>
+            {parseInt(node.paperId) > 0 && (
+              <p className="text-xl mb-2">Paper {node.paperId}</p>
+            )}
             <h1 className="text-4xl font-bold mb-12" id={node.globalId}>
               {node.paperTitle}
             </h1>
@@ -303,9 +305,10 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
 
   // Parse the current paperId as a number
   const currentPaperId = parseInt(nodes[0].paperId);
+  console.log("currentPaperId", currentPaperId);
 
   // Calculate the next and previous paper IDs
-  const prevPaperId = currentPaperId > 1 ? currentPaperId - 1 : null;
+  const prevPaperId = currentPaperId > 0 ? currentPaperId - 1 : -1;
   const nextPaperId = currentPaperId < 196 ? currentPaperId + 1 : null;
 
   // Calculate nodes for modals.
@@ -363,9 +366,9 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
       <main className="mt-28 flex-grow container mx-auto px-4 my-4 max-w-3xl paper-content">
         {/* Navigation links for previous and next papers */}
         <div className="flex justify-between mt-2 mb-4">
-          {prevPaperId ? (
+          {prevPaperId >= 0 ? (
             <Link className="flex-1" href={`/papers/${prevPaperId}`}>
-              ← Paper {prevPaperId}
+              ← {prevPaperId === 0 ? "Foreword" : `Paper ${prevPaperId}`}
             </Link>
           ) : (
             <span className="flex-1" />

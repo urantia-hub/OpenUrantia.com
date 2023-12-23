@@ -64,7 +64,7 @@ const Comment = ({ onClose, node }: CommentProps) => {
               value={text}
             />
             <div className="flex justify-center items-center">
-              {error && <p className="text-red-500">{error}</p>}
+              {error && <p className="text-rose-500">{error}</p>}
               <button
                 className="bg-white text-black py-1.5 px-4 rounded-full shadow-lg hover:bg-gray-400 transition duration-300 ease-in-out w-fit"
                 disabled={creating}
