@@ -417,7 +417,7 @@ export async function getServerSideProps(context: any) {
   const { paperId } = context.params;
 
   const res = await fetch(
-    `${process.env.URANTIA_DEV_API_HOST}/api/v1/urantia-book/read?paperId=${paperId}`
+    `${process.env.NEXT_PUBLIC_URANTIA_DEV_API_HOST}/api/v1/urantia-book/read?paperId=${paperId}`
   );
   const paperData = await res.json();
 

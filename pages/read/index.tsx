@@ -97,7 +97,7 @@ const ReadPage = ({ partsData }: TOCPageProps) => {
 export async function getStaticProps() {
   // Fetch data from your API
   const res = await fetch(
-    `${process.env.URANTIA_DEV_API_HOST}/api/v1/urantia-book/toc`
+    `${process.env.NEXT_PUBLIC_URANTIA_DEV_API_HOST}/api/v1/urantia-book/toc`
   );
   const jsonData = await res.json();
   const partsData = jsonData?.data?.results || [];

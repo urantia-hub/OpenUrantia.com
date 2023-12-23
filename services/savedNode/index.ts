@@ -71,7 +71,7 @@ export class SavedNodeService implements BaseService<SavedNode> {
     try {
       const response = await axios.get(
         `${
-          process.env.URANTIA_DEV_API_HOST
+          process.env.NEXT_PUBLIC_URANTIA_DEV_API_HOST
         }/api/v1/urantia-book/paragraphs?paperSectionParagraphIds=${paperSectionParagraphIds.join(
           ","
         )}`
