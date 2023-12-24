@@ -47,18 +47,7 @@ const Search = ({ onClose }: SearchProps) => {
 
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_URANTIA_DEV_API_HOST}/api/v1/urantia-book/search`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            q: searchQuery,
-            acceptOnlyFullMatches: true,
-            sortByRelevance: true,
-          }),
-        }
+        `/api/urantia-book/search?q=${encodeURIComponent(searchQuery)}`
       );
       const data = await response.json();
       setResults(data.data.results);
