@@ -1,4 +1,5 @@
 // Node modules.
+import axios from "axios";
 import type { NextApiRequest, NextApiResponse } from "next";
 
 // POST handler
@@ -7,29 +8,33 @@ const handlePOST = async (req: NextApiRequest, res: NextApiResponse) => {
     const { q } = req.body;
     const url = `${process.env.NEXT_PUBLIC_URANTIA_DEV_API_HOST}/api/v1/urantia-book/search`;
 
-    const response = await fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        q: "test",
+    const response = await axios.post(
+      url,
+      {
         acceptOnlyFullMatches: true,
+        q,
         sortByRelevance: true,
-      }),
-    });
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
 
-    if (!response.ok) {
-      const error = new Error("Network response was not ok");
-      // @ts-ignore
-      error.response = response;
-      throw error;
-    }
-
-    const data = await response.json();
-    res.status(200).json(data);
+    // Return the data to the client
+    res.status(200).json(response.data);
   } catch (error) {
-    res.status(500).json({ error: "Urantia.dev API error" });
+    // Axios wraps the original error in an 'AxiosError' object
+    if (axios.isAxiosError(error)) {
+      // Optionally handle Axios-specific errors here
+      res
+        .status(500)
+        .json({ error: "Error with Axios request", errorDetails: error });
+    } else {
+      // Handle non-Axios errors
+      res.status(500).json({ error: "Urantia.dev API error" });
+    }
   }
 };
 
