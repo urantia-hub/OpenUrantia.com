@@ -178,8 +178,9 @@ footer a:hover {
 }
 
 .urantia-api-highlighted {
-  background: rgb(2 132 199);
+  color: rgb(254 240 138);
   font-style: normal;
+  text-decoration: underline;
 }
 
 [id] { /* Target all elements with an ID */

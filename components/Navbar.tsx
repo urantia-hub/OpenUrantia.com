@@ -30,6 +30,7 @@ const Navbar = () => {
 
     window.addEventListener("keydown", handleKeyDown);
     window.addEventListener("scroll", handleScroll);
+    handleScroll();
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("scroll", handleScroll);

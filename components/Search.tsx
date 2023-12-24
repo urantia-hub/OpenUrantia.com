@@ -210,7 +210,9 @@ const Search = ({ onClose }: SearchProps) => {
             <Link
               className="mb-6 text-left hover:no-underline"
               key={result.globalId}
-              href={`/papers/${result.paperId}#${result.globalId}`}
+              href={`/papers/${result.paperId}#${
+                result.globalId
+              }?q=${encodeURIComponent(query)}`}
               onClick={onClose}
             >
               <div className="leading-relaxed">

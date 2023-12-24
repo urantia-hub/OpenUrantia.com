@@ -26,18 +26,29 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
   const router = useRouter();
 
   useEffect(() => {
-    const hash = router.asPath.split("#")[1];
+    // Extracting the hash and query parameter from the URL.
+    const [hash, queryParam] = router.asPath.split("#")[1]?.split("?") || [];
+    const queryParams = new URLSearchParams(queryParam);
+    const query = queryParams.get("q");
+
     if (hash) {
       const element = document.getElementById(hash);
       if (element) {
-        element.classList.add("text-yellow-200");
-        element.classList.add("transition");
-        element.classList.add("duration-500");
+        // Scroll to the element
+        const yOffset = -60; // Adjust based on your header height or other factors
+        const y =
+          element.getBoundingClientRect().top + window.scrollY + yOffset;
+        window.scrollTo({ top: y });
 
-        // Optional: Remove the class after the animation ends
-        setTimeout(() => {
-          element.classList.remove("text-yellow-200");
-        }, 500); // Adjust the timeout to match the animation duration
+        if (query) {
+          // Highlight the query text
+          const regex = new RegExp(query, "gi");
+          const replacedHtml = element.innerHTML.replace(
+            regex,
+            (match) => `<span class="text-yellow-200 underline">${match}</span>`
+          );
+          element.innerHTML = replacedHtml;
+        }
       }
     }
   }, [router.asPath]);
