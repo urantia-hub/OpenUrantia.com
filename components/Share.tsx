@@ -7,7 +7,7 @@ import Spinner from "@/components/Spinner";
 
 const constructShareUrl = (node: UBNode) => {
   // Replace this with actual URL construction logic
-  return `https://openurantia.com/papers/${node.paperId}#${node.globalId}`;
+  return `${process.env.NEXT_PUBLIC_OPEN_URANTIA_API_HOST}/papers/${node.paperId}#${node.globalId}`;
 };
 
 type ShareProps = {
@@ -17,7 +17,7 @@ type ShareProps = {
 
 const Share = ({ onClose, node }: ShareProps) => {
   // State.
-  const [copied, setCopied] = useState<boolean>(false);
+  const [copiedLink, setCopiedLink] = useState<boolean>(false);
 
   // Create links.
   const shareUrl = node ? constructShareUrl(node) : "";
@@ -60,12 +60,12 @@ const Share = ({ onClose, node }: ShareProps) => {
                 <button
                   className="bg-white text-black py-1.5 px-4 shadow-lg hover:bg-gray-400 transition duration-300 ease-in-out"
                   onClick={() => {
-                    navigator.clipboard.writeText(node.text as string);
-                    setCopied(true);
+                    navigator.clipboard.writeText(shareUrl);
+                    setCopiedLink(true);
                   }}
                   type="button"
                 >
-                  {copied ? "Copied!" : "Copy Link"}
+                  {copiedLink ? "Copied!" : "Copy Link"}
                 </button>
               </div>
             </>
