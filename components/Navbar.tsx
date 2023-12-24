@@ -76,26 +76,9 @@ const Navbar = () => {
           </div>
 
           <div className="flex items-center justify-end flex-1">
-            {session ? (
+            {!session && (
               <button
-                onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className="border-0 bg-transparent text-white focus:outline-none p-0"
-              >
-                <svg
-                  className="w-9 h-9 fill-current"
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    fillRule="evenodd"
-                    clipRule="evenodd"
-                    d="M3 5h18v2H3V5zm0 6h18v2H3v-2zm0 6h18v2H3v-2z"
-                  />
-                </svg>
-              </button>
-            ) : (
-              <button
-                className="text-black bg-white rounded-full px-4 py-2 hover:bg-blue-100 focus:outline-none transition-all duration-500 ease-in-out"
+                className="text-black bg-white rounded-full px-4 py-2 mr-2 hover:bg-blue-100 focus:outline-none transition-all duration-500 ease-in-out"
                 onClick={() => {
                   signIn("google");
                   onResetState();
@@ -104,6 +87,22 @@ const Navbar = () => {
                 Sign In
               </button>
             )}
+            <button
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              className="border-0 bg-transparent text-white focus:outline-none p-0"
+            >
+              <svg
+                className="w-9 h-9 fill-current"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  fillRule="evenodd"
+                  clipRule="evenodd"
+                  d="M3 5h18v2H3V5zm0 6h18v2H3v-2zm0 6h18v2H3v-2z"
+                />
+              </svg>
+            </button>
           </div>
         </div>
 
@@ -119,12 +118,12 @@ const Navbar = () => {
             </div>
 
             <div className="py-3 w-full">
-              <Link href="/papers/0" onClick={onResetState}>
-                Start Reading
+              <Link href="/read" onClick={onResetState}>
+                Find a paper to read
               </Link>
             </div>
 
-            {session ? (
+            {session && (
               <>
                 <div className="py-3 w-full">
                   <button
@@ -138,18 +137,6 @@ const Navbar = () => {
                   </button>
                 </div>
               </>
-            ) : (
-              <div className="py-3 w-full">
-                <button
-                  className="text-white border-0 bg-transparent focus:outline-none p-0 m-0 w-full"
-                  onClick={() => {
-                    signIn("google");
-                    onResetState();
-                  }}
-                >
-                  Sign In
-                </button>
-              </div>
             )}
           </div>
         )}

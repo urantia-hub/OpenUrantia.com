@@ -8,11 +8,7 @@ import getSessionDetails from "@/utils/getSessionDetails";
 const savedNodeService = new SavedNodeService();
 
 // GET handler
-async function handleGet(
-  req: NextApiRequest,
-  res: NextApiResponse,
-  user: User
-) {
+async function handleGet(_: NextApiRequest, res: NextApiResponse, user: User) {
   // Handle fetching all saved nodes for a user.
   const savedNodes = await savedNodeService.findMany({
     where: { userId: user.id },
@@ -27,7 +23,6 @@ async function handleGet(
     await savedNodeService.getNodesByPaperSectionParagraphIds(
       paperSectionParagraphId
     );
-  console.log("nodesDetails", nodesDetails);
 
   // Add the paperSectionParagraphId details to each saved node.
   const savedNodesWithDetails = savedNodes.map((savedNode) => {
@@ -37,7 +32,8 @@ async function handleGet(
     );
     return {
       ...savedNode,
-      details: nodeDetail,
+      ...nodeDetail,
+      type: "savedNode",
     };
   });
 

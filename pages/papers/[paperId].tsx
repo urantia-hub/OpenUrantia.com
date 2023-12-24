@@ -228,7 +228,7 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
         return (
           <div key={node.globalId} className="mb-12 text-center">
             {parseInt(node.paperId) > 0 && (
-              <p className="text-xl mb-2">Paper {node.paperId}</p>
+              <p className="mb-2">Paper {node.paperId}</p>
             )}
             <h1 className="text-4xl font-bold mb-12" id={node.globalId}>
               {node.paperTitle}
@@ -400,17 +400,26 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
         {/* Navigation links for previous and next papers */}
         <div className="flex justify-between mt-2 mb-4">
           {prevPaperId >= 0 ? (
-            <Link className="flex-1" href={`/papers/${prevPaperId}`}>
+            <Link
+              className="flex-1 text-gray-400 hover:text-white transition duration-300 ease-in-out"
+              href={`/papers/${prevPaperId}`}
+            >
               ← {prevPaperId === 0 ? "Foreword" : `Paper ${prevPaperId}`}
             </Link>
           ) : (
             <span className="flex-1" />
           )}
-          <Link className="flex-1 text-center" href="/read">
+          <Link
+            className="flex-1 text-center text-gray-400 hover:text-white transition duration-300 ease-in-out"
+            href="/read"
+          >
             Table of Contents
           </Link>
           {nextPaperId ? (
-            <Link className="flex-1 text-right" href={`/papers/${nextPaperId}`}>
+            <Link
+              className="flex-1 text-right text-gray-400 hover:text-white transition duration-300 ease-in-out"
+              href={`/papers/${nextPaperId}`}
+            >
               Paper {nextPaperId} →
             </Link>
           ) : (
@@ -426,12 +435,22 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
         {/* Navigation links for previous and next papers */}
         <div className="flex justify-between mb-12">
           {prevPaperId >= 0 ? (
-            <Link href={`/papers/${prevPaperId}`}>← Paper {prevPaperId}</Link>
+            <Link
+              className="flex-1 text-gray-400 hover:text-white transition duration-300 ease-in-out"
+              href={`/papers/${prevPaperId}`}
+            >
+              ← Paper {prevPaperId}
+            </Link>
           ) : (
             <span />
           )}
           {nextPaperId ? (
-            <Link href={`/papers/${nextPaperId}`}>Paper {nextPaperId} →</Link>
+            <Link
+              className="flex-1 text-right text-gray-400 hover:text-white transition duration-300 ease-in-out"
+              href={`/papers/${nextPaperId}`}
+            >
+              Paper {nextPaperId} →
+            </Link>
           ) : (
             <span />
           )}

@@ -37,3 +37,37 @@ const renderNode = (node: UBNode) => {
     }
   }
 };
+
+export const renderLeadingPaperText = (result: {
+  paperId: string;
+  paperTitle: string;
+}) => {
+  if (parseInt(result.paperId) > 0) {
+    return `Paper ${result.paperId}: ${result.paperTitle}`;
+  } else {
+    return "Foreword";
+  }
+};
+
+export const renderLeadingSectionText = (result: {
+  sectionId: string;
+  sectionTitle: string;
+}) => {
+  if (parseInt(result.sectionId) > 0) {
+    return result.sectionTitle;
+  } else {
+    return "Introduction";
+  }
+};
+
+export const renderGlobalId = (result: { globalId: string }) => {
+  // Only take what's after the `:`
+  const globalId = result.globalId.split(":")[1];
+  return globalId;
+};
+
+export const renderLeadingText = (result: UBNodeLeadingTextProps) => {
+  return `${renderLeadingPaperText(result)} - ${renderLeadingSectionText(
+    result
+  )} (${renderGlobalId(result)})`;
+};

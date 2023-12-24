@@ -1,29 +1,8 @@
 // Node modules.
 import Link from "next/link";
 import { useState, useEffect } from "react";
-
-interface SearchResult {
-  globalId: string;
-  htmlText: string;
-  language: string;
-  paperId: string;
-  paperSectionId: string;
-  paperSectionParagraphId: string;
-  paperTitle: string;
-  paragraphId: string;
-  partId: string;
-  sectionId: string;
-  sectionTitle: string;
-  sortId: string;
-  text: string;
-  type: string;
-  typeRank: number;
-  _highlightResult: {
-    htmlText: {
-      value: string;
-    };
-  };
-}
+// Relative modules.
+import { renderLeadingText } from "@/utils/renderNode";
 
 interface SearchProps {
   onClose: () => void;
@@ -100,34 +79,6 @@ const Search = ({ onClose }: SearchProps) => {
     if (event.key === "Enter" && query) {
       search(query);
     }
-  };
-
-  const renderLeadingPaperText = (result: SearchResult) => {
-    if (parseInt(result.paperId) > 0) {
-      return `Paper ${result.paperId}: ${result.paperTitle}`;
-    } else {
-      return "Foreword";
-    }
-  };
-
-  const renderLeadingSectionText = (result: SearchResult) => {
-    if (parseInt(result.sectionId) > 0) {
-      return result.sectionTitle;
-    } else {
-      return "Introduction";
-    }
-  };
-
-  const renderGlobalId = (result: SearchResult) => {
-    // Only take what's after the `:`
-    const globalId = result.globalId.split(":")[1];
-    return globalId;
-  };
-
-  const renderLeadingText = (result: SearchResult) => {
-    return `${renderLeadingPaperText(result)} - ${renderLeadingSectionText(
-      result
-    )} (${renderGlobalId(result)})`;
   };
 
   const deriveSearchStatus = () => {

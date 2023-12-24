@@ -37,12 +37,9 @@ const ReadPage = ({ partsData }: TOCPageProps) => {
     return (
       <div key={partId} className="mb-8">
         {index > 0 && <hr className="my-8" />}
-        <h2 className="text-3xl font-bold pt-4 mb-4 text-center">
+        <h2 className="text-3xl font-bold pt-4 mb-12 text-center">
           Part {partId}: {partTitle || `Part ${partId}`}
         </h2>
-        {partSponsorship && (
-          <p className="text-md my text-gray-400">{partSponsorship}</p>
-        )}
         <ul className="mt-6 pb-3">
           {relevantPapers.map((paper) => (
             <li key={paper.globalId} className="mb-2 flex items-baseline">
