@@ -6,7 +6,6 @@ const handlePOST = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     const { q } = req.body;
     const url = `${process.env.NEXT_PUBLIC_URANTIA_DEV_API_HOST}/api/v1/urantia-book/search`;
-    console.log("Making request to Urantia.dev API:", url);
 
     const response = await fetch(url, {
       method: "POST",
@@ -14,7 +13,7 @@ const handlePOST = async (req: NextApiRequest, res: NextApiResponse) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        q,
+        q: "test",
         acceptOnlyFullMatches: true,
         sortByRelevance: true,
       }),
@@ -30,10 +29,6 @@ const handlePOST = async (req: NextApiRequest, res: NextApiResponse) => {
     const data = await response.json();
     res.status(200).json(data);
   } catch (error) {
-    console.error(
-      "Error fetching /api/v1/urantia-book/search endpoint from Urantia.dev:",
-      error
-    );
     res.status(500).json({ error: "Urantia.dev API error" });
   }
 };
