@@ -46,9 +46,15 @@ const Search = ({ onClose }: SearchProps) => {
     setIsLoading(true);
 
     try {
-      const response = await fetch(
-        `/api/urantia-book/search?q=${encodeURIComponent(searchQuery)}`
-      );
+      const response = await fetch("/api/urantia-book/search", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          q: searchQuery,
+        }),
+      });
       const data = await response.json();
       setResults(data.data.results);
       setHasSearched(true);

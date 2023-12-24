@@ -1,10 +1,10 @@
 // Node modules.
 import type { NextApiRequest, NextApiResponse } from "next";
 
-// GET handler
-const handleGET = async (req: NextApiRequest, res: NextApiResponse) => {
+// POST handler
+const handlePOST = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
-    const { q } = req.query;
+    const { q } = req.body;
     const url = `${process.env.NEXT_PUBLIC_URANTIA_DEV_API_HOST}/api/v1/urantia-book/search`;
     console.log("Making request to Urantia.dev API:", url);
 
@@ -45,10 +45,10 @@ export default async function handle(
 ) {
   const { method } = req;
   switch (method) {
-    case "GET":
-      return handleGET(req, res);
+    case "POST":
+      return handlePOST(req, res);
     default:
-      res.setHeader("Allow", ["GET"]);
+      res.setHeader("Allow", ["POST"]);
       res.status(405).end(`Method ${method} Not Allowed`);
   }
 }
