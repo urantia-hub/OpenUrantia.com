@@ -1,7 +1,8 @@
 // UBNode modules.
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 // Relative modules.
 import Comment from "@/components/Comment";
 import Explain from "@/components/Explain";
@@ -22,6 +23,35 @@ type PaperPageProps = {
 
 const PaperPage = ({ paperData }: PaperPageProps) => {
   const { data: session } = useSession();
+  const router = useRouter();
+
+  useEffect(() => {
+    // Extracting the hash and query parameter from the URL.
+    const [hash, queryParam] = router.asPath.split("#")[1]?.split("?") || [];
+    const queryParams = new URLSearchParams(queryParam);
+    const query = queryParams.get("q");
+
+    if (hash) {
+      const element = document.getElementById(hash);
+      if (element) {
+        // Scroll to the element
+        const yOffset = -60; // Adjust based on your header height or other factors
+        const y =
+          element.getBoundingClientRect().top + window.scrollY + yOffset;
+        window.scrollTo({ top: y });
+
+        if (query) {
+          // Highlight the query text
+          const regex = new RegExp(query, "gi");
+          const replacedHtml = element.innerHTML.replace(
+            regex,
+            (match) => `<span class="text-yellow-200 underline">${match}</span>`
+          );
+          element.innerHTML = replacedHtml;
+        }
+      }
+    }
+  }, [router.asPath]);
 
   // Toggled states.
   const [expandedGlobalIds, setExpandedGlobalIds] = useState<string[]>([]);
@@ -225,7 +255,7 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
           >
             <div className="text-lg leading-relaxed">
               <div className="flex items-center justify-between block mb-2 text-gray-400 text-sm">
-                <span>{node.globalId}</span>
+                <span>{node.globalId?.split(":")[1]}</span>
                 <div className="flex items-center">
                   {expandedGlobalIds.includes(node.globalId) && (
                     <div className="flex items-center mr-2">
@@ -287,7 +317,7 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
                   </button>
                 </div>
               </div>
-              <p
+              <div
                 dangerouslySetInnerHTML={{ __html: node.htmlText as string }}
               />
             </div>
@@ -417,7 +447,7 @@ export async function getServerSideProps(context: any) {
   const { paperId } = context.params;
 
   const res = await fetch(
-    `${process.env.URANTIA_DEV_API_HOST}/api/v1/urantia-book/read?paperId=${paperId}`
+    `${process.env.NEXT_PUBLIC_URANTIA_DEV_API_HOST}/api/v1/urantia-book/read?paperId=${paperId}`
   );
   const paperData = await res.json();
 
