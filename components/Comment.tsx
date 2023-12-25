@@ -2,10 +2,9 @@
 import { useState } from "react";
 // Relative modules.
 import Modal from "@/components/Modal";
-import Todo from "@/components/Todo";
 import Spinner from "./Spinner";
 
-const CHAR_LIMIT = 5000;
+const CHAR_LIMIT = 1000;
 
 type CommentProps = {
   onClose: () => void;
@@ -37,9 +36,20 @@ const Comment = ({ onClose, node }: CommentProps) => {
     setError("");
 
     try {
-      // Make request.
-      console.log(`Saving comment for node ${node?.globalId} for user`);
-      await new Promise((resolve) => setTimeout(() => resolve(true), 1000));
+      // Make request to save comment for user.
+      const response = await fetch(`/api/user/nodes/comments`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          globalId: node?.globalId,
+          paperId: node?.paperId,
+          paperSectionId: node?.paperSectionId,
+          paperSectionParagraphId: node?.paperSectionParagraphId,
+          text,
+        }),
+      });
       onClose();
     } catch (error: any) {
       console.log("Error attempting to save comment:", error);

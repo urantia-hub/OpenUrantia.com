@@ -1,8 +1,9 @@
 // UBNode modules.
+import moment from "moment";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 // Relative modules.
 import Comment from "@/components/Comment";
 import Explain from "@/components/Explain";
@@ -24,6 +25,177 @@ type PaperPageProps = {
 const PaperPage = ({ paperData }: PaperPageProps) => {
   const { data: session } = useSession();
   const router = useRouter();
+
+  // Toggled states.
+  const [expandedGlobalIds, setExpandedGlobalIds] = useState<string[]>([]);
+  const [savedGlobalIds, setSavedGlobalIds] = useState<string[]>([]);
+
+  // Network states.
+  const [savingGlobalIds, setSavingGlobalIds] = useState<string[]>([]);
+  const [savingErrorGlobalIds, setSavingErrorGlobalIds] = useState<string[]>(
+    []
+  );
+
+  // Modal states.
+  const [selectedGlobalIdComment, setSelectedGlobalIdComment] =
+    useState<string>("");
+  const [selectedGlobalIdExplain, setSelectedGlobalIdExplain] =
+    useState<string>("");
+  const [selectedGlobalIdRelatedWorks, setSelectedGlobalIdRelatedWorks] =
+    useState<string>("");
+  const [selectedGlobalIdShare, setSelectedGlobalIdShare] =
+    useState<string>("");
+
+  // Reading time states.
+  const readingNodesRef = useRef<
+    Record<string, { startsAt: number; node: UBNode }>
+  >({});
+  const readNodesRef = useRef<Set<string>>(new Set());
+
+  const estimatedReadTime = (node: UBNode) => {
+    const paragraph = document.getElementById(node.globalId);
+    if (!paragraph) {
+      console.warn(
+        `Could not find paragraph with node.globalId ${node.globalId}, estimated read time will be 0 and paragraph will be immediately marked as read.`
+      );
+      return 0;
+    }
+    const words = paragraph.innerText.split(" ").length;
+    const averageReadingSpeed = 400; // Words per minute
+    return (words / averageReadingSpeed) * 60; // Time in seconds
+  };
+
+  const markParagraphAsRead = async (node: UBNode) => {
+    // Check if the node has already been marked as read
+    if (readNodesRef.current.has(node.globalId)) {
+      console.log(`Node ${node.globalId} has already been marked as read.`);
+      return;
+    }
+
+    try {
+      const response = await fetch("/api/user/nodes/read", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          globalId: node.globalId,
+          paperId: node.paperId,
+          paperSectionId: node.paperSectionId,
+          paperSectionParagraphId: node.paperSectionParagraphId,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const readNode = await response.json();
+      console.log(`✅ Successfully marked node ${readNode.globalId} as read.`);
+
+      // Add the node to the set of read nodes
+      readNodesRef.current.add(node.globalId);
+    } catch (error) {
+      console.error("Error marking paragraph as read:", error);
+    }
+  };
+
+  const resetReadingTime = (globalId: string) => {
+    const currentReadings = readingNodesRef.current;
+    if (currentReadings[globalId]) {
+      delete currentReadings[globalId];
+      readingNodesRef.current = currentReadings;
+    }
+  };
+
+  const handleParagraphInView = (node: UBNode) => {
+    // Check if the node has already been marked as read
+    if (readNodesRef.current.has(node.globalId)) {
+      console.log(
+        `Node ${node.globalId} has already been marked as read, skipping.`
+      );
+      return;
+    }
+
+    const currentReadings = readingNodesRef.current;
+    if (!currentReadings[node.globalId]) {
+      currentReadings[node.globalId] = { startsAt: moment().unix(), node };
+      readingNodesRef.current = currentReadings; // Update ref
+    }
+  };
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const currentReadings = readingNodesRef.current;
+      Object.entries(currentReadings).forEach(
+        ([globalId, readingStartTime]) => {
+          const now = moment().unix(); // Current time in seconds
+          const timeElapsed = now - readingStartTime.startsAt; // Elapsed time in seconds
+          const timeRemaining =
+            estimatedReadTime(readingStartTime.node) - timeElapsed;
+
+          console.log(
+            `Node ${readingStartTime.node.globalId} has been in view for ${timeElapsed} seconds and has ${timeRemaining} seconds remaining.`
+          );
+
+          if (timeElapsed > estimatedReadTime(readingStartTime.node)) {
+            console.log(
+              `Marking node ${readingStartTime.node.globalId} as read.`
+            );
+            // The paragraph has been in view long enough
+            markParagraphAsRead(readingStartTime.node);
+
+            // Remove the node from the current readings.
+            delete currentReadings[globalId];
+            readingNodesRef.current = currentReadings; // Update ref
+          }
+        }
+      );
+    }, 1000); // Check every second
+
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          const globalId = entry.target.getAttribute("id");
+          if (!globalId) {
+            console.warn(
+              `Could not find globalId for paragraph with id ${entry.target.id}.`
+            );
+            return;
+          }
+
+          const node = paperData.data.results.find(
+            (n) => n.globalId === globalId
+          );
+          if (!node) {
+            console.warn(
+              `Could not find node with globalId ${globalId} in paperData.`
+            );
+            return;
+          }
+
+          if (entry.isIntersecting) {
+            // Paragraph comes into view
+            handleParagraphInView(node);
+          } else {
+            // Paragraph leaves view
+            resetReadingTime(globalId);
+          }
+        });
+      },
+      { threshold: 0.5 } // Threshold means that 50% of the paragraph must be in the viewport
+    );
+
+    document.querySelectorAll(".paragraph").forEach((node) => {
+      observer.observe(node);
+    });
+
+    return () => observer.disconnect();
+  }, [paperData]);
 
   useEffect(() => {
     // Extracting the hash and query parameter from the URL.
@@ -52,26 +224,6 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
       }
     }
   }, [router.asPath]);
-
-  // Toggled states.
-  const [expandedGlobalIds, setExpandedGlobalIds] = useState<string[]>([]);
-  const [savedGlobalIds, setSavedGlobalIds] = useState<string[]>([]);
-
-  // Network states.
-  const [savingGlobalIds, setSavingGlobalIds] = useState<string[]>([]);
-  const [savingErrorGlobalIds, setSavingErrorGlobalIds] = useState<string[]>(
-    []
-  );
-
-  // Modal states.
-  const [selectedGlobalIdComment, setSelectedGlobalIdComment] =
-    useState<string>("");
-  const [selectedGlobalIdExplain, setSelectedGlobalIdExplain] =
-    useState<string>("");
-  const [selectedGlobalIdRelatedWorks, setSelectedGlobalIdRelatedWorks] =
-    useState<string>("");
-  const [selectedGlobalIdShare, setSelectedGlobalIdShare] =
-    useState<string>("");
 
   // Show a spinner until the content has loaded.
   if (!paperData) {
@@ -169,7 +321,7 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
     setSavingErrorGlobalIds(updatedSavingErrorGlobalIds);
 
     try {
-      // Make request to save globalId for user.
+      // Make request to save node for user.
       const response = await fetch(`/api/user/nodes`, {
         method: "POST",
         headers: {
@@ -250,7 +402,7 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
         return (
           <div
             key={node.globalId}
-            className="mb-6 text-left"
+            className="paragraph mb-6 text-left"
             id={node.globalId}
           >
             <div className="text-lg leading-relaxed">

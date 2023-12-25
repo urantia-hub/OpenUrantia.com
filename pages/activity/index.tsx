@@ -2,19 +2,21 @@
 import Link from "next/link";
 import React, { useState, useEffect } from "react";
 import moment from "moment";
+import { NodeComment, SavedNode, User } from "@prisma/client";
 import { useRouter } from "next/router";
 // Relative modules.
 import Footer from "@/components/Footer";
 import HeadTag from "@/components/HeadTag";
 import Navbar from "@/components/Navbar";
 import Spinner from "@/components/Spinner";
-import { SavedNode, User } from "@prisma/client";
 import { renderLeadingText } from "@/utils/renderNode";
+
+type Activity = UBNode & SavedNode & NodeComment & { commentText?: string };
 
 const Quotes = () => {
   // State.
   const [userData, setUserData] = useState<User | null>(null);
-  const [nodes, setNodes] = useState<(UBNode & SavedNode)[]>([]);
+  const [nodes, setNodes] = useState<Activity[]>([]);
   const [fetchingUser, setFetchingUser] = useState(true);
   const [fetchingNodes, setFetchingNodes] = useState(true);
 
@@ -34,9 +36,9 @@ const Quotes = () => {
       }
     };
 
-    const fetchNodesData = async () => {
+    const fetchActivityData = async () => {
       try {
-        const response = await fetch("/api/user/nodes");
+        const response = await fetch("/api/user/activity");
         const data = await response.json();
         setNodes(data);
       } catch (error) {
@@ -47,8 +49,78 @@ const Quotes = () => {
     };
 
     void fetchUserData();
-    void fetchNodesData();
+    void fetchActivityData();
   }, []);
+
+  const renderNode = (node: Activity) => {
+    switch (node.type) {
+      case "nodeComment": {
+        return (
+          <Link
+            className="mb-6 text-left hover:no-underline"
+            key={node.globalId}
+            href={`/papers/${node.paperId}#${node.globalId}`}
+          >
+            <div className="labels flex flex-row items-center mb-2">
+              <span className="text-xs bg-blue-600 text-white font-bold py-1 px-2 rounded-full mr-2">
+                Note
+              </span>
+              <span className="text-xs text-gray-500">
+                {moment(node.createdAt).fromNow()}
+              </span>
+            </div>
+            <div className="leading-relaxed border-l-4 border-blue-600 pl-4 mb-1">
+              <div className="flex flex-col block mb-1 text-gray-500 text-xs">
+                <span>{renderLeadingText(node as UBNodeLeadingTextProps)}</span>
+              </div>
+              <div
+                className="leading-tight max-h-96 overflow-y-auto text-gray-400 text-sm"
+                dangerouslySetInnerHTML={{
+                  __html: node.htmlText as string,
+                }}
+              />
+            </div>
+            <div className="comment-text text-white pl-5">
+              {node.commentText}
+            </div>
+          </Link>
+        );
+      }
+      case "savedNode": {
+        return (
+          <Link
+            className="mb-6 text-left hover:no-underline"
+            key={node.globalId}
+            href={`/papers/${node.paperId}#${node.globalId}`}
+          >
+            <div className="labels flex flex-row items-center mb-2">
+              <span className="text-xs bg-green-600 text-white font-bold py-1 px-2 rounded-full mr-2">
+                Saved Quote
+              </span>
+              <span className="text-xs text-gray-500">
+                {moment(node.createdAt).fromNow()}
+              </span>
+            </div>
+            <div className="leading-relaxed border-l-4 border-green-600 pl-4 mb-1">
+              <div className="flex flex-col block mb-1 text-gray-500 text-xs">
+                <span>{renderLeadingText(node as UBNodeLeadingTextProps)}</span>
+              </div>
+              <div
+                className="leading-tight max-h-96 overflow-y-auto text-sm"
+                dangerouslySetInnerHTML={{
+                  __html: node.htmlText as string,
+                }}
+              />
+            </div>
+          </Link>
+        );
+      }
+      default: {
+        console.error(`Unknown node type: ${node.type}`);
+        return null;
+      }
+    }
+  };
 
   return (
     <div className="flex flex-col min-h-screen bg-black text-white">
@@ -59,39 +131,18 @@ const Quotes = () => {
       <main className="mt-28 flex-grow container mx-auto px-4 my-4 max-w-3xl paper-content">
         {/* Navigation links for previous and next papers */}
         <div className="flex flex-col items-center mt-2 mb-4">
-          <h1 className="text-3xl font-bold mb-8">Favorite Quotes</h1>
+          <h1 className="text-3xl font-bold mb-8">Saved Quotes & Notes</h1>
 
           {/* Loading */}
           {(fetchingUser || fetchingNodes) && <Spinner />}
 
+          {/* Activity nodes */}
           {nodes.length && !fetchingNodes ? (
-            <div className="flex flex-col max-h-[calc(100vh-200px)] overflow-y-auto">
-              {nodes?.map((node) => (
-                <Link
-                  className="mb-6 text-left hover:no-underline"
-                  key={node.globalId}
-                  href={`/papers/${node.paperId}#${node.globalId}`}
-                >
-                  <div className="leading-relaxed">
-                    <div className="flex flex-col block mb-1 text-gray-400 text-xs">
-                      <span>
-                        {renderLeadingText(node as UBNodeLeadingTextProps)}
-                      </span>
-                      <span title={moment(node.createdAt).format("lll")}>
-                        Saved {moment(node.createdAt).fromNow()}
-                      </span>
-                    </div>
-                    <div
-                      className="leading-tight max-h-96 overflow-y-auto"
-                      dangerouslySetInnerHTML={{
-                        __html: node.htmlText as string,
-                      }}
-                    />
-                  </div>
-                </Link>
-              ))}
+            <div className="flex flex-col">
+              {nodes?.map((node) => renderNode(node))}
             </div>
           ) : (
+            // No activity nodes
             <div className="flex flex-col items-center justify-center h-full">
               <p className="text-gray-400 mb-8">
                 You haven&apos;t favorited any quotes yet.

@@ -127,7 +127,7 @@ const Navbar = () => {
               <>
                 <div className="py-3 w-full">
                   <Link href="/activity" onClick={onResetState}>
-                    Saved Quotes and Notes
+                    Saved Quotes & Notes
                   </Link>
                 </div>
                 <div className="py-3 w-full">

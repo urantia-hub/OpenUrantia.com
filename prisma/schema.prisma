@@ -64,6 +64,21 @@ model NodeReference {
   @@map("node_references")
 }
 
+model ReadNode {
+  createdAt               DateTime @default(now())
+  globalId                String
+  id                      String   @id @default(cuid())
+  paperId                 String
+  paperSectionId          String
+  paperSectionParagraphId String
+  updatedAt               DateTime @updatedAt
+  userId                  String
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("read_nodes")
+}
+
 model SavedNode {
   createdAt               DateTime @default(now())
   globalId                String
@@ -116,16 +131,17 @@ model SharedNode {
 }
 
 model User {
-  createdAt     DateTime  @default(now())
-  email         String?   @unique
+  createdAt     DateTime @default(now())
+  email         String?  @unique
   emailVerified Boolean?
-  id            String    @id @default(cuid())
+  id            String   @id @default(cuid())
   image         String?
   name          String?
-  updatedAt     DateTime  @updatedAt
+  updatedAt     DateTime @updatedAt
 
   accounts     Account[]
   nodeComments NodeComment[]
+  readNodes    ReadNode[]
   savedNodes   SavedNode[]
   sessions     Session[]
   shareNodes   SharedNode[]

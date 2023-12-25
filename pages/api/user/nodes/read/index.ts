@@ -1,14 +1,15 @@
 // Node modules.
+import moment from "moment";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { User } from "@prisma/client";
 // Relative modules.
-import SavedNodeService from "@/services/savedNode";
+import ReadNodeService from "@/services/readNode";
 import getSessionDetails from "@/utils/getSessionDetails";
 
-const savedNodeService = new SavedNodeService();
+const readNodeService = new ReadNodeService();
 
 // POST handler
-async function handlePost(
+async function handlePOST(
   req: NextApiRequest,
   res: NextApiResponse,
   user: User
@@ -24,7 +25,22 @@ async function handlePost(
     });
   }
 
-  const savedNode = await savedNodeService.create({
+  // Ensure there isn't a read node for this user and globalId from the past 24 hours.
+  const readNodeExists = await readNodeService.find({
+    where: {
+      globalId,
+      userId: user.id,
+      createdAt: {
+        gte: moment().subtract(24, "hours").toDate(),
+      },
+    },
+  });
+  if (readNodeExists) {
+    return res.status(200).json(readNodeExists);
+  }
+
+  // Create the read node.
+  const readNode = await readNodeService.create({
     data: {
       globalId,
       paperId,
@@ -34,7 +50,8 @@ async function handlePost(
     },
   });
 
-  res.status(201).json(savedNode);
+  // Return the read node.
+  res.status(200).json(readNode);
 }
 
 // Handler for the API endpoints.
@@ -48,7 +65,7 @@ export default async function handle(
   const { method } = req;
   switch (method) {
     case "POST":
-      return handlePost(req, res, sessionDetails.user);
+      return handlePOST(req, res, sessionDetails.user);
     default:
       res.setHeader("Allow", ["POST"]);
       res.status(405).end(`Method ${method} Not Allowed`);

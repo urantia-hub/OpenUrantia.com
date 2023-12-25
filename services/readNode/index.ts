@@ -1,53 +1,51 @@
 // Node modules.
 import axios from "axios";
-import { NodeComment, Prisma, PrismaClient } from "@prisma/client";
+import { ReadNode, Prisma, PrismaClient } from "@prisma/client";
 // Relative modules.
 import BaseService from "@/services/base";
 import prisma from "@/prisma/client";
 
-type NodeCommentServiceDependencies = {
-  model: PrismaClient["nodeComment"];
+type ReadNodeServiceDependencies = {
+  model: PrismaClient["readNode"];
 };
 
-export class NodeCommentService implements BaseService<NodeComment> {
-  private model: PrismaClient["nodeComment"];
+export class ReadNodeService implements BaseService<ReadNode> {
+  private model: PrismaClient["readNode"];
 
   constructor(
-    dependencies: NodeCommentServiceDependencies = {
-      model: prisma.nodeComment,
+    dependencies: ReadNodeServiceDependencies = {
+      model: prisma.readNode,
     }
   ) {
     this.model = dependencies.model;
   }
 
   /* BaseService implementation */
-  async create(args: Prisma.NodeCommentCreateArgs): Promise<NodeComment> {
+  async create(args: Prisma.ReadNodeCreateArgs): Promise<ReadNode> {
     return await this.model.create(args);
   }
 
-  async delete(id: string): Promise<NodeComment> {
+  async delete(id: string): Promise<ReadNode> {
     return await this.model.delete({
       where: { id },
     });
   }
 
   async deleteMany(
-    args: Prisma.NodeCommentDeleteManyArgs
+    args: Prisma.ReadNodeDeleteManyArgs
   ): Promise<Prisma.BatchPayload> {
     return await this.model.deleteMany(args);
   }
 
-  async find(
-    args: Prisma.NodeCommentFindFirstArgs
-  ): Promise<NodeComment | null> {
+  async find(args: Prisma.ReadNodeFindFirstArgs): Promise<ReadNode | null> {
     return await this.model.findFirst(args);
   }
 
-  async findMany(args: Prisma.NodeCommentFindManyArgs): Promise<NodeComment[]> {
+  async findMany(args: Prisma.ReadNodeFindManyArgs): Promise<ReadNode[]> {
     return await this.model.findMany(args);
   }
 
-  async get(id: string): Promise<NodeComment | null> {
+  async get(id: string): Promise<ReadNode | null> {
     return await this.model.findFirst({
       where: { id },
     });
@@ -55,15 +53,15 @@ export class NodeCommentService implements BaseService<NodeComment> {
 
   async update(
     id: string,
-    data: Prisma.NodeCommentUpdateInput
-  ): Promise<NodeComment> {
+    data: Prisma.ReadNodeUpdateInput
+  ): Promise<ReadNode> {
     return await this.model.update({
       where: { id },
       data,
     });
   }
 
-  async upsert(args: Prisma.NodeCommentUpsertArgs): Promise<NodeComment> {
+  async upsert(args: Prisma.ReadNodeUpsertArgs): Promise<ReadNode> {
     return await this.model.upsert(args);
   }
 
@@ -86,4 +84,4 @@ export class NodeCommentService implements BaseService<NodeComment> {
   }
 }
 
-export default NodeCommentService;
+export default ReadNodeService;
