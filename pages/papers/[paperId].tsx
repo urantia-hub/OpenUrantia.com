@@ -520,16 +520,15 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
                 <div className="flex items-center">
                   {expandedGlobalId === node.globalId && (
                     <div className="flex items-center mr-2 fade-in">
-                      <button
+                      {/* <button
                         className="bg-transparent border-none p-0 m-0 mr-2 focus:outline-none text-gray-400 text-sm hover:text-white transition duration-300 ease-in-out"
                         onClick={onExplainClick(node.globalId)}
                         type="button"
                       >
                         Explain
-                      </button>
+                      </button> */}
                       {session && (
                         <>
-                          <span className="mr-2">|</span>
                           <button
                             className="bg-transparent border-none p-0 m-0 mr-2 focus:outline-none text-gray-400 text-sm hover:text-white transition duration-300 ease-in-out"
                             onClick={onCommentClick(node.globalId)}
@@ -537,17 +536,17 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
                           >
                             Comment
                           </button>
+                          <span className="mr-2">|</span>
                         </>
                       )}
-                      <span className="mr-2">|</span>
-                      <button
+                      {/* <button
                         className="bg-transparent border-none p-0 m-0 focus:outline-none mr-2 text-gray-400 text-sm hover:text-white transition duration-300 ease-in-out"
                         onClick={onRelatedWorksClick(node.globalId)}
                         type="button"
                       >
                         Related
                       </button>
-                      <span className="mr-2">|</span>
+                      <span className="mr-2">|</span> */}
                       <button
                         className="bg-transparent border-none p-0 m-0 focus:outline-none mr-2 text-gray-400 text-sm hover:text-white transition duration-300 ease-in-out"
                         onClick={onShareClick(node.globalId)}
