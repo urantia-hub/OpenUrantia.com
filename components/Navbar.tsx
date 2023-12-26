@@ -131,6 +131,11 @@ const Navbar = () => {
                   </Link>
                 </div>
                 <div className="py-3 w-full">
+                  <Link href="/profile" onClick={onResetState}>
+                    My Progress
+                  </Link>
+                </div>
+                <div className="py-3 w-full">
                   <button
                     className="text-rose-500 border-0 bg-transparent hover:text-rose-600 hover:underline focus:outline-none p-0 m-0 w-full"
                     onClick={() => {

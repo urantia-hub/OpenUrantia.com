@@ -44,3 +44,11 @@ interface SearchResult {
     };
   };
 }
+
+interface ProgressResult {
+  paperId: string;
+  paperTitle: string;
+  progress: number;
+  readGlobalIds: string[];
+  unreadGlobalIds: string[];
+}
