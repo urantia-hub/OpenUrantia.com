@@ -72,6 +72,14 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
       return;
     }
 
+    // Skip if you are not logged in
+    if (!session) {
+      console.log(
+        `Skipping marking node ${node.globalId} as read because user is not logged in.`
+      );
+      return;
+    }
+
     try {
       const response = await fetch("/api/user/nodes/read", {
         method: "POST",
@@ -310,6 +318,12 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
   ): Promise<boolean | undefined> => {
     // Escape early if we are already saving.
     if (savingGlobalIds.includes(globalId)) {
+      return;
+    }
+
+    // Escape early if we aren't logged in.
+    if (!session) {
+      console.warn("User is not logged in, cannot save global ID.");
       return;
     }
 
