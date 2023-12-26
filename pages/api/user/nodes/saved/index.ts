@@ -8,7 +8,7 @@ import getSessionDetails from "@/utils/getSessionDetails";
 const savedNodeService = new SavedNodeService();
 
 // POST handler
-async function handlePost(
+async function handlePOST(
   req: NextApiRequest,
   res: NextApiResponse,
   user: User
@@ -37,6 +37,30 @@ async function handlePost(
   res.status(201).json(savedNode);
 }
 
+// GET handler
+async function handleGET(
+  req: NextApiRequest,
+  res: NextApiResponse,
+  user: User
+) {
+  const { paperId } = req.query;
+
+  if (paperId && typeof paperId !== "string") {
+    return res.status(400).json({
+      message: `The query param "paperId" must be a string.`,
+    });
+  }
+
+  const where: any = { userId: user.id };
+  if (paperId) {
+    where["paperId"] = paperId;
+  }
+
+  const savedNodes = await savedNodeService.findMany({ where });
+
+  res.status(200).json(savedNodes);
+}
+
 // Handler for the API endpoints.
 export default async function handle(
   req: NextApiRequest,
@@ -48,7 +72,9 @@ export default async function handle(
   const { method } = req;
   switch (method) {
     case "POST":
-      return handlePost(req, res, sessionDetails.user);
+      return handlePOST(req, res, sessionDetails.user);
+    case "GET":
+      return handleGET(req, res, sessionDetails.user);
     default:
       res.setHeader("Allow", ["POST"]);
       res.status(405).end(`Method ${method} Not Allowed`);

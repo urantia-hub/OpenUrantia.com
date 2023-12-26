@@ -1,5 +1,5 @@
+// Node modules.
 import Link from "next/link";
-import Spinner from "./Spinner";
 
 const Footer = () => {
   return (
@@ -12,7 +12,7 @@ const Footer = () => {
         </div>
         <div className="flex gap-4"></div>
         <Link
-          className="flex items-center text-green-400 text-sm hover:text-green-500"
+          className="flex items-center text-green-400 text-xs hover:text-green-500"
           href="https://stats.uptimerobot.com/6qzJEHV7rN"
           rel="noopener noreferrer"
           target="_blank"

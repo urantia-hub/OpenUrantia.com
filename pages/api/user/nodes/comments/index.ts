@@ -53,6 +53,30 @@ async function handlePOST(
   res.status(201).json(nodeComment);
 }
 
+// GET handler
+async function handleGET(
+  req: NextApiRequest,
+  res: NextApiResponse,
+  user: User
+) {
+  const { paperId } = req.query;
+
+  if (paperId && typeof paperId !== "string") {
+    return res.status(400).json({
+      message: `The query param "paperId" must be a string.`,
+    });
+  }
+
+  const where: any = { userId: user.id };
+  if (paperId) {
+    where["paperId"] = paperId;
+  }
+
+  const nodeComments = await nodeCommentService.findMany({ where });
+
+  res.status(200).json(nodeComments);
+}
+
 // Handler for the API endpoints.
 export default async function handle(
   req: NextApiRequest,
@@ -65,6 +89,8 @@ export default async function handle(
   switch (method) {
     case "POST":
       return handlePOST(req, res, sessionDetails.user);
+    case "GET":
+      return handleGET(req, res, sessionDetails.user);
     default:
       res.setHeader("Allow", ["POST"]);
       res.status(405).end(`Method ${method} Not Allowed`);

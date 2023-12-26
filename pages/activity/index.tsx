@@ -69,7 +69,7 @@ const Quotes = () => {
                 {moment(node.createdAt).fromNow()}
               </span>
             </div>
-            <div className="leading-relaxed border-l-4 border-blue-600 pl-4 mb-1">
+            <div className="leading-relaxed border-l-4 border-blue-600 pl-3 mb-1">
               <div className="flex flex-col block mb-1 text-gray-500 text-xs">
                 <span>{renderLeadingText(node as UBNodeLeadingTextProps)}</span>
               </div>
@@ -80,7 +80,7 @@ const Quotes = () => {
                 }}
               />
             </div>
-            <div className="comment-text text-white pl-5">
+            <div className="comment-text text-white pl-4">
               {node.commentText}
             </div>
           </Link>
@@ -101,12 +101,12 @@ const Quotes = () => {
                 {moment(node.createdAt).fromNow()}
               </span>
             </div>
-            <div className="leading-relaxed border-l-4 border-green-600 pl-4 mb-1">
+            <div className="leading-relaxed border-l-4 border-green-600 pl-3 mb-1">
               <div className="flex flex-col block mb-1 text-gray-500 text-xs">
                 <span>{renderLeadingText(node as UBNodeLeadingTextProps)}</span>
               </div>
               <div
-                className="leading-tight max-h-96 overflow-y-auto text-sm"
+                className="leading-tight max-h-96 overflow-y-auto text-gray-400 text-sm"
                 dangerouslySetInnerHTML={{
                   __html: node.htmlText as string,
                 }}

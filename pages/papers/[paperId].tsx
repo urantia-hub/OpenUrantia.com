@@ -1,9 +1,10 @@
 // UBNode modules.
-import moment from "moment";
 import Link from "next/link";
+import moment from "moment";
+import { NodeComment, SavedNode } from "@prisma/client";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
-import { useEffect, useRef, useState } from "react";
 // Relative modules.
 import Comment from "@/components/Comment";
 import Explain from "@/components/Explain";
@@ -27,8 +28,13 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
   const router = useRouter();
 
   // Toggled states.
-  const [expandedGlobalIds, setExpandedGlobalIds] = useState<string[]>([]);
-  const [savedGlobalIds, setSavedGlobalIds] = useState<string[]>([]);
+  const [expandedGlobalId, setExpandedGlobalId] = useState<string>("");
+
+  // Saved nodes.
+  const [savedNodes, setSavedNodes] = useState<SavedNode[]>([]);
+
+  // Node comments.
+  const [nodeComments, setNodeComments] = useState<NodeComment[]>([]);
 
   // Network states.
   const [savingGlobalIds, setSavingGlobalIds] = useState<string[]>([]);
@@ -132,6 +138,47 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
     }
   };
 
+  // Fetch saved globalIds on mount
+  useEffect(() => {
+    const fetchSavedGlobalIds = async () => {
+      try {
+        const response = await fetch(
+          `/api/user/nodes/saved?paperId=${paperData.data.results[0].paperId}`
+        );
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const savedNodes = await response.json();
+        setSavedNodes(savedNodes);
+      } catch (error) {
+        console.error("Error fetching saved globalIds:", error);
+      }
+    };
+
+    fetchSavedGlobalIds();
+  }, [paperData.data.results]);
+
+  // Fetch node comments on mount
+  useEffect(() => {
+    const fetchNodeComments = async () => {
+      try {
+        const response = await fetch(
+          `/api/user/nodes/comments?paperId=${paperData.data.results[0].paperId}`
+        );
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const nodeComments = await response.json();
+        setNodeComments(nodeComments);
+      } catch (error) {
+        console.error("Error fetching node comments:", error);
+      }
+    };
+
+    fetchNodeComments();
+  }, [paperData.data.results]);
+
+  // Start reading timer checks.
   useEffect(() => {
     const interval = setInterval(() => {
       const currentReadings = readingNodesRef.current;
@@ -164,6 +211,7 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
     return () => clearInterval(interval);
   }, []);
 
+  // Start observing paragraphs and when they come into view, start the reading timer.
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -205,6 +253,7 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
     return () => observer.disconnect();
   }, [paperData]);
 
+  // Scroll to the hash on mount and highlight the query text if there is one.
   useEffect(() => {
     // Extracting the hash and query parameter from the URL.
     const [hash, queryParam] = router.asPath.split("#")[1]?.split("?") || [];
@@ -238,7 +287,7 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
     return <Spinner />;
   }
 
-  // Helpers for Explain.
+  // Helpers.
   const onExplainClose = () => {
     setSelectedGlobalIdExplain("");
   };
@@ -247,7 +296,6 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
     setSelectedGlobalIdExplain(globalId);
   };
 
-  // Helpers for Comment.
   const onCommentClose = () => {
     setSelectedGlobalIdComment("");
   };
@@ -256,7 +304,6 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
     setSelectedGlobalIdComment(globalId);
   };
 
-  // Helpers for Related.
   const onRelatedWorksClose = () => {
     setSelectedGlobalIdRelatedWorks("");
   };
@@ -265,7 +312,6 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
     setSelectedGlobalIdRelatedWorks(globalId);
   };
 
-  // Helpers for Share.
   const onShareClose = () => {
     setSelectedGlobalIdShare("");
   };
@@ -274,24 +320,8 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
     setSelectedGlobalIdShare(globalId);
   };
 
-  // Helpers for node ellipsis ⋯
-  const onNodeSettingsClose = (globalId: string) => {
-    // Remove globalId from expanded list.
-    const updatedNodeSettingsIds = expandedGlobalIds.filter(
-      (id) => id !== globalId
-    );
-    setExpandedGlobalIds(updatedNodeSettingsIds);
-  };
-
   const onNodeSettingsClick = (globalId: string) => () => {
-    // Remove the id if it's already expanded.
-    if (expandedGlobalIds.includes(globalId)) {
-      onNodeSettingsClose(globalId);
-      return;
-    }
-
-    // Add the id.
-    setExpandedGlobalIds([...expandedGlobalIds, globalId]);
+    setExpandedGlobalId(expandedGlobalId === globalId ? "" : globalId);
   };
 
   const deriveSaveText = (globalId: string) => {
@@ -303,7 +333,7 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
       return "Saving Error";
     }
 
-    if (savedGlobalIds.includes(globalId)) {
+    if (savedNodes.some((node) => node.globalId === globalId)) {
       return "Saved";
     }
 
@@ -315,7 +345,7 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
     paperId: string,
     paperSectionId?: string,
     paperSectionParagraphId?: string
-  ): Promise<boolean | undefined> => {
+  ): Promise<SavedNode | undefined> => {
     // Escape early if we are already saving.
     if (savingGlobalIds.includes(globalId)) {
       return;
@@ -336,7 +366,7 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
 
     try {
       // Make request to save node for user.
-      const response = await fetch(`/api/user/nodes`, {
+      const response = await fetch(`/api/user/nodes/saved`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -353,12 +383,13 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
           `Unexpected response status ${response.status} when attempting to save global ID ${globalId} for user.`
         );
       }
-      return true;
+      const savedNode = await response.json();
+      return savedNode;
     } catch (error: any) {
       // Set error state for globalId.
       console.error("Error attempting to save global ID for user:", error);
       setSavingErrorGlobalIds([...savingErrorGlobalIds, globalId]);
-      return false;
+      return;
     } finally {
       // Remove globalId from saving list.
       const updatedSavingGlobalIds = savingGlobalIds.filter(
@@ -370,12 +401,12 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
 
   const onSaveClick = (node: UBNode) => async () => {
     // Escape early if it's already saved.
-    if (savedGlobalIds.includes(node.globalId)) {
+    if (savedNodes.some((savedNode) => savedNode.globalId === node.globalId)) {
       return;
     }
 
     // Make request to save globalId for user.
-    const success = await saveGlobalId(
+    const savedNode = await saveGlobalId(
       node.globalId,
       node.paperId,
       node.paperSectionId,
@@ -383,8 +414,8 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
     );
 
     // Add the id.
-    if (success) {
-      setSavedGlobalIds([...savedGlobalIds, node.globalId]);
+    if (savedNode) {
+      setSavedNodes([...savedNodes, savedNode]);
     }
   };
 
@@ -413,17 +444,44 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
         );
       }
       case "paragraph": {
+        const savedNode = savedNodes.find(
+          (savedNode) => savedNode.globalId === node.globalId
+        );
+        // Find all node comments.
+        const nodeCommentsForNode = nodeComments.filter(
+          (nodeComment) => nodeComment.globalId === node.globalId
+        );
+
         return (
           <div
-            key={node.globalId}
             className="paragraph mb-6 text-left"
             id={node.globalId}
+            key={node.globalId}
           >
             <div className="text-lg leading-relaxed">
               <div className="flex items-center justify-between block mb-2 text-gray-400 text-sm">
-                <span>{node.globalId?.split(":")[1]}</span>
                 <div className="flex items-center">
-                  {expandedGlobalIds.includes(node.globalId) && (
+                  {node.globalId?.split(":")[1]}
+                  {savedNode && (
+                    <Link
+                      className="ml-2 text-xs bg-green-600 text-white font-bold py-1 px-2 rounded-full hover:no-underline"
+                      href="/activity"
+                    >
+                      Saved Quote
+                    </Link>
+                  )}
+                  {nodeCommentsForNode.length > 0 ? (
+                    <Link
+                      className="ml-2 text-xs bg-blue-600 text-white font-bold py-1 px-2 rounded-full hover:no-underline"
+                      href="/activity"
+                    >
+                      {nodeCommentsForNode.length} Comment
+                      {nodeCommentsForNode.length > 1 ? "s" : ""}
+                    </Link>
+                  ) : null}
+                </div>
+                <div className="flex items-center">
+                  {expandedGlobalId === node.globalId && (
                     <div className="flex items-center mr-2">
                       <button
                         className="bg-transparent border-none p-0 m-0 mr-2 focus:outline-none text-gray-400 text-sm hover:text-white transition duration-300 ease-in-out"
