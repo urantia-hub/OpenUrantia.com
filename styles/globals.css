@@ -186,3 +186,19 @@ footer a:hover {
 [id] { /* Target all elements with an ID */
   scroll-margin-top: 60px;
 }
+
+/* Fade in animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.fade-in {
+  animation-name: fadeIn;
+  animation-duration: 0.5s;
+  animation-fill-mode: both;
+}

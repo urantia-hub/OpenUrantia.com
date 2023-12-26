@@ -256,12 +256,13 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
   // Scroll to the hash on mount and highlight the query text if there is one.
   useEffect(() => {
     // Extracting the hash and query parameter from the URL.
-    const [hash, queryParam] = router.asPath.split("#")[1]?.split("?") || [];
+    const [globalId, queryParam] =
+      router.asPath.split("#")[1]?.split("?") || [];
     const queryParams = new URLSearchParams(queryParam);
     const query = queryParams.get("q");
 
-    if (hash) {
-      const element = document.getElementById(hash);
+    if (globalId) {
+      const element = document.getElementById(globalId);
       if (element) {
         // Scroll to the element
         const yOffset = -60; // Adjust based on your header height or other factors
@@ -269,14 +270,39 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
           element.getBoundingClientRect().top + window.scrollY + yOffset;
         window.scrollTo({ top: y });
 
-        if (query) {
-          // Highlight the query text
+        // Highlight the query text, it's done this way because we don't want to replace the
+        // raw HTML since it will destroy event listeners.
+        const highlightQueryText = (element: any, query: string) => {
           const regex = new RegExp(query, "gi");
-          const replacedHtml = element.innerHTML.replace(
-            regex,
-            (match) => `<span class="text-yellow-200 underline">${match}</span>`
-          );
-          element.innerHTML = replacedHtml;
+
+          const recurseAndHighlight = (node: any) => {
+            if (node.nodeType === 3) {
+              // Text node
+              let match;
+              while ((match = regex.exec(node.textContent)) !== null) {
+                const highlightSpan = document.createElement("span");
+                highlightSpan.className = "text-yellow-200 underline";
+                highlightSpan.textContent = match[0];
+
+                const range = new Range();
+                range.setStart(node, match.index);
+                range.setEnd(node, match.index + match[0].length);
+
+                range.deleteContents();
+                range.insertNode(highlightSpan);
+                range.setStartAfter(highlightSpan);
+              }
+            } else if (node.nodeType === 1) {
+              // Element node
+              Array.from(node.childNodes).forEach(recurseAndHighlight);
+            }
+          };
+
+          recurseAndHighlight(element);
+        };
+
+        if (query) {
+          highlightQueryText(element, query);
         }
       }
     }
@@ -320,9 +346,20 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
     setSelectedGlobalIdShare(globalId);
   };
 
-  const onNodeSettingsClick = (globalId: string) => () => {
-    setExpandedGlobalId(expandedGlobalId === globalId ? "" : globalId);
-  };
+  const onNodeSettingsClick =
+    (globalId: string, options?: { onlyOpen: boolean }) => () => {
+      if (options?.onlyOpen) {
+        setExpandedGlobalId(globalId);
+        return;
+      }
+
+      if (expandedGlobalId === globalId) {
+        setExpandedGlobalId("");
+        return;
+      }
+
+      setExpandedGlobalId(globalId);
+    };
 
   const deriveSaveText = (globalId: string) => {
     if (savingGlobalIds.includes(globalId)) {
@@ -482,7 +519,7 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
                 </div>
                 <div className="flex items-center">
                   {expandedGlobalId === node.globalId && (
-                    <div className="flex items-center mr-2">
+                    <div className="flex items-center mr-2 fade-in">
                       <button
                         className="bg-transparent border-none p-0 m-0 mr-2 focus:outline-none text-gray-400 text-sm hover:text-white transition duration-300 ease-in-out"
                         onClick={onExplainClick(node.globalId)}
@@ -543,6 +580,12 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
               </div>
               <div
                 dangerouslySetInnerHTML={{ __html: node.htmlText as string }}
+                onClick={onNodeSettingsClick(node.globalId, {
+                  onlyOpen: true,
+                })}
+                onMouseDown={onNodeSettingsClick(node.globalId, {
+                  onlyOpen: true,
+                })}
               />
             </div>
           </div>
