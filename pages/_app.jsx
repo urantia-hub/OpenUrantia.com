@@ -10,10 +10,11 @@ export default function App({
   pageProps: { session, ...pageProps },
 }) {
   return (
-    <SpeedInsights>
+    <>
       <SessionProvider session={session}>
         <Component {...pageProps} />
       </SessionProvider>
-    </SpeedInsights>
+      {process.env.NODE_ENV === "production" && <SpeedInsights />}
+    </>
   );
 }
