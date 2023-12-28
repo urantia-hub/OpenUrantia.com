@@ -728,7 +728,7 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
   );
 };
 
-export async function getServerSideProps(context: any) {
+export async function getStaticProps(context: any) {
   const { paperId } = context.params;
 
   const res = await fetch(
@@ -740,6 +740,18 @@ export async function getServerSideProps(context: any) {
     props: {
       paperData,
     },
+  };
+}
+
+export async function getStaticPaths() {
+  const paperIds = Array.from(Array(197).keys());
+  const paths = paperIds.map((paperId) => ({
+    params: { paperId: String(paperId) },
+  }));
+
+  return {
+    paths,
+    fallback: "blocking", // or 'false' or 'true'
   };
 }
 
