@@ -10,7 +10,20 @@ const Footer = () => {
             &copy; {new Date().getFullYear()} OpenUrantia
           </span>
         </div>
-        <div className="flex gap-4"></div>
+        <div className="flex gap-4">
+          <Link
+            href="/privacy-policy"
+            className="text-gray-400 hover:text-gray-500"
+          >
+            Privacy
+          </Link>
+          <Link
+            href="/terms-of-service"
+            className="text-gray-400 hover:text-gray-500"
+          >
+            Terms
+          </Link>
+        </div>
         <Link
           className="flex items-center text-green-400 text-xs hover:text-green-500"
           href="https://stats.uptimerobot.com/6qzJEHV7rN"
