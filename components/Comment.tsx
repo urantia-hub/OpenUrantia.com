@@ -47,7 +47,7 @@ const Comment = ({ onClose, node }: CommentProps) => {
           paperId: node?.paperId,
           paperSectionId: node?.paperSectionId,
           paperSectionParagraphId: node?.paperSectionParagraphId,
-          text,
+          text: text.trim(),
         }),
       });
       onClose();
@@ -63,27 +63,38 @@ const Comment = ({ onClose, node }: CommentProps) => {
     <Modal onClose={onClose}>
       {/* <Todo /> */}
       <div className="flex flex-col p-4">
-        <h2 className="text-2xl mb-2">Make a note</h2>
+        <h2 className="text-2xl mb-2">Write a comment</h2>
         {!node && <Spinner />}
         {node && (
-          <form className="flex flex-col my-4" onSubmit={onSubmit}>
-            <textarea
-              autoFocus
-              className="h-80 mb-6 focus:outline-none"
-              onChange={(event: any) => setText(event.target.value)}
-              value={text}
-            />
-            <div className="flex justify-center items-center">
-              {error && <p className="text-rose-500">{error}</p>}
-              <button
-                className="bg-white text-black py-1.5 px-4 rounded-full shadow-lg hover:bg-gray-400 transition duration-300 ease-in-out w-fit"
-                disabled={creating}
-                type="submit"
-              >
-                {creating ? "Creating..." : "Create"}
-              </button>
+          <>
+            <div className="border-l-2 pl-4 border-gray-500 my-2 leading-relaxed-7">
+              <p className="text-gray-500 text-sm mb-1">
+                {node?.globalId?.split(":")[1]}
+              </p>{" "}
+              <p
+                className="text-gray-400"
+                dangerouslySetInnerHTML={{ __html: node?.htmlText as string }}
+              />
             </div>
-          </form>
+            <form className="flex flex-col mt-1 mb-4" onSubmit={onSubmit}>
+              <textarea
+                autoFocus
+                className="h-80 mb-6 focus:outline-none border-0 p-0 text-lg"
+                onChange={(event: any) => setText(event.target.value)}
+                value={text}
+              />
+              <div className="flex justify-center items-center">
+                {error && <p className="text-rose-500">{error}</p>}
+                <button
+                  className="bg-orange-600 text-white py-1 px-4 rounded-full shadow-lg hover:bg-orange-700 transition duration-300 ease-in-out w-fit"
+                  disabled={creating}
+                  type="submit"
+                >
+                  {creating ? "Creating..." : "Create"}
+                </button>
+              </div>
+            </form>
+          </>
         )}
       </div>
     </Modal>

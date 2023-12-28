@@ -27,11 +27,11 @@ const Modal = ({ children, onClose }: ModalProps): JSX.Element => {
   return (
     <aside className="modal">
       <div className="background" onClick={onClose} />
-      <div className="content border border-zinc-800">
+      <div className="content border border-zinc-800 rounded-md">
         {children}
         {onClose && (
           <button
-            className="absolute top-2 right-2 bg-transparent border-none p-0 m-0 focus:outline-none text-gray-400 text-sm hover:text-white transition duration-300 ease-in-out"
+            className="absolute top-2 right-3 text-lg bg-transparent border-none p-0 m-0 focus:outline-none text-gray-400 hover:text-white transition duration-300 ease-in-out"
             onClick={onClose}
           >
             ⓧ

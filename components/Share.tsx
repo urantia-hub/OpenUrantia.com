@@ -21,34 +21,38 @@ const Share = ({ onClose, node }: ShareProps) => {
 
   // Create links.
   const shareUrl = node ? constructShareUrl(node) : "";
-  const shareText = node ? `Check out this content:\n\n${node.text}` : "";
+  const shareText = node ? `${node.text}\n` : "";
 
   return (
     <Modal onClose={onClose}>
       <>
-        {/* <Todo /> */}
         <div className="flex flex-col p-4">
           <h2 className="text-2xl mb-2">Where to?</h2>
           {!node && <Spinner />}
           {node && (
             <>
-              <div className="border-l-2 pl-2 border-white font-thin my-2">
-                <p className="text-gray-400 text-sm mb-1">{node?.globalId}</p>{" "}
-                <p>{node?.htmlText}</p>
+              <div className="border-l-2 pl-4 border-gray-500 my-2 py-1 leading-relaxed-7">
+                <p className="text-gray-500 text-sm mb-1">
+                  {node?.globalId?.split(":")[1]}
+                </p>{" "}
+                <p
+                  className="text-gray-400"
+                  dangerouslySetInnerHTML={{ __html: node?.htmlText as string }}
+                />
               </div>
-              <div className="flex justify-center mt-4 mb-2">
+              <div className="flex justify-center my-3">
                 <Link
-                  className="bg-white text-black py-1.5 px-4 mr-4 shadow-lg hover:bg-gray-400 transition duration-300 ease-in-out"
+                  className="bg-white text-black py-1.5 px-4 mr-4 shadow-lg hover:bg-gray-400 transition duration-300 ease-in-out rounded-full"
                   href={`https://x.com/intent/tweet?text=${encodeURIComponent(
                     shareText
                   )}&url=${encodeURIComponent(shareUrl)}`}
                   rel="noreferrer noopener"
                   target="_blank"
                 >
-                  Share on X
+                  Share on X (Twitter)
                 </Link>
                 <Link
-                  className="bg-white text-black py-1.5 px-4 mr-4 shadow-lg hover:bg-gray-400 transition duration-300 ease-in-out"
+                  className="bg-white text-black py-1.5 px-4 mr-4 shadow-lg hover:bg-gray-400 transition duration-300 ease-in-out rounded-full"
                   href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
                     shareUrl
                   )}`}
@@ -58,7 +62,7 @@ const Share = ({ onClose, node }: ShareProps) => {
                   Share on Facebook
                 </Link>
                 <button
-                  className="bg-white text-black py-1.5 px-4 shadow-lg hover:bg-gray-400 transition duration-300 ease-in-out"
+                  className="bg-white text-black py-1.5 px-4 shadow-lg hover:bg-gray-400 transition duration-300 ease-in-out rounded-full"
                   onClick={() => {
                     navigator.clipboard.writeText(shareUrl);
                     setCopiedLink(true);
