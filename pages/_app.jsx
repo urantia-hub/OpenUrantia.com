@@ -15,6 +15,11 @@ export default function App({
         <Component {...pageProps} />
       </SessionProvider>
       {process.env.NODE_ENV === "production" && <SpeedInsights />}
+      <script
+        async
+        src="https://app.termly.io/resource-blocker/2d5a2b8c-1d75-49a7-b386-2dd80780e256?autoBlock=on"
+        type="text/javascript"
+      />
     </>
   );
 }

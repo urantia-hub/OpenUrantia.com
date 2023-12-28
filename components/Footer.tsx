@@ -23,6 +23,17 @@ const Footer = () => {
           >
             Terms
           </Link>
+          <Link
+            href="/privacy-policy"
+            id="termly-consent-preferences"
+            onClick={() => {
+              // @ts-ignore
+              window?.displayPreferenceModal();
+              return false;
+            }}
+          >
+            Consent Preferences
+          </Link>
         </div>
         <Link
           className="flex items-center text-green-400 text-xs hover:text-green-500"
