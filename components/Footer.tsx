@@ -1,7 +1,10 @@
 // Node modules.
 import Link from "next/link";
+import { useRouter } from "next/router";
 
 const Footer = () => {
+  const router = useRouter();
+
   return (
     <footer className="py-4 text-xs bg-gradient-to-b to-gray-1000 from-black">
       <div className="flex justify-between items-center container mx-auto px-4">
@@ -29,17 +32,19 @@ const Footer = () => {
           >
             Cookies
           </Link>
-          <Link
-            href="/privacy-policy"
-            id="termly-consent-preferences"
-            onClick={() => {
-              // @ts-ignore
-              window?.displayPreferenceModal();
-              return false;
-            }}
-          >
-            Consent Preferences
-          </Link>
+          {router.asPath === "/cookie-policy" && (
+            <Link
+              href="/cookie-policy"
+              id="termly-consent-preferences"
+              onClick={() => {
+                // @ts-ignore
+                window?.displayPreferenceModal();
+                return false;
+              }}
+            >
+              Consent Preferences
+            </Link>
+          )}
         </div>
         <Link
           className="flex items-center text-green-400 text-xs hover:text-green-500"
