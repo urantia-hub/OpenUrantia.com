@@ -496,7 +496,10 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
             key={node.globalId}
           >
             <div className="text-lg leading-relaxed">
-              <div className="flex items-center justify-between block mb-2 text-gray-400 text-sm">
+              <div
+                className="flex items-center justify-between block mb-2 text-gray-400 text-sm"
+                style={{ minHeight: "24px" }}
+              >
                 <div className="flex items-center">
                   {node.globalId?.split(":")[1]}
                   {savedNode && (
