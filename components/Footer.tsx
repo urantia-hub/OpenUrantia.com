@@ -24,6 +24,12 @@ const Footer = () => {
             Terms
           </Link>
           <Link
+            href="/cookie-policy"
+            className="text-gray-400 hover:text-gray-500"
+          >
+            Cookies
+          </Link>
+          <Link
             href="/privacy-policy"
             id="termly-consent-preferences"
             onClick={() => {
