@@ -17,20 +17,16 @@ const PaperCard = forwardRef<
 
   // Classes for progress bar color and completion
   const progressClasses = isNotStarted
-    ? "bg-gray-600"
+    ? "bg-zinc-600"
     : isCompleted
     ? "bg-gradient-to-r from-purple-400 via-pink-500 to-red-500"
-    : "bg-green-400";
+    : "bg-blue-400";
   const completedClasses = isCompleted
     ? "bg-gradient-to-r from-purple-400 via-pink-500 to-red-500"
-    : "bg-gray-700";
+    : "bg-zinc-700";
 
   // Classes for next read card
-  const nextReadClasses = isNextRead
-    ? "border-4 border-yellow-400"
-    : isCompleted
-    ? "border-4 border-purple-400"
-    : "";
+  const nextReadClasses = isNextRead ? "border-4 border-blue-400" : "";
 
   return (
     <div
@@ -38,7 +34,7 @@ const PaperCard = forwardRef<
       ref={isNextRead ? ref : null}
     >
       <Link
-        className={`flex flex-col items-center bg-gray-800 p-4 rounded-lg space-y-3 h-full shadow-md ${nextReadClasses} hover:no-underline`}
+        className={`flex flex-col items-center bg-zinc-900 p-4 rounded-lg space-y-3 h-full shadow-md ${nextReadClasses} hover:no-underline`}
         href={`/papers/${paperId}${
           progress > 0 ? `#${firstUnreadGlobalId}` : ""
         }`}
@@ -49,17 +45,19 @@ const PaperCard = forwardRef<
           {paperId}
         </div>
         <h2 className="text-white text-sm">
-          {paperTitle} ({progress.toFixed(0)}%)
+          {paperTitle}
+          {progress < 100 ? ` (${progress.toFixed(0)}%)` : ""}
         </h2>
-        <div className="w-full bg-gray-700 rounded-full h-2.5 dark:bg-gray-700 relative">
+        <div className="w-full bg-zinc-700 rounded-full h-2.5 dark:bg-zinc-700 relative">
           <div
             className={`absolute h-2.5 rounded-full ${progressClasses}`}
             style={{ width: `${progress}%` }}
           />
         </div>
         {isNextRead && (
-          <div className="text-yellow-400 text-xs">Continue Reading</div>
+          <div className="text-blue-400 text-xs">Continue Reading</div>
         )}
+        {isCompleted && <div className="text-green-400 text-xs">Completed</div>}
       </Link>
     </div>
   );

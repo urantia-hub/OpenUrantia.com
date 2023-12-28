@@ -75,7 +75,7 @@ const Profile = () => {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-black text-white">
+    <div className="flex flex-col min-h-screen bg-neutral-800 text-white">
       <HeadTag titlePrefix="Profile" />
 
       <Navbar />

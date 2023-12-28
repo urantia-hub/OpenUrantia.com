@@ -504,7 +504,7 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
                   {node.globalId?.split(":")[1]}
                   {savedNode && (
                     <Link
-                      className="ml-2 text-xs bg-green-600 text-white font-bold py-1 px-2 rounded-full hover:no-underline"
+                      className="ml-2 text-xs bg-emerald-600 text-white font-bold py-1 px-2 rounded-full hover:no-underline"
                       href="/activity"
                     >
                       Saved Quote
@@ -512,7 +512,7 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
                   )}
                   {nodeCommentsForNode.length > 0 ? (
                     <Link
-                      className="ml-2 text-xs bg-blue-600 text-white font-bold py-1 px-2 rounded-full hover:no-underline"
+                      className="ml-2 text-xs bg-orange-600 text-white font-bold py-1 px-2 rounded-full hover:no-underline"
                       href="/activity"
                     >
                       {nodeCommentsForNode.length} Comment
@@ -581,6 +581,7 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
                 </div>
               </div>
               <div
+                className="text-lg leading-8"
                 dangerouslySetInnerHTML={{ __html: node.htmlText as string }}
                 onClick={onNodeSettingsClick(node.globalId, {
                   onlyOpen: true,
@@ -633,7 +634,7 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
 
   // Page content
   return (
-    <div className="flex flex-col min-h-screen bg-black text-white">
+    <div className="flex flex-col min-h-screen bg-neutral-800 text-white">
       <HeadTag
         metaDescription={nodes[0].paperTitle}
         titlePrefix={
@@ -697,7 +698,7 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
         </div>
 
         {/* Paper content */}
-        <div className="mb-12">
+        <div className="mb-12 subpixel-antialiased">
           {nodes.map((node: UBNode) => renderNode(node))}
         </div>
 

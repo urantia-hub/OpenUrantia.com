@@ -101,7 +101,7 @@ const Search = ({ onClose }: SearchProps) => {
   };
 
   return (
-    <div className="fixed inset-0 flex flex-col items-center z-50 bg-black/95">
+    <div className="fixed inset-0 flex flex-col items-center z-50 bg-neutral-800/95">
       {/* X button to close modal */}
       <button
         className="absolute top-4 right-8 text-white text-2xl font-bold border-0 bg-transparent focus:outline-none p-0"

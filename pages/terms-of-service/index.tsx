@@ -81,7 +81,7 @@ Calibri;color:#595959;mso-themecolor:text1;mso-themetint:166;"><strong><bdt clas
 Calibri;color:#595959;mso-themecolor:text1;mso-themetint:166;"><strong><bdt class="question">kgadams93@gmail.com</bdt></strong></span></strong></div></div></div>
       </div>`;
   return (
-    <div className="flex flex-col min-h-screen bg-black text-white">
+    <div className="flex flex-col min-h-screen bg-neutral-800 text-white">
       <HeadTag titlePrefix="Terms of Service" />
 
       <Navbar />

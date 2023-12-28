@@ -56,9 +56,11 @@ const Navbar = () => {
       <header
         className={`mx-auto flex justify-between items-center px-4 border-b z-10 fixed top-0 w-full transition-all duration-500 ease-in-out ${
           isScrolled
-            ? `py-3 bg-black/90 scale-90`
+            ? `py-3 bg-neutral-800 scale-90`
             : `py-6 ${
-                isMenuOpen ? "bg-black/90" : "bg-transparent border-zinc-700"
+                isMenuOpen
+                  ? "bg-neutral-800"
+                  : "bg-transparent border-neutral-700"
               }`
         }`}
         // `style` here is counteracting the scaling down when scrolled.
@@ -107,7 +109,7 @@ const Navbar = () => {
         </div>
 
         {isMenuOpen && (
-          <div className="border-b border-zinc-700 flex flex-col items-center absolute top-full left-0 w-full bg-black/90 text-xl w-full text-center pb-3">
+          <div className="border-b border-neutral-700 flex flex-col items-center absolute top-full left-0 w-full bg-neutral-800 text-xl w-full text-center pb-3">
             <div className="py-3 w-full">
               <button
                 className="text-white border-0 bg-transparent hover:underline focus:outline-none p-0 m-0 w-full"
@@ -119,7 +121,7 @@ const Navbar = () => {
 
             <div className="py-3 w-full">
               <Link href="/read" onClick={onResetState}>
-                Find a paper to read
+                Discover Papers
               </Link>
             </div>
 
@@ -127,12 +129,12 @@ const Navbar = () => {
               <>
                 <div className="py-3 w-full">
                   <Link href="/activity" onClick={onResetState}>
-                    Saved Quotes & Notes
+                    Quotes and Comments
                   </Link>
                 </div>
                 <div className="py-3 w-full">
                   <Link href="/profile" onClick={onResetState}>
-                    My Progress
+                    Progress
                   </Link>
                 </div>
                 <div className="py-3 w-full">

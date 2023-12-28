@@ -6,7 +6,7 @@ const Footer = () => {
   const router = useRouter();
 
   return (
-    <footer className="py-4 text-xs bg-gradient-to-b to-gray-1000 from-black">
+    <footer className="py-4 text-xs">
       <div className="flex justify-between items-center container mx-auto px-4">
         <div>
           <span className="text-gray-400">

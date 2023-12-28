@@ -68,7 +68,7 @@ const ReadPage = ({ partsData }: TOCPageProps) => {
     .sort((a, b) => parseInt(a.partId) - parseInt(b.partId));
 
   return (
-    <div className="flex flex-col min-h-screen bg-black">
+    <div className="flex flex-col min-h-screen bg-neutral-800">
       <HeadTag titlePrefix="Table of Contents" />
 
       <Navbar />

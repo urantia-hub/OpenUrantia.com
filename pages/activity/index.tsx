@@ -61,27 +61,27 @@ const Quotes = () => {
             key={node.globalId}
             href={`/papers/${node.paperId}#${node.globalId}`}
           >
-            <div className="labels flex flex-row items-center mb-2">
-              <span className="text-xs bg-blue-600 text-white font-bold py-1 px-2 rounded-full mr-2">
-                Note
-              </span>
-              <span className="text-xs text-gray-500">
-                {moment(node.createdAt).fromNow()}
-              </span>
-            </div>
-            <div className="leading-relaxed border-l-4 border-blue-600 pl-3 mb-1">
-              <div className="flex flex-col block mb-1 text-gray-500 text-xs">
+            <div className="leading-relaxed border-l-4 border-gray-500 pl-3 mb-1 pb-1 hover:border-orange-600 transition duration-300 ease-in-out">
+              <div className="flex items-center justify-between mb-1 text-gray-500 text-xs">
                 <span>{renderLeadingText(node as UBNodeLeadingTextProps)}</span>
+                <div className="labels flex flex-row items-center mb-2">
+                  <span className="text-xs text-gray-500">
+                    {moment(node.createdAt).fromNow()}
+                  </span>
+                  <span className="text-xs bg-orange-600 text-white font-bold py-1 px-2 rounded-full ml-2">
+                    Comment
+                  </span>
+                </div>
               </div>
               <div
-                className="leading-tight max-h-96 overflow-y-auto text-gray-400 text-sm"
+                className="max-h-96 overflow-y-auto text-gray-500 text-sm"
                 dangerouslySetInnerHTML={{
                   __html: node.htmlText as string,
                 }}
               />
-            </div>
-            <div className="comment-text text-white pl-4">
-              {node.commentText}
+              <div className="comment-text text-white pt-2">
+                {node.commentText}
+              </div>
             </div>
           </Link>
         );
@@ -93,20 +93,20 @@ const Quotes = () => {
             key={node.globalId}
             href={`/papers/${node.paperId}#${node.globalId}`}
           >
-            <div className="labels flex flex-row items-center mb-2">
-              <span className="text-xs bg-green-600 text-white font-bold py-1 px-2 rounded-full mr-2">
-                Saved Quote
-              </span>
-              <span className="text-xs text-gray-500">
-                {moment(node.createdAt).fromNow()}
-              </span>
-            </div>
-            <div className="leading-relaxed border-l-4 border-green-600 pl-3 mb-1">
-              <div className="flex flex-col block mb-1 text-gray-500 text-xs">
+            <div className="leading-relaxed border-l-4 border-gray-500 pl-3 mb-1 pb-1 hover:border-emerald-600 transition duration-300 ease-in-out">
+              <div className="flex items-center justify-between mb-1 text-gray-500 text-xs">
                 <span>{renderLeadingText(node as UBNodeLeadingTextProps)}</span>
+                <div className="labels flex flex-row items-center mb-2">
+                  <span className="text-xs text-gray-500">
+                    {moment(node.createdAt).fromNow()}
+                  </span>
+                  <span className="text-xs bg-emerald-600 text-white font-bold py-1 px-2 rounded-full ml-2">
+                    Saved Quote
+                  </span>
+                </div>
               </div>
               <div
-                className="leading-tight max-h-96 overflow-y-auto text-gray-400 text-sm"
+                className="max-h-96 overflow-y-auto text-white text-sm"
                 dangerouslySetInnerHTML={{
                   __html: node.htmlText as string,
                 }}
@@ -123,7 +123,7 @@ const Quotes = () => {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-black text-white">
+    <div className="flex flex-col min-h-screen bg-neutral-800 text-white">
       <HeadTag titlePrefix="Favorited Quotes" />
 
       <Navbar />
@@ -131,7 +131,7 @@ const Quotes = () => {
       <main className="mt-28 flex-grow container mx-auto px-4 my-4 max-w-3xl paper-content">
         {/* Navigation links for previous and next papers */}
         <div className="flex flex-col items-center mt-2 mb-4">
-          <h1 className="text-3xl font-bold mb-8">Saved Quotes & Notes</h1>
+          <h1 className="text-3xl font-bold mb-8">Activity</h1>
 
           {/* Loading */}
           {(fetchingUser || fetchingNodes) && <Spinner />}

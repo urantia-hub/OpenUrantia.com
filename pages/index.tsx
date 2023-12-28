@@ -7,7 +7,7 @@ import Navbar from "@/components/Navbar";
 
 const HomePage = () => {
   return (
-    <div className="homepage flex flex-col min-h-screen text-white">
+    <div className="flex flex-col min-h-screen text-white">
       <HeadTag />
 
       <Navbar />
@@ -16,7 +16,7 @@ const HomePage = () => {
         <section className="text-center space-y-6 md:pb-24 sm:pb-0">
           <h1 className="text-7xl font-bold">The Urantia Book</h1>
           <p className="text-lg mx-auto leading-relaxed max-w-2xl pb-10">
-            <span className="font-bold">
+            <span className="font-bold tracking-wide">
               <span className="font-thin">Open</span>Urantia
             </span>{" "}
             offers an engaging platform to read the Urantia Book. We are
@@ -32,7 +32,7 @@ const HomePage = () => {
           </Link>
         </section>
 
-        <section className="mt-16 bg-black/50 backdrop-filter backdrop-blur-sm rounded-xl p-8">
+        <section className="mt-16 bg-neutral-800/50 backdrop-filter backdrop-blur-sm rounded-xl p-8">
           <h2 className="text-3xl font-semibold text-center">
             Upcoming Features
           </h2>
