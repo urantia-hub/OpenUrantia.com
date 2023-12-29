@@ -91,7 +91,7 @@ const Progress = () => {
 
       <Navbar />
 
-      <main className="mt-6 flex-grow container mx-auto px-4 py-10">
+      <main className="mt-8 flex-grow container mx-auto px-4 py-10">
         <section className="text-center space-y-6">
           <h1 className="text-3xl font-bold">My Progress</h1>
           {fetchingProgress ? (

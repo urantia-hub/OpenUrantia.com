@@ -108,7 +108,9 @@ const Search = ({ onClose }: SearchProps) => {
   return (
     <div
       className="fixed inset-0 flex flex-col items-center z-50 bg-neutral-800"
-      style={{ bottom: router.asPath.startsWith("/papers") ? "137px" : "69px" }}
+      style={{
+        bottom: router.asPath.startsWith("/papers/") ? "137px" : "69px",
+      }}
     >
       {/* X button to close modal */}
       <button

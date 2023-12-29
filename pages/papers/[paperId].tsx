@@ -656,7 +656,7 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
         <Share onClose={onShareClose} node={shareNode} />
       )}
 
-      <main className="mt-6 flex-grow container mx-auto px-4 my-4 max-w-3xl paper-content">
+      <main className="mt-8 flex-grow container mx-auto px-4 my-4 max-w-3xl paper-content">
         {/* Paper content */}
         <div className="mb-12 subpixel-antialiased">
           {nodes.map((node: UBNode) => renderNode(node))}

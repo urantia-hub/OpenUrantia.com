@@ -35,6 +35,7 @@ const Navbar = ({ paperId, paperTitle }: NavbarProps) => {
     <>
       <header className="flex flex-col items-center pt-2 pb-1 px-2 fixed bottom-0 left-0 right-0 z-10 bg-neutral-800 border-t border-neutral-700 mx-auto">
         <PaperNavbar paperId={paperId} paperTitle={paperTitle} />
+
         <div className="flex items-center justify-around w-full max-w-lg pt-1 pb-2">
           <Link
             className={`flex-1 flex flex-col items-center text-xs text-center ${
@@ -69,7 +70,9 @@ const Navbar = ({ paperId, paperTitle }: NavbarProps) => {
             Read
           </Link>
           <button
-            className="flex-1 flex flex-col border-0 items-center p-0 text-xs text-center text-gray-400 line-clamp-1 hover:text-white hover:no-underline transition duration-300 ease-in-out focus:outline-none"
+            className={`flex-1 flex flex-col border-0 items-center p-0 text-xs text-center ${
+              isSearchOpen ? "text-white" : "text-gray-400"
+            } line-clamp-1 hover:text-white hover:no-underline transition duration-300 ease-in-out focus:outline-none`}
             onClick={() => setIsSearchOpen(true)}
             type="button"
           >

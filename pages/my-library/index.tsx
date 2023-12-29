@@ -144,7 +144,7 @@ const MyLibrary = () => {
 
       <Navbar />
 
-      <main className="mt-6 flex-grow container mx-auto px-4 my-4 max-w-3xl paper-content">
+      <main className="mt-8 flex-grow container mx-auto px-4 my-4 max-w-3xl paper-content">
         {/* Navigation links for previous and next papers */}
         <div className="flex flex-col items-center mt-2 mb-4">
           <h1 className="text-3xl font-bold mb-8">My Library</h1>
