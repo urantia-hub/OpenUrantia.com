@@ -581,7 +581,7 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
                 </div>
               </div>
               <div
-                className="text-lg leading-8"
+                className="text-xl/9 md:text-lg/8"
                 dangerouslySetInnerHTML={{ __html: node.htmlText as string }}
                 onClick={onNodeSettingsClick(node.globalId, {
                   onlyOpen: true,
