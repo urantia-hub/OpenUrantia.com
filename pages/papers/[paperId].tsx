@@ -683,7 +683,7 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
         </div>
       </main>
 
-      <Footer mb="36" />
+      <Footer marginBottom="8.5rem" />
     </div>
   );
 };

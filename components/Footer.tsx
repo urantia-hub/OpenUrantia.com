@@ -3,14 +3,17 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 
 type FooterProps = {
-  mb?: string;
+  marginBottom?: string;
 };
 
-const Footer = ({ mb }: FooterProps) => {
+const Footer = ({ marginBottom }: FooterProps) => {
   const router = useRouter();
 
   return (
-    <footer className={`py-4 text-xs mb-${mb || "20"}`}>
+    <footer
+      className={`py-4 text-xs`}
+      style={{ marginBottom: marginBottom || "4.3rem" }}
+    >
       <div className="flex justify-between items-center container mx-auto px-4">
         <div>
           <span className="text-gray-400">
