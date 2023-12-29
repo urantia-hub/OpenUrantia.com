@@ -4,6 +4,7 @@ import { signIn, signOut, useSession } from "next-auth/react";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 // Relative modules.
+import PaperNavbar from "@/components/PaperNavbar";
 import Search from "@/components/Search";
 
 type NavbarProps = {
@@ -33,38 +34,7 @@ const Navbar = ({ paperId, paperTitle }: NavbarProps) => {
   return (
     <>
       <header className="flex flex-col items-center pt-2 pb-1 px-2 fixed bottom-0 left-0 right-0 z-10 bg-neutral-800 border-t border-neutral-700 mx-auto">
-        {paperId !== undefined && paperTitle && (
-          <div className="flex items-center justify-between bg-neutral-700 rounded-full w-full max-w-3xl mt-1 mb-6">
-            <Link
-              className="px-2 py-2 hover:text-white transition duration-300 ease-in-out"
-              href={`/papers/${paperId - 1 === -1 ? "0" : paperId - 1}`}
-            >
-              <svg className="w-6 h-6" viewBox="0 0 24 24">
-                <path
-                  fill="currentColor"
-                  d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"
-                />
-              </svg>
-            </Link>
-            <Link
-              className="flex-1 py-2 text-sm font-bold text-center line-clamp-1 hover:text-white hover:no-underline transition duration-300 ease-in-out"
-              href="/papers"
-            >
-              {paperId > 0 ? `Paper ${paperId} - ${paperTitle}` : "Foreword"}
-            </Link>
-            <Link
-              className="px-2 py-2 flex text-right justify-end hover:text-white transition duration-300 ease-in-out"
-              href={`/papers/${paperId + 1 <= 196 ? paperId + 1 : "196"}`}
-            >
-              <svg className="w-6 h-6" viewBox="0 0 24 24">
-                <path
-                  fill="currentColor"
-                  d="M8.59 16.59L10 18l6-6-6-6-1.41 1.41L13.17 12z"
-                />
-              </svg>
-            </Link>
-          </div>
-        )}
+        <PaperNavbar paperId={paperId} paperTitle={paperTitle} />
         <div className="flex items-center justify-around w-full max-w-lg pt-1 pb-2">
           <Link
             className={`flex-1 flex flex-col items-center text-xs text-center ${
