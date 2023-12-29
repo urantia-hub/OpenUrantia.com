@@ -6,7 +6,12 @@ import { useState, useEffect } from "react";
 import LogoText from "@/components/LogoText";
 import Search from "@/components/Search";
 
-const Navbar = () => {
+type NavbarProps = {
+  paperId?: number;
+  paperTitle?: string;
+};
+
+const Navbar = ({ paperId, paperTitle }: NavbarProps) => {
   const { data: session } = useSession();
   const [isScrolled, setIsScrolled] = useState<boolean>(false);
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
@@ -53,6 +58,40 @@ const Navbar = () => {
 
   return (
     <>
+      {paperId !== undefined && paperTitle && (
+        <div className="flex justify-between pt-3 pb-4 px-2 fixed bottom-0 left-0 right-0 z-10 bg-neutral-800 border-t border-neutral-700">
+          <div className="flex-1 flex items-center justify-between bg-neutral-700 rounded-full mx-auto max-w-3xl">
+            <Link
+              className="px-2 py-2 hover:text-white transition duration-300 ease-in-out"
+              href={`/papers/${paperId - 1 === -1 ? "0" : paperId - 1}`}
+            >
+              <svg className="w-6 h-6" viewBox="0 0 24 24">
+                <path
+                  fill="currentColor"
+                  d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"
+                />
+              </svg>
+            </Link>
+            <Link
+              className="flex-1 py-2 text-sm font-bold text-center line-clamp-1 hover:text-white hover:no-underline transition duration-300 ease-in-out"
+              href="/read"
+            >
+              {paperId > 0 ? `Paper ${paperId} - ${paperTitle}` : "Foreword"}
+            </Link>
+            <Link
+              className="px-2 py-2 flex text-right justify-end hover:text-white transition duration-300 ease-in-out"
+              href={`/papers/${paperId + 1 <= 196 ? paperId + 1 : "196"}`}
+            >
+              <svg className="w-6 h-6" viewBox="0 0 24 24">
+                <path
+                  fill="currentColor"
+                  d="M8.59 16.59L10 18l6-6-6-6-1.41 1.41L13.17 12z"
+                />
+              </svg>
+            </Link>
+          </div>
+        </div>
+      )}
       <header
         className={`mx-auto flex justify-between items-center px-4 border-b z-10 fixed top-0 w-full transition-all duration-500 ease-in-out ${
           isScrolled

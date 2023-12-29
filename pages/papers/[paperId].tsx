@@ -460,12 +460,12 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
     switch (node.type) {
       case "paper": {
         return (
-          <div key={node.globalId} className="mb-12 text-center">
+          <div key={node.globalId} className="mt-4 mb-8 text-center">
             {parseInt(node.paperId) > 0 && (
-              <p className="mb-2">Paper {node.paperId}</p>
+              <p className="mb-2 text-gray-400">{node.paperTitle}</p>
             )}
-            <h1 className="text-4xl font-bold mb-12" id={node.globalId}>
-              {node.paperTitle}
+            <h1 className="text-5xl font-bold" id={node.globalId}>
+              {parseInt(node.paperId) > 0 ? node.paperId : "Foreword"}
             </h1>
           </div>
         );
@@ -644,7 +644,10 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
         }
       />
 
-      <Navbar />
+      <Navbar
+        paperId={parseInt(nodes[0].paperId)}
+        paperTitle={nodes[0].paperTitle}
+      />
 
       {/* Explain Modal */}
       {selectedGlobalIdExplain && (
@@ -667,59 +670,25 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
       )}
 
       <main className="mt-28 flex-grow container mx-auto px-4 my-4 max-w-3xl paper-content">
-        {/* Navigation links for previous and next papers */}
-        <div className="flex justify-between mt-2 mb-4">
-          {prevPaperId >= 0 ? (
-            <Link
-              className="flex-1 text-gray-400 hover:text-white transition duration-300 ease-in-out"
-              href={`/papers/${prevPaperId}`}
-            >
-              ← {prevPaperId === 0 ? "Foreword" : `Paper ${prevPaperId}`}
-            </Link>
-          ) : (
-            <span className="flex-1" />
-          )}
-          <Link
-            className="flex-1 text-center text-gray-400 hover:text-white transition duration-300 ease-in-out"
-            href="/read"
-          >
-            Table of Contents
-          </Link>
-          {nextPaperId ? (
-            <Link
-              className="flex-1 text-right text-gray-400 hover:text-white transition duration-300 ease-in-out"
-              href={`/papers/${nextPaperId}`}
-            >
-              Paper {nextPaperId} →
-            </Link>
-          ) : (
-            <span className="flex-1 text-right" />
-          )}
-        </div>
-
         {/* Paper content */}
         <div className="mb-12 subpixel-antialiased">
           {nodes.map((node: UBNode) => renderNode(node))}
         </div>
 
         {/* Navigation links for previous and next papers */}
-        <div className="flex justify-between mb-12">
-          {prevPaperId >= 0 ? (
-            <Link
-              className="flex-1 text-gray-400 hover:text-white transition duration-300 ease-in-out"
-              href={`/papers/${prevPaperId}`}
-            >
-              ← Paper {prevPaperId}
-            </Link>
-          ) : (
-            <span />
-          )}
+        <div className="flex justify-end text-right mb-12">
           {nextPaperId ? (
             <Link
-              className="flex-1 text-right text-gray-400 hover:text-white transition duration-300 ease-in-out"
+              className="flex text-right text-gray-400 hover:text-white transition duration-300 ease-in-out"
               href={`/papers/${nextPaperId}`}
             >
-              Paper {nextPaperId} →
+              Next{" "}
+              <svg className="w-6 h-6" viewBox="0 0 24 24">
+                <path
+                  fill="currentColor"
+                  d="M8.59 16.59L10 18l6-6-6-6-1.41 1.41L13.17 12z"
+                />
+              </svg>
             </Link>
           ) : (
             <span />
