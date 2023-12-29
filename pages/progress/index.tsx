@@ -1,5 +1,6 @@
 // Node modules.
 import React, { useState, useEffect, useRef } from "react";
+import { useSession } from "next-auth/react";
 // Relative modules.
 import Footer from "@/components/Footer";
 import HeadTag from "@/components/HeadTag";
@@ -7,13 +8,23 @@ import Navbar from "@/components/Navbar";
 import PaperCard from "@/components/PaperCard";
 import Spinner from "@/components/Spinner";
 
-const Profile = () => {
+const Progress = () => {
+  // Session.
+  const { data: session } = useSession();
+
   // Progress state.
   const [progressResults, setProgressResults] = useState<ProgressResult[]>([]);
   const [fetchingProgress, setFetchingProgress] = useState<boolean>(true);
 
   // Reading refs.
   const nextReadRef = useRef<HTMLDivElement>(null);
+
+  // Redirect to homepage if not logged in.
+  useEffect(() => {
+    if (!session) {
+      window.location.href = "/";
+    }
+  }, [session]);
 
   // Fetch progress data on component mount.
   useEffect(() => {
@@ -76,11 +87,11 @@ const Profile = () => {
 
   return (
     <div className="flex flex-col min-h-screen bg-neutral-800 text-white">
-      <HeadTag titlePrefix="Profile" />
+      <HeadTag titlePrefix="Progress" />
 
       <Navbar />
 
-      <main className="mt-28 flex-grow container mx-auto px-4 py-10">
+      <main className="mt-6 flex-grow container mx-auto px-4 py-10">
         <section className="text-center space-y-6">
           <h1 className="text-3xl font-bold">My Progress</h1>
           {fetchingProgress ? (
@@ -98,4 +109,4 @@ const Profile = () => {
   );
 };
 
-export default Profile;
+export default Progress;

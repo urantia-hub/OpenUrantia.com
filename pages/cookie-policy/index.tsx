@@ -14,7 +14,7 @@ const PrivacyPolicy = () => {
 
       <Navbar />
 
-      <main className="mt-28 flex-grow container mx-auto px-4 my-4 mb-8 max-w-3xl">
+      <main className="mt-6 flex-grow container mx-auto px-4 my-4 mb-8 max-w-3xl">
         <section className="text-center space-y-6">
           <h1 className="text-3xl font-bold">Cookie Policy</h1>
           <div

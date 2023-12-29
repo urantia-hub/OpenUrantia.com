@@ -58,6 +58,21 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
   >({});
   const readNodesRef = useRef<Set<string>>(new Set());
 
+  const fetchNodeComments = async () => {
+    try {
+      const response = await fetch(
+        `/api/user/nodes/comments?paperId=${paperData.data.results[0].paperId}`
+      );
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const nodeComments = await response.json();
+      setNodeComments(nodeComments);
+    } catch (error) {
+      console.error("Error fetching node comments:", error);
+    }
+  };
+
   const estimatedReadTime = (node: UBNode) => {
     const paragraph = document.getElementById(node.globalId);
     if (!paragraph) {
@@ -160,22 +175,7 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
 
   // Fetch node comments on mount
   useEffect(() => {
-    const fetchNodeComments = async () => {
-      try {
-        const response = await fetch(
-          `/api/user/nodes/comments?paperId=${paperData.data.results[0].paperId}`
-        );
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const nodeComments = await response.json();
-        setNodeComments(nodeComments);
-      } catch (error) {
-        console.error("Error fetching node comments:", error);
-      }
-    };
-
-    fetchNodeComments();
+    void fetchNodeComments();
   }, [paperData.data.results]);
 
   // Start reading timer checks.
@@ -281,7 +281,7 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
               let match;
               while ((match = regex.exec(node.textContent)) !== null) {
                 const highlightSpan = document.createElement("span");
-                highlightSpan.className = "text-yellow-200 underline";
+                highlightSpan.className = "text-sky-400 underline";
                 highlightSpan.textContent = match[0];
 
                 const range = new Range();
@@ -324,6 +324,7 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
 
   const onCommentClose = () => {
     setSelectedGlobalIdComment("");
+    void fetchNodeComments();
   };
 
   const onCommentClick = (globalId: string) => () => {
@@ -505,7 +506,7 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
                   {savedNode && (
                     <Link
                       className="ml-2 text-xs bg-emerald-600 text-white font-bold py-1 px-2 rounded-full hover:no-underline"
-                      href="/activity"
+                      href={`/my-library?createdAt=${savedNode.createdAt}`}
                     >
                       Saved Quote
                     </Link>
@@ -513,7 +514,7 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
                   {nodeCommentsForNode.length > 0 ? (
                     <Link
                       className="ml-2 text-xs bg-orange-600 text-white font-bold py-1 px-2 rounded-full hover:no-underline"
-                      href="/activity"
+                      href={`/my-library?createdAt=${nodeCommentsForNode[0].createdAt}`}
                     >
                       {nodeCommentsForNode.length} Comment
                       {nodeCommentsForNode.length > 1 ? "s" : ""}
@@ -603,51 +604,37 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
   // Get the nodes from the paper data.
   const nodes = paperData.data.results;
 
-  // Parse the current paperId as a number
-  const currentPaperId = parseInt(nodes[0].paperId);
-
-  // Calculate the next and previous paper IDs
-  const prevPaperId = currentPaperId > 0 ? currentPaperId - 1 : -1;
-  const nextPaperId = currentPaperId < 196 ? currentPaperId + 1 : null;
+  // Get paper details.
+  const paperId = nodes[0].paperId;
+  const paperTitle = nodes[0].paperTitle;
+  const paperIdNumber = parseInt(nodes[0].paperId);
+  const nextPaperId = paperIdNumber < 196 ? paperIdNumber + 1 : null;
 
   // Calculate nodes for modals.
   const explainNode = selectedGlobalIdExplain
-    ? paperData.data.results.find(
-        (node) => node.globalId === selectedGlobalIdExplain
-      )
+    ? nodes.find((node) => node.globalId === selectedGlobalIdExplain)
     : undefined;
   const commentNode = selectedGlobalIdComment
-    ? paperData.data.results.find(
-        (node) => node.globalId === selectedGlobalIdComment
-      )
+    ? nodes.find((node) => node.globalId === selectedGlobalIdComment)
     : undefined;
   const relatedWorksNode = selectedGlobalIdRelatedWorks
-    ? paperData.data.results.find(
-        (node) => node.globalId === selectedGlobalIdRelatedWorks
-      )
+    ? nodes.find((node) => node.globalId === selectedGlobalIdRelatedWorks)
     : undefined;
   const shareNode = selectedGlobalIdShare
-    ? paperData.data.results.find(
-        (node) => node.globalId === selectedGlobalIdShare
-      )
+    ? nodes.find((node) => node.globalId === selectedGlobalIdShare)
     : undefined;
 
   // Page content
   return (
     <div className="flex flex-col min-h-screen bg-neutral-800 text-white">
       <HeadTag
-        metaDescription={nodes[0].paperTitle}
+        metaDescription={paperTitle}
         titlePrefix={
-          parseInt(nodes[0].paperId) > 0
-            ? `Paper ${nodes[0].paperId} - ${nodes[0].paperTitle}`
-            : "Foreword"
+          paperIdNumber > 0 ? `Paper ${paperId} - ${paperTitle}` : "Foreword"
         }
       />
 
-      <Navbar
-        paperId={parseInt(nodes[0].paperId)}
-        paperTitle={nodes[0].paperTitle}
-      />
+      <Navbar paperId={paperIdNumber} paperTitle={paperTitle} />
 
       {/* Explain Modal */}
       {selectedGlobalIdExplain && (
@@ -669,7 +656,7 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
         <Share onClose={onShareClose} node={shareNode} />
       )}
 
-      <main className="mt-28 flex-grow container mx-auto px-4 my-4 max-w-3xl paper-content">
+      <main className="mt-6 flex-grow container mx-auto px-4 my-4 max-w-3xl paper-content">
         {/* Paper content */}
         <div className="mb-12 subpixel-antialiased">
           {nodes.map((node: UBNode) => renderNode(node))}
@@ -696,7 +683,7 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
         </div>
       </main>
 
-      <Footer />
+      <Footer mb="36" />
     </div>
   );
 };
@@ -724,7 +711,7 @@ export async function getStaticPaths() {
 
   return {
     paths,
-    fallback: "blocking", // or 'false' or 'true'
+    fallback: "blocking",
   };
 }
 

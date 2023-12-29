@@ -73,7 +73,7 @@ const ReadPage = ({ partsData }: TOCPageProps) => {
 
       <Navbar />
 
-      <main className="mt-28 flex-grow container mx-auto px-4 my-4 max-w-4xl">
+      <main className="mt-6 flex-grow container mx-auto px-4 my-4 max-w-4xl">
         <h1 className="text-base mt-2 text-center">Table of Contents</h1>
         {sortedParts.map((part, index) =>
           renderPart(

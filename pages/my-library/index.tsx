@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import moment from "moment";
 import { NodeComment, SavedNode, User } from "@prisma/client";
 import { useRouter } from "next/router";
+import { useSession } from "next-auth/react";
 // Relative modules.
 import Footer from "@/components/Footer";
 import HeadTag from "@/components/HeadTag";
@@ -11,16 +12,29 @@ import Navbar from "@/components/Navbar";
 import Spinner from "@/components/Spinner";
 import { renderLeadingText } from "@/utils/renderNode";
 
-type Activity = UBNode & SavedNode & NodeComment & { commentText?: string };
+type Activity = UBNode &
+  SavedNode &
+  NodeComment & { createdAt: string; commentText?: string };
 
-const Quotes = () => {
+const MyLibrary = () => {
+  // Session.
+  const { data: session } = useSession();
+
+  // Router.
+  const router = useRouter();
+
   // State.
   const [userData, setUserData] = useState<User | null>(null);
   const [nodes, setNodes] = useState<Activity[]>([]);
   const [fetchingUser, setFetchingUser] = useState(true);
   const [fetchingNodes, setFetchingNodes] = useState(true);
 
-  const router = useRouter();
+  // Redirect to homepage if not logged in.
+  useEffect(() => {
+    if (!session) {
+      window.location.href = "/";
+    }
+  }, [session]);
 
   // Fetch user data on component mount
   useEffect(() => {
@@ -58,8 +72,9 @@ const Quotes = () => {
         return (
           <Link
             className="mb-6 text-left hover:no-underline"
-            key={node.globalId}
             href={`/papers/${node.paperId}#${node.globalId}`}
+            id={node.createdAt}
+            key={node.globalId}
           >
             <div className="leading-relaxed border-l-4 border-gray-500 pl-3 mb-1 pb-1 hover:border-orange-600 transition duration-300 ease-in-out">
               <div className="flex items-center justify-between mb-1 text-gray-500 text-xs">
@@ -90,8 +105,9 @@ const Quotes = () => {
         return (
           <Link
             className="mb-6 text-left hover:no-underline"
-            key={node.globalId}
             href={`/papers/${node.paperId}#${node.globalId}`}
+            id={node.createdAt}
+            key={node.globalId}
           >
             <div className="leading-relaxed border-l-4 border-gray-500 pl-3 mb-1 pb-1 hover:border-emerald-600 transition duration-300 ease-in-out">
               <div className="flex items-center justify-between mb-1 text-gray-500 text-xs">
@@ -124,15 +140,14 @@ const Quotes = () => {
 
   return (
     <div className="flex flex-col min-h-screen bg-neutral-800 text-white">
-      <HeadTag titlePrefix="Favorited Quotes" />
+      <HeadTag titlePrefix="My Library" />
 
       <Navbar />
 
-      <main className="mt-28 flex-grow container mx-auto px-4 my-4 max-w-3xl paper-content">
+      <main className="mt-6 flex-grow container mx-auto px-4 my-4 max-w-3xl paper-content">
         {/* Navigation links for previous and next papers */}
         <div className="flex flex-col items-center mt-2 mb-4">
-          <h1 className="text-3xl font-bold mb-8">Activity</h1>
-
+          <h1 className="text-3xl font-bold mb-8">My Library</h1>
           {/* Loading */}
           {(fetchingUser || fetchingNodes) && <Spinner />}
 
@@ -141,20 +156,22 @@ const Quotes = () => {
             <div className="flex flex-col">
               {nodes?.map((node) => renderNode(node))}
             </div>
-          ) : (
-            // No activity nodes
+          ) : null}
+
+          {/* No activity nodes */}
+          {!nodes.length && !fetchingNodes ? (
             <div className="flex flex-col items-center justify-center h-full">
               <p className="text-gray-400 mb-8">
                 You haven&apos;t favorited any quotes yet.
               </p>
               <button
                 className="bg-white text-black font-bold py-3 px-6 rounded-full shadow-lg hover:bg-blue-100 transition duration-300 ease-in-out"
-                onClick={() => router.push("/read")}
+                onClick={() => router.push("/papers")}
               >
                 Find a paper to read
               </button>
             </div>
-          )}
+          ) : null}
         </div>
       </main>
 
@@ -163,4 +180,4 @@ const Quotes = () => {
   );
 };
 
-export default Quotes;
+export default MyLibrary;

@@ -1,6 +1,7 @@
 // Node modules.
 import Link from "next/link";
 import { useState, useEffect } from "react";
+import { useRouter } from "next/router";
 // Relative modules.
 import { renderLeadingText } from "@/utils/renderNode";
 
@@ -9,6 +10,10 @@ interface SearchProps {
 }
 
 const Search = ({ onClose }: SearchProps) => {
+  // Router.
+  const router = useRouter();
+
+  // State.
   const [query, setQuery] = useState<string>("");
   const [results, setResults] = useState<SearchResult[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -101,19 +106,24 @@ const Search = ({ onClose }: SearchProps) => {
   };
 
   return (
-    <div className="fixed inset-0 flex flex-col items-center z-50 bg-neutral-800/95">
+    <div
+      className="fixed inset-0 flex flex-col items-center z-50 bg-neutral-800"
+      style={{ bottom: router.asPath.startsWith("/papers") ? "137px" : "69px" }}
+    >
       {/* X button to close modal */}
       <button
-        className="absolute top-4 right-8 text-white text-2xl font-bold border-0 bg-transparent focus:outline-none p-0"
+        className="absolute top-8 right-6 text-white text-2xl font-bold border-0 bg-transparent focus:outline-none p-0"
         onClick={onClose}
         type="button"
       >
-        x
+        <svg className="w-5 h-5 fill-current" viewBox="0 0 122.878 122.88">
+          <path d="M1.426 8.313a4.87 4.87 0 0 1 6.886-6.886l53.127 53.127 53.127-53.127a4.87 4.87 0 1 1 6.887 6.886L68.324 61.439l53.128 53.128a4.87 4.87 0 0 1-6.887 6.886L61.438 68.326 8.312 121.453a4.868 4.868 0 1 1-6.886-6.886l53.127-53.128L1.426 8.313z" />
+        </svg>
       </button>
 
       {/* Search field + results */}
       <div className="flex flex-col items-center w-full h-full max-w-3xl px-8 py-6">
-        <h1 className="text-4xl text-white font-bold mb-8 text-center">
+        <h1 className="text-2xl md:text-4xl text-white font-bold mb-8 text-center">
           Search the Urantia Book
         </h1>
         <div className="relative flex items-center w-full mb-8 pb-2">

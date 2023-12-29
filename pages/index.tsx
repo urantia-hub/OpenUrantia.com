@@ -12,7 +12,7 @@ const HomePage = () => {
 
       <Navbar />
 
-      <main className="mt-28 flex-grow container mx-auto px-4 py-10">
+      <main className="mt-6 flex-grow container mx-auto px-4 py-10">
         <section className="text-center space-y-6 md:pb-24 sm:pb-0">
           <h1 className="text-7xl font-bold">The Urantia Book</h1>
           <p className="text-lg mx-auto leading-relaxed max-w-2xl pb-10">

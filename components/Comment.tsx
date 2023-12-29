@@ -19,7 +19,9 @@ const Comment = ({ onClose, node }: CommentProps) => {
   // State.
   const [text, setText] = useState<string>("");
 
-  const onSubmit = async () => {
+  const onSubmit = async (event: any) => {
+    event.preventDefault();
+
     // Escape early if we are already creating the comment.
     if (creating) {
       return;
@@ -63,7 +65,7 @@ const Comment = ({ onClose, node }: CommentProps) => {
     <Modal onClose={onClose}>
       {/* <Todo /> */}
       <div className="flex flex-col p-4">
-        <h2 className="text-2xl mb-2">Write a comment</h2>
+        <h2 className="text-2xl mb-2">Comment</h2>
         {!node && <Spinner />}
         {node && (
           <>
@@ -81,6 +83,8 @@ const Comment = ({ onClose, node }: CommentProps) => {
                 autoFocus
                 className="h-80 mb-6 focus:outline-none border-0 p-0 text-lg"
                 onChange={(event: any) => setText(event.target.value)}
+                placeholder="Write a note..."
+                rows={5}
                 value={text}
               />
               <div className="flex justify-center items-center">
