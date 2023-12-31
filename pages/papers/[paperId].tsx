@@ -264,8 +264,8 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
     if (globalId) {
       const element = document.getElementById(globalId);
       if (element) {
-        // Scroll to the element
-        const yOffset = -60; // Adjust based on your header height or other factors
+        // Scroll to the element.
+        const yOffset = -20;
         const y =
           element.getBoundingClientRect().top + window.scrollY + yOffset;
         window.scrollTo({ top: y });

@@ -1,12 +1,32 @@
 // Node modules.
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
 // Relative modules.
 import Footer from "@/components/Footer";
 import HeadTag from "@/components/HeadTag";
+import { ReadNode } from "@prisma/client";
 
 const HomePage = () => {
+  // Session.
+  const { data: session } = useSession();
+
+  // State.
+  const [lastReadNode, setLastReadNode] = useState<ReadNode | null>(null);
   const [showDownButton, setShowDownButton] = useState<boolean>(true);
+
+  const fetchLastReadNode = async () => {
+    if (session) {
+      const response = await fetch(`/api/user/nodes/read?lastRead=true`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const data = await response.json();
+      setLastReadNode(data);
+    }
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -16,6 +36,10 @@ const HomePage = () => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  useEffect(() => {
+    void fetchLastReadNode();
+  }, [session]);
 
   return (
     <div className="flex flex-col min-h-screen text-white bg-neutral-900">
@@ -29,19 +53,31 @@ const HomePage = () => {
             Discover the Urantia Book
           </h1>
           <p className="text-lg mx-auto leading-relaxed max-w-2xl pb-10">
-            Embark on an enlightening journey with a personalized, seamless
-            reading experience.
+            {session && lastReadNode
+              ? `Welcome back! Ready to continue your journey reading ${
+                  lastReadNode.paperId === "0"
+                    ? "the Foreword"
+                    : `Paper ${lastReadNode.paperId}`
+                }?`
+              : `Embark on an enlightening journey with a personalized, seamless
+            reading experience.`}
           </p>
           <Link
             className="bg-white text-black font-bold py-4 px-8 rounded-full shadow-xl hover:bg-blue-100 transition duration-300 ease-in-out"
-            href="/papers/0"
+            href={
+              session && lastReadNode
+                ? `/papers/${lastReadNode.paperId}#${lastReadNode.globalId}`
+                : "/papers/0"
+            }
           >
-            Start Reading
+            {session && lastReadNode
+              ? "Continue right where you left off"
+              : "Start Reading"}
           </Link>
 
           {showDownButton && (
             <div
-              className="fade-in fixed bottom-0 left-0 right-0 mx-auto w-12 h-12 mb-8 bg-neutral-900/80 rounded-full p-2"
+              className="fade-in fixed bottom-0 left-0 right-0 mx-auto w-12 h-12 mb-8 bg-neutral-900/90 rounded-full p-2"
               onClick={() => {
                 const afterHero = document.getElementById("after-hero");
                 afterHero?.scrollIntoView({
@@ -142,10 +178,20 @@ const HomePage = () => {
             today.
           </p>
           <Link
-            className="bg-white text-black font-bold py-4 px-8 rounded-full shadow-lg hover:bg-blue-100 transition duration-300 ease-in-out"
-            href="/papers/0"
+            className="bg-white text-black font-bold py-4 px-8 rounded-full shadow-xl hover:bg-blue-100 transition duration-300 ease-in-out"
+            href={
+              session && lastReadNode
+                ? `/papers/${lastReadNode.paperId}#${lastReadNode.globalId}`
+                : "/papers/0"
+            }
           >
-            Start Reading
+            {session && lastReadNode
+              ? `Continue reading ${
+                  lastReadNode.paperId === "0"
+                    ? "the Foreword"
+                    : `Paper ${lastReadNode.paperId}`
+                }`
+              : "Start Reading"}
           </Link>
         </section>
       </main>
