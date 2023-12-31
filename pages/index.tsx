@@ -1,11 +1,9 @@
 // Node modules.
-import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 // Relative modules.
 import Footer from "@/components/Footer";
 import HeadTag from "@/components/HeadTag";
-import LogoText from "@/components/LogoText";
 
 const HomePage = () => {
   const [showDownButton, setShowDownButton] = useState<boolean>(true);
@@ -114,14 +112,6 @@ const HomePage = () => {
 
         {/* Vision and Mission */}
         <section className="vision-and-mission pt-20 bg-black pb-20 lg:pb-60">
-          <div className="relative w-full h-auto">
-            <Image
-              alt="A hand holding a holographic globe"
-              fill
-              objectFit="contain"
-              src="/vision.png"
-            />
-          </div>
           <h2 className="text-5xl font-semibold lg:text-center text-indigo-300 px-4 lg:px-0">
             Our Vision and Mission
           </h2>
