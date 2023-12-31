@@ -4,7 +4,7 @@ interface LogoTextProps {
 
 const LogoText = ({ className }: LogoTextProps) => {
   return (
-    <h1 className={`text-4xl font-bold tracking-wide ${className || ""}`}>
+    <h1 className={`font-bold tracking-wide mx-2 ${className || ""}`}>
       <span className="font-light">Open</span>Urantia
     </h1>
   );

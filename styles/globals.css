@@ -193,3 +193,13 @@ footer a:hover {
   background-size: cover;
   position: relative;
 }
+
+@media screen and (min-width: 1100px) {
+  .upcoming-features {
+    bottom: -53rem;
+  }
+
+  .vision-and-mission {
+    padding-top: 45rem;
+  }
+}
