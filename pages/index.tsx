@@ -23,7 +23,7 @@ const HomePage = () => {
 
       <main>
         {/* Hero Section */}
-        <section className="hero-image relative min-h-screen pt-16 md:pt-56 px-6 md:px-12 text-center bg-cover bg-center bg-neutral-900">
+        <section className="hero-image min-h-screen pt-16 md:pt-56 px-6 md:px-12 text-center bg-cover bg-center bg-neutral-900">
           {/* Consider adding a background image that resonates with the reading experience */}
           <h1 className="mt-8 mb-2 text-6xl md:text-7xl font-bold">
             Discover the Urantia Book
@@ -41,7 +41,7 @@ const HomePage = () => {
 
           {showDownButton && (
             <div
-              className="fade-in absolute bottom-0 left-0 right-0 mx-auto w-12 h-12 mb-8 bg-neutral-900/80 rounded-full p-2"
+              className="fade-in fixed bottom-0 left-0 right-0 mx-auto w-12 h-12 mb-8 bg-neutral-900/80 rounded-full p-2"
               onClick={() => {
                 const afterHero = document.getElementById("after-hero");
                 afterHero?.scrollIntoView({
