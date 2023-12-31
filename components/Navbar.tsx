@@ -1,8 +1,9 @@
 // Node modules.
 import Link from "next/link";
+import { ReadNode } from "@prisma/client";
 import { signIn, signOut, useSession } from "next-auth/react";
-import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
+import { useState, useEffect } from "react";
 // Relative modules.
 import PaperNavbar from "@/components/PaperNavbar";
 import Search from "@/components/Search";
@@ -13,10 +14,30 @@ type NavbarProps = {
 };
 
 const Navbar = ({ paperId, paperTitle }: NavbarProps) => {
+  // Hooks.
   const { data: session } = useSession();
   const router = useRouter();
 
+  // State.
+  const [lastReadNode, setLastReadNode] = useState<ReadNode | null>(null);
   const [isSearchOpen, setIsSearchOpen] = useState<boolean>(false);
+
+  const fetchLastReadNode = async () => {
+    if (session) {
+      const response = await fetch(`/api/user/nodes/read?lastRead=true`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const data = await response.json();
+      setLastReadNode(data);
+    }
+  };
+
+  useEffect(() => {
+    void fetchLastReadNode();
+  }, [session]);
 
   useEffect(() => {
     // Prevent scrolling on background content when search is open.
@@ -59,7 +80,11 @@ const Navbar = ({ paperId, paperTitle }: NavbarProps) => {
                 ? "text-white"
                 : "text-gray-400"
             } line-clamp-1 hover:text-white hover:no-underline transition duration-300 ease-in-out`}
-            href="/papers"
+            href={
+              session && lastReadNode
+                ? `/papers/${lastReadNode.paperId}#${lastReadNode.globalId}`
+                : "/papers"
+            }
           >
             <svg
               className="w-6 h-6 fill-current mb-1"

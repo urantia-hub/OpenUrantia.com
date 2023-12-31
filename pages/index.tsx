@@ -8,7 +8,7 @@ import HeadTag from "@/components/HeadTag";
 import { ReadNode } from "@prisma/client";
 
 const HomePage = () => {
-  // Session.
+  // Hooks.
   const { data: session } = useSession();
 
   // State.
