@@ -175,3 +175,21 @@ footer a:hover {
   animation-duration: 0.5s;
   animation-fill-mode: both;
 }
+
+.hero-image {
+  background: #262626;
+  background-image: url('/background2.png');
+  background-position: top;
+  background-repeat: no-repeat;
+  background-size: cover;
+  position: relative;
+}
+
+.vision {
+  background: #262626;
+  background-image: url('/vision.png');
+  background-position: top;
+  background-repeat: no-repeat;
+  background-size: cover;
+  position: relative;
+}
