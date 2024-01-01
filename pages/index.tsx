@@ -29,6 +29,10 @@ const HomePage = () => {
   };
 
   useEffect(() => {
+    void fetchLastReadNode();
+  }, [session]);
+
+  useEffect(() => {
     const handleScroll = () => {
       const isScrolled = window.scrollY !== 0;
       setShowDownButton(!isScrolled);
@@ -36,10 +40,6 @@ const HomePage = () => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-
-  useEffect(() => {
-    void fetchLastReadNode();
-  }, [session]);
 
   return (
     <div className="flex flex-col min-h-screen text-white bg-neutral-900">
@@ -53,7 +53,7 @@ const HomePage = () => {
             Discover the Urantia Book
           </h1>
           <p className="text-lg mx-auto leading-relaxed max-w-2xl pb-10">
-            {session && lastReadNode
+            {session && lastReadNode?.paperId
               ? `Welcome back! Ready to continue your journey reading ${
                   lastReadNode.paperId === "0"
                     ? "the Foreword"
@@ -65,7 +65,7 @@ const HomePage = () => {
           <Link
             className="bg-white text-black font-bold py-4 px-8 rounded-full shadow-xl hover:bg-blue-100 transition duration-300 ease-in-out"
             href={
-              session && lastReadNode
+              session && lastReadNode?.paperId && lastReadNode?.globalId
                 ? `/papers/${lastReadNode.paperId}#${lastReadNode.globalId}`
                 : "/papers/0"
             }
@@ -180,12 +180,12 @@ const HomePage = () => {
           <Link
             className="bg-white text-black font-bold py-4 px-8 rounded-full shadow-xl hover:bg-blue-100 transition duration-300 ease-in-out"
             href={
-              session && lastReadNode
+              session && lastReadNode?.paperId && lastReadNode?.globalId
                 ? `/papers/${lastReadNode.paperId}#${lastReadNode.globalId}`
                 : "/papers/0"
             }
           >
-            {session && lastReadNode
+            {session && lastReadNode?.paperId
               ? `Continue reading ${
                   lastReadNode.paperId === "0"
                     ? "the Foreword"
