@@ -126,7 +126,7 @@ const Search = ({ onClose }: SearchProps) => {
       {/* Search field + results */}
       <div className="flex flex-col items-center w-full h-full max-w-3xl px-8 py-6">
         <h1 className="text-2xl md:text-4xl text-white font-bold mb-8 text-center">
-          Search the Urantia Book
+          Search the Urantia Papers
         </h1>
         <div className="relative flex items-center w-full mb-8 pb-2">
           <input
@@ -141,7 +141,7 @@ const Search = ({ onClose }: SearchProps) => {
           />
           {query.includes(" ") && results.length > 1 && (
             <p className="text-gray-600 text-xs ml-2 absolute right-0 -bottom-3">
-              Use double quotes (&quot;Urantia Book&quot;) to search for exact
+              Use double quotes (&quot;Urantia Papers&quot;) to search for exact
               phrases
             </p>
           )}

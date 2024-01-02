@@ -72,7 +72,7 @@ const HomePage = () => {
         <section className="hero-image min-h-screen pt-16 md:pt-56 px-6 md:px-12 text-center bg-cover bg-center bg-neutral-900">
           {/* Consider adding a background image that resonates with the reading experience */}
           <h1 className="mt-8 mb-2 text-6xl md:text-7xl font-bold">
-            Discover the Urantia Book
+            Discover the Urantia Papers
           </h1>
           <p className="text-lg mx-auto leading-relaxed max-w-2xl pb-10">
             {lastVisitedNode?.paperId
@@ -154,7 +154,7 @@ const HomePage = () => {
             </h2>
             <p className="text-2xl mx-auto leading-relaxed max-w-4xl pt-4 lg:text-center px-4 lg:px-0">
               We&apos;re constantly innovating to enrich your journey through
-              the Urantia Book.
+              the Urantia Papers.
             </p>
             <div className="container mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 text-left px-4 mt-20">
               {upcomingFeatures.map((feature, index) => (
@@ -196,7 +196,7 @@ const HomePage = () => {
             Join the Journey
           </h2>
           <p className="text-lg mx-auto leading-relaxed max-w-2xl pb-8 px-4 lg:px-0">
-            We&apos;re just getting started. Begin reading the Urantia Book
+            We&apos;re just getting started. Begin reading the Urantia Papers
             today.
           </p>
           <Link
@@ -255,12 +255,12 @@ const upcomingFeatures = [
   {
     title: "Offline, Anywhere, Anytime",
     description:
-      "Enjoy reading the Urantia Book even when you're not connected to the internet.",
+      "Enjoy reading the Urantia Papers even when you're not connected to the internet.",
   },
   {
     title: "Listen with Audio Narration",
     description:
-      "Listen to the Urantia Book, never lose your place, and follow along with the text.",
+      "Listen to the Urantia Papers, never lose your place, and follow along with the text.",
   },
   {
     title: "Achievements and Milestones",
@@ -270,12 +270,12 @@ const upcomingFeatures = [
   {
     title: "Community-Driven Translations",
     description:
-      "Read the Urantia Book in your native language, and help us translate it into more languages.",
+      "Read the Urantia Papers in your native language, and help us translate it into more languages.",
   },
   {
     title: "Build For Everyone",
     description:
-      "Create and share your own Urantia Book content and resources on our open-source platform.",
+      "Create and share your own Urantia Papers content and resources on our open-source platform.",
   },
   {
     title: "Personalized Reading Experience",
@@ -296,19 +296,19 @@ const upcomingFeatures = [
 
 const visionAndMission = [
   {
-    title: "Spirit of the Urantia Book",
+    title: "Spirit of the Urantia Papers",
     description:
-      "At the heart of OpenUrantia is a vision to expand the accessibility and understanding of the Urantia Book's profound teachings.",
+      "At the heart of OpenUrantia is a vision to expand the accessibility and understanding of the Urantia Papers' profound teachings.",
   },
   {
     title: "Technology with Purpose",
     description:
-      "We believe technology can be a powerful tool for spiritual growth. Our mission is to create a platform that empowers individuals to discover, share, and build off the Urantia Book's teachings.",
+      "We believe technology can be a powerful tool for spiritual growth. Our mission is to create a platform that empowers individuals to discover, share, and build off the Urantia Papers' teachings.",
   },
   {
     title: "Community-Driven Approach",
     description:
-      "Our commitment to open-source development invites collaboration and innovation, ensuring the teachings of the Urantia Book continue to evolve and reach new audiences.",
+      "Our commitment to open-source development invites collaboration and innovation, ensuring the teachings of the Urantia Papers continue to evolve and reach new audiences.",
   },
 ];
 

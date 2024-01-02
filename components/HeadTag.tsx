@@ -16,7 +16,7 @@ const HeadTag = ({ metaDescription, titlePrefix }: HeadTagProps) => {
         name="description"
         content={
           metaDescription ||
-          "An open source version of The Urantia Book for generations to come."
+          "An open source version of The Urantia Papers for generations to come."
         }
       />
     </Head>
