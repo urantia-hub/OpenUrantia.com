@@ -61,54 +61,27 @@ async function handleGET(
   res: NextApiResponse,
   user: User
 ) {
-  const { lastRead } = req.query;
+  const { paperId } = req.query;
 
-  if (lastRead !== "true") {
+  if (paperId && typeof paperId !== "string") {
     return res.status(400).json({
-      message: `Missing required fields: ${!lastRead ? "lastRead " : ""}`,
+      message: `Invalid paperId, must be a string: ${paperId}`,
     });
   }
 
-  // Get the most recent read node first
-  const latestReadNode = await readNodeService.find({
+  // Get the read nodes.
+  const readNodes = await readNodeService.findMany({
     where: {
       userId: user.id,
+      paperId,
     },
     orderBy: {
       createdAt: "desc",
     },
   });
 
-  if (!latestReadNode) {
-    return res.status(404).json({ message: "No read nodes found for user." });
-  }
-
-  // Define the time range (e.g., last 10 minutes from the latest read node)
-  const timeFrameStart = moment(latestReadNode.createdAt)
-    .subtract(10, "minutes")
-    .toDate();
-
-  // Get read nodes within the time range
-  const readNodesInRange = await readNodeService.findMany({
-    where: {
-      createdAt: {
-        gte: timeFrameStart,
-        lte: latestReadNode.createdAt,
-      },
-      paperId: latestReadNode.paperId,
-      userId: user.id,
-    },
-  });
-
-  // Sort by globalId to find the furthest one down the page within the time range
-  const lastReadNodeInRange = readNodesInRange
-    .sort((a, b) =>
-      createSortId(b.globalId).localeCompare(createSortId(a.globalId))
-    )
-    .shift();
-
-  // Return the last read node within the time range
-  res.status(200).json(lastReadNodeInRange);
+  // Return the read nodes.
+  res.status(200).json(readNodes);
 }
 
 // Handler for the API endpoints.

@@ -2,7 +2,7 @@
 import Link from "next/link";
 import moment from "moment";
 import throttle from "lodash/throttle";
-import { NodeComment, SavedNode } from "@prisma/client";
+import { NodeComment, ReadNode, SavedNode } from "@prisma/client";
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
@@ -15,6 +15,8 @@ import Navbar from "@/components/Navbar";
 import RelatedWorks from "@/components/RelatedWorks";
 import Share from "@/components/Share";
 import Spinner from "@/components/Spinner";
+
+const AVERAGE_READING_SPEED = 300; // Words per minute
 
 type PaperPageProps = {
   paperData: {
@@ -58,7 +60,7 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
   const readingNodesRef = useRef<
     Record<string, { startsAt: number; node: UBNode }>
   >({});
-  const readNodesRef = useRef<Set<string>>(new Set());
+  const [readNodes, setReadNodes] = useState<Set<string>>(new Set());
 
   // Get the nodes from the paper data.
   const nodes = paperData.data.results;
@@ -107,13 +109,12 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
       return 0;
     }
     const words = paragraph.innerText.split(" ").length;
-    const averageReadingSpeed = 400; // Words per minute
-    return (words / averageReadingSpeed) * 60; // Time in seconds
+    return (words / AVERAGE_READING_SPEED) * 60; // Time in seconds
   };
 
   const markParagraphAsRead = async (node: UBNode) => {
     // Check if the node has already been marked as read
-    if (readNodesRef.current.has(node.globalId)) {
+    if (readNodes.has(node.globalId)) {
       console.log(`Node ${node.globalId} has already been marked as read.`);
       return;
     }
@@ -148,7 +149,7 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
       console.log(`✅ Successfully marked node ${readNode.globalId} as read.`);
 
       // Add the node to the set of read nodes
-      readNodesRef.current.add(node.globalId);
+      setReadNodes((readNodes) => new Set(readNodes.add(readNode.globalId)));
     } catch (error) {
       console.error("Error marking paragraph as read:", error);
     }
@@ -164,7 +165,7 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
 
   const handleParagraphReadInView = (node: UBNode) => {
     // Check if the node has already been marked as read
-    if (readNodesRef.current.has(node.globalId)) {
+    if (readNodes.has(node.globalId)) {
       console.log(
         `Node ${node.globalId} has already been marked as read, skipping.`
       );
@@ -221,6 +222,34 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
 
   // Now throttle the safe version of the update function
   const throttledUpdate = throttle(updateLastVisitedNode, 2000);
+
+  // Fetch read nodes on mount
+  useEffect(() => {
+    if (status !== "authenticated") {
+      console.log("Skipping fetch read nodes because user is not logged in.");
+      return;
+    }
+
+    const fetchReadNodes = async () => {
+      try {
+        const response = await fetch(`/api/user/nodes/read?paperId=${paperId}`);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const readNodes = await response.json();
+        if (!readNodes) {
+          console.log("No read nodes found for user.");
+          return;
+        }
+        const globalIds = readNodes.map((node: ReadNode) => node.globalId);
+        setReadNodes(new Set(globalIds));
+      } catch (error) {
+        console.error("Error fetching read nodes:", error);
+      }
+    };
+
+    fetchReadNodes();
+  }, [status, paperId]);
 
   // Fetch saved globalIds on mount
   useEffect(() => {
@@ -623,6 +652,7 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
         );
       }
       case "paragraph": {
+        const readNode = readNodes.has(node.globalId);
         const savedNode = savedNodes.find(
           (savedNode) => savedNode.globalId === node.globalId
         );
@@ -643,7 +673,22 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
                 style={{ minHeight: "24px" }}
               >
                 <div className="flex items-center">
-                  {node.globalId?.split(":")[1]}
+                  <span className="flex items-center text-xs">
+                    {node.globalId?.split(":")[1]}{" "}
+                    {readNode && (
+                      <span
+                        className="ml-1 text-xs text-gray-400 cursor-help"
+                        title={readNode ? `You read the paragraph` : ""}
+                      >
+                        <svg
+                          className="w-2.5 h-2.5 fill-current"
+                          viewBox="0 0 122.881 89.842"
+                        >
+                          <path d="M1.232 55.541a3.746 3.746 0 0 1 5.025-5.554L40.31 80.865l76.099-79.699a3.752 3.752 0 0 1 5.438 5.173L43.223 88.683l-.005-.005a3.746 3.746 0 0 1-5.227.196L1.232 55.541z" />
+                        </svg>
+                      </span>
+                    )}
+                  </span>
                   {savedNode && (
                     <Link
                       className="ml-2 text-xs bg-emerald-600 text-white font-bold py-1 px-2 rounded-full hover:no-underline"
