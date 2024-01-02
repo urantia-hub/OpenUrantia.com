@@ -1,7 +1,11 @@
+// Node modules.
 import Link from "next/link";
+import { useState } from "react";
+// Relative modules.
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import HeadTag from "@/components/HeadTag";
+import { paperLabels, paperLabelsLookup } from "@/utils/paperLabels";
 
 // Define the structure of the data you expect from the API
 type Part = {
@@ -19,47 +23,104 @@ type TOCPageProps = {
 };
 
 const ReadPage = ({ partsData }: TOCPageProps) => {
+  // State.
+  const [activeFilters, setActiveFilters] = useState<string[]>([]);
+  const [showFilters, setShowFilters] = useState<boolean>(false);
+
+  // Function to handle filter toggle.
+  const toggleFilter = (label: string) => {
+    setActiveFilters(
+      (currentFilters) =>
+        currentFilters.includes(label)
+          ? currentFilters.filter((filter) => filter !== label) // Remove filter if it's already active.
+          : [...currentFilters, label] // Add filter if it's not active.
+    );
+  };
+
+  // Function to determine if a paper should be shown based on active filters.
+  const shouldShowPaper = (paperId: string) => {
+    console.log("paperId", paperId);
+    const labels = paperLabelsLookup[paperId as keyof typeof paperLabelsLookup];
+    console.log("labels", labels);
+    // If no filters are active, all papers should be shown.
+    if (activeFilters.length === 0) return true;
+    if (!labels) return false;
+    // Otherwise, only show papers that match at least one active filter.
+    return labels.some((label) => activeFilters.includes(label));
+  };
+
   // Function to render each part and its papers
-  const renderPart = (
-    parts: Part[],
-    partId: string,
-    index: number,
-    partTitle?: string,
-    partSponsorship?: string
-  ) => {
-    // Only render parts that have a paperId (filter out parts entries)
-    const relevantPapers = parts.filter(
-      (part) => part.partId === partId && part.paperId
-    );
+  const renderNode = (node: Part) => {
+    switch (node.type) {
+      case "part": {
+        const papers = partsData.filter(
+          (paper) =>
+            paper.partId === node.partId &&
+            paper.type === "paper" &&
+            shouldShowPaper(paper.paperId as string)
+        );
 
-    if (relevantPapers.length === 0) return null; // No papers to render for this part
+        if (!papers.length) return null;
 
-    return (
-      <div key={partId} className="mb-8">
-        {index > 0 && <hr className="my-8" />}
-        <h2 className="text-3xl font-bold pt-4 mb-12 text-center">
-          Part {partId}: {partTitle || `Part ${partId}`}
-        </h2>
-        <ul className="mt-6 pb-3">
-          {relevantPapers.map((paper) => (
-            <li key={paper.globalId} className="mb-2 flex items-baseline">
-              <pre
-                style={{ minWidth: "2rem" }}
-                className="inline-block text-gray-400 text-sm mr-2"
-              >
-                {paper.paperId}.
-              </pre>
+        return (
+          <div key={node.globalId} className="mb-8">
+            <h2 className="text-sm mb-6 text-center border-b text-gray-400 border-gray-600">
+              Part {node.partId}: {node.partTitle || `Part ${node.partId}`}
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {papers.map((paper) => (
+                <Link
+                  className="block px-4 pt-2 pb-4 mb-4 bg-neutral-700 rounded hover:bg-neutral-600 transition-colors hover:no-underline"
+                  href={`/papers/${paper.paperId}`}
+                  key={paper.globalId}
+                >
+                  <div className="flex justify-between text-xs text-gray-400">
+                    <span>Paper {paper.paperId}</span>
+                    <span>
+                      {paperLabelsLookup[
+                        paper.paperId as keyof typeof paperLabelsLookup
+                      ]
+                        .sort()
+                        .join(", ")}
+                    </span>
+                  </div>
+                  <h3 className="mt-1 text-lg font-bold">{paper.paperTitle}</h3>
+                </Link>
+              ))}
+            </div>
+          </div>
+        );
+      }
+      case "paper": {
+        // Foreword is a special case; handle it separately.
+        if (node.paperId === "0") {
+          return (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 pb-6">
               <Link
-                className="text-xl hover:text-gray-300"
-                href={`/papers/${paper.paperId}`}
+                className="block px-4 pt-2 pb-4  bg-neutral-700 rounded hover:bg-neutral-600 transition-colors hover:no-underline"
+                href={`/papers/${node.paperId}`}
               >
-                {paper.paperTitle}
+                <div className="flex justify-between text-xs text-gray-400">
+                  <span>Foreword</span>
+                  <span>
+                    {paperLabelsLookup[
+                      node.paperId as keyof typeof paperLabelsLookup
+                    ]
+                      .sort()
+                      .join(", ")}
+                  </span>
+                </div>
+                <h3 className="text-lg font-bold">{node.paperTitle}</h3>
               </Link>
-            </li>
-          ))}
-        </ul>
-      </div>
-    );
+            </div>
+          );
+        }
+        break;
+      }
+      // You can add more cases if there are other node types
+      default:
+        return null;
+    }
   };
 
   // Extract parts and sort them by partId
@@ -70,22 +131,51 @@ const ReadPage = ({ partsData }: TOCPageProps) => {
   return (
     <div className="flex flex-col min-h-screen bg-neutral-800">
       <HeadTag titlePrefix="Table of Contents" />
-
       <Navbar />
-
       <main className="mt-8 flex-grow container mx-auto px-4 my-4 max-w-4xl">
-        <h1 className="text-base mt-2 text-center">Table of Contents</h1>
-        {sortedParts.map((part, index) =>
-          renderPart(
-            partsData,
-            part.partId,
-            index,
-            part.partTitle,
-            part.partSponsorship
-          )
-        )}
-      </main>
+        <div className="mt-4 mb-8 text-center">
+          <h1 className="text-5xl font-bold mb-8">The Urantia Papers</h1>
 
+          {/* Render filter toggle buttons */}
+          {showFilters ? (
+            <>
+              <button
+                className="bg-white text-sm md:text-xs text-black py-1.5 px-4 shadow-lg hover:bg-gray-400 transition duration-300 ease-in-out rounded-full"
+                onClick={() => setShowFilters(false)}
+              >
+                Hide Filters
+              </button>
+              <div className="flex flex-wrap justify-center gap-2 mt-8 mb-4">
+                {paperLabels.map((label) => (
+                  <button
+                    key={label}
+                    className={`px-3 py-1 rounded-full text-sm md:text-xs font-semibold ${
+                      activeFilters.includes(label)
+                        ? "bg-blue-600 text-white"
+                        : "bg-neutral-600 text-neutral-300"
+                    }`}
+                    onClick={() => toggleFilter(label)}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
+            </>
+          ) : (
+            <div className="flex flex-wrap justify-center gap-2 mb-4">
+              <button
+                className="bg-white text-sm md:text-xs text-black py-1.5 px-4 shadow-lg hover:bg-gray-400 transition duration-300 ease-in-out rounded-full"
+                onClick={() => setShowFilters(true)}
+              >
+                Filter by Topics
+              </button>
+            </div>
+          )}
+        </div>
+
+        {/* Render parts and papers */}
+        {sortedParts.map((part) => renderNode(part))}
+      </main>
       <Footer />
     </div>
   );

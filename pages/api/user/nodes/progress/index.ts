@@ -33,6 +33,9 @@ async function handlePOST(
     const { data } = await axios.post(
       `${process.env.NEXT_PUBLIC_URANTIA_DEV_API_HOST}/api/v1/urantia-book/progress`,
       {
+        includeReadIds: true,
+        includeUnreadIds: true,
+        invalidateCache: true,
         paperId,
         skipGlobalIds: nodes.map((node) => node.globalId),
       },
