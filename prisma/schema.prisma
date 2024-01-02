@@ -131,13 +131,16 @@ model SharedNode {
 }
 
 model User {
-  createdAt     DateTime @default(now())
-  email         String?  @unique
-  emailVerified Boolean?
-  id            String   @id @default(cuid())
-  image         String?
-  name          String?
-  updatedAt     DateTime @updatedAt
+  createdAt             DateTime @default(now())
+  email                 String?  @unique
+  emailVerified         Boolean?
+  id                    String   @id @default(cuid())
+  image                 String?
+  lastVisitedGlobalId   String?
+  lastVisitedPaperId    String?
+  lastVisitedPaperTitle String?
+  name                  String?
+  updatedAt             DateTime @updatedAt
 
   accounts     Account[]
   nodeComments NodeComment[]

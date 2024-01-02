@@ -18,7 +18,7 @@ type Activity = UBNode &
 
 const MyLibrary = () => {
   // Session.
-  const { data: session } = useSession();
+  const { status } = useSession();
 
   // Router.
   const router = useRouter();
@@ -28,13 +28,6 @@ const MyLibrary = () => {
   const [nodes, setNodes] = useState<Activity[]>([]);
   const [fetchingUser, setFetchingUser] = useState(true);
   const [fetchingNodes, setFetchingNodes] = useState(true);
-
-  // Redirect to homepage if not logged in.
-  useEffect(() => {
-    if (!session) {
-      window.location.href = "/";
-    }
-  }, [session]);
 
   // Fetch user data on component mount
   useEffect(() => {
@@ -62,9 +55,16 @@ const MyLibrary = () => {
       }
     };
 
-    void fetchUserData();
-    void fetchActivityData();
-  }, []);
+    if (status === "authenticated") {
+      void fetchUserData();
+      void fetchActivityData();
+      return;
+    }
+    if (status !== "loading") {
+      window.location.href = "/";
+      return;
+    }
+  }, [status]);
 
   const renderNode = (node: Activity) => {
     switch (node.type) {

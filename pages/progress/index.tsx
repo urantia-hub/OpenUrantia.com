@@ -10,7 +10,7 @@ import Spinner from "@/components/Spinner";
 
 const Progress = () => {
   // Session.
-  const { data: session } = useSession();
+  const { status } = useSession();
 
   // Progress state.
   const [progressResults, setProgressResults] = useState<ProgressResult[]>([]);
@@ -21,10 +21,10 @@ const Progress = () => {
 
   // Redirect to homepage if not logged in.
   useEffect(() => {
-    if (!session) {
+    if (status !== "authenticated" && status !== "loading") {
       window.location.href = "/";
     }
-  }, [session]);
+  }, [status]);
 
   // Fetch progress data on component mount.
   useEffect(() => {
@@ -58,7 +58,7 @@ const Progress = () => {
   }, [progressResults]);
 
   const renderPapers = () => {
-    if (!progressResults.length) {
+    if (!progressResults?.length) {
       return null;
     }
 

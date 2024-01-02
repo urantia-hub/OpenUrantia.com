@@ -15,29 +15,52 @@ type NavbarProps = {
 
 const Navbar = ({ paperId, paperTitle }: NavbarProps) => {
   // Hooks.
-  const { data: session } = useSession();
   const router = useRouter();
+  const { status } = useSession();
 
   // State.
-  const [lastReadNode, setLastReadNode] = useState<ReadNode | null>(null);
+  const [lastVisitedNode, setLastVisitedNode] =
+    useState<LastVisitedNode | null>(null);
   const [isSearchOpen, setIsSearchOpen] = useState<boolean>(false);
 
-  const fetchLastReadNode = async () => {
-    if (session) {
-      const response = await fetch(`/api/user/nodes/read?lastRead=true`, {
+  const fetchLastVisitedNode = async () => {
+    try {
+      const response = await fetch(`/api/user/nodes/last-visited`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
         },
       });
       const data = await response.json();
-      setLastReadNode(data);
+      setLastVisitedNode(data);
+      localStorage.setItem("lastVisitedNode", JSON.stringify(data));
+    } catch (error) {
+      console.error(`Unable to fetch last visited node`, error);
+
+      // Fallback to local storage.
+      console.warn(`Falling back to local storage for last visited node`);
+      const lastVisitedNode: LastVisitedNode = localStorage.getItem(
+        "lastVisitedNode"
+      )
+        ? JSON.parse(localStorage.getItem("lastVisitedNode") as string)
+        : null;
+      setLastVisitedNode(lastVisitedNode);
     }
   };
 
   useEffect(() => {
-    void fetchLastReadNode();
-  }, [session]);
+    if (status === "authenticated") {
+      fetchLastVisitedNode();
+    }
+    if (status === "unauthenticated") {
+      const lastVisitedNode: LastVisitedNode = localStorage.getItem(
+        "lastVisitedNode"
+      )
+        ? JSON.parse(localStorage.getItem("lastVisitedNode") as string)
+        : null;
+      setLastVisitedNode(lastVisitedNode);
+    }
+  }, [status]);
 
   useEffect(() => {
     // Prevent scrolling on background content when search is open.
@@ -81,8 +104,8 @@ const Navbar = ({ paperId, paperTitle }: NavbarProps) => {
                 : "text-gray-400"
             } line-clamp-1 hover:text-white hover:no-underline transition duration-300 ease-in-out`}
             href={
-              session && lastReadNode
-                ? `/papers/${lastReadNode.paperId}#${lastReadNode.globalId}`
+              status === "authenticated" && lastVisitedNode
+                ? `/papers/${lastVisitedNode.paperId}#${lastVisitedNode.globalId}`
                 : "/papers"
             }
           >
@@ -109,7 +132,7 @@ const Navbar = ({ paperId, paperTitle }: NavbarProps) => {
             </svg>
             Search
           </button>
-          {!session ? (
+          {status !== "authenticated" ? (
             <button
               className="flex-1 flex flex-col border-0 items-center p-0 text-xs text-center text-gray-400 line-clamp-1 hover:text-white hover:no-underline transition duration-300 ease-in-out focus:outline-none"
               onClick={() => {

@@ -5,32 +5,54 @@ import { useSession } from "next-auth/react";
 // Relative modules.
 import Footer from "@/components/Footer";
 import HeadTag from "@/components/HeadTag";
-import { ReadNode } from "@prisma/client";
 
 const HomePage = () => {
   // Hooks.
-  const { data: session } = useSession();
+  const { status } = useSession();
 
   // State.
-  const [lastReadNode, setLastReadNode] = useState<ReadNode | null>(null);
+  const [lastVisitedNode, setLastVisitedNode] =
+    useState<LastVisitedNode | null>(null);
   const [showDownButton, setShowDownButton] = useState<boolean>(true);
 
-  const fetchLastReadNode = async () => {
-    if (session) {
-      const response = await fetch(`/api/user/nodes/read?lastRead=true`, {
+  const fetchLastVisitedNode = async () => {
+    try {
+      const response = await fetch(`/api/user/nodes/last-visited`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
         },
       });
       const data = await response.json();
-      setLastReadNode(data);
+      setLastVisitedNode(data);
+      localStorage.setItem("lastVisitedNode", JSON.stringify(data));
+    } catch (error) {
+      console.error(`Unable to fetch last visited node`, error);
+
+      // Fallback to local storage.
+      console.warn(`Falling back to local storage for last visited node`);
+      const lastVisitedNode: LastVisitedNode = localStorage.getItem(
+        "lastVisitedNode"
+      )
+        ? JSON.parse(localStorage.getItem("lastVisitedNode") as string)
+        : null;
+      setLastVisitedNode(lastVisitedNode);
     }
   };
 
   useEffect(() => {
-    void fetchLastReadNode();
-  }, [session]);
+    if (status === "authenticated") {
+      fetchLastVisitedNode();
+    }
+    if (status === "unauthenticated") {
+      const lastVisitedNode: LastVisitedNode = localStorage.getItem(
+        "lastVisitedNode"
+      )
+        ? JSON.parse(localStorage.getItem("lastVisitedNode") as string)
+        : null;
+      setLastVisitedNode(lastVisitedNode);
+    }
+  }, [status]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -53,11 +75,11 @@ const HomePage = () => {
             Discover the Urantia Book
           </h1>
           <p className="text-lg mx-auto leading-relaxed max-w-2xl pb-10">
-            {session && lastReadNode?.paperId
+            {lastVisitedNode?.paperId
               ? `Welcome back! Ready to continue your journey reading ${
-                  lastReadNode.paperId === "0"
+                  lastVisitedNode.paperId === "0"
                     ? "the Foreword"
-                    : `Paper ${lastReadNode.paperId}`
+                    : `Paper ${lastVisitedNode.paperId}`
                 }?`
               : `Embark on an enlightening journey with a personalized, seamless
             reading experience.`}
@@ -65,12 +87,12 @@ const HomePage = () => {
           <Link
             className="bg-white text-black font-bold py-4 px-8 rounded-full shadow-xl hover:bg-blue-100 transition duration-300 ease-in-out"
             href={
-              session && lastReadNode?.paperId && lastReadNode?.globalId
-                ? `/papers/${lastReadNode.paperId}#${lastReadNode.globalId}`
+              lastVisitedNode?.paperId && lastVisitedNode?.globalId
+                ? `/papers/${lastVisitedNode.paperId}#${lastVisitedNode.globalId}`
                 : "/papers/0"
             }
           >
-            {session && lastReadNode
+            {lastVisitedNode
               ? "Continue right where you left off"
               : "Start Reading"}
           </Link>
@@ -180,16 +202,16 @@ const HomePage = () => {
           <Link
             className="bg-white text-black font-bold py-4 px-8 rounded-full shadow-xl hover:bg-blue-100 transition duration-300 ease-in-out"
             href={
-              session && lastReadNode?.paperId && lastReadNode?.globalId
-                ? `/papers/${lastReadNode.paperId}#${lastReadNode.globalId}`
+              lastVisitedNode?.paperId && lastVisitedNode?.globalId
+                ? `/papers/${lastVisitedNode.paperId}#${lastVisitedNode.globalId}`
                 : "/papers/0"
             }
           >
-            {session && lastReadNode?.paperId
+            {lastVisitedNode?.paperId
               ? `Continue reading ${
-                  lastReadNode.paperId === "0"
+                  lastVisitedNode.paperId === "0"
                     ? "the Foreword"
-                    : `Paper ${lastReadNode.paperId}`
+                    : `Paper ${lastVisitedNode.paperId}`
                 }`
               : "Start Reading"}
           </Link>

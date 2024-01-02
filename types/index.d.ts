@@ -52,3 +52,9 @@ interface ProgressResult {
   readGlobalIds: string[];
   unreadGlobalIds: string[];
 }
+
+interface LastVisitedNode {
+  globalId: string;
+  paperId: string;
+  paperTitle: string;
+}

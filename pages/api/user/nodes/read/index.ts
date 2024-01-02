@@ -126,7 +126,7 @@ export default async function handle(
     case "GET":
       return handleGET(req, res, sessionDetails.user);
     default:
-      res.setHeader("Allow", ["POST"]);
+      res.setHeader("Allow", ["POST", "GET"]);
       res.status(405).end(`Method ${method} Not Allowed`);
   }
 }

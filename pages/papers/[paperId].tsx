@@ -1,6 +1,7 @@
 // UBNode modules.
 import Link from "next/link";
 import moment from "moment";
+import throttle from "lodash/throttle";
 import { NodeComment, SavedNode } from "@prisma/client";
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
@@ -24,8 +25,9 @@ type PaperPageProps = {
 };
 
 const PaperPage = ({ paperData }: PaperPageProps) => {
-  const { data: session } = useSession();
+  // Hooks.
   const router = useRouter();
+  const { status } = useSession();
 
   // Toggled states.
   const [expandedGlobalId, setExpandedGlobalId] = useState<string>("");
@@ -57,6 +59,29 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
     Record<string, { startsAt: number; node: UBNode }>
   >({});
   const readNodesRef = useRef<Set<string>>(new Set());
+
+  // Get the nodes from the paper data.
+  const nodes = paperData.data.results;
+
+  // Get paper details.
+  const paperId = nodes[0].paperId;
+  const paperTitle = nodes[0].paperTitle;
+  const paperIdNumber = parseInt(nodes[0].paperId);
+  const nextPaperId = paperIdNumber < 196 ? paperIdNumber + 1 : null;
+
+  // Calculate nodes for modals.
+  const explainNode = selectedGlobalIdExplain
+    ? nodes.find((node) => node.globalId === selectedGlobalIdExplain)
+    : undefined;
+  const commentNode = selectedGlobalIdComment
+    ? nodes.find((node) => node.globalId === selectedGlobalIdComment)
+    : undefined;
+  const relatedWorksNode = selectedGlobalIdRelatedWorks
+    ? nodes.find((node) => node.globalId === selectedGlobalIdRelatedWorks)
+    : undefined;
+  const shareNode = selectedGlobalIdShare
+    ? nodes.find((node) => node.globalId === selectedGlobalIdShare)
+    : undefined;
 
   const fetchNodeComments = async () => {
     try {
@@ -94,7 +119,7 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
     }
 
     // Skip if you are not logged in
-    if (!session) {
+    if (status !== "authenticated") {
       console.log(
         `Skipping marking node ${node.globalId} as read because user is not logged in.`
       );
@@ -137,7 +162,7 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
     }
   };
 
-  const handleParagraphInView = (node: UBNode) => {
+  const handleParagraphReadInView = (node: UBNode) => {
     // Check if the node has already been marked as read
     if (readNodesRef.current.has(node.globalId)) {
       console.log(
@@ -153,8 +178,57 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
     }
   };
 
+  const updateLastVisitedNode = async (
+    globalId: string,
+    paperId: string,
+    paperTitle: string
+  ) => {
+    // Update local storage.
+    localStorage.setItem(
+      "lastVisitedNode",
+      JSON.stringify({ globalId, paperId, paperTitle })
+    );
+
+    // Skip if you are not logged in
+    if (status !== "authenticated") {
+      console.log(
+        `✅ Updated last visited node (${globalId}) in local storage only because user is not logged in.`
+      );
+      return;
+    }
+
+    // Update the user's last visited node.
+    try {
+      const response = await fetch("/api/user/nodes/last-visited", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ globalId, paperId, paperTitle }),
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const lastVisitedNode = await response.json();
+      console.log("✅ Updated user with last visited node:", lastVisitedNode);
+
+      // Update the user's last visited node in local storage.
+      localStorage.setItem("lastVisitedNode", JSON.stringify(lastVisitedNode));
+    } catch (error) {
+      console.error("Error updating last visited node:", error);
+    }
+  };
+
+  // Now throttle the safe version of the update function
+  const throttledUpdate = throttle(updateLastVisitedNode, 2000);
+
   // Fetch saved globalIds on mount
   useEffect(() => {
+    if (status !== "authenticated") {
+      console.log("Skipping saved globalIds because user is not logged in.");
+      return;
+    }
+
     const fetchSavedGlobalIds = async () => {
       try {
         const response = await fetch(
@@ -171,15 +245,27 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
     };
 
     fetchSavedGlobalIds();
-  }, [paperData.data.results]);
+  }, [paperData.data.results, status]);
 
   // Fetch node comments on mount
   useEffect(() => {
-    void fetchNodeComments();
-  }, [paperData.data.results]);
+    if (status !== "authenticated") {
+      console.log("Skipping node comments because user is not logged in.");
+      return;
+    }
+
+    fetchNodeComments();
+  }, [paperData.data.results, status]);
 
   // Start reading timer checks.
   useEffect(() => {
+    if (status !== "authenticated") {
+      console.log(
+        "Skipping reading timer checks because user is not logged in."
+      );
+      return;
+    }
+
     const interval = setInterval(() => {
       const currentReadings = readingNodesRef.current;
       Object.entries(currentReadings).forEach(
@@ -209,10 +295,17 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
     }, 1000); // Check every second
 
     return () => clearInterval(interval);
-  }, []);
+  }, [status]);
 
   // Start observing paragraphs and when they come into view, start the reading timer.
   useEffect(() => {
+    if (status !== "authenticated") {
+      console.log(
+        "Skipping paragraph observer (for reading) because user is not logged in."
+      );
+      return;
+    }
+
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -236,10 +329,58 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
 
           if (entry.isIntersecting) {
             // Paragraph comes into view
-            handleParagraphInView(node);
+            handleParagraphReadInView(node);
           } else {
             // Paragraph leaves view
             resetReadingTime(globalId);
+          }
+        });
+      },
+      { threshold: 0.5 } // Threshold means that 50% of the paragraph must be in the viewport
+    );
+
+    document.querySelectorAll(".paragraph").forEach((node) => {
+      observer.observe(node);
+    });
+
+    return () => observer.disconnect();
+  }, [paperData, status]);
+
+  // Start observing paragraphs and when they come into view, start the reading timer.
+  useEffect(() => {
+    let visibleNodes = new Map();
+    let currentTopNode: any = null;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          const globalId = entry.target.getAttribute("id");
+
+          if (entry.isIntersecting) {
+            visibleNodes.set(globalId, entry.target);
+          } else {
+            visibleNodes.delete(globalId);
+          }
+
+          if (visibleNodes.size > 0) {
+            // Find the topmost visible node
+            const topNode = Array.from(visibleNodes.values()).reduce(
+              (top, current) =>
+                top.getBoundingClientRect().top <
+                current.getBoundingClientRect().top
+                  ? top
+                  : current
+            );
+
+            // Update the user's last visited node if it has changed
+            if (
+              topNode &&
+              topNode.getAttribute("id") !== currentTopNode &&
+              window.location.href.includes("/papers/")
+            ) {
+              currentTopNode = topNode.getAttribute("id");
+              throttledUpdate(currentTopNode, paperId, paperTitle);
+            }
           }
         });
       },
@@ -306,7 +447,7 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
         }
       }
     }
-  }, [router.asPath]);
+  }, [router.asPath, router.query, router.pathname]);
 
   // Show a spinner until the content has loaded.
   if (!paperData) {
@@ -390,7 +531,7 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
     }
 
     // Escape early if we aren't logged in.
-    if (!session) {
+    if (status !== "authenticated") {
       console.warn("User is not logged in, cannot save global ID.");
       return;
     }
@@ -531,7 +672,7 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
                       >
                         Explain
                       </button> */}
-                      {session && (
+                      {status === "authenticated" && (
                         <>
                           <button
                             className="bg-transparent border-none p-0 m-0 mr-2 focus:outline-none text-gray-400 text-sm hover:text-white transition duration-300 ease-in-out"
@@ -558,7 +699,7 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
                       >
                         Share
                       </button>
-                      {session && (
+                      {status === "authenticated" && (
                         <>
                           <span className="mr-2">|</span>
                           <button
@@ -600,29 +741,6 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
       }
     }
   };
-
-  // Get the nodes from the paper data.
-  const nodes = paperData.data.results;
-
-  // Get paper details.
-  const paperId = nodes[0].paperId;
-  const paperTitle = nodes[0].paperTitle;
-  const paperIdNumber = parseInt(nodes[0].paperId);
-  const nextPaperId = paperIdNumber < 196 ? paperIdNumber + 1 : null;
-
-  // Calculate nodes for modals.
-  const explainNode = selectedGlobalIdExplain
-    ? nodes.find((node) => node.globalId === selectedGlobalIdExplain)
-    : undefined;
-  const commentNode = selectedGlobalIdComment
-    ? nodes.find((node) => node.globalId === selectedGlobalIdComment)
-    : undefined;
-  const relatedWorksNode = selectedGlobalIdRelatedWorks
-    ? nodes.find((node) => node.globalId === selectedGlobalIdRelatedWorks)
-    : undefined;
-  const shareNode = selectedGlobalIdShare
-    ? nodes.find((node) => node.globalId === selectedGlobalIdShare)
-    : undefined;
 
   // Page content
   return (
