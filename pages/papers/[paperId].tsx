@@ -365,7 +365,7 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
           }
         });
       },
-      { threshold: 0.5 } // Threshold means that 50% of the paragraph must be in the viewport
+      { threshold: 0.2 } // Threshold means that 50% of the paragraph must be in the viewport
     );
 
     document.querySelectorAll(".paragraph").forEach((node) => {
@@ -375,7 +375,7 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
     return () => observer.disconnect();
   }, [paperData, status]);
 
-  // Start observing paragraphs and when they come into view, start the reading timer.
+  // Start observing paragraphs and when they come into view, update the user's last visited node.
   useEffect(() => {
     let visibleNodes = new Map();
     let currentTopNode: any = null;
@@ -413,7 +413,7 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
           }
         });
       },
-      { threshold: 0.5 } // Threshold means that 50% of the paragraph must be in the viewport
+      { threshold: 0.2 } // Threshold means that 20% of the paragraph must be in the viewport
     );
 
     document.querySelectorAll(".paragraph").forEach((node) => {
