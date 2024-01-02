@@ -39,12 +39,14 @@ const ReadPage = ({ partsData }: TOCPageProps) => {
 
   // Function to determine if a paper should be shown based on active filters.
   const shouldShowPaper = (paperId: string) => {
-    console.log("paperId", paperId);
     const labels = paperLabelsLookup[paperId as keyof typeof paperLabelsLookup];
-    console.log("labels", labels);
+
     // If no filters are active, all papers should be shown.
     if (activeFilters.length === 0) return true;
+
+    // If a paper has no labels, it should not be shown.
     if (!labels) return false;
+
     // Otherwise, only show papers that match at least one active filter.
     return labels.some((label) => activeFilters.includes(label));
   };
