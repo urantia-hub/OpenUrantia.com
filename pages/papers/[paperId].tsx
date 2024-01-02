@@ -674,7 +674,7 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
               >
                 <div className="flex items-center">
                   <span className="flex items-center text-xs">
-                    {node.globalId?.split(":")[1]}{" "}
+                    {node.standardReferenceId}{" "}
                     {readNode && (
                       <span
                         className="ml-1 text-xs text-gray-400 cursor-help fade-in"
@@ -716,7 +716,8 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
                         type="button"
                       >
                         Explain
-                      </button> */}
+                      </button>
+                      <span className="mr-2">|</span> */}
                       {status === "authenticated" && (
                         <>
                           <button

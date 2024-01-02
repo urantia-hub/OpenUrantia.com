@@ -10,6 +10,7 @@ type UBNode = {
   partId: string;
   sectionId?: string;
   sectionTitle?: string;
+  standardReferenceId?: string;
   text?: string;
   type: string;
 };
@@ -20,6 +21,7 @@ interface UBNodeLeadingTextProps {
   paperTitle: string;
   sectionId: string;
   sectionTitle: string;
+  standardReferenceId: string;
 }
 
 interface SearchResult {
@@ -35,6 +37,7 @@ interface SearchResult {
   sectionId: string;
   sectionTitle: string;
   sortId: string;
+  standardReferenceId: string;
   text: string;
   type: string;
   typeRank: number;

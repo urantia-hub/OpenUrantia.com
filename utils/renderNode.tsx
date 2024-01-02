@@ -60,14 +60,8 @@ export const renderLeadingSectionText = (result: {
   }
 };
 
-export const renderGlobalId = (result: { globalId: string }) => {
-  // Only take what's after the `:`
-  const globalId = result.globalId.split(":")[1];
-  return globalId;
-};
-
 export const renderLeadingText = (result: UBNodeLeadingTextProps) => {
   return `${renderLeadingPaperText(result)} - ${renderLeadingSectionText(
     result
-  )} (${renderGlobalId(result)})`;
+  )} (${result.standardReferenceId})`;
 };
