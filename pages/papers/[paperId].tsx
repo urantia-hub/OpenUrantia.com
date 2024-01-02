@@ -677,7 +677,7 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
                     {node.globalId?.split(":")[1]}{" "}
                     {readNode && (
                       <span
-                        className="ml-1 text-xs text-gray-400 cursor-help"
+                        className="ml-1 text-xs text-gray-400 cursor-help fade-in"
                         title={readNode ? `You read the paragraph` : ""}
                       >
                         <svg
