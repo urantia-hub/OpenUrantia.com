@@ -141,7 +141,10 @@ const ReadPage = ({ partsData }: TOCPageProps) => {
             <>
               <button
                 className="bg-white text-sm md:text-xs text-black py-1.5 px-4 shadow-lg hover:bg-gray-400 transition duration-300 ease-in-out rounded-full"
-                onClick={() => setShowFilters(false)}
+                onClick={() => {
+                  setShowFilters(false);
+                  setActiveFilters([]);
+                }}
               >
                 Hide Filters
               </button>
