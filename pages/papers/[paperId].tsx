@@ -669,15 +669,15 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
           >
             <div className="text-lg leading-relaxed">
               <div
-                className="flex items-center justify-between block mb-2 text-gray-400 text-sm"
+                className="flex items-center justify-between block mb-1 text-gray-400 text-sm"
                 style={{ minHeight: "24px" }}
               >
                 <div className="flex items-center">
                   <span className="flex items-center text-xs">
                     {node.standardReferenceId}{" "}
-                    {readNode && (
+                    {/* {readNode && (
                       <span
-                        className="ml-1 text-xs text-gray-400 cursor-help"
+                        className="ml-1 text-xs text-gray-400 cursor-help select-none"
                         title={readNode ? `You read the paragraph` : ""}
                       >
                         <svg
@@ -687,11 +687,11 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
                           <path d="M1.232 55.541a3.746 3.746 0 0 1 5.025-5.554L40.31 80.865l76.099-79.699a3.752 3.752 0 0 1 5.438 5.173L43.223 88.683l-.005-.005a3.746 3.746 0 0 1-5.227.196L1.232 55.541z" />
                         </svg>
                       </span>
-                    )}
+                    )} */}
                   </span>
                   {savedNode && (
                     <Link
-                      className="ml-2 text-xs bg-emerald-600 text-white font-bold py-1 px-2 rounded-full hover:no-underline"
+                      className="ml-2 text-xs bg-emerald-600 text-white font-bold py-1 px-2 rounded-full hover:no-underline select-none"
                       href={`/my-library?createdAt=${savedNode.createdAt}`}
                     >
                       Saved Quote
@@ -699,7 +699,7 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
                   )}
                   {nodeCommentsForNode.length > 0 ? (
                     <Link
-                      className="ml-2 text-xs bg-orange-600 text-white font-bold py-1 px-2 rounded-full hover:no-underline"
+                      className="ml-2 text-xs bg-orange-600 text-white font-bold py-1 px-2 rounded-full hover:no-underline select-none"
                       href={`/my-library?createdAt=${nodeCommentsForNode[0].createdAt}`}
                     >
                       {nodeCommentsForNode.length} Comment
@@ -707,7 +707,7 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
                     </Link>
                   ) : null}
                 </div>
-                <div className="flex items-center">
+                <div className="flex items-center select-none">
                   {expandedGlobalId === node.globalId && (
                     <div className="flex items-center mr-2 fade-in">
                       {/* <button
