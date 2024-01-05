@@ -5,6 +5,7 @@ import { useSession } from "next-auth/react";
 // Relative modules.
 import Footer from "@/components/Footer";
 import HeadTag from "@/components/HeadTag";
+import HomepageNavbar from "@/components/HomepageNavbar";
 
 const HomePage = () => {
   // Hooks.
@@ -67,6 +68,8 @@ const HomePage = () => {
     <div className="flex flex-col min-h-screen text-white bg-neutral-900">
       <HeadTag />
 
+      <HomepageNavbar />
+
       <main>
         {/* Hero Section */}
         <section className="hero-image min-h-screen pt-16 md:pt-56 px-6 md:px-12 text-center bg-cover bg-center bg-neutral-900">
@@ -75,7 +78,7 @@ const HomePage = () => {
             Discover the Urantia Papers
           </h1>
           <p className="text-lg mx-auto leading-relaxed max-w-2xl pb-10">
-            {lastVisitedNode?.paperId
+            {lastVisitedNode?.paperId && status === "authenticated"
               ? `Welcome back! Ready to continue your journey reading ${
                   lastVisitedNode.paperId === "0"
                     ? "the Foreword"
@@ -87,12 +90,14 @@ const HomePage = () => {
           <Link
             className="bg-white text-black font-bold py-4 px-8 rounded-full shadow-xl hover:bg-blue-100 transition duration-300 ease-in-out"
             href={
-              lastVisitedNode?.paperId && lastVisitedNode?.globalId
+              lastVisitedNode?.paperId &&
+              lastVisitedNode?.globalId &&
+              status === "authenticated"
                 ? `/papers/${lastVisitedNode.paperId}#${lastVisitedNode.globalId}`
-                : "/papers/0"
+                : "/papers"
             }
           >
-            {lastVisitedNode
+            {lastVisitedNode && status === "authenticated"
               ? "Continue right where you left off"
               : "Start Reading"}
           </Link>
@@ -202,12 +207,14 @@ const HomePage = () => {
           <Link
             className="bg-white text-black font-bold py-4 px-8 rounded-full shadow-xl hover:bg-blue-100 transition duration-300 ease-in-out"
             href={
-              lastVisitedNode?.paperId && lastVisitedNode?.globalId
+              lastVisitedNode?.paperId &&
+              lastVisitedNode?.globalId &&
+              status === "authenticated"
                 ? `/papers/${lastVisitedNode.paperId}#${lastVisitedNode.globalId}`
-                : "/papers/0"
+                : "/papers"
             }
           >
-            {lastVisitedNode?.paperId
+            {lastVisitedNode?.paperId && status === "authenticated"
               ? `Continue reading ${
                   lastVisitedNode.paperId === "0"
                     ? "the Foreword"
