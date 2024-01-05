@@ -95,7 +95,7 @@ const ReadPage = ({ partsData }: TOCPageProps) => {
       }
       case "paper": {
         // Foreword is a special case; handle it separately.
-        if (node.paperId === "0") {
+        if (node.paperId === "0" && shouldShowPaper(node.paperId as string)) {
           return (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 pb-6">
               <Link
@@ -126,6 +126,7 @@ const ReadPage = ({ partsData }: TOCPageProps) => {
   };
 
   // Extract parts and sort them by partId
+  const foreword = partsData.find((part) => part.paperId === "0");
   const sortedParts = partsData
     .filter((part) => part.type === "part")
     .sort((a, b) => parseInt(a.partId) - parseInt(b.partId));
@@ -179,6 +180,7 @@ const ReadPage = ({ partsData }: TOCPageProps) => {
         </div>
 
         {/* Render parts and papers */}
+        {foreword && renderNode(foreword)}
         {sortedParts.map((part) => renderNode(part))}
       </main>
       <Footer />
