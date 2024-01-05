@@ -1,4 +1,5 @@
 // Node modules.
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
@@ -104,7 +105,7 @@ const HomePage = () => {
 
           {showDownButton && (
             <div
-              className="fade-in fixed bottom-0 left-0 right-0 mx-auto w-12 h-12 mb-8 bg-neutral-900/90 rounded-full p-2"
+              className="fade-in fixed bottom-0 left-0 right-0 mx-auto w-12 h-12 mb-8 bg-neutral-900/80 rounded-full p-2 z-10 cursor-pointer hover:bg-neutral-900/100 transition duration-300 ease-in-out"
               onClick={() => {
                 const afterHero = document.getElementById("after-hero");
                 afterHero?.scrollIntoView({
@@ -193,17 +194,29 @@ const HomePage = () => {
               />
             ))}
           </div>
+          <div className="flex flex-col items-center mt-8 md:mt-16 px-4">
+            <Image
+              alt="hand holding holographic world with cityscape in background"
+              className="border-4 border-white rounded-xl"
+              height={800}
+              layout="intrinsic"
+              src="/vision.png"
+              width={800}
+            />
+          </div>
         </section>
 
         {/* Secondary CTA */}
-        <section className="flex flex-col items-center py-20 lg:py-12 bg-gradient-to-br from-sky-400 to-blue-800">
+        <section className="flex flex-col items-center py-20 bg-gradient-to-br from-sky-400 to-blue-800">
           <h2 className="text-3xl font-semibold mb-4 px-4 lg:px-0 text-left w-full lg:text-center">
-            Join the Journey
+            {status === "authenticated" ? "Continue" : "Join"} the Journey
           </h2>
-          <p className="text-lg mx-auto leading-relaxed max-w-2xl pb-8 px-4 lg:px-0">
-            We&apos;re just getting started. Begin reading the Urantia Papers
-            today.
-          </p>
+          {status !== "authenticated" && (
+            <p className="text-lg mx-auto leading-relaxed max-w-2xl pb-8 px-4 lg:px-0">
+              We&apos;re just getting started. Begin reading the Urantia Papers
+              today.
+            </p>
+          )}
           <Link
             className="bg-white text-black font-bold py-4 px-8 rounded-full shadow-xl hover:bg-blue-100 transition duration-300 ease-in-out"
             href={

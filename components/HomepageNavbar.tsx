@@ -1,4 +1,5 @@
 // Node modules.
+import Image from "next/image";
 import Link from "next/link";
 import { signIn, signOut, useSession } from "next-auth/react";
 import { useState, useEffect } from "react";
@@ -66,11 +67,21 @@ const HomepageNavbar = () => {
 
   return (
     <>
-      <header className="flex flex-col items-center pt-2 pb-1 px-2 fixed top-0 left-0 right-0 z-10 bg-black/90 mx-auto">
+      <header className="flex flex-col items-center pt-2 pb-1 px-2 fixed top-0 left-0 right-0 z-10 mx-auto bg-gradient-to-b from-black to-transparent backdrop-filter backdrop-blur-sm">
         <div className="flex items-center justify-between w-full max-w-5xl pt-1 pb-2">
           <Link className="text-2xl text-left hover:no-underline" href="/">
-            <h1 className="font-bold tracking-wide text-base md:text-2xl">
-              <span className="font-light">Open</span>Urantia
+            <h1 className="flex items-center font-bold tracking-wide text-base md:text-2xl">
+              <span className="flex items-center font-light">
+                <Image
+                  alt="logo w-20 h-20 md:w-30 md:h-30"
+                  className="w-6 h-6 -mr-1 md:w-8 md:h-8"
+                  src="/logo-white.png"
+                  width={30}
+                  height={30}
+                />
+                pen
+              </span>
+              Urantia
             </h1>
           </Link>
           <div className="flex justify-end text-sm md:text-base">

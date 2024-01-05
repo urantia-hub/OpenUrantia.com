@@ -11,7 +11,7 @@ const HeadTag = ({ metaDescription, titlePrefix }: HeadTagProps) => {
       <title>
         {titlePrefix ? `${titlePrefix} | OpenUrantia` : "OpenUrantia"}
       </title>
-      <link rel="icon" href="/logo.png" />
+      <link rel="icon" href="/logo-black-circular.png" />
       <meta
         name="description"
         content={
