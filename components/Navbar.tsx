@@ -6,7 +6,6 @@ import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
 // Relative modules.
 import PaperNavbar from "@/components/PaperNavbar";
-import Search from "@/components/Search";
 
 type NavbarProps = {
   paperId?: number;
@@ -117,12 +116,13 @@ const Navbar = ({ paperId, paperTitle }: NavbarProps) => {
             </svg>
             Read
           </Link>
-          <button
-            className={`flex-1 flex flex-col border-0 items-center p-0 text-xs text-center ${
-              isSearchOpen ? "text-white" : "text-gray-400"
-            } line-clamp-1 hover:text-white hover:no-underline transition duration-300 ease-in-out focus:outline-none`}
-            onClick={() => setIsSearchOpen(true)}
-            type="button"
+          <Link
+            className={`flex-1 flex flex-col items-center text-xs text-center ${
+              router.asPath.startsWith("/search")
+                ? "text-white"
+                : "text-gray-400"
+            } line-clamp-1 hover:text-white hover:no-underline transition duration-300 ease-in-out`}
+            href="/search"
           >
             <svg
               className="w-6 h-6 fill-current mb-1"
@@ -131,7 +131,7 @@ const Navbar = ({ paperId, paperTitle }: NavbarProps) => {
               <path d="M48.319 0C61.662 0 73.74 5.408 82.484 14.152s14.152 20.823 14.152 34.166c0 12.809-4.984 24.451-13.117 33.098.148.109.291.23.426.364l34.785 34.737a3.723 3.723 0 0 1-5.25 5.28L78.695 87.06a3.769 3.769 0 0 1-.563-.715 48.116 48.116 0 0 1-29.814 10.292c-13.343 0-25.423-5.408-34.167-14.152C5.408 73.741 0 61.661 0 48.318s5.408-25.422 14.152-34.166C22.896 5.409 34.976 0 48.319 0zm28.763 19.555c-7.361-7.361-17.53-11.914-28.763-11.914s-21.403 4.553-28.764 11.914c-7.361 7.361-11.914 17.53-11.914 28.763s4.553 21.403 11.914 28.764c7.36 7.361 17.53 11.914 28.764 11.914 11.233 0 21.402-4.553 28.763-11.914 7.361-7.36 11.914-17.53 11.914-28.764 0-11.233-4.553-21.402-11.914-28.763z" />
             </svg>
             Search
-          </button>
+          </Link>
           {status !== "authenticated" ? (
             <button
               className="flex-1 flex flex-col border-0 items-center p-0 text-xs text-center text-gray-400 line-clamp-1 hover:text-white hover:no-underline transition duration-300 ease-in-out focus:outline-none"
@@ -204,8 +204,6 @@ const Navbar = ({ paperId, paperTitle }: NavbarProps) => {
           )}
         </div>
       </header>
-
-      {isSearchOpen && <Search onClose={onResetState} />}
     </>
   );
 };

@@ -2,8 +2,6 @@
 import Link from "next/link";
 import { signIn, signOut, useSession } from "next-auth/react";
 import { useState, useEffect } from "react";
-// Relative modules.
-import Search from "@/components/Search";
 
 const HomepageNavbar = () => {
   // Hooks.
@@ -110,8 +108,6 @@ const HomepageNavbar = () => {
           </div>
         </div>
       </header>
-
-      {isSearchOpen && <Search onClose={onResetState} />}
     </>
   );
 };

@@ -4,12 +4,12 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 // Relative modules.
 import { renderLeadingText } from "@/utils/renderNode";
+import HeadTag from "@/components/HeadTag";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
+import Spinner from "@/components/Spinner";
 
-interface SearchProps {
-  onClose: () => void;
-}
-
-const Search = ({ onClose }: SearchProps) => {
+const Search = () => {
   // Router.
   const router = useRouter();
 
@@ -22,6 +22,11 @@ const Search = ({ onClose }: SearchProps) => {
 
   // Debounce function to delay the API call
   useEffect(() => {
+    if (!query) {
+      setResults([]);
+      return;
+    }
+
     setIsWaiting(true);
 
     const delayDebounceFn = setTimeout(() => {
@@ -34,18 +39,6 @@ const Search = ({ onClose }: SearchProps) => {
 
     return () => clearTimeout(delayDebounceFn);
   }, [query]);
-
-  useEffect(() => {
-    const handleKeyDown = (event: any) => {
-      if (event.key === "Escape") {
-        onClose();
-      }
-    };
-
-    window.addEventListener("keydown", handleKeyDown);
-
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [onClose]);
 
   const search = async (searchQuery: string) => {
     setIsLoading(true);
@@ -106,32 +99,19 @@ const Search = ({ onClose }: SearchProps) => {
   };
 
   return (
-    <div
-      className="fixed inset-0 flex flex-col items-center z-50 bg-neutral-800"
-      style={{
-        bottom: router.asPath.startsWith("/papers/") ? "137px" : "69px",
-      }}
-    >
-      {/* X button to close modal */}
-      <button
-        className="absolute top-8 right-6 text-white text-2xl font-bold border-0 bg-transparent focus:outline-none p-0"
-        onClick={onClose}
-        type="button"
-      >
-        <svg className="w-5 h-5 fill-current" viewBox="0 0 122.878 122.88">
-          <path d="M1.426 8.313a4.87 4.87 0 0 1 6.886-6.886l53.127 53.127 53.127-53.127a4.87 4.87 0 1 1 6.887 6.886L68.324 61.439l53.128 53.128a4.87 4.87 0 0 1-6.887 6.886L61.438 68.326 8.312 121.453a4.868 4.868 0 1 1-6.886-6.886l53.127-53.128L1.426 8.313z" />
-        </svg>
-      </button>
+    <div className="flex flex-col min-h-screen bg-neutral-800 text-white">
+      <HeadTag titlePrefix="Search" />
 
-      {/* Search field + results */}
-      <div className="flex flex-col items-center w-full h-full max-w-3xl px-8 py-6">
+      <Navbar />
+
+      <main className="mt-8 flex-grow container mx-auto px-4 my-4 max-w-3xl paper-content">
         <h1 className="text-2xl md:text-4xl text-white font-bold mb-8 text-center">
           Search the Urantia Papers
         </h1>
         <div className="relative flex items-center w-full mb-8 pb-2">
           <input
             autoFocus
-            className="w-full bg-transparent border-b border-white/50 text-white text-xl focus:outline-none px-4"
+            className="w-full bg-transparent border-b border-white/50 text-white rounded-full focus:outline-none px-4"
             id="search"
             onChange={handleSearchInput}
             onKeyDown={handleKeyPress}
@@ -150,20 +130,26 @@ const Search = ({ onClose }: SearchProps) => {
           </p>
           {query && (
             <button
-              className="absolute top-2 right-2 font-bold text-white text-2xl border-0 bg-transparent focus:outline-none p-1 text-sm"
+              className="absolute top-0.5 right-4 text-gray-200 text-xl border-0 bg-transparent focus:outline-none p-1 hover:text-white transition-colors duration-200"
               onClick={() => {
                 setQuery("");
                 document.getElementById("search")?.focus();
               }}
               type="button"
             >
-              x
+              &times;
             </button>
           )}
         </div>
 
+        {isLoading && !results.length && (
+          <div className="flex justify-center">
+            <Spinner />
+          </div>
+        )}
+
         {/* Results */}
-        <div className="flex flex-col max-h-[calc(100vh-200px)] overflow-y-auto">
+        <div className="flex flex-col">
           {results?.map((result) => (
             <Link
               className="mb-6 text-left hover:no-underline"
@@ -171,7 +157,6 @@ const Search = ({ onClose }: SearchProps) => {
               href={`/papers/${result.paperId}#${
                 result.globalId
               }?q=${encodeURIComponent(query)}`}
-              onClick={onClose}
             >
               <div className="leading-relaxed">
                 <div className="flex flex-col block mb-1 text-gray-400 text-xs">
@@ -187,7 +172,9 @@ const Search = ({ onClose }: SearchProps) => {
             </Link>
           ))}
         </div>
-      </div>
+      </main>
+
+      <Footer />
     </div>
   );
 };
