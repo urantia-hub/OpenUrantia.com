@@ -73,7 +73,7 @@ const HomepageNavbar = () => {
               <span className="font-light">Open</span>Urantia
             </h1>
           </Link>
-          <div className="flex justify-end text-sm md:text-lg">
+          <div className="flex justify-end text-sm md:text-base">
             <Link
               className="text-center hover:no-underline mr-4 md:mr-6 text-gray-200 hover:text-white transition-colors duration-200"
               href={
