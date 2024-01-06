@@ -24,7 +24,7 @@ const PaperNavbar = ({ paperId, paperTitle }: PaperNavbarProps) => {
         </svg>
       </Link>
       <Link
-        className="flex-1 py-2 text-sm font-bold text-center line-clamp-1 hover:text-white hover:no-underline transition duration-300 ease-in-out"
+        className="flex-1 py-2 text-sm font-bold text-center whitespace-nowrap overflow-hidden text-ellipsis hover:text-white hover:no-underline transition duration-300 ease-in-out"
         href="/papers"
       >
         {paperId > 0 ? `Paper ${paperId} - ${paperTitle}` : "Foreword"}
