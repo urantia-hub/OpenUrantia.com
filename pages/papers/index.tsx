@@ -72,7 +72,7 @@ const ReadPage = ({ partsData }: TOCPageProps) => {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {papers.map((paper) => (
                 <Link
-                  className="block px-4 pt-2 pb-4 mb-4 bg-neutral-700 rounded hover:bg-neutral-600 transition-colors hover:no-underline"
+                  className="block px-4 py-2 mb-2 bg-neutral-700 rounded hover:bg-neutral-600 transition-colors hover:no-underline"
                   href={`/papers/${paper.paperId}`}
                   key={paper.globalId}
                 >
@@ -99,7 +99,7 @@ const ReadPage = ({ partsData }: TOCPageProps) => {
           return (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 pb-6">
               <Link
-                className="block px-4 pt-2 pb-4  bg-neutral-700 rounded hover:bg-neutral-600 transition-colors hover:no-underline"
+                className="block px-4 py-2 bg-neutral-700 rounded hover:bg-neutral-600 transition-colors hover:no-underline"
                 href={`/papers/${node.paperId}`}
               >
                 <div className="flex justify-between text-xs text-gray-400">
