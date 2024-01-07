@@ -2,6 +2,7 @@ type UBNode = {
   globalId: string;
   htmlText?: string;
   language: string;
+  mp3Url?: string;
   objectID: string;
   paperId: string;
   paperSectionId?: string;

@@ -1,17 +1,26 @@
 // Node modules.
 import Link from "next/link";
-import { signIn, signOut, useSession } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
 // Relative modules.
 import PaperNavbar from "@/components/PaperNavbar";
 
 type NavbarProps = {
+  audioContent?: JSX.Element;
+  audioOnPlay?: () => void;
   paperId?: number;
   paperTitle?: string;
+  showAudio?: boolean;
 };
 
-const Navbar = ({ paperId, paperTitle }: NavbarProps) => {
+const Navbar = ({
+  audioContent,
+  audioOnPlay,
+  paperId,
+  paperTitle,
+  showAudio,
+}: NavbarProps) => {
   // Hooks.
   const router = useRouter();
   const { status } = useSession();
@@ -62,7 +71,13 @@ const Navbar = ({ paperId, paperTitle }: NavbarProps) => {
   return (
     <>
       <header className="flex flex-col items-center pt-2 pb-1 px-2 fixed bottom-0 left-0 right-0 z-10 bg-neutral-800 border-t border-neutral-700 mx-auto">
-        <PaperNavbar paperId={paperId} paperTitle={paperTitle} />
+        <PaperNavbar
+          audioContent={audioContent}
+          audioOnPlay={audioOnPlay}
+          paperId={paperId}
+          paperTitle={paperTitle}
+          showAudio={showAudio}
+        />
 
         <div className="flex items-center justify-around w-full max-w-md pt-1 pb-2">
           <Link

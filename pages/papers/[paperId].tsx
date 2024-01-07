@@ -17,6 +17,7 @@ import Share from "@/components/Share";
 import Spinner from "@/components/Spinner";
 
 const AVERAGE_READING_SPEED = 300; // Words per minute
+const NEXT_AUDIO_DELAY = 300; // Milliseconds
 
 type PaperPageProps = {
   paperData: {
@@ -44,6 +45,15 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
   const [savingGlobalIds, setSavingGlobalIds] = useState<string[]>([]);
   const [savingErrorGlobalIds, setSavingErrorGlobalIds] = useState<string[]>(
     []
+  );
+
+  // Audio states.
+  const audioTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const [isPlaying, setIsPlaying] = useState<boolean>(false);
+  const [isTransitioning, setIsTransitioning] = useState<boolean>(false);
+  const [currentPlayingNode, setCurrentPlayingNode] = useState<number | null>(
+    null
   );
 
   // Modal states.
@@ -84,6 +94,83 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
   const shareNode = selectedGlobalIdShare
     ? nodes.find((node) => node.globalId === selectedGlobalIdShare)
     : undefined;
+
+  const playAudio = async (nodeIndex: number = 0) => {
+    // If there's already an audio and it's for the current node, resume it
+    if (audioRef.current && currentPlayingNode === nodeIndex) {
+      try {
+        await audioRef.current.play();
+        setIsPlaying(true);
+      } catch (error) {
+        console.error("Error resuming audio:", error);
+      }
+      return;
+    }
+
+    // Otherwise, create a new audio for the node
+    if (nodes[nodeIndex].mp3Url) {
+      try {
+        // Stop and clean up any existing audio
+        if (audioRef.current && !audioRef.current.paused) {
+          audioRef.current.pause();
+        }
+
+        // Create a new audio
+        const audio = new Audio(nodes[nodeIndex].mp3Url);
+
+        // Add event listeners
+        audio.onplay = () => setIsPlaying(true);
+        audio.onpause = () => setIsPlaying(false);
+
+        // Set the current audio.
+        audioRef.current = audio;
+
+        // Play the audio.
+        await audio.play();
+
+        // Set the current playing node.
+        setCurrentPlayingNode(nodeIndex);
+
+        // Play the next audio when this one ends.
+        audio.onended = () => {
+          playNextAudio(nodeIndex + 1);
+        };
+      } catch (error) {
+        console.error("Error playing audio:", error);
+        playNextAudio(nodeIndex + 1);
+      }
+    }
+  };
+
+  const playNextAudio = (nodeIndex: number) => {
+    setIsTransitioning(true); // Start transitioning
+    audioTimeoutRef.current = setTimeout(() => {
+      if (nodeIndex < nodes.length) {
+        playAudio(nodeIndex);
+      } else {
+        setIsPlaying(false);
+        setCurrentPlayingNode(null);
+      }
+      setIsTransitioning(false); // End transitioning
+    }, NEXT_AUDIO_DELAY);
+  };
+
+  const togglePlayPause = () => {
+    if (audioRef.current) {
+      if (isPlaying) {
+        // Pause the current audio
+        audioRef.current.pause();
+        setIsPlaying(false);
+      } else {
+        // Resume playing the current audio from where it was paused
+        audioRef.current.play();
+        setIsPlaying(true);
+      }
+    } else {
+      // If there's no current audio (first time play), start from the beginning
+      playAudio(currentPlayingNode || 0);
+    }
+  };
 
   const fetchNodeComments = async () => {
     try {
@@ -222,6 +309,34 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
 
   // Now throttle the safe version of the update function
   const throttledUpdate = throttle(updateLastVisitedNode, 2000);
+
+  useEffect(() => {
+    if (currentPlayingNode !== null) {
+      const element = document.getElementById(
+        nodes[currentPlayingNode].globalId
+      );
+      element?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }, [currentPlayingNode]);
+
+  // Cleanup timeout when component unmounts or currentPlayingNode changes
+  useEffect(() => {
+    return () => {
+      if (audioTimeoutRef.current) {
+        clearTimeout(audioTimeoutRef.current);
+      }
+    };
+  }, [currentPlayingNode]);
+
+  // Cleanup audio when component unmounts
+  useEffect(() => {
+    return () => {
+      if (audioRef.current && !audioRef.current.paused) {
+        audioRef.current.pause();
+        audioRef.current = null;
+      }
+    };
+  }, []);
 
   // Fetch read nodes on mount
   useEffect(() => {
@@ -652,7 +767,7 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
         );
       }
       case "paragraph": {
-        const readNode = readNodes.has(node.globalId);
+        // const readNode = readNodes.has(node.globalId);
         const savedNode = savedNodes.find(
           (savedNode) => savedNode.globalId === node.globalId
         );
@@ -660,10 +775,17 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
         const nodeCommentsForNode = nodeComments.filter(
           (nodeComment) => nodeComment.globalId === node.globalId
         );
+        const isPlayingNode = currentPlayingNode === nodes.indexOf(node);
 
         return (
           <div
-            className="paragraph mb-6 text-left"
+            className={`paragraph mb-6 text-left ${
+              currentPlayingNode &&
+              isPlayingNode &&
+              (isPlaying || isTransitioning)
+                ? "border-l-4 border-white pl-4 -ml-5"
+                : ""
+            }`}
             id={node.globalId}
             key={node.globalId}
           >
@@ -769,7 +891,13 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
                 </div>
               </div>
               <div
-                className="text-xl/9 md:text-lg/8"
+                className={`text-xl/9 md:text-lg/8 ${
+                  currentPlayingNode &&
+                  !isPlayingNode &&
+                  (isPlaying || isTransitioning)
+                    ? "text-neutral-400"
+                    : ""
+                }`}
                 dangerouslySetInnerHTML={{ __html: node.htmlText as string }}
                 onClick={onNodeSettingsClick(node.globalId, {
                   onlyOpen: true,
@@ -788,6 +916,22 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
     }
   };
 
+  const deriveAudioContent = (): JSX.Element => {
+    if (isPlaying || isTransitioning) {
+      return (
+        <svg className="w-6 h-6" viewBox="0 0 24 24">
+          <path fill="currentColor" d="M14 19h4V5h-4v14zM6 5v14h4V5H6z" />
+        </svg>
+      );
+    }
+
+    return (
+      <svg className="w-6 h-6" viewBox="0 0 24 24">
+        <path fill="currentColor" d="M8 5v14l11-7z" />
+      </svg>
+    );
+  };
+
   // Page content
   return (
     <div className="flex flex-col min-h-screen bg-neutral-800 text-white">
@@ -798,7 +942,17 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
         }
       />
 
-      <Navbar paperId={paperIdNumber} paperTitle={paperTitle} />
+      <Navbar
+        audioContent={deriveAudioContent()}
+        audioOnPlay={() =>
+          isPlaying || isTransitioning
+            ? togglePlayPause()
+            : playAudio(currentPlayingNode || 0)
+        }
+        paperId={paperIdNumber}
+        paperTitle={paperTitle}
+        showAudio={false}
+      />
 
       {/* Explain Modal */}
       {selectedGlobalIdExplain && (
@@ -820,7 +974,7 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
         <Share onClose={onShareClose} node={shareNode} />
       )}
 
-      <main className="mt-8 flex-grow container mx-auto px-4 my-4 max-w-3xl paper-content">
+      <main className="relative mt-8 flex-grow container mx-auto px-4 my-4 max-w-3xl paper-content">
         {/* Paper content */}
         <div className="mb-12 subpixel-antialiased">
           {nodes.map((node: UBNode) => renderNode(node))}
@@ -859,6 +1013,11 @@ export async function getStaticProps(context: any) {
     `${process.env.NEXT_PUBLIC_URANTIA_DEV_API_HOST}/api/v1/urantia-book/read?paperId=${paperId}`
   );
   const paperData = await res.json();
+
+  // Add mp3 file URLs for each node if there is one.
+  paperData.data.results.forEach((node: UBNode) => {
+    node.mp3Url = `${process.env.NEXT_PUBLIC_URANTIA_DEV_API_HOST}/data/mp3/eng/tts-1-hd-echo-${node.globalId}.mp3`;
+  });
 
   return {
     props: {
