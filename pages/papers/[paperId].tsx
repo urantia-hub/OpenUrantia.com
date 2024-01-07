@@ -1015,7 +1015,7 @@ export async function getStaticProps(context: any) {
   const paperData = await res.json();
 
   // Add mp3 file URLs for each node if there is one.
-  paperData.data.results.forEach((node: UBNode) => {
+  paperData?.data?.results?.forEach((node: UBNode) => {
     node.mp3Url = `${process.env.NEXT_PUBLIC_URANTIA_DEV_API_HOST}/data/mp3/eng/tts-1-hd-echo-${node.globalId}.mp3`;
   });
 
