@@ -71,16 +71,7 @@ const HomepageNavbar = () => {
         <div className="flex items-center justify-between w-full max-w-5xl pt-1 pb-2">
           <Link className="text-2xl text-left hover:no-underline" href="/">
             <h1 className="flex items-center font-bold tracking-wide text-base md:text-2xl">
-              <span className="flex items-center font-light">
-                <Image
-                  alt="logo w-20 h-20 md:w-30 md:h-30"
-                  className="w-6 h-6 -mr-1 md:w-8 md:h-8"
-                  src="/logo-white.png"
-                  width={30}
-                  height={30}
-                />
-                pen
-              </span>
+              <span className="flex items-center font-light">Open</span>
               Urantia
             </h1>
           </Link>
