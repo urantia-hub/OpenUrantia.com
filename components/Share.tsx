@@ -7,7 +7,7 @@ import Spinner from "@/components/Spinner";
 
 const constructShareUrl = (node: UBNode) => {
   // Replace this with actual URL construction logic
-  return `${process.env.NEXT_PUBLIC_OPEN_URANTIA_API_HOST}/papers/${node.paperId}#${node.globalId}`;
+  return `${process.env.NEXT_PUBLIC_OPEN_URANTIA_HOST}/papers/${node.paperId}#${node.globalId}`;
 };
 
 type ShareProps = {

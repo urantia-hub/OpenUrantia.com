@@ -30,7 +30,7 @@ const handlePOST = async (req: NextApiRequest, res: NextApiResponse) => {
     });
   }
 
-  const { htmlText, paperId, standardReferenceId } = paragraph;
+  const { globalId, htmlText, paperId, standardReferenceId } = paragraph;
 
   // Prepare emails
   const messages = users.map((user) => ({
@@ -48,6 +48,7 @@ const handlePOST = async (req: NextApiRequest, res: NextApiResponse) => {
           ? "Foreword"
           : `Paper ${paperId} - ${paragraph.paperTitle} - "(${standardReferenceId}) ${htmlText}"`
       }`,
+      continueReadingUrl: `${process.env.NEXT_PUBLIC_OPEN_URANTIA_HOST}/papers/${paperId}#${globalId}`,
     },
   }));
 
