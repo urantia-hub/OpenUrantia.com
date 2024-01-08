@@ -22,7 +22,7 @@ const PaperNavbar = ({
   return (
     <div className="flex items-center justify-between w-full max-w-3xl mt-1 mb-6">
       <div
-        className="flex-grow flex items-center justify-between bg-neutral-700 rounded-full"
+        className="flex-grow flex items-center justify-between bg-neutral-700 rounded-full w-full"
         style={showAudio ? { maxWidth: "calc(100% - 48px)" } : {}}
       >
         <Link
