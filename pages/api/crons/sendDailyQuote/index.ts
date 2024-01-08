@@ -43,10 +43,10 @@ const handlePOST = async (req: NextApiRequest, res: NextApiResponse) => {
           ? "Foreword"
           : `Paper ${paperId} - ${paragraph.paperTitle}`,
       paragraph: `"(${standardReferenceId}) ${htmlText}"`,
-      preHeader: `Daily Quote from the Urantia Papers, ${
+      preHeader: `${
         paperId === "0"
           ? "Foreword"
-          : `Paper ${paperId} - ${paragraph.paperTitle}`
+          : `Paper ${paperId} - ${paragraph.paperTitle} - "(${standardReferenceId}) ${htmlText}"`
       }`,
     },
   }));
