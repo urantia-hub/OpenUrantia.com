@@ -36,7 +36,7 @@ const handlePOST = async (req: NextApiRequest, res: NextApiResponse) => {
   const messages = users.map((user) => ({
     to: user.email as string,
     from: process.env.SENDGRID_FROM as string,
-    templateId: process.env.SENDGRID_DAILY_QUOTE_TEMPLATE_ID as string,
+    templateId: process.env.SENDGRID_SEND_DAILY_QUOTE_TEMPLATE_ID as string,
     dynamicTemplateData: {
       paper:
         paperId === "0"
