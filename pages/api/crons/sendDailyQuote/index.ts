@@ -58,7 +58,7 @@ const handlePOST = async (req: NextApiRequest, res: NextApiResponse) => {
 
     res
       .status(200)
-      .json({ users: users.map((user) => user.id), success: true });
+      .json({ users: users.map((user) => user.email), success: true });
   } catch (error: any) {
     console.error(error);
     if (error?.response) {
