@@ -1,13 +1,61 @@
 // Node modules.
 import Link from "next/link";
-import { signIn, signOut, useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
+import { useState, useEffect } from "react";
 // Relative modules.
+import Footer from "@/components/Footer";
 import HeadTag from "@/components/HeadTag";
 import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 
 const More = () => {
+  // Hooks.
   const { status } = useSession();
+
+  // State.
+  const [isUpdating, setIsUpdating] = useState<boolean>(false);
+  const [notificationsEnabled, setNotificationsEnabled] =
+    useState<boolean>(false);
+
+  useEffect(() => {
+    // Fetch user data when the component mounts
+    if (status === "authenticated") {
+      fetch("/api/user")
+        .then((res) => res.json())
+        .then((data) => {
+          setNotificationsEnabled(data.notificationsEnabled);
+        });
+    }
+  }, [status]);
+
+  const handleToggleNotifications = async () => {
+    setIsUpdating(true);
+
+    const updatedStatus = !notificationsEnabled;
+
+    // Update user settings in the backend
+    await fetch("/api/user", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ notificationsEnabled: updatedStatus }),
+    });
+
+    setNotificationsEnabled(updatedStatus);
+    setIsUpdating(false);
+  };
+
+  const deriveNotificationStatus = () => {
+    if (isUpdating) {
+      return "...";
+    }
+
+    if (notificationsEnabled) {
+      return "Enabled";
+    }
+
+    return "Disabled";
+  };
 
   return (
     <div className="flex flex-col min-h-screen bg-neutral-800 text-white">
@@ -43,7 +91,17 @@ const More = () => {
           {status === "authenticated" && (
             <button
               className="border-0 text-center text-lg w-full p-3 rounded-lg bg-zinc-900 hover:bg-zinc-950 hover:no-underline transition-colors duration-300 ease-in-out mb-4"
+              onClick={handleToggleNotifications}
+              type="button"
+            >
+              Notifications {deriveNotificationStatus()}
+            </button>
+          )}
+          {status === "authenticated" && (
+            <button
+              className="border-0 text-center text-lg w-full p-3 rounded-lg bg-zinc-900 hover:bg-zinc-950 hover:no-underline transition-colors duration-300 ease-in-out mb-4"
               onClick={() => signOut()}
+              type="button"
             >
               Sign Out
             </button>

@@ -16,6 +16,21 @@ const handleGet = async (
   res.status(200).json(user);
 };
 
+const handlePut = async (
+  req: NextApiRequest,
+  res: NextApiResponse,
+  user: User
+) => {
+  const { notificationsEnabled } = req.body;
+
+  // Update the user's notification settings
+  const updatedUser = await userService.update(user.id, {
+    notificationsEnabled,
+  });
+
+  res.status(200).json(updatedUser);
+};
+
 // Handler for the API endpoints.
 export default async function handle(
   req: NextApiRequest,
@@ -28,6 +43,8 @@ export default async function handle(
   switch (method) {
     case "GET":
       return handleGet(req, res, sessionDetails.user);
+    case "PUT":
+      return handlePut(req, res, sessionDetails.user);
     default:
       res.setHeader("Allow", ["GET", "PUT"]);
       res.status(405).end(`Method ${method} Not Allowed`);
