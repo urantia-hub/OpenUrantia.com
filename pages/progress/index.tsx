@@ -50,15 +50,22 @@ const Progress = () => {
       return null;
     }
 
-    return progressResults.map((paper, index) => (
-      <PaperCard
-        nextGlobalId={paper.nextGlobalId}
-        key={index}
-        paperId={paper.paperId}
-        paperTitle={paper.paperTitle}
-        progress={paper.progress}
-      />
-    ));
+    return progressResults.map((paper, index) => {
+      const notStarted = paper.nextGlobalId?.endsWith(".0.1");
+      if (notStarted) {
+        return null;
+      }
+
+      return (
+        <PaperCard
+          nextGlobalId={paper.nextGlobalId}
+          key={index}
+          paperId={paper.paperId}
+          paperTitle={paper.paperTitle}
+          progress={paper.progress}
+        />
+      );
+    });
   };
 
   return (
