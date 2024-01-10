@@ -31,7 +31,7 @@ const PaperCard = ({
         progress > 0 && progress < 100 ? `#${nextGlobalId}` : ""
       }`}
     >
-      <div className="flex flex-col mb-2">
+      <div className="flex flex-col mb-1">
         <div className="flex justify-between text-xs text-gray-400">
           <span>Paper {paperId}</span>
           <span>
@@ -55,7 +55,9 @@ const PaperCard = ({
             {progress < 100 ? ` (${progress.toFixed(0)}%)` : ""}
           </div>
         )}
-        {isCompleted && <div className="text-green-400 text-xs">Completed</div>}
+        {isCompleted && (
+          <div className="text-green-400 text-xs">Completed (100%)</div>
+        )}
       </div>
     </Link>
   );
