@@ -74,8 +74,8 @@ const Progress = () => {
 
       <Navbar />
 
-      <main className="mt-8 flex-grow container mx-auto px-4 my-4 max-w-4xl">
-        <h1 className="text-5xl font-bold mb-8 text-center">Progress</h1>
+      <main className="mt-12 flex-grow container mx-auto px-4 my-4 max-w-4xl">
+        <h1 className="text-5xl font-bold mb-14 text-center">Progress</h1>
         {fetchingProgress ? (
           <Spinner />
         ) : (
