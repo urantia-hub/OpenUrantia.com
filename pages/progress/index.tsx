@@ -1,5 +1,5 @@
 // Node modules.
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 // Relative modules.
 import Footer from "@/components/Footer";
@@ -15,9 +15,6 @@ const Progress = () => {
   // Progress state.
   const [progressResults, setProgressResults] = useState<ProgressResult[]>([]);
   const [fetchingProgress, setFetchingProgress] = useState<boolean>(true);
-
-  // Reading refs.
-  const nextReadRef = useRef<HTMLDivElement>(null);
 
   // Redirect to homepage if not logged in.
   useEffect(() => {
@@ -48,39 +45,18 @@ const Progress = () => {
     void fetchProgress();
   }, []);
 
-  useEffect(() => {
-    if (nextReadRef.current) {
-      nextReadRef.current.scrollIntoView({
-        behavior: "smooth",
-        block: "center", // Aligns to the center of the screen
-      });
-    }
-  }, [progressResults]);
-
   const renderPapers = () => {
     if (!progressResults?.length) {
       return null;
     }
 
-    // Determine the next paper to read
-    const nextPaperToRead = progressResults.find(
-      (progressResult) => progressResult.progress < 100
-    );
-
-    // Determine the first unread global id.
-    const firstUnreadGlobalId = nextPaperToRead?.unreadGlobalIds[0];
-
     return progressResults.map((paper, index) => (
       <PaperCard
-        firstUnreadGlobalId={firstUnreadGlobalId}
-        isNextRead={nextPaperToRead?.paperId === paper.paperId}
+        nextGlobalId={paper.nextGlobalId}
         key={index}
         paperId={paper.paperId}
         paperTitle={paper.paperTitle}
         progress={paper.progress}
-        ref={
-          nextPaperToRead?.paperId === paper.paperId ? nextReadRef : undefined
-        }
       />
     ));
   };
@@ -91,17 +67,17 @@ const Progress = () => {
 
       <Navbar />
 
-      <main className="mt-8 flex-grow container mx-auto px-4 py-10">
-        <section className="text-center space-y-6">
-          <h1 className="text-3xl font-bold">My Progress</h1>
-          {fetchingProgress ? (
-            <Spinner />
-          ) : (
-            <div className="flex flex-wrap justify-center">
+      <main className="mt-8 flex-grow container mx-auto px-4 my-4 max-w-4xl">
+        <h1 className="text-5xl font-bold mb-8 text-center">Progress</h1>
+        {fetchingProgress ? (
+          <Spinner />
+        ) : (
+          <div className="mb-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {renderPapers()}
             </div>
-          )}
-        </section>
+          </div>
+        )}
       </main>
 
       <Footer />

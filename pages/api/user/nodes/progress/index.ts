@@ -28,16 +28,14 @@ async function handlePOST(
       userId: user.id,
     },
   });
+  const paperIds = Array.from(new Set(nodes.map((node) => node.paperId)));
 
   try {
     const { data } = await axios.post(
       `${process.env.NEXT_PUBLIC_URANTIA_DEV_API_HOST}/api/v1/urantia-book/progress`,
       {
-        includeReadIds: true,
-        includeUnreadIds: true,
-        invalidateCache: true,
-        paperId,
-        skipGlobalIds: nodes.map((node) => node.globalId),
+        paperIds,
+        readGlobalIds: nodes.map((node) => node.globalId),
       },
       {
         headers: {

@@ -50,11 +50,10 @@ interface SearchResult {
 }
 
 interface ProgressResult {
+  nextGlobalId?: string;
   paperId: string;
   paperTitle: string;
   progress: number;
-  readGlobalIds: string[];
-  unreadGlobalIds: string[];
 }
 
 interface LastVisitedNode {
