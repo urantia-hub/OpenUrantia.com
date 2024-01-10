@@ -137,6 +137,7 @@ model User {
   id                       String    @id @default(cuid())
   image                    String?
   lastAskedNotificationsAt DateTime?
+  lastVisitedAt            DateTime?
   lastVisitedGlobalId      String?
   lastVisitedPaperId       String?
   lastVisitedPaperTitle    String?

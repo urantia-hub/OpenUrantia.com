@@ -25,6 +25,7 @@ async function handlePUT(
   }
 
   const updatedUser = await userService.update(user.id, {
+    lastVisitedAt: new Date(),
     lastVisitedGlobalId: globalId,
     lastVisitedPaperId: paperId,
     lastVisitedPaperTitle: paperTitle,

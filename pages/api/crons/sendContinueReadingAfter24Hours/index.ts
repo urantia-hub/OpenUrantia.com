@@ -1,0 +1,120 @@
+// Node modules.
+import sgMail from "@sendgrid/mail";
+import type { NextApiRequest, NextApiResponse } from "next";
+// Relative modules.
+import UserService from "@/services/user";
+import { paperLabels, paperLabelsLookup } from "@/utils/paperLabels";
+
+const userService = new UserService();
+
+// Setting SendGrid API Key
+sgMail.setApiKey(process.env.SENDGRID_API_KEY as string);
+
+const deriveOtherPaperLabels = (paperId: string): string => {
+  const excludedLabels =
+    paperLabelsLookup[paperId as keyof typeof paperLabelsLookup];
+  const labels = paperLabels.filter((label) => !excludedLabels.includes(label));
+
+  // Grab 3 random ones.
+  const randomLabels = labels
+    .sort(() => Math.random() - Math.random())
+    .slice(0, 3);
+
+  return formatLabels(randomLabels);
+};
+
+const derivePaperLabels = (paperId: string): string => {
+  const labels = paperLabelsLookup[paperId as keyof typeof paperLabelsLookup];
+
+  return formatLabels(labels.slice(0, 3));
+};
+
+const formatLabels = (labels: string[]): string => {
+  switch (labels.length) {
+    case 0:
+      return "";
+    case 1:
+      return labels[0];
+    case 2:
+      return labels.join(" and ");
+    default:
+      return `${labels.slice(0, -1).join(", ")}, and ${
+        labels[labels.length - 1]
+      }`;
+  }
+};
+
+const handlePOST = async (req: NextApiRequest, res: NextApiResponse) => {
+  const users = await userService.findMany({
+    where: {
+      notificationsEnabled: true,
+      lastVisitedAt: {
+        // Last visited between 24 and 48 hours ago.
+        gte: new Date(Date.now() - 48 * 60 * 60 * 1000),
+        lt: new Date(Date.now() - 24 * 60 * 60 * 1000),
+      },
+    },
+  });
+
+  // Prepare emails
+  const messages = users.map((user) => ({
+    to: user.email as string,
+    from: process.env.SENDGRID_FROM as string,
+    templateId: process.env
+      .SENDGRID_SEND_CONTINUE_READING_TEMPLATE_ID as string,
+    dynamicTemplateData: {
+      paperTitle:
+        user.lastVisitedPaperId === "0"
+          ? "Foreword"
+          : `Paper ${user.lastVisitedPaperId} - ${user.lastVisitedPaperTitle}`,
+      paperNumber:
+        user.lastVisitedPaperId === "0"
+          ? "the Foreword"
+          : `Paper ${user.lastVisitedPaperId}`,
+      paperLabels: derivePaperLabels(user.lastVisitedPaperId as string),
+      otherPaperLabels: deriveOtherPaperLabels(
+        user.lastVisitedPaperId as string
+      ),
+      preHeader: `Continue reading ${
+        user.lastVisitedPaperId === "0"
+          ? "the Foreword"
+          : `Paper ${user.lastVisitedPaperId} - ${user.lastVisitedPaperTitle}`
+      }`,
+      continueReadingUrl: `${process.env.NEXT_PUBLIC_OPEN_URANTIA_HOST}/papers/${user.lastVisitedPaperId}#${user.lastVisitedGlobalId}`,
+    },
+  }));
+
+  try {
+    // Send the emails
+    await sgMail.send(messages);
+
+    res
+      .status(200)
+      .json({ users: users.map((user) => user.email), success: true });
+  } catch (error: any) {
+    console.error(error);
+    if (error?.response) {
+      console.error(error?.response.body);
+    }
+    res.status(500).json({ message: "Failed to send emails", success: false });
+  }
+};
+
+const handler = async (req: NextApiRequest, res: NextApiResponse) => {
+  const secretKey = process.env.CRON_SECRET;
+
+  // Check if the secret key matches
+  if (req.headers["x-cron-secret"] !== secretKey) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+
+  if (req.method === "POST") {
+    return handlePOST(req, res);
+  } else {
+    // Handle any non-POST requests
+    res.setHeader("Allow", ["POST"]);
+    res.status(405).end(`Method ${req.method} Not Allowed`);
+  }
+};
+
+export default handler;
