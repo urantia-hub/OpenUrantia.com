@@ -86,7 +86,13 @@ const HomepageNavbar = () => {
             >
               Read
             </Link>
-            {status === "authenticated" ? (
+            <Link
+              className="text-center hover:no-underline mr-4 md:mr-6 text-gray-200 hover:text-white transition-colors duration-200"
+              href="/search"
+            >
+              Search
+            </Link>
+            {status === "authenticated" && (
               <button
                 className="border-0 p-0 bg-transparent text-right hover:no-underline text-gray-200 hover:text-red-300 transition-colors duration-200"
                 onClick={() => {
@@ -96,7 +102,8 @@ const HomepageNavbar = () => {
               >
                 Sign Out
               </button>
-            ) : (
+            )}
+            {status === "unauthenticated" && (
               <button
                 className="border-0 p-0 bg-transparent text-right hover:no-underline text-gray-200 hover:text-white transition-colors duration-200"
                 onClick={() => {

@@ -152,7 +152,7 @@ const Navbar = ({
             </svg>
             Search
           </Link>
-          {status !== "authenticated" && (
+          {status === "unauthenticated" && (
             <button
               className="flex-1 flex flex-col border-0 items-center p-0 text-xs text-center text-gray-400 line-clamp-1 hover:text-white hover:no-underline transition duration-300 ease-in-out focus:outline-none"
               onClick={() => {
