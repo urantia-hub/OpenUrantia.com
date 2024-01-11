@@ -20,6 +20,15 @@ const Search = () => {
   const [hasSearched, setHasSearched] = useState<boolean>(false);
   const [isWaiting, setIsWaiting] = useState<boolean>(false);
 
+  // On mount, set the query and search if there is a query.
+  useEffect(() => {
+    const q = router.query.q as string;
+    if (q) {
+      setQuery(q);
+      search(q);
+    }
+  }, []);
+
   // Debounce function to delay the API call
   useEffect(() => {
     if (!query) {
@@ -32,8 +41,6 @@ const Search = () => {
     const delayDebounceFn = setTimeout(() => {
       if (query) {
         search(query);
-      } else {
-        setResults([]);
       }
     }, 500); // 500 ms delay
 
@@ -56,6 +63,13 @@ const Search = () => {
       const data = await response.json();
       setResults(data.data.results);
       setHasSearched(true);
+
+      // Update the query param in the URL.
+      if (router.query.q !== searchQuery) {
+        router.push(`/search?q=${encodeURIComponent(searchQuery)}`, undefined, {
+          shallow: true,
+        });
+      }
     } catch (error) {
       console.error(error);
     } finally {
