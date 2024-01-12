@@ -90,7 +90,7 @@ const HeadTag = ({ metaDescription, titlePrefix }: HeadTagProps) => {
         name="twitter:image"
         content="https://www.openurantia.com/android/android-launchericon-192-192.png"
       />
-      <meta name="twitter:creator" content="@DavidWShadow" />
+      <meta name="twitter:creator" content="@OpenUrantia" />
       <meta property="og:type" content="website" />
       <meta property="og:title" content="OpenUrantia" />
       <meta
