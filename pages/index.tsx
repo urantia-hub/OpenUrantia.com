@@ -199,7 +199,6 @@ const HomePage = () => {
               alt="hand holding holographic world with cityscape in background"
               className="border-4 border-white rounded-xl"
               height={800}
-              layout="intrinsic"
               src="/vision.png"
               width={800}
             />

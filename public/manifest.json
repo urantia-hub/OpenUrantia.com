@@ -1,0 +1,21 @@
+{
+  "name": "OpenUrantia",
+  "short_name": "OpenUrantia",
+  "start_url": "/papers",
+  "display": "standalone",
+  "background_color": "#262626",
+  "theme_color": "#ffffff",
+  "description": "An open source version of The Urantia Papers for generations to come.",
+  "icons": [
+    {
+      "src": "/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
