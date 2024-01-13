@@ -22,9 +22,10 @@ const Search = () => {
 
   // On mount, set the query and search if there is a query.
   useEffect(() => {
-    const q = router.query.q as string;
+    // Query params.
+    const queryParams = new URLSearchParams(router.asPath.split(/\?/)[1]);
+    const q = queryParams.get("q");
     if (q) {
-      setQuery(q);
       search(q);
     }
   }, []);
@@ -61,6 +62,8 @@ const Search = () => {
         }),
       });
       const data = await response.json();
+
+      // Update the results.
       setResults(data.data.results);
       setHasSearched(true);
 
@@ -70,6 +73,9 @@ const Search = () => {
           shallow: true,
         });
       }
+
+      // Update the search query state.
+      setQuery(searchQuery);
     } catch (error) {
       console.error(error);
     } finally {
@@ -112,6 +118,11 @@ const Search = () => {
     return "Nothing found, try changing your search slightly";
   };
 
+  const onClearSearch = () => {
+    setQuery("");
+    document.getElementById("search")?.focus();
+  };
+
   return (
     <div className="flex flex-col min-h-screen bg-neutral-800 text-white">
       <HeadTag titlePrefix="Search" />
@@ -145,10 +156,7 @@ const Search = () => {
           {query && (
             <button
               className="absolute top-0.5 right-4 text-gray-200 text-xl border-0 bg-transparent focus:outline-none p-1 hover:text-white transition-colors duration-200"
-              onClick={() => {
-                setQuery("");
-                document.getElementById("search")?.focus();
-              }}
+              onClick={onClearSearch}
               type="button"
             >
               &times;
@@ -179,7 +187,7 @@ const Search = () => {
                 <div
                   className="leading-tight max-h-96 overflow-y-auto"
                   dangerouslySetInnerHTML={{
-                    __html: result._highlightResult.htmlText.value as string,
+                    __html: result._highlightResult?.htmlText?.value as string,
                   }}
                 />
               </div>
