@@ -34,6 +34,9 @@ const Search = () => {
   useEffect(() => {
     if (!query) {
       setResults([]);
+      router.push(`/search`, undefined, {
+        shallow: true,
+      });
       return;
     }
 
@@ -73,9 +76,6 @@ const Search = () => {
           shallow: true,
         });
       }
-
-      // Update the search query state.
-      setQuery(searchQuery);
     } catch (error) {
       console.error(error);
     } finally {
