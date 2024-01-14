@@ -375,7 +375,7 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
     const fetchSavedGlobalIds = async () => {
       try {
         const response = await fetch(
-          `/api/user/nodes/saved?paperId=${paperData.data.results[0].paperId}`
+          `/api/user/nodes/bookmarks?paperId=${paperData.data.results[0].paperId}`
         );
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -688,7 +688,7 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
 
     try {
       // Make request to save node for user.
-      const response = await fetch(`/api/user/nodes/saved`, {
+      const response = await fetch(`/api/user/nodes/bookmarks`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
