@@ -13,7 +13,7 @@ const More = () => {
 
   // State.
   const [isUpdating, setIsUpdating] = useState<boolean>(false);
-  const [emailNotificationsEnabled, setNotificationsEnabled] =
+  const [emailNotificationsEnabled, setEmailNotificationsEnabled] =
     useState<boolean>(false);
 
   useEffect(() => {
@@ -22,7 +22,7 @@ const More = () => {
       fetch("/api/user")
         .then((res) => res.json())
         .then((data) => {
-          setNotificationsEnabled(data.emailNotificationsEnabled);
+          setEmailNotificationsEnabled(data.emailNotificationsEnabled);
         });
     }
   }, [status]);
@@ -41,7 +41,7 @@ const More = () => {
       body: JSON.stringify({ emailNotificationsEnabled: updatedStatus }),
     });
 
-    setNotificationsEnabled(updatedStatus);
+    setEmailNotificationsEnabled(updatedStatus);
     setIsUpdating(false);
   };
 

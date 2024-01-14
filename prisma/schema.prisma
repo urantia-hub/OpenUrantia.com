@@ -99,14 +99,14 @@ enum SharePlatform {
 
 model Share {
   count                   Int
-  createdAt               DateTime           @default(now())
+  createdAt               DateTime      @default(now())
   globalId                String
-  id                      String             @id @default(cuid())
+  id                      String        @id @default(cuid())
   paperId                 String
   paperSectionId          String
   paperSectionParagraphId String
   platform                SharePlatform
-  updatedAt               DateTime           @updatedAt
+  updatedAt               DateTime      @updatedAt
   userId                  String
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
