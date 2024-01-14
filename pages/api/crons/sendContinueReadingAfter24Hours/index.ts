@@ -47,7 +47,7 @@ const formatLabels = (labels: string[]): string => {
 const handlePOST = async (req: NextApiRequest, res: NextApiResponse) => {
   const users = await userService.findMany({
     where: {
-      notificationsEnabled: true,
+      emailNotificationsEnabled: true,
       lastVisitedAt: {
         // Last visited between 24 and 48 hours ago.
         gte: new Date(Date.now() - 48 * 60 * 60 * 1000),

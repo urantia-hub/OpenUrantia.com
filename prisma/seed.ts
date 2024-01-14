@@ -1,10 +1,9 @@
 // Relative modules.
-import NodeCommentService from "@/services/nodeComment";
-import NodeReferenceService from "@/services/nodeReference";
-import SavedNodeService from "@/services/savedNode";
-import SharedNodeService from "@/services/sharedNode";
+import BookmarkService from "@/services/bookmark";
+import NoteService from "@/services/note";
+import ShareService from "@/services/share";
 import UserService from "@/services/user";
-import { SharedNodePlatform, User } from "@prisma/client";
+import { SharePlatform, User } from "@prisma/client";
 
 const globalIds = [
   "1:2.-.-",
@@ -90,19 +89,21 @@ const seedUser = async (): Promise<User> => {
   return user;
 };
 
-const createSharedNodes = async (user: User): Promise<void> => {
-  const sharedNodeService = new SharedNodeService();
-  const sharedNodePlatforms: SharedNodePlatform[] = [
+const createShares = async (user: User): Promise<void> => {
+  const shareService = new ShareService();
+  const sharePlatforms: SharePlatform[] = [
+    "COPY_LINK",
+    "COPY_TEXT",
     "FACEBOOK",
     "INSTAGRAM",
     "WHATSAPP",
     "X",
   ];
 
-  sharedNodePlatforms.forEach(async (platform, index) => {
+  sharePlatforms.forEach(async (platform, index) => {
     const count = 10;
     for (let i = 0; i < count; i++) {
-      await sharedNodeService.create({
+      await shareService.create({
         data: {
           count,
           createdAt: new Date(),
@@ -119,11 +120,11 @@ const createSharedNodes = async (user: User): Promise<void> => {
   });
 };
 
-const createSavedNodes = async (user: User) => {
-  const savedNodeService = new SavedNodeService();
+const createBookmarks = async (user: User) => {
+  const bookmarkService = new BookmarkService();
   const count = 10;
   for (let i = 0; i < count; i++) {
-    await savedNodeService.create({
+    await bookmarkService.create({
       data: {
         createdAt: new Date(),
         globalId: globalIds[i + 1],
@@ -137,11 +138,11 @@ const createSavedNodes = async (user: User) => {
   }
 };
 
-const createComments = async (user: User) => {
-  const nodeCommentService = new NodeCommentService();
+const createNotes = async (user: User) => {
+  const noteService = new NoteService();
   const count = 10;
   for (let i = 0; i < count; i++) {
-    await nodeCommentService.create({
+    await noteService.create({
       data: {
         createdAt: new Date(),
         globalId: globalIds[i + 1],
@@ -156,29 +157,6 @@ const createComments = async (user: User) => {
   }
 };
 
-const createNodeRefs = async () => {
-  const nodeReferenceService = new NodeReferenceService();
-  const count = 10;
-  for (let i = 0; i < count; i++) {
-    await nodeReferenceService.create({
-      data: {
-        authors: ["Seed Author", "Seed Author Two"],
-        createdAt: new Date(),
-        description: "Seed description",
-        globalId: globalIds[i + 1],
-        link: "https://www.google.com",
-        page: `${i + 1}`,
-        paperId: "2",
-        paperSectionId: globalIds[i + 1],
-        paperSectionParagraphId: globalIds[i + 1],
-        publishedAt: new Date(),
-        title: "Seed Title",
-        updatedAt: new Date(),
-      },
-    });
-  }
-};
-
 /**
  * Actual script that runs
  */
@@ -188,12 +166,9 @@ const createNodeRefs = async () => {
 
     // User-specific seed.
     const user = await seedUser();
-    await createSharedNodes(user);
-    await createSavedNodes(user);
-    await createComments(user);
-
-    // Misc seeds.
-    await createNodeRefs();
+    await createShares(user);
+    await createBookmarks(user);
+    await createNotes(user);
 
     console.log("[SEED DB] Database seeding complete.");
   } catch (err) {

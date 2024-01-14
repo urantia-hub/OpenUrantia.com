@@ -2,12 +2,12 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { User } from "@prisma/client";
 // Relative modules.
-import NodeCommentService from "@/services/nodeComment";
+import NoteService from "@/services/note";
 import getSessionDetails from "@/utils/getSessionDetails";
 
-const nodeCommentService = new NodeCommentService();
+const noteService = new NoteService();
 
-const MAX_COMMENT_TEXT_LENGTH = 1000;
+const MAX_NOTE_TEXT_LENGTH = 1000;
 
 // POST handler
 async function handlePOST(
@@ -33,13 +33,13 @@ async function handlePOST(
     });
   }
 
-  if (text.length > MAX_COMMENT_TEXT_LENGTH) {
+  if (text.length > MAX_NOTE_TEXT_LENGTH) {
     return res.status(400).json({
-      message: `Text is too long. Max length is ${MAX_COMMENT_TEXT_LENGTH} characters.`,
+      message: `Text is too long. Max length is ${MAX_NOTE_TEXT_LENGTH} characters.`,
     });
   }
 
-  const nodeComment = await nodeCommentService.create({
+  const note = await noteService.create({
     data: {
       globalId,
       paperId,
@@ -50,7 +50,7 @@ async function handlePOST(
     },
   });
 
-  res.status(201).json(nodeComment);
+  res.status(201).json(note);
 }
 
 // GET handler
@@ -72,9 +72,9 @@ async function handleGET(
     where["paperId"] = paperId;
   }
 
-  const nodeComments = await nodeCommentService.findMany({ where });
+  const notes = await noteService.findMany({ where });
 
-  res.status(200).json(nodeComments);
+  res.status(200).json(notes);
 }
 
 // Handler for the API endpoints.

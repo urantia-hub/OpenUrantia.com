@@ -6,12 +6,12 @@ import Spinner from "./Spinner";
 
 const CHAR_LIMIT = 1000;
 
-type CommentProps = {
+type NoteProps = {
   onClose: () => void;
   node?: UBNode;
 };
 
-const Comment = ({ onClose, node }: CommentProps) => {
+const Note = ({ onClose, node }: NoteProps) => {
   // Network states.
   const [creating, setCreating] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
@@ -22,15 +22,13 @@ const Comment = ({ onClose, node }: CommentProps) => {
   const onSubmit = async (event: any) => {
     event.preventDefault();
 
-    // Escape early if we are already creating the comment.
+    // Escape early if we are already creating the note.
     if (creating) {
       return;
     }
 
     if (text.length > CHAR_LIMIT) {
-      setError(
-        `Comments currently only support up to ${CHAR_LIMIT} characters.`
-      );
+      setError(`Notes currently only support up to ${CHAR_LIMIT} characters.`);
       return;
     }
 
@@ -38,8 +36,8 @@ const Comment = ({ onClose, node }: CommentProps) => {
     setError("");
 
     try {
-      // Make request to save comment for user.
-      const response = await fetch(`/api/user/nodes/comments`, {
+      // Make request to save note for user.
+      const response = await fetch(`/api/user/nodes/notes`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -54,7 +52,7 @@ const Comment = ({ onClose, node }: CommentProps) => {
       });
       onClose();
     } catch (error: any) {
-      console.log("Error attempting to save comment:", error);
+      console.log("Error attempting to save note:", error);
       setError(error.message);
     } finally {
       setCreating(false);
@@ -65,7 +63,7 @@ const Comment = ({ onClose, node }: CommentProps) => {
     <Modal onClose={onClose}>
       {/* <Todo /> */}
       <div className="flex flex-col p-4">
-        <h2 className="text-2xl mb-2">Comment</h2>
+        <h2 className="text-2xl mb-2">Note</h2>
         {!node && <Spinner />}
         {node && (
           <>
@@ -105,4 +103,4 @@ const Comment = ({ onClose, node }: CommentProps) => {
   );
 };
 
-export default Comment;
+export default Note;

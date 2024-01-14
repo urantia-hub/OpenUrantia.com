@@ -13,7 +13,7 @@ sgMail.setApiKey(process.env.SENDGRID_API_KEY as string);
 const handlePOST = async (req: NextApiRequest, res: NextApiResponse) => {
   const users = await userService.findMany({
     where: {
-      notificationsEnabled: true,
+      emailNotificationsEnabled: true,
     },
   });
 

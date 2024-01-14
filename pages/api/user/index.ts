@@ -21,11 +21,11 @@ const handlePut = async (
   res: NextApiResponse,
   user: User
 ) => {
-  const { notificationsEnabled } = req.body;
+  const { emailNotificationsEnabled } = req.body;
 
   // Update the user's notification settings
   const updatedUser = await userService.update(user.id, {
-    notificationsEnabled,
+    emailNotificationsEnabled,
   });
 
   res.status(200).json(updatedUser);

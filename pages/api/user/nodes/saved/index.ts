@@ -2,10 +2,10 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { User } from "@prisma/client";
 // Relative modules.
-import SavedNodeService from "@/services/savedNode";
+import BookmarkService from "@/services/bookmark";
 import getSessionDetails from "@/utils/getSessionDetails";
 
-const savedNodeService = new SavedNodeService();
+const bookmarkService = new BookmarkService();
 
 // POST handler
 async function handlePOST(
@@ -24,7 +24,7 @@ async function handlePOST(
     });
   }
 
-  const savedNode = await savedNodeService.create({
+  const bookmark = await bookmarkService.create({
     data: {
       globalId,
       paperId,
@@ -34,7 +34,7 @@ async function handlePOST(
     },
   });
 
-  res.status(201).json(savedNode);
+  res.status(201).json(bookmark);
 }
 
 // GET handler
@@ -56,9 +56,9 @@ async function handleGET(
     where["paperId"] = paperId;
   }
 
-  const savedNodes = await savedNodeService.findMany({ where });
+  const bookmarks = await bookmarkService.findMany({ where });
 
-  res.status(200).json(savedNodes);
+  res.status(200).json(bookmarks);
 }
 
 // Handler for the API endpoints.

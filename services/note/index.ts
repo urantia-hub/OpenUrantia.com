@@ -1,67 +1,64 @@
 // Node modules.
-import { SavedNode, Prisma, PrismaClient } from "@prisma/client";
+import axios from "axios";
+import { Note, Prisma, PrismaClient } from "@prisma/client";
 // Relative modules.
 import BaseService from "@/services/base";
 import prisma from "@/prisma/client";
-import axios from "axios";
 
-type SavedNodeServiceDependencies = {
-  model: PrismaClient["savedNode"];
+type NoteServiceDependencies = {
+  model: PrismaClient["note"];
 };
 
-export class SavedNodeService implements BaseService<SavedNode> {
-  private model: PrismaClient["savedNode"];
+export class NoteService implements BaseService<Note> {
+  private model: PrismaClient["note"];
 
   constructor(
-    dependencies: SavedNodeServiceDependencies = {
-      model: prisma.savedNode,
+    dependencies: NoteServiceDependencies = {
+      model: prisma.note,
     }
   ) {
     this.model = dependencies.model;
   }
 
   /* BaseService implementation */
-  async create(args: Prisma.SavedNodeCreateArgs): Promise<SavedNode> {
+  async create(args: Prisma.NoteCreateArgs): Promise<Note> {
     return await this.model.create(args);
   }
 
-  async delete(id: string): Promise<SavedNode> {
+  async delete(id: string): Promise<Note> {
     return await this.model.delete({
       where: { id },
     });
   }
 
   async deleteMany(
-    args: Prisma.SavedNodeDeleteManyArgs
+    args: Prisma.NoteDeleteManyArgs
   ): Promise<Prisma.BatchPayload> {
     return await this.model.deleteMany(args);
   }
 
-  async find(args: Prisma.SavedNodeFindFirstArgs): Promise<SavedNode | null> {
+  async find(args: Prisma.NoteFindFirstArgs): Promise<Note | null> {
     return await this.model.findFirst(args);
   }
 
-  async findMany(args: Prisma.SavedNodeFindManyArgs): Promise<SavedNode[]> {
+  async findMany(args: Prisma.NoteFindManyArgs): Promise<Note[]> {
     return await this.model.findMany(args);
   }
 
-  async get(id: string): Promise<SavedNode | null> {
+  async get(id: string): Promise<Note | null> {
     return await this.model.findFirst({
       where: { id },
     });
   }
 
-  async update(
-    id: string,
-    data: Prisma.SavedNodeUpdateInput
-  ): Promise<SavedNode> {
+  async update(id: string, data: Prisma.NoteUpdateInput): Promise<Note> {
     return await this.model.update({
       where: { id },
       data,
     });
   }
 
-  async upsert(args: Prisma.SavedNodeUpsertArgs): Promise<SavedNode> {
+  async upsert(args: Prisma.NoteUpsertArgs): Promise<Note> {
     return await this.model.upsert(args);
   }
 
@@ -84,4 +81,4 @@ export class SavedNodeService implements BaseService<SavedNode> {
   }
 }
 
-export default SavedNodeService;
+export default NoteService;

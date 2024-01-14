@@ -1,53 +1,51 @@
 // Node modules.
-import axios from "axios";
-import { NodeComment, Prisma, PrismaClient } from "@prisma/client";
+import { Bookmark, Prisma, PrismaClient } from "@prisma/client";
 // Relative modules.
 import BaseService from "@/services/base";
 import prisma from "@/prisma/client";
+import axios from "axios";
 
-type NodeCommentServiceDependencies = {
-  model: PrismaClient["nodeComment"];
+type BookmarkServiceDependencies = {
+  model: PrismaClient["bookmark"];
 };
 
-export class NodeCommentService implements BaseService<NodeComment> {
-  private model: PrismaClient["nodeComment"];
+export class BookmarkService implements BaseService<Bookmark> {
+  private model: PrismaClient["bookmark"];
 
   constructor(
-    dependencies: NodeCommentServiceDependencies = {
-      model: prisma.nodeComment,
+    dependencies: BookmarkServiceDependencies = {
+      model: prisma.bookmark,
     }
   ) {
     this.model = dependencies.model;
   }
 
   /* BaseService implementation */
-  async create(args: Prisma.NodeCommentCreateArgs): Promise<NodeComment> {
+  async create(args: Prisma.BookmarkCreateArgs): Promise<Bookmark> {
     return await this.model.create(args);
   }
 
-  async delete(id: string): Promise<NodeComment> {
+  async delete(id: string): Promise<Bookmark> {
     return await this.model.delete({
       where: { id },
     });
   }
 
   async deleteMany(
-    args: Prisma.NodeCommentDeleteManyArgs
+    args: Prisma.BookmarkDeleteManyArgs
   ): Promise<Prisma.BatchPayload> {
     return await this.model.deleteMany(args);
   }
 
-  async find(
-    args: Prisma.NodeCommentFindFirstArgs
-  ): Promise<NodeComment | null> {
+  async find(args: Prisma.BookmarkFindFirstArgs): Promise<Bookmark | null> {
     return await this.model.findFirst(args);
   }
 
-  async findMany(args: Prisma.NodeCommentFindManyArgs): Promise<NodeComment[]> {
+  async findMany(args: Prisma.BookmarkFindManyArgs): Promise<Bookmark[]> {
     return await this.model.findMany(args);
   }
 
-  async get(id: string): Promise<NodeComment | null> {
+  async get(id: string): Promise<Bookmark | null> {
     return await this.model.findFirst({
       where: { id },
     });
@@ -55,15 +53,15 @@ export class NodeCommentService implements BaseService<NodeComment> {
 
   async update(
     id: string,
-    data: Prisma.NodeCommentUpdateInput
-  ): Promise<NodeComment> {
+    data: Prisma.BookmarkUpdateInput
+  ): Promise<Bookmark> {
     return await this.model.update({
       where: { id },
       data,
     });
   }
 
-  async upsert(args: Prisma.NodeCommentUpsertArgs): Promise<NodeComment> {
+  async upsert(args: Prisma.BookmarkUpsertArgs): Promise<Bookmark> {
     return await this.model.upsert(args);
   }
 
@@ -86,4 +84,4 @@ export class NodeCommentService implements BaseService<NodeComment> {
   }
 }
 
-export default NodeCommentService;
+export default BookmarkService;

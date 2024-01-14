@@ -1,4 +1,5 @@
 // Node modules.
+import Link from "next/link";
 import React, { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 // Relative modules.
@@ -51,10 +52,10 @@ const Progress = () => {
     }
 
     return progressResults.map((paper, index) => {
-      const notStarted = paper.nextGlobalId?.endsWith(".0.1");
-      if (notStarted) {
-        return null;
-      }
+      // const notStarted = paper.nextGlobalId?.endsWith(".0.1");
+      // if (notStarted) {
+      //   return null;
+      // }
 
       return (
         <PaperCard
@@ -76,13 +77,27 @@ const Progress = () => {
 
       <main className="mt-12 flex-grow container mx-auto px-4 my-4 max-w-4xl">
         <h1 className="text-5xl font-bold mb-14 text-center">Progress</h1>
-        {fetchingProgress ? (
-          <Spinner />
-        ) : (
+        {fetchingProgress && <Spinner />}
+        {progressResults?.length && (
           <div className="mb-8">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {renderPapers()}
             </div>
+          </div>
+        )}
+        {!fetchingProgress && !progressResults?.length && (
+          <div className="text-center">
+            <p className="text-2xl font-bold mb-4">
+              You haven&apos;t started any papers yet!
+            </p>
+            <p className="text-xl">
+              <Link
+                className="text-blue-400 hover:text-blue-300"
+                href="/papers"
+              >
+                Browse papers
+              </Link>
+            </p>
           </div>
         )}
       </main>

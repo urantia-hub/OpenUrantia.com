@@ -12,7 +12,7 @@ const Settings = () => {
 
   // State.
   const [isUpdating, setIsUpdating] = useState<boolean>(false);
-  const [notificationsEnabled, setNotificationsEnabled] =
+  const [emailNotificationsEnabled, setEmailNotificationsEnabled] =
     useState<boolean>(false);
 
   useEffect(() => {
@@ -21,7 +21,7 @@ const Settings = () => {
       fetch("/api/user")
         .then((res) => res.json())
         .then((data) => {
-          setNotificationsEnabled(data.notificationsEnabled);
+          setEmailNotificationsEnabled(data.emailNotificationsEnabled);
         });
     }
     if (status === "unauthenticated") {
@@ -32,7 +32,7 @@ const Settings = () => {
   const handleToggleNotifications = async () => {
     setIsUpdating(true);
 
-    const updatedStatus = !notificationsEnabled;
+    const updatedStatus = !emailNotificationsEnabled;
 
     // Update user settings in the backend
     await fetch("/api/user", {
@@ -40,10 +40,10 @@ const Settings = () => {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ notificationsEnabled: updatedStatus }),
+      body: JSON.stringify({ emailNotificationsEnabled: updatedStatus }),
     });
 
-    setNotificationsEnabled(updatedStatus);
+    setEmailNotificationsEnabled(updatedStatus);
     setIsUpdating(false);
   };
 
@@ -52,7 +52,7 @@ const Settings = () => {
       return "...";
     }
 
-    if (notificationsEnabled) {
+    if (emailNotificationsEnabled) {
       return "Enabled";
     }
 
@@ -76,7 +76,7 @@ const Settings = () => {
               onClick={handleToggleNotifications}
               type="button"
             >
-              Notifications {deriveNotificationStatus()}
+              Email Notifications Are {deriveNotificationStatus()}
             </button>
           )}
         </div>

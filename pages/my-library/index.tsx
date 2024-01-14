@@ -2,7 +2,7 @@
 import Link from "next/link";
 import React, { useState, useEffect } from "react";
 import moment from "moment";
-import { NodeComment, SavedNode, User } from "@prisma/client";
+import { Note, Bookmark, User } from "@prisma/client";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
 // Relative modules.
@@ -13,8 +13,8 @@ import Spinner from "@/components/Spinner";
 import { renderLeadingText } from "@/utils/renderNode";
 
 type Activity = UBNode &
-  SavedNode &
-  NodeComment & { createdAt: string; commentText?: string };
+  Bookmark &
+  Note & { createdAt: string; noteText?: string };
 
 const MyLibrary = () => {
   // Session.
@@ -68,7 +68,7 @@ const MyLibrary = () => {
 
   const renderNode = (node: Activity) => {
     switch (node.type) {
-      case "nodeComment": {
+      case "note": {
         return (
           <Link
             className="mb-6 text-left hover:no-underline"
@@ -84,7 +84,7 @@ const MyLibrary = () => {
                     {moment(node.createdAt).fromNow()}
                   </span>
                   <span className="text-xs bg-orange-600 text-white font-bold py-1 px-2 rounded-full ml-2">
-                    Comment
+                    Note
                   </span>
                 </div>
               </div>
@@ -94,14 +94,12 @@ const MyLibrary = () => {
                   __html: node.htmlText as string,
                 }}
               />
-              <div className="comment-text text-white pt-2">
-                {node.commentText}
-              </div>
+              <div className="note-text text-white pt-2">{node.noteText}</div>
             </div>
           </Link>
         );
       }
-      case "savedNode": {
+      case "bookmark": {
         return (
           <Link
             className="mb-6 text-left hover:no-underline"
@@ -117,7 +115,7 @@ const MyLibrary = () => {
                     {moment(node.createdAt).fromNow()}
                   </span>
                   <span className="text-xs bg-emerald-600 text-white font-bold py-1 px-2 rounded-full ml-2">
-                    Saved Quote
+                    Bookmark
                   </span>
                 </div>
               </div>
@@ -162,7 +160,7 @@ const MyLibrary = () => {
           {!nodes.length && !fetchingNodes ? (
             <div className="flex flex-col items-center justify-center h-full">
               <p className="text-gray-400 mb-8">
-                You haven&apos;t favorited any quotes yet.
+                You haven&apos;t bookmarked any passages yet.
               </p>
               <button
                 className="bg-white text-black font-bold py-3 px-6 rounded-full shadow-lg hover:bg-blue-100 transition duration-300 ease-in-out"

@@ -2,12 +2,12 @@
 import Link from "next/link";
 import moment from "moment";
 import throttle from "lodash/throttle";
-import { NodeComment, ReadNode, SavedNode } from "@prisma/client";
+import { Note as NoteType, ReadNode, Bookmark } from "@prisma/client";
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
 // Relative modules.
-import Comment from "@/components/Comment";
+import Note from "@/components/Note";
 import Explain from "@/components/Explain";
 import Footer from "@/components/Footer";
 import HeadTag from "@/components/HeadTag";
@@ -35,11 +35,11 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
   // Toggled states.
   const [expandedGlobalId, setExpandedGlobalId] = useState<string>("");
 
-  // Saved nodes.
-  const [savedNodes, setSavedNodes] = useState<SavedNode[]>([]);
+  // bookmarks.
+  const [bookmarks, setBookmarks] = useState<Bookmark[]>([]);
 
-  // Node comments.
-  const [nodeComments, setNodeComments] = useState<NodeComment[]>([]);
+  // notes.
+  const [notes, setNotes] = useState<NoteType[]>([]);
 
   // Network states.
   const [savingGlobalIds, setSavingGlobalIds] = useState<string[]>([]);
@@ -57,8 +57,7 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
   );
 
   // Modal states.
-  const [selectedGlobalIdComment, setSelectedGlobalIdComment] =
-    useState<string>("");
+  const [selectedGlobalIdNote, setSelectedGlobalIdNote] = useState<string>("");
   const [selectedGlobalIdExplain, setSelectedGlobalIdExplain] =
     useState<string>("");
   const [selectedGlobalIdRelatedWorks, setSelectedGlobalIdRelatedWorks] =
@@ -85,8 +84,8 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
   const explainNode = selectedGlobalIdExplain
     ? nodes.find((node) => node.globalId === selectedGlobalIdExplain)
     : undefined;
-  const commentNode = selectedGlobalIdComment
-    ? nodes.find((node) => node.globalId === selectedGlobalIdComment)
+  const noteNode = selectedGlobalIdNote
+    ? nodes.find((node) => node.globalId === selectedGlobalIdNote)
     : undefined;
   const relatedWorksNode = selectedGlobalIdRelatedWorks
     ? nodes.find((node) => node.globalId === selectedGlobalIdRelatedWorks)
@@ -172,18 +171,18 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
     }
   };
 
-  const fetchNodeComments = async () => {
+  const fetchNotes = async () => {
     try {
       const response = await fetch(
-        `/api/user/nodes/comments?paperId=${paperData.data.results[0].paperId}`
+        `/api/user/nodes/notes?paperId=${paperData.data.results[0].paperId}`
       );
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-      const nodeComments = await response.json();
-      setNodeComments(nodeComments);
+      const notes = await response.json();
+      setNotes(notes);
     } catch (error) {
-      console.error("Error fetching node comments:", error);
+      console.error("Error fetching notes:", error);
     }
   };
 
@@ -381,8 +380,8 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
-        const savedNodes = await response.json();
-        setSavedNodes(savedNodes);
+        const bookmarks = await response.json();
+        setBookmarks(bookmarks);
       } catch (error) {
         console.error("Error fetching saved globalIds:", error);
       }
@@ -391,14 +390,14 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
     fetchSavedGlobalIds();
   }, [paperData.data.results, status]);
 
-  // Fetch node comments on mount
+  // Fetch notes on mount
   useEffect(() => {
     if (status !== "authenticated") {
-      console.log("Skipping node comments because user is not logged in.");
+      console.log("Skipping notes because user is not logged in.");
       return;
     }
 
-    fetchNodeComments();
+    fetchNotes();
   }, [paperData.data.results, status]);
 
   // Start reading timer checks.
@@ -607,13 +606,13 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
     setSelectedGlobalIdExplain(globalId);
   };
 
-  const onCommentClose = () => {
-    setSelectedGlobalIdComment("");
-    void fetchNodeComments();
+  const onNoteClose = () => {
+    setSelectedGlobalIdNote("");
+    void fetchNotes();
   };
 
-  const onCommentClick = (globalId: string) => () => {
-    setSelectedGlobalIdComment(globalId);
+  const onNoteClick = (globalId: string) => () => {
+    setSelectedGlobalIdNote(globalId);
   };
 
   const onRelatedWorksClose = () => {
@@ -656,7 +655,7 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
       return "Saving Error";
     }
 
-    if (savedNodes.some((node) => node.globalId === globalId)) {
+    if (bookmarks.some((node) => node.globalId === globalId)) {
       return "Saved";
     }
 
@@ -668,7 +667,7 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
     paperId: string,
     paperSectionId?: string,
     paperSectionParagraphId?: string
-  ): Promise<SavedNode | undefined> => {
+  ): Promise<Bookmark | undefined> => {
     // Escape early if we are already saving.
     if (savingGlobalIds.includes(globalId)) {
       return;
@@ -706,8 +705,8 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
           `Unexpected response status ${response.status} when attempting to save global ID ${globalId} for user.`
         );
       }
-      const savedNode = await response.json();
-      return savedNode;
+      const bookmark = await response.json();
+      return bookmark;
     } catch (error: any) {
       // Set error state for globalId.
       console.error("Error attempting to save global ID for user:", error);
@@ -724,12 +723,12 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
 
   const onSaveClick = (node: UBNode) => async () => {
     // Escape early if it's already saved.
-    if (savedNodes.some((savedNode) => savedNode.globalId === node.globalId)) {
+    if (bookmarks.some((bookmark) => bookmark.globalId === node.globalId)) {
       return;
     }
 
     // Make request to save globalId for user.
-    const savedNode = await saveGlobalId(
+    const bookmark = await saveGlobalId(
       node.globalId,
       node.paperId,
       node.paperSectionId,
@@ -737,8 +736,8 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
     );
 
     // Add the id.
-    if (savedNode) {
-      setSavedNodes([...savedNodes, savedNode]);
+    if (bookmark) {
+      setBookmarks([...bookmarks, bookmark]);
     }
   };
 
@@ -768,12 +767,12 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
       }
       case "paragraph": {
         // const readNode = readNodes.has(node.globalId);
-        const savedNode = savedNodes.find(
-          (savedNode) => savedNode.globalId === node.globalId
+        const bookmark = bookmarks.find(
+          (bookmark) => bookmark.globalId === node.globalId
         );
-        // Find all node comments.
-        const nodeCommentsForNode = nodeComments.filter(
-          (nodeComment) => nodeComment.globalId === node.globalId
+        // Find all notes.
+        const notesForNode = notes.filter(
+          (note) => note.globalId === node.globalId
         );
         const isPlayingNode = currentPlayingNode === nodes.indexOf(node);
 
@@ -811,21 +810,21 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
                       </span>
                     )} */}
                   </span>
-                  {savedNode && (
+                  {bookmark && (
                     <Link
                       className="ml-2 text-xs bg-emerald-600 text-white font-bold py-1 px-2 rounded-full hover:no-underline select-none"
-                      href={`/my-library?createdAt=${savedNode.createdAt}`}
+                      href={`/my-library?createdAt=${bookmark.createdAt}`}
                     >
-                      Saved Quote
+                      Bookmarked
                     </Link>
                   )}
-                  {nodeCommentsForNode.length > 0 ? (
+                  {notesForNode.length > 0 ? (
                     <Link
                       className="ml-2 text-xs bg-orange-600 text-white font-bold py-1 px-2 rounded-full hover:no-underline select-none"
-                      href={`/my-library?createdAt=${nodeCommentsForNode[0].createdAt}`}
+                      href={`/my-library?createdAt=${notesForNode[0].createdAt}`}
                     >
-                      {nodeCommentsForNode.length} Comment
-                      {nodeCommentsForNode.length > 1 ? "s" : ""}
+                      {notesForNode.length} Note
+                      {notesForNode.length > 1 ? "s" : ""}
                     </Link>
                   ) : null}
                 </div>
@@ -844,10 +843,10 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
                         <>
                           <button
                             className="bg-transparent border-none p-0 m-0 mr-2 focus:outline-none text-gray-400 text-sm hover:text-white transition duration-300 ease-in-out"
-                            onClick={onCommentClick(node.globalId)}
+                            onClick={onNoteClick(node.globalId)}
                             type="button"
                           >
-                            Comment
+                            Note
                           </button>
                           <span className="mr-2">|</span>
                         </>
@@ -959,10 +958,8 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
         <Explain onClose={onExplainClose} node={explainNode} />
       )}
 
-      {/* Comment Modal */}
-      {selectedGlobalIdComment && (
-        <Comment onClose={onCommentClose} node={commentNode} />
-      )}
+      {/* Note Modal */}
+      {selectedGlobalIdNote && <Note onClose={onNoteClose} node={noteNode} />}
 
       {/* Related Works Modal */}
       {selectedGlobalIdRelatedWorks && (

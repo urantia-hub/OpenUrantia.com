@@ -30,7 +30,23 @@ model Account {
   @@map("accounts")
 }
 
-model NodeComment {
+model Bookmark {
+  createdAt               DateTime @default(now())
+  globalId                String
+  id                      String   @id @default(cuid())
+  paperId                 String
+  paperSectionId          String
+  paperSectionParagraphId String
+  updatedAt               DateTime @updatedAt
+  userId                  String
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([globalId, userId])
+  @@map("bookmarks")
+}
+
+model Note {
   createdAt               DateTime @default(now())
   globalId                String
   id                      String   @id @default(cuid())
@@ -43,25 +59,7 @@ model NodeComment {
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@map("node_comments")
-}
-
-model NodeReference {
-  authors                 String[]
-  createdAt               DateTime  @default(now())
-  description             String?
-  globalId                String
-  id                      String    @id @default(cuid())
-  link                    String?
-  page                    String?
-  paperId                 String
-  paperSectionId          String
-  paperSectionParagraphId String
-  publishedAt             DateTime?
-  title                   String?
-  updatedAt               DateTime  @updatedAt
-
-  @@map("node_references")
+  @@map("notes")
 }
 
 model ReadNode {
@@ -79,22 +77,6 @@ model ReadNode {
   @@map("read_nodes")
 }
 
-model SavedNode {
-  createdAt               DateTime @default(now())
-  globalId                String
-  id                      String   @id @default(cuid())
-  paperId                 String
-  paperSectionId          String
-  paperSectionParagraphId String
-  updatedAt               DateTime @updatedAt
-  userId                  String
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([globalId, userId])
-  @@map("saved_nodes")
-}
-
 model Session {
   expires      DateTime
   id           String   @id @default(cuid())
@@ -106,14 +88,16 @@ model Session {
   @@map("sessions")
 }
 
-enum SharedNodePlatform {
+enum SharePlatform {
+  COPY_LINK
+  COPY_TEXT
   FACEBOOK
   INSTAGRAM
   WHATSAPP
   X
 }
 
-model SharedNode {
+model Share {
   count                   Int
   createdAt               DateTime           @default(now())
   globalId                String
@@ -121,36 +105,36 @@ model SharedNode {
   paperId                 String
   paperSectionId          String
   paperSectionParagraphId String
-  platform                SharedNodePlatform
+  platform                SharePlatform
   updatedAt               DateTime           @updatedAt
   userId                  String
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@map("shared_nodes")
+  @@map("shares")
 }
 
 model User {
-  createdAt                DateTime  @default(now())
-  email                    String?   @unique
-  emailVerified            Boolean?
-  id                       String    @id @default(cuid())
-  image                    String?
-  lastAskedNotificationsAt DateTime?
-  lastVisitedAt            DateTime?
-  lastVisitedGlobalId      String?
-  lastVisitedPaperId       String?
-  lastVisitedPaperTitle    String?
-  name                     String?
-  notificationsEnabled     Boolean?  @default(false)
-  updatedAt                DateTime  @updatedAt
+  createdAt                 DateTime  @default(now())
+  email                     String?   @unique
+  emailVerified             Boolean?
+  id                        String    @id @default(cuid())
+  image                     String?
+  lastAskedNotificationsAt  DateTime?
+  lastVisitedAt             DateTime?
+  lastVisitedGlobalId       String?
+  lastVisitedPaperId        String?
+  lastVisitedPaperTitle     String?
+  name                      String?
+  emailNotificationsEnabled Boolean?  @default(false)
+  updatedAt                 DateTime  @updatedAt
 
-  accounts     Account[]
-  nodeComments NodeComment[]
-  readNodes    ReadNode[]
-  savedNodes   SavedNode[]
-  sessions     Session[]
-  shareNodes   SharedNode[]
+  accounts  Account[]
+  bookmarks Bookmark[]
+  notes     Note[]
+  readNodes ReadNode[]
+  sessions  Session[]
+  shares    Share[]
 
   @@map("users")
 }

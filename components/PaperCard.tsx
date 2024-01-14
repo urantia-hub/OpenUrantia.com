@@ -28,7 +28,9 @@ const PaperCard = ({
     <Link
       className="flex flex-col justify-between px-4 py-2 mb-2 bg-neutral-700 rounded hover:bg-neutral-600 transition-colors hover:no-underline"
       href={`/papers/${paperId}${
-        progress > 0 && progress < 100 ? `#${nextGlobalId}` : ""
+        progress > 0 && progress < 100 && !nextGlobalId?.endsWith("0.1")
+          ? `#${nextGlobalId}`
+          : ""
       }`}
     >
       <div className="flex flex-col mb-1">

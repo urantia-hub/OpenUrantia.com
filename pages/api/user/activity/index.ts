@@ -2,86 +2,83 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { User } from "@prisma/client";
 // Relative modules.
-import NodeCommentService from "@/services/nodeComment";
-import SavedNodeService from "@/services/savedNode";
+import NoteService from "@/services/note";
+import BookmarkService from "@/services/bookmark";
 import getSessionDetails from "@/utils/getSessionDetails";
 
-const nodeCommentService = new NodeCommentService();
-const savedNodeService = new SavedNodeService();
+const noteService = new NoteService();
+const bookmarkService = new BookmarkService();
 
-const getSavedNodesWithDetails = async (userId: string) => {
-  // Handle fetching all saved nodes for a user.
-  const savedNodes = await savedNodeService.findMany({
+const getBookmarksWithDetails = async (userId: string) => {
+  // Handle fetching all bookmarks for a user.
+  const bookmarks = await bookmarkService.findMany({
     where: { userId },
     orderBy: { createdAt: "desc" },
   });
 
-  // Fetch the paperSectionParagraphId details for each saved node.
-  const paperSectionParagraphId = savedNodes.map(
-    (savedNode) => savedNode.paperSectionParagraphId
+  // Fetch the paperSectionParagraphId details for each bookmark.
+  const paperSectionParagraphId = bookmarks.map(
+    (bookmark) => bookmark.paperSectionParagraphId
   );
-  const nodesDetails =
-    await savedNodeService.getNodesByPaperSectionParagraphIds(
-      paperSectionParagraphId
-    );
+  const nodesDetails = await bookmarkService.getNodesByPaperSectionParagraphIds(
+    paperSectionParagraphId
+  );
 
-  // Add the paperSectionParagraphId details to each saved node.
-  const savedNodesWithDetails = savedNodes.map((savedNode) => {
+  // Add the paperSectionParagraphId details to each bookmark.
+  const bookmarksWithDetails = bookmarks.map((bookmark) => {
     const nodeDetail = nodesDetails.find(
       (nodeDetail: UBNode) =>
-        nodeDetail.paperSectionParagraphId === savedNode.paperSectionParagraphId
+        nodeDetail.paperSectionParagraphId === bookmark.paperSectionParagraphId
     );
     return {
-      ...savedNode,
+      ...bookmark,
       ...nodeDetail,
-      type: "savedNode",
+      type: "bookmark",
     };
   });
 
-  return savedNodesWithDetails;
+  return bookmarksWithDetails;
 };
 
-const getNodeCommentsWithDetails = async (userId: string) => {
-  // Handle fetching all node comments for a user.
-  const nodeComments = await nodeCommentService.findMany({
+const getNotesWithDetails = async (userId: string) => {
+  // Handle fetching all notes for a user.
+  const notes = await noteService.findMany({
     where: { userId },
     orderBy: { createdAt: "desc" },
   });
 
-  // Fetch the paperSectionParagraphId details for each node comment.
-  const paperSectionParagraphId = nodeComments.map(
-    (nodeComment) => nodeComment.paperSectionParagraphId
+  // Fetch the paperSectionParagraphId details for each note.
+  const paperSectionParagraphId = notes.map(
+    (note) => note.paperSectionParagraphId
   );
-  const nodesDetails =
-    await savedNodeService.getNodesByPaperSectionParagraphIds(
-      paperSectionParagraphId
-    );
+  const nodesDetails = await bookmarkService.getNodesByPaperSectionParagraphIds(
+    paperSectionParagraphId
+  );
 
-  // Add the paperSectionParagraphId details to each node comment.
-  const nodeCommentsWithDetails = nodeComments.map((nodeComment) => {
+  // Add the paperSectionParagraphId details to each note.
+  const notesWithDetails = notes.map((note) => {
     const nodeDetail = nodesDetails.find(
       (nodeDetail: UBNode) =>
-        nodeDetail.paperSectionParagraphId ===
-        nodeComment.paperSectionParagraphId
+        nodeDetail.paperSectionParagraphId === note.paperSectionParagraphId
     );
     return {
-      ...nodeComment,
+      ...note,
       ...nodeDetail,
-      commentText: nodeComment.text,
-      type: "nodeComment",
+      noteText: note.text,
+      type: "note",
     };
   });
 
-  return nodeCommentsWithDetails;
+  return notesWithDetails;
 };
 
 // GET handler
 async function handleGet(_: NextApiRequest, res: NextApiResponse, user: User) {
-  const savedNodesWithDetails = await getSavedNodesWithDetails(user.id);
-  const nodeCommentsWithDetails = await getNodeCommentsWithDetails(user.id);
+  const bookmarksWithDetails = await getBookmarksWithDetails(user.id);
+  const notesWithDetails = await getNotesWithDetails(user.id);
 
-  // Combine saved nodes and node comments.
-  const activity = [...savedNodesWithDetails, ...nodeCommentsWithDetails];
+  // Combine bookmarks and notes.
+  const activity = [...bookmarksWithDetails, ...notesWithDetails];
 
   // Sort by createdAt.
   activity.sort((a, b) => {
@@ -109,7 +106,7 @@ async function handlePost(
     });
   }
 
-  const savedNode = await savedNodeService.create({
+  const bookmark = await bookmarkService.create({
     data: {
       globalId,
       paperId,
@@ -118,7 +115,7 @@ async function handlePost(
       userId: user.id,
     },
   });
-  res.status(201).json(savedNode);
+  res.status(201).json(bookmark);
 }
 
 // Handler for the API endpoints.

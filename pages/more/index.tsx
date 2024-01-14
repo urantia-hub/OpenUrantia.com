@@ -13,7 +13,7 @@ const More = () => {
 
   // State.
   const [isUpdating, setIsUpdating] = useState<boolean>(false);
-  const [notificationsEnabled, setNotificationsEnabled] =
+  const [emailNotificationsEnabled, setNotificationsEnabled] =
     useState<boolean>(false);
 
   useEffect(() => {
@@ -22,7 +22,7 @@ const More = () => {
       fetch("/api/user")
         .then((res) => res.json())
         .then((data) => {
-          setNotificationsEnabled(data.notificationsEnabled);
+          setNotificationsEnabled(data.emailNotificationsEnabled);
         });
     }
   }, [status]);
@@ -30,7 +30,7 @@ const More = () => {
   const handleToggleNotifications = async () => {
     setIsUpdating(true);
 
-    const updatedStatus = !notificationsEnabled;
+    const updatedStatus = !emailNotificationsEnabled;
 
     // Update user settings in the backend
     await fetch("/api/user", {
@@ -38,7 +38,7 @@ const More = () => {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ notificationsEnabled: updatedStatus }),
+      body: JSON.stringify({ emailNotificationsEnabled: updatedStatus }),
     });
 
     setNotificationsEnabled(updatedStatus);
@@ -50,7 +50,7 @@ const More = () => {
       return "...";
     }
 
-    if (notificationsEnabled) {
+    if (emailNotificationsEnabled) {
       return "Enabled";
     }
 
@@ -122,7 +122,7 @@ const moreRoutes = [
         <path d="M64.48.38H82.9c1.85 0 3.36 1.51 3.36 3.36v14.84H61.12V3.74c0-1.85 1.51-3.36 3.36-3.36zm21.79 27.27v45.19H61.12V27.65h25.15zm0 54.27v13.8c0 1.85-1.51 3.36-3.36 3.36H64.48c-1.85 0-3.36-1.51-3.36-3.36v-13.8h25.15zM101.09.38h18.42c1.85 0 3.36 1.51 3.36 3.36v14.84H97.73V3.74c0-1.85 1.52-3.36 3.36-3.36zm21.79 27.27v45.19H97.73V27.65h25.15zm0 54.27v13.8c0 1.85-1.51 3.36-3.36 3.36H101.1c-1.85 0-3.36-1.51-3.36-3.36v-13.8h25.14zM35.95.2l17.31 6.3c1.74.63 2.64 2.57 2.01 4.31L50.2 24.75l-23.63-8.6 5.07-13.94C32.28.47 34.22-.43 35.95.2zM47.1 33.28 31.65 75.75l-23.63-8.6 15.45-42.46 23.63 8.59zm-18.55 51-4.72 12.96c-.63 1.74-2.57 2.64-4.31 2.01l-17.31-6.3C.47 92.32-.43 90.38.2 88.64l4.72-12.96 23.63 8.6z" />
       </svg>
     ),
-    name: "Saved Quotes & Comments",
+    name: "My Library",
     path: "/my-library",
     requireAuth: true,
   },
