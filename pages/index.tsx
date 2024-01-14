@@ -246,17 +246,17 @@ const features = [
   {
     title: "Your Personal Reading Companion",
     description:
-      "Our intuitive tracking system remembers your last read paragraph, providing a seamless continuation each time you return.",
+      "Our intuitive tracking system remembers your last read passage, providing a seamless continuation each time you return.",
   },
   {
     title: "Engage with Every Word",
     description:
-      "Dive deeper into the teachings. Save your favorite paragraphs, annotate with personal reflections, and easily revisit your curated insights and notes.",
+      "Dive deeper into the teachings. Bookmark your favorite passages, annotate with personal reflections, and easily revisit your curated insights and notes.",
   },
   {
     title: "Share Wisdom with the World",
     description:
-      "Inspire others by sharing enlightening paragraphs directly to social platforms.",
+      "Inspire others by sharing enlightening passages directly to social platforms.",
   },
   {
     title: "Read Comfortably, Anytime",

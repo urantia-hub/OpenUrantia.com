@@ -365,14 +365,16 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
     fetchReadNodes();
   }, [status, paperId]);
 
-  // Fetch saved globalIds on mount
+  // Fetch bookmarked globalIds on mount
   useEffect(() => {
     if (status !== "authenticated") {
-      console.log("Skipping saved globalIds because user is not logged in.");
+      console.log(
+        "Skipping bookmarked globalIds because user is not logged in."
+      );
       return;
     }
 
-    const fetchSavedGlobalIds = async () => {
+    const fetchBookmarkedGlobalIds = async () => {
       try {
         const response = await fetch(
           `/api/user/nodes/bookmarks?paperId=${paperData.data.results[0].paperId}`
@@ -383,11 +385,11 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
         const bookmarks = await response.json();
         setBookmarks(bookmarks);
       } catch (error) {
-        console.error("Error fetching saved globalIds:", error);
+        console.error("Error fetching bookmarked globalIds:", error);
       }
     };
 
-    fetchSavedGlobalIds();
+    fetchBookmarkedGlobalIds();
   }, [paperData.data.results, status]);
 
   // Fetch notes on mount
@@ -646,23 +648,23 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
       setExpandedGlobalId(globalId);
     };
 
-  const deriveSaveText = (globalId: string) => {
+  const deriveBookmarkText = (globalId: string) => {
     if (savingGlobalIds.includes(globalId)) {
-      return "Saving";
+      return "Bookmarking";
     }
 
     if (savingErrorGlobalIds.includes(globalId)) {
-      return "Saving Error";
+      return "Bookmarking Error";
     }
 
     if (bookmarks.some((node) => node.globalId === globalId)) {
-      return "Saved";
+      return "Bookmarked";
     }
 
-    return "Save";
+    return "Bookmark";
   };
 
-  const saveGlobalId = async (
+  const bookmarkGlobalId = async (
     globalId: string,
     paperId: string,
     paperSectionId?: string,
@@ -675,7 +677,7 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
 
     // Escape early if we aren't logged in.
     if (status !== "authenticated") {
-      console.warn("User is not logged in, cannot save global ID.");
+      console.warn("User is not logged in, cannot bookmark global ID.");
       return;
     }
 
@@ -687,7 +689,7 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
     setSavingErrorGlobalIds(updatedSavingErrorGlobalIds);
 
     try {
-      // Make request to save node for user.
+      // Make request to bookmark node for user.
       const response = await fetch(`/api/user/nodes/bookmarks`, {
         method: "POST",
         headers: {
@@ -702,14 +704,14 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
       });
       if (response.status !== 201) {
         throw new Error(
-          `Unexpected response status ${response.status} when attempting to save global ID ${globalId} for user.`
+          `Unexpected response status ${response.status} when attempting to bookmark global ID ${globalId} for user.`
         );
       }
       const bookmark = await response.json();
       return bookmark;
     } catch (error: any) {
       // Set error state for globalId.
-      console.error("Error attempting to save global ID for user:", error);
+      console.error("Error attempting to bookmark global ID for user:", error);
       setSavingErrorGlobalIds([...savingErrorGlobalIds, globalId]);
       return;
     } finally {
@@ -721,14 +723,14 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
     }
   };
 
-  const onSaveClick = (node: UBNode) => async () => {
-    // Escape early if it's already saved.
+  const onBookmarkClick = (node: UBNode) => async () => {
+    // Escape early if it's already bookmark.
     if (bookmarks.some((bookmark) => bookmark.globalId === node.globalId)) {
       return;
     }
 
-    // Make request to save globalId for user.
-    const bookmark = await saveGlobalId(
+    // Make request to bookmark globalId for user.
+    const bookmark = await bookmarkGlobalId(
       node.globalId,
       node.paperId,
       node.paperSectionId,
@@ -871,10 +873,10 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
                           <span className="mr-2">|</span>
                           <button
                             className="bg-transparent border-none p-0 m-0 focus:outline-none text-gray-400 text-sm hover:text-white transition duration-300 ease-in-out"
-                            onClick={onSaveClick(node)}
+                            onClick={onBookmarkClick(node)}
                             type="button"
                           >
-                            {deriveSaveText(node.globalId)}
+                            {deriveBookmarkText(node.globalId)}
                           </button>
                         </>
                       )}
