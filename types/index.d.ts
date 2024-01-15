@@ -1,6 +1,7 @@
 type UBNode = {
   globalId: string;
   htmlText?: string;
+  labels: string[];
   language: string;
   mp3Url?: string;
   objectID: string;
