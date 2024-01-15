@@ -65,7 +65,7 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
 
         return (
           <div key={node.globalId} className="mb-8">
-            <h2 className="text-sm mb-6 text-center border-b text-gray-400 border-gray-600">
+            <h2 className="text-sm mb-6 pb-2 text-center border-b text-gray-400 border-gray-600">
               Part {node.partId}: {node.partTitle || `Part ${node.partId}`}
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
