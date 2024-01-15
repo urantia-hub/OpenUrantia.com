@@ -5,7 +5,6 @@ import { User } from "@prisma/client";
 // Relative modules.
 import ReadNodeService from "@/services/readNode";
 import getSessionDetails from "@/utils/getSessionDetails";
-import { createSortId } from "@/utils/node";
 
 const readNodeService = new ReadNodeService();
 

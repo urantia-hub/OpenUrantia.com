@@ -5,24 +5,25 @@ import { useState } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import HeadTag from "@/components/HeadTag";
-import { paperLabels, paperLabelsLookup } from "@/utils/paperLabels";
+import { paperLabels } from "@/utils/paperLabels";
 
 // Define the structure of the data you expect from the API
-type Part = {
-  partId: string;
+type TOCNode = {
+  globalId: string;
+  labels: string[];
   paperId?: string;
   paperTitle?: string;
-  partTitle?: string;
+  partId: string;
   partSponsorship?: string;
-  globalId: string;
+  partTitle?: string;
   type: string;
 };
 
 type TOCPageProps = {
-  partsData: Part[];
+  nodes: TOCNode[];
 };
 
-const ReadPage = ({ partsData }: TOCPageProps) => {
+const ReadPage = ({ nodes }: TOCPageProps) => {
   // State.
   const [activeFilters, setActiveFilters] = useState<string[]>([]);
   const [showFilters, setShowFilters] = useState<boolean>(false);
@@ -38,9 +39,7 @@ const ReadPage = ({ partsData }: TOCPageProps) => {
   };
 
   // Function to determine if a paper should be shown based on active filters.
-  const shouldShowPaper = (paperId: string) => {
-    const labels = paperLabelsLookup[paperId as keyof typeof paperLabelsLookup];
-
+  const shouldShowPaper = (labels: string[]) => {
     // If no filters are active, all papers should be shown.
     if (activeFilters.length === 0) return true;
 
@@ -52,14 +51,14 @@ const ReadPage = ({ partsData }: TOCPageProps) => {
   };
 
   // Function to render each part and its papers
-  const renderNode = (node: Part) => {
+  const renderNode = (node: TOCNode) => {
     switch (node.type) {
       case "part": {
-        const papers = partsData.filter(
-          (paper) =>
-            paper.partId === node.partId &&
-            paper.type === "paper" &&
-            shouldShowPaper(paper.paperId as string)
+        const papers = nodes.filter(
+          (node) =>
+            node.partId === node.partId &&
+            node.type === "paper" &&
+            shouldShowPaper(node.labels)
         );
 
         if (!papers.length) return null;
@@ -72,21 +71,24 @@ const ReadPage = ({ partsData }: TOCPageProps) => {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {papers.map((paper) => (
                 <Link
-                  className="block px-4 py-2 mb-2 bg-neutral-700 rounded hover:bg-neutral-600 transition-colors hover:no-underline"
+                  className="flex flex-col justify-between px-4 py-2 mb-2 bg-neutral-700 rounded hover:bg-neutral-600 transition-colors hover:no-underline"
                   href={`/papers/${paper.paperId}`}
                   key={paper.globalId}
                 >
-                  <div className="flex justify-between text-xs text-gray-400">
-                    <span>Paper {paper.paperId}</span>
-                    <span>
-                      {paperLabelsLookup[
-                        paper.paperId as keyof typeof paperLabelsLookup
-                      ]
-                        .sort()
-                        .join(", ")}
+                  <div className="flex flex-col">
+                    <span className="text-xs text-gray-400">
+                      Paper {paper.paperId}
                     </span>
+                    <h3 className="mt-1 text-lg font-bold">
+                      {paper.paperTitle}
+                    </h3>
                   </div>
-                  <h3 className="mt-1 text-lg font-bold">{paper.paperTitle}</h3>
+                  <span
+                    className="mt-1 text-xs text-gray-400 truncate w-full"
+                    title={paper.labels.sort().join(" | ")}
+                  >
+                    {paper.labels.sort().join(" | ")}
+                  </span>
                 </Link>
               ))}
             </div>
@@ -95,40 +97,33 @@ const ReadPage = ({ partsData }: TOCPageProps) => {
       }
       case "paper": {
         // Foreword is a special case; handle it separately.
-        if (node.paperId === "0" && shouldShowPaper(node.paperId as string)) {
+        if (node.paperId === "0" && shouldShowPaper(node.labels)) {
           return (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 pb-6">
               <Link
                 className="block px-4 py-2 bg-neutral-700 rounded hover:bg-neutral-600 transition-colors hover:no-underline"
                 href={`/papers/${node.paperId}`}
               >
-                <div className="flex justify-between text-xs text-gray-400">
-                  <span>Foreword</span>
-                  <span>
-                    {paperLabelsLookup[
-                      node.paperId as keyof typeof paperLabelsLookup
-                    ]
-                      .sort()
-                      .join(", ")}
-                  </span>
-                </div>
+                <span className="text-xs text-gray-400">Foreword</span>
                 <h3 className="text-lg font-bold">{node.paperTitle}</h3>
+                <span className="text-xs text-gray-400 truncate">
+                  {node.labels.sort().join(" | ")}
+                </span>
               </Link>
             </div>
           );
         }
         break;
       }
-      // You can add more cases if there are other node types
       default:
         return null;
     }
   };
 
   // Extract parts and sort them by partId
-  const foreword = partsData.find((part) => part.paperId === "0");
-  const sortedParts = partsData
-    .filter((part) => part.type === "part")
+  const foreword = nodes.find((node) => node.paperId === "0");
+  const sortedParts = nodes
+    .filter((node) => node.type === "part")
     .sort((a, b) => parseInt(a.partId) - parseInt(b.partId));
 
   return (
@@ -194,11 +189,11 @@ export async function getStaticProps() {
     `${process.env.NEXT_PUBLIC_URANTIA_DEV_API_HOST}/api/v1/urantia-book/toc`
   );
   const jsonData = await res.json();
-  const partsData = jsonData?.data?.results || [];
+  const nodes = jsonData?.data?.results || [];
 
   return {
     props: {
-      partsData,
+      nodes,
     },
   };
 }
