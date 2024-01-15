@@ -51,12 +51,12 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
   };
 
   // Function to render each part and its papers
-  const renderNode = (node: TOCNode) => {
-    switch (node.type) {
+  const renderNode = (currentNode: TOCNode) => {
+    switch (currentNode.type) {
       case "part": {
         const papers = nodes.filter(
           (node) =>
-            node.partId === node.partId &&
+            currentNode.partId === node.partId &&
             node.type === "paper" &&
             shouldShowPaper(node.labels)
         );
@@ -64,9 +64,10 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
         if (!papers.length) return null;
 
         return (
-          <div key={node.globalId} className="mb-8">
+          <div key={currentNode.globalId} className="mb-8">
             <h2 className="text-sm mb-6 pb-2 text-center border-b text-gray-400 border-gray-600">
-              Part {node.partId}: {node.partTitle || `Part ${node.partId}`}
+              Part {currentNode.partId}:{" "}
+              {currentNode.partTitle || `Part ${currentNode.partId}`}
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {papers.map((paper) => (
@@ -97,17 +98,20 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
       }
       case "paper": {
         // Foreword is a special case; handle it separately.
-        if (node.paperId === "0" && shouldShowPaper(node.labels)) {
+        if (
+          currentNode.paperId === "0" &&
+          shouldShowPaper(currentNode.labels)
+        ) {
           return (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 pb-6">
               <Link
                 className="block px-4 py-2 bg-neutral-700 rounded hover:bg-neutral-600 transition-colors hover:no-underline"
-                href={`/papers/${node.paperId}`}
+                href={`/papers/${currentNode.paperId}`}
               >
                 <span className="text-xs text-gray-400">Foreword</span>
-                <h3 className="text-lg font-bold">{node.paperTitle}</h3>
+                <h3 className="text-lg font-bold">{currentNode.paperTitle}</h3>
                 <span className="text-xs text-gray-400 truncate">
-                  {node.labels.sort().join(" | ")}
+                  {currentNode.labels.sort().join(" | ")}
                 </span>
               </Link>
             </div>
@@ -122,7 +126,7 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
 
   // Extract parts and sort them by partId
   const foreword = nodes.find((node) => node.paperId === "0");
-  const sortedParts = nodes
+  const sortedNodes = nodes
     .filter((node) => node.type === "part")
     .sort((a, b) => parseInt(a.partId) - parseInt(b.partId));
 
@@ -176,7 +180,7 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
 
         {/* Render parts and papers */}
         {foreword && renderNode(foreword)}
-        {sortedParts.map((part) => renderNode(part))}
+        {sortedNodes.map((node) => renderNode(node))}
       </main>
       <Footer />
     </div>
