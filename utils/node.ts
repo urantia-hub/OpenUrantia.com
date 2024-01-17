@@ -13,6 +13,46 @@ function getPartFromPaperId(paperId: number): string {
   }
 }
 
+// Utility function to determine the globalId from a standardReferenceId.
+// The standardReferenceId is of the form: [paperId]:[sectionId]:[paragraphId]
+// The globalId is of the form: [partId]:[paperId].[sectionId].[paragraphId]
+export function getGlobalIdFromStandardReferenceId(
+  standardReferenceId?: string | null
+): string {
+  if (!standardReferenceId) return "";
+
+  const [paperId, rest] = standardReferenceId?.split(":");
+  const [sectionId, paragraphId] = rest?.split(".");
+
+  if (
+    Number.isNaN(Number(paperId)) ||
+    Number.isNaN(Number(sectionId)) ||
+    Number.isNaN(Number(paragraphId))
+  ) {
+    console.warn(`Invalid standardReferenceId format: ${standardReferenceId}`);
+    return "";
+  }
+
+  if (Number(paperId) < 0 || Number(paperId) > 196) {
+    console.warn(`Invalid paperId: ${paperId}`);
+    return "";
+  }
+
+  if (Number(sectionId) < 0 || Number(sectionId) > 999) {
+    console.warn(`Invalid sectionId: ${sectionId}`);
+    return "";
+  }
+
+  if (Number(paragraphId) <= 0 || Number(paragraphId) > 999) {
+    console.warn(`Invalid paragraphId: ${paragraphId}`);
+    return "";
+  }
+
+  const partKey = getPartFromPaperId(Number(paperId));
+
+  return `${partKey}:${paperId}.${sectionId}.${paragraphId}`;
+}
+
 // Function to zero-pad a number to a specified length
 function zeroPad(number: number, length: number): string {
   return number.toString().padStart(length, "0");
