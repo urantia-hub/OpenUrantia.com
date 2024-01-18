@@ -6,6 +6,7 @@ import DeleteUser from "@/components/DeleteUser";
 import Footer from "@/components/Footer";
 import HeadTag from "@/components/HeadTag";
 import Navbar from "@/components/Navbar";
+import ResetProgress from "@/components/ResetProgress";
 
 const Settings = () => {
   // Hooks.
@@ -13,6 +14,10 @@ const Settings = () => {
 
   // Delete user state.
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
+
+  // Reset progress state.
+  const [isResetProgressModalOpen, setIsResetProgressModalOpen] =
+    useState<boolean>(false);
 
   // Email notification state.
   const [isUpdating, setIsUpdating] = useState<boolean>(false);
@@ -73,6 +78,10 @@ const Settings = () => {
         <DeleteUser onClose={() => setIsDeleteModalOpen(false)} />
       )}
 
+      {isResetProgressModalOpen && (
+        <ResetProgress onClose={() => setIsResetProgressModalOpen(false)} />
+      )}
+
       <main className="mt-8 flex-grow container mx-auto px-4 my-4 max-w-3xl paper-content">
         <h1 className="text-2xl md:text-4xl text-white font-bold mb-8 text-center">
           Settings
@@ -112,22 +121,50 @@ const Settings = () => {
           <h2 className="text-xl md:text-2xl text-white font-bold mb-4 text-red-500">
             Danger Zone
           </h2>
-          <div className="bg-zinc-900 flex flex-col md:flex-row justify-end border border-red-600 rounded-lg p-4">
-            <div className="flex flex-col w-full justify-center text-base flex-1 mb-4 md:mb-0">
-              <h3 className="text-white font-bold mb-1 mt-0">Delete Account</h3>
-              <p className="text-gray-300 text-sm">
-                Once you delete your account, there is no going back. Please be
-                certain.
-              </p>
+          <div className="bg-zinc-900 flex flex-col border border-red-600 rounded-lg p-4 mb-4">
+            {/* Reset Progress */}
+            <div className="flex flex-col md:flex-row justify-end mb-4">
+              <div className="flex flex-col w-full justify-center text-base flex-1 mb-4 md:mb-0">
+                <h3 className="text-white font-bold mb-1 mt-0">
+                  Reset Progress
+                </h3>
+                <p className="text-gray-300 text-sm">
+                  Reset your reading progress and start over from the beginning.
+                </p>
+              </div>
+              <div className="flex flex-col justify-center flex-1">
+                <button
+                  className="border-0 text-center rounded-lg bg-zinc-800 text-red-500 hover:bg-zinc-700 hover:no-underline transition-colors duration-300 ease-in-out"
+                  onClick={() => setIsResetProgressModalOpen(true)}
+                  type="button"
+                >
+                  Reset Progress
+                </button>
+              </div>
             </div>
-            <div className="flex flex-col justify-center flex-1">
-              <button
-                className="border-0 text-center rounded-lg bg-zinc-800 text-red-500 hover:bg-zinc-700 hover:no-underline transition-colors duration-300 ease-in-out"
-                onClick={() => setIsDeleteModalOpen(true)}
-                type="button"
-              >
-                Delete Account
-              </button>
+
+            <hr />
+
+            {/* Delete Account */}
+            <div className="flex flex-col md:flex-row justify-end mt-4">
+              <div className="flex flex-col w-full justify-center text-base flex-1 mb-4 md:mb-0">
+                <h3 className="text-white font-bold mb-1 mt-0">
+                  Delete Account
+                </h3>
+                <p className="text-gray-300 text-sm">
+                  Once you delete your account, there is no going back. Please
+                  be certain.
+                </p>
+              </div>
+              <div className="flex flex-col justify-center flex-1">
+                <button
+                  className="border-0 text-center rounded-lg bg-zinc-800 text-red-500 hover:bg-zinc-700 hover:no-underline transition-colors duration-300 ease-in-out"
+                  onClick={() => setIsDeleteModalOpen(true)}
+                  type="button"
+                >
+                  Delete Account
+                </button>
+              </div>
             </div>
           </div>
         </div>

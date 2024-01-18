@@ -4,9 +4,11 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { User } from "@prisma/client";
 // Relative modules.
 import ReadNodeService from "@/services/readNode";
+import UserService from "@/services/user";
 import getSessionDetails from "@/utils/getSessionDetails";
 
 const readNodeService = new ReadNodeService();
+const userService = new UserService();
 
 // POST handler
 async function handlePOST(
@@ -57,6 +59,29 @@ async function handlePOST(
   }
 }
 
+// DELETE handler
+async function handleDELETE(
+  req: NextApiRequest,
+  res: NextApiResponse,
+  user: User
+) {
+  await userService.update(user.id, {
+    lastAskedNotificationsAt: null,
+    lastVisitedAt: null,
+    lastVisitedGlobalId: null,
+    lastVisitedPaperId: null,
+    lastVisitedPaperTitle: null,
+  });
+
+  await readNodeService.deleteMany({
+    where: {
+      userId: user.id,
+    },
+  });
+
+  res.status(204).end();
+}
+
 // Handler for the API endpoints.
 export default async function handle(
   req: NextApiRequest,
@@ -69,8 +94,10 @@ export default async function handle(
   switch (method) {
     case "POST":
       return handlePOST(req, res, sessionDetails.user);
+    case "DELETE":
+      return handleDELETE(req, res, sessionDetails.user);
     default:
-      res.setHeader("Allow", ["POST"]);
+      res.setHeader("Allow", ["POST", "DELETE"]);
       res.status(405).end(`Method ${method} Not Allowed`);
   }
 }

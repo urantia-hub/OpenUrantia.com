@@ -2,37 +2,35 @@
 import { useState } from "react";
 // Relative modules.
 import Modal from "@/components/Modal";
-import { signOut } from "next-auth/react";
 
 type ShareProps = {
   onClose?: () => void;
   node?: UBNode;
 };
 
-const DeleteUser = ({ onClose }: ShareProps) => {
+const ResetProgress = ({ onClose }: ShareProps) => {
   // State.
-  const [isDeleting, setIsDeleting] = useState<boolean>(false);
+  const [isResetting, setIsResetting] = useState<boolean>(false);
   const [confirmText, setConfirmText] = useState<string>("");
 
   // Handlers.
-  const handleDelete = async () => {
-    if (confirmText !== "DELETE") {
+  const handleReset = async () => {
+    if (confirmText !== "RESET") {
       return;
     }
 
-    if (isDeleting) {
+    if (isResetting) {
       return;
     }
 
-    setIsDeleting(true);
+    setIsResetting(true);
 
-    // Delete user in the backend.
-    await fetch("/api/user", {
+    await fetch("/api/user/nodes/progress", {
       method: "DELETE",
     });
 
-    // Sign out.
-    await signOut({ callbackUrl: "/" });
+    setIsResetting(false);
+    onClose?.();
   };
 
   return (
@@ -40,15 +38,15 @@ const DeleteUser = ({ onClose }: ShareProps) => {
       <div className="flex flex-col p-4">
         <h2 className="text-2xl mb-6">Are you sure?</h2>
         <p className="text-gray-400 mb-6">
-          This action is irreversible. Your account will be deleted immediately
-          and all of your progress will be lost. Type{" "}
-          <code className="text-white text-sm">DELETE</code> below to confirm.
+          This action is irreversible. Your reading progress will be fully reset
+          and your last known position in the papers will be lost. Type{" "}
+          <code className="text-white text-sm">RESET</code> below to confirm.
         </p>
 
         <input
           className="rounded-lg p-2 mb-6 text-sm"
           onChange={(e) => setConfirmText(e.target.value)}
-          placeholder="DELETE"
+          placeholder="RESET"
           type="text"
           value={confirmText}
         />
@@ -56,11 +54,11 @@ const DeleteUser = ({ onClose }: ShareProps) => {
         <div className="flex flex-row justify-end">
           <button
             className="border-0 text-center w-full p-2 rounded-lg bg-red-900 hover:bg-red-950 hover:no-underline transition-colors duration-300 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-red-900"
-            disabled={confirmText !== "DELETE" || isDeleting}
-            onClick={handleDelete}
+            disabled={confirmText !== "RESET" || isResetting}
+            onClick={handleReset}
             type="button"
           >
-            {isDeleting ? "Deleting..." : "Delete Account"}
+            {isResetting ? "Resetting..." : "Reset Progress"}
           </button>
 
           <button
@@ -76,4 +74,4 @@ const DeleteUser = ({ onClose }: ShareProps) => {
   );
 };
 
-export default DeleteUser;
+export default ResetProgress;

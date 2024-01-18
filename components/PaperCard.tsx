@@ -33,34 +33,37 @@ const PaperCard = ({
           : ""
       }`}
     >
-      <div className="flex flex-col mb-1">
-        <div className="flex justify-between text-xs text-gray-400">
-          <span>Paper {paperId}</span>
-          <span>
-            {paperLabelsLookup[paperId as keyof typeof paperLabelsLookup]
-              .sort()
-              .join(", ")}
-          </span>
-        </div>
-        <h3 className="mt-1 text-lg font-bold">{paperTitle}</h3>
-      </div>
       <div className="flex flex-col">
-        <div className="bg-zinc-600 rounded-full h-2.5 w-full relative mb-1">
-          <div
-            className={`absolute h-2.5 rounded-full ${progressClasses}`}
-            style={{ width: `${progress}%` }}
-          />
-        </div>
-        {progress < 100 && (
-          <div className="text-blue-400 text-xs">
-            Continue Reading{" "}
-            {progress < 100 ? ` (${progress.toFixed(0)}%)` : ""}
+        <span className="text-xs text-gray-400">Paper {paperId}</span>
+        <h3 className="mt-1 text-lg font-bold mb-1">{paperTitle}</h3>
+        <div className="flex flex-col">
+          <div className="bg-zinc-600 rounded-full h-2.5 w-full relative mb-1">
+            <div
+              className={`absolute h-2.5 rounded-full ${progressClasses}`}
+              style={{ width: `${progress}%` }}
+            />
           </div>
-        )}
-        {isCompleted && (
-          <div className="text-green-400 text-xs">Completed (100%)</div>
-        )}
+          {progress < 100 && (
+            <div className="text-blue-400 text-xs">
+              Continue Reading{" "}
+              {progress < 100 ? ` (${progress.toFixed(0)}%)` : ""}
+            </div>
+          )}
+          {isCompleted && (
+            <div className="text-green-400 text-xs">Completed (100%)</div>
+          )}
+        </div>
       </div>
+      <span
+        className="mt-1 text-xs text-gray-400 truncate w-full"
+        title={paperLabelsLookup[paperId as keyof typeof paperLabelsLookup]
+          .sort()
+          .join(" | ")}
+      >
+        {paperLabelsLookup[paperId as keyof typeof paperLabelsLookup]
+          .sort()
+          .join(" | ")}
+      </span>
     </Link>
   );
 };
