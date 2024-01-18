@@ -25,10 +25,8 @@ export class BookmarkService implements BaseService<Bookmark> {
     return await this.model.create(args);
   }
 
-  async delete(id: string): Promise<Bookmark> {
-    return await this.model.delete({
-      where: { id },
-    });
+  async delete(args: Prisma.BookmarkDeleteArgs): Promise<Bookmark> {
+    return await this.model.delete(args);
   }
 
   async deleteMany(

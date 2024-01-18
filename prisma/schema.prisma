@@ -27,6 +27,7 @@ model Account {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
+
   @@map("accounts")
 }
 
@@ -43,6 +44,7 @@ model Bookmark {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([globalId, userId])
+
   @@map("bookmarks")
 }
 
@@ -145,5 +147,6 @@ model VerificationToken {
   token      String   @unique
 
   @@unique([identifier, token])
+
   @@map("verification_tokens")
 }

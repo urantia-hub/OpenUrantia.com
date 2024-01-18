@@ -24,10 +24,8 @@ export class ShareService implements BaseService<Share> {
     return await this.model.create(args);
   }
 
-  async delete(id: string): Promise<Share> {
-    return await this.model.delete({
-      where: { id },
-    });
+  async delete(args: Prisma.ShareDeleteArgs): Promise<Share> {
+    return await this.model.delete(args);
   }
 
   async deleteMany(

@@ -24,10 +24,8 @@ export class UserService implements BaseService<User> {
     return await this.model.create(args);
   }
 
-  async delete(id: string): Promise<User> {
-    return await this.model.delete({
-      where: { id },
-    });
+  async delete(args: Prisma.UserDeleteArgs): Promise<User> {
+    return await this.model.delete(args);
   }
 
   async deleteMany(

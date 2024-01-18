@@ -25,10 +25,8 @@ export class NoteService implements BaseService<Note> {
     return await this.model.create(args);
   }
 
-  async delete(id: string): Promise<Note> {
-    return await this.model.delete({
-      where: { id },
-    });
+  async delete(args: Prisma.NoteDeleteArgs): Promise<Note> {
+    return await this.model.delete(args);
   }
 
   async deleteMany(

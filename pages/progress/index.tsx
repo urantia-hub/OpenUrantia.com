@@ -78,14 +78,14 @@ const Progress = () => {
       <main className="mt-12 flex-grow container mx-auto px-4 my-4 max-w-4xl">
         <h1 className="text-5xl font-bold mb-14 text-center">Progress</h1>
         {fetchingProgress && <Spinner />}
-        {progressResults?.length && (
+        {progressResults?.length ? (
           <div className="mb-8">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {renderPapers()}
             </div>
           </div>
-        )}
-        {!fetchingProgress && !progressResults?.length && (
+        ) : null}
+        {!fetchingProgress && !progressResults?.length ? (
           <div className="text-center">
             <p className="text-2xl font-bold mb-4">
               You haven&apos;t started any papers yet!
@@ -99,7 +99,7 @@ const Progress = () => {
               </Link>
             </p>
           </div>
-        )}
+        ) : null}
       </main>
 
       <Footer />
