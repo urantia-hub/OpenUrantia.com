@@ -30,6 +30,10 @@ async function handlePOST(
   });
   const paperIds = Array.from(new Set(nodes.map((node) => node.paperId)));
 
+  if (!paperIds.length) {
+    return res.status(200).json({ data: [] });
+  }
+
   try {
     const { data } = await axios.post(
       `${process.env.NEXT_PUBLIC_URANTIA_DEV_API_HOST}/api/v1/urantia-book/progress`,
