@@ -123,7 +123,7 @@ const Settings = () => {
           </h2>
           <div className="bg-zinc-900 flex flex-col border border-red-600 rounded-lg p-4 mb-4">
             {/* Reset Progress */}
-            <div className="flex flex-col md:flex-row justify-end mb-4">
+            <div className="flex flex-col md:flex-row justify-end mb-6 md:mb-5">
               <div className="flex flex-col w-full justify-center text-base flex-1 mb-4 md:mb-0">
                 <h3 className="text-white font-bold mb-1 mt-0">
                   Reset Progress
