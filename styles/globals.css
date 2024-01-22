@@ -203,3 +203,92 @@ footer a:hover {
     padding-top: 45rem;
   }
 }
+
+.urantia-dev-blockquote {
+  border-left: 4px solid #404040;
+  display: block;
+  padding-left: 1rem;
+}
+
+.urantia-dev-blockquote-last {
+  border-left: 4px solid #404040;
+  display: block;
+  padding-left: 1rem;
+  margin-bottom: 2rem;
+}
+
+.urantia-dev-pb-4 {
+  display: block;
+  margin-bottom: 2rem;
+}
+
+.urantia-dev-pb-2 {
+  display: block;
+  margin-bottom: 1rem;
+}
+
+.urantia-dev-pb-0 {
+  margin-bottom: 0;
+}
+
+.urantia-dev-pb-4 {
+  display: block;
+  margin-bottom: 2rem;
+}
+
+.urantia-dev-py-4 {
+  display: block;
+  margin-bottom: 2rem;
+  padding-top: 2rem;
+  text-align: center;
+}
+
+.urantia-dev-py-0 {
+  margin-bottom: 0;
+  padding-top: 0;
+}
+
+.urantia-dev-pl-2-pb-0 {
+  display: block;
+  padding-left: 1rem;
+}
+
+.urantia-dev-pl-2-pb-2 {
+  display: block;
+  padding-left: 1rem;
+  margin-bottom: 1rem;
+}
+
+.urantia-dev-pl-4-pb-0 {
+  display: block;
+  padding-left: 2rem;
+  margin-bottom: 0;
+}
+
+.urantia-dev-pl-4-pb-2 {
+  display: block;
+  padding-left: 2rem;
+  margin-bottom: 1rem;
+}
+
+.dot {
+  border-bottom: 1px dotted #404040;
+  flex-grow: 1;
+}
+
+.pra {
+  display: flex;
+  justify-content: space-between;
+  line-height: 1.5rem;
+  font-size: 0.9rem;
+}
+
+@media screen and (min-width: 768px) {
+  .pra {
+    font-size: 1.125rem;
+  }
+}
+
+.scaps {
+  font-variant-caps: small-caps;
+}

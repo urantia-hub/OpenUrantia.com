@@ -760,7 +760,7 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
       case "section": {
         if (!node.sectionTitle) return null;
         return (
-          <div key={node.globalId} className="mt-20 mb-12 text-center">
+          <div key={node.globalId} className="mt-16 mb-6 text-center">
             <h2 className="text-3xl font-bold" id={node.globalId}>
               {node.sectionTitle}
             </h2>
@@ -780,7 +780,7 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
 
         return (
           <div
-            className={`paragraph mb-6 text-left ${
+            className={`paragraph mb-2 text-left ${
               currentPlayingNode &&
               isPlayingNode &&
               (isPlaying || isTransitioning)
@@ -792,7 +792,7 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
           >
             <div className="text-lg leading-relaxed">
               <div
-                className="flex items-center justify-between block mb-1 text-gray-400 text-sm"
+                className="flex items-center justify-between block mb-2 text-gray-400 text-sm"
                 style={{ minHeight: "24px" }}
               >
                 <div className="flex items-center">
@@ -899,14 +899,20 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
                     ? "text-neutral-400"
                     : ""
                 }`}
-                dangerouslySetInnerHTML={{ __html: node.htmlText as string }}
                 onClick={onNodeSettingsClick(node.globalId, {
                   onlyOpen: true,
                 })}
                 onMouseDown={onNodeSettingsClick(node.globalId, {
                   onlyOpen: true,
                 })}
-              />
+              >
+                {/* <small className="text-gray-400 mr-2 text-sm">
+                  ({node.standardReferenceId})
+                </small>{" "} */}
+                <span
+                  dangerouslySetInnerHTML={{ __html: node.htmlText as string }}
+                />
+              </div>
             </div>
           </div>
         );
