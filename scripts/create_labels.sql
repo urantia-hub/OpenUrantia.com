@@ -1,19 +1,20 @@
-INSERT INTO labels (id, name) VALUES ('ae194f58-f9e5-40e1-b839-884a2ad9d954', 'Angelology');
-INSERT INTO labels (id, name) VALUES ('028c27f5-dd85-4349-98bb-2edf22245d93', 'Anthropology');
-INSERT INTO labels (id, name) VALUES ('556ef334-c958-40a9-ad9f-b7b3626cab67', 'Art');
-INSERT INTO labels (id, name) VALUES ('8b0ea11f-c38d-42b4-98b1-7c669fb2f3ad', 'Astronomy');
-INSERT INTO labels (id, name) VALUES ('5cd667e1-0904-4a2e-a815-6355ab816d26', 'Biology');
-INSERT INTO labels (id, name) VALUES ('46b6e3d1-70d5-4d34-9d13-00663d0c061c', 'Christology');
-INSERT INTO labels (id, name) VALUES ('64d42d8c-facd-45e7-9567-d7b1d9ffbf56', 'Cosmic Administration');
-INSERT INTO labels (id, name) VALUES ('1e03594f-5721-4e47-b5a8-c71d1c7eb32b', 'Cosmology');
-INSERT INTO labels (id, name) VALUES ('5ffcc248-f7df-4884-a27c-791eb9244b75', 'Eschatology');
-INSERT INTO labels (id, name) VALUES ('d7c2836f-37e1-41ae-924e-8941f7b14d40', 'Ethics');
-INSERT INTO labels (id, name) VALUES ('58387815-7a37-42ad-b7c5-0eb0d3f4574a', 'History');
-INSERT INTO labels (id, name) VALUES ('75a1728f-0f7f-4c0f-8ff8-f2ee535f3c76', 'Paleontology');
-INSERT INTO labels (id, name) VALUES ('8d684196-ad5c-4055-8f92-3c2f0b248ea6', 'Philosophy');
-INSERT INTO labels (id, name) VALUES ('88dd1537-59ee-418e-b3b6-e2696ab585de', 'Political Science');
-INSERT INTO labels (id, name) VALUES ('380a9a7f-b710-45eb-aa7e-86f5c0e18693', 'Science');
-INSERT INTO labels (id, name) VALUES ('7e037cf4-07a3-484a-b6d6-bb72a842260f', 'Sociology');
-INSERT INTO labels (id, name) VALUES ('4eef895f-7984-4e21-806b-a655c84b323b', 'Spirituality');
-INSERT INTO labels (id, name) VALUES ('d2413533-9251-4f08-b994-3b5740ff59ed', 'Theology');
-INSERT INTO labels (id, name) VALUES ('d7038117-3430-4aa1-a0a8-25c34faf0f50', 'Utopian Studies');
+INSERT INTO labels (id, name, "createdAt", "updatedAt") VALUES
+('ae194f58-f9e5-40e1-b839-884a2ad9d954', 'Angelology', NOW(), NOW()),
+('028c27f5-dd85-4349-98bb-2edf22245d93', 'Anthropology', NOW(), NOW()),
+('556ef334-c958-40a9-ad9f-b7b3626cab67', 'Art', NOW(), NOW()),
+('8b0ea11f-c38d-42b4-98b1-7c669fb2f3ad', 'Astronomy', NOW(), NOW()),
+('5cd667e1-0904-4a2e-a815-6355ab816d26', 'Biology', NOW(), NOW()),
+('46b6e3d1-70d5-4d34-9d13-00663d0c061c', 'Christology', NOW(), NOW()),
+('64d42d8c-facd-45e7-9567-d7b1d9ffbf56', 'Cosmic Administration', NOW(), NOW()),
+('1e03594f-5721-4e47-b5a8-c71d1c7eb32b', 'Cosmology', NOW(), NOW()),
+('5ffcc248-f7df-4884-a27c-791eb9244b75', 'Eschatology', NOW(), NOW()),
+('d7c2836f-37e1-41ae-924e-8941f7b14d40', 'Ethics', NOW(), NOW()),
+('58387815-7a37-42ad-b7c5-0eb0d3f4574a', 'History', NOW(), NOW()),
+('75a1728f-0f7f-4c0f-8ff8-f2ee535f3c76', 'Paleontology', NOW(), NOW()),
+('8d684196-ad5c-4055-8f92-3c2f0b248ea6', 'Philosophy', NOW(), NOW()),
+('88dd1537-59ee-418e-b3b6-e2696ab585de', 'Political Science', NOW(), NOW()),
+('380a9a7f-b710-45eb-aa7e-86f5c0e18693', 'Science', NOW(), NOW()),
+('7e037cf4-07a3-484a-b6d6-bb72a842260f', 'Sociology', NOW(), NOW()),
+('4eef895f-7984-4e21-806b-a655c84b323b', 'Spirituality', NOW(), NOW()),
+('d2413533-9251-4f08-b994-3b5740ff59ed', 'Theology', NOW(), NOW()),
+('d7038117-3430-4aa1-a0a8-25c34faf0f50', 'Utopian Studies', NOW(), NOW());

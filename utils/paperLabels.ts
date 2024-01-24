@@ -52,7 +52,7 @@ export const paperLabelsLookup = {
   "28": ["Theology", "Angelology", "Cosmic Administration"],
   "29": ["Cosmology", "Science"],
   "30": ["Theology", "Cosmic Administration"],
-  "31": ["Eschatology", "Theology", "Eschatology"],
+  "31": ["Eschatology", "Theology"],
   "32": ["Cosmology", "Theology", "Astronomy", "Science"],
   "33": ["Theology", "Cosmic Administration"],
   "34": ["Theology", "Cosmic Administration", "Spirituality"],

@@ -1,197 +1,198 @@
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('0', '0:0.-.-', 'Foreword', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('1', '1:1.-.-', 'The Universal Father', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('2', '1:2.-.-', 'The Nature of God', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('3', '1:3.-.-', 'The Attributes of God', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('4', '1:4.-.-', 'God’s Relation to the Universe', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('5', '1:5.-.-', 'God’s Relation to the Individual', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('6', '1:6.-.-', 'The Eternal Son', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('7', '1:7.-.-', 'Relation of the Eternal Son to the Universe', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('8', '1:8.-.-', 'The Infinite Spirit', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('9', '1:9.-.-', 'Relation of the Infinite Spirit to the Universe', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('10', '1:10.-.-', 'The Paradise Trinity', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('11', '1:11.-.-', 'The Eternal Isle of Paradise', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('12', '1:12.-.-', 'The Universe of Universes', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('13', '1:13.-.-', 'The Sacred Spheres of Paradise', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('14', '1:14.-.-', 'The Central and Divine Universe', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('15', '1:15.-.-', 'The Seven Superuniverses', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('16', '1:16.-.-', 'The Seven Master Spirits', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('17', '1:17.-.-', 'The Seven Supreme Spirit Groups', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('18', '1:18.-.-', 'The Supreme Trinity Personalities', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('19', '1:19.-.-', 'The Co-ordinate Trinity-Origin Beings', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('20', '1:20.-.-', 'The Paradise Sons of God', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('21', '1:21.-.-', 'The Paradise Creator Sons', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('22', '1:22.-.-', 'The Trinitized Sons of God', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('23', '1:23.-.-', 'The Solitary Messengers', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('24', '1:24.-.-', 'Higher Personalities of the Infinite Spirit', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('25', '1:25.-.-', 'The Messenger Hosts of Space', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('26', '1:26.-.-', 'Ministering Spirits of the Central Universe', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('27', '1:27.-.-', 'Ministry of the Primary Supernaphim', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('28', '1:28.-.-', 'Ministering Spirits of the Superuniverses', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('29', '1:29.-.-', 'The Universe Power Directors', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('30', '1:30.-.-', 'Personalities of the Grand Universe', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('31', '1:31.-.-', 'The Corps of the Finality', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('32', '2:32.-.-', 'The Evolution of Local Universes', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('33', '2:33.-.-', 'Administration of the Local Universe', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('34', '2:34.-.-', 'The Local Universe Mother Spirit', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('35', '2:35.-.-', 'The Local Universe Sons of God', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('36', '2:36.-.-', 'The Life Carriers', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('37', '2:37.-.-', 'Personalities of the Local Universe', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('38', '2:38.-.-', 'Ministering Spirits of the Local Universe', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('39', '2:39.-.-', 'The Seraphic Hosts', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('40', '2:40.-.-', 'The Ascending Sons of God', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('41', '2:41.-.-', 'Physical Aspects of the Local Universe', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('42', '2:42.-.-', 'Energy—Mind and Matter', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('43', '2:43.-.-', 'The Constellations', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('44', '2:44.-.-', 'The Celestial Artisans', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('45', '2:45.-.-', 'The Local System Administration', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('46', '2:46.-.-', 'The Local System Headquarters', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('47', '2:47.-.-', 'The Seven Mansion Worlds', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('48', '2:48.-.-', 'The Morontia Life', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('49', '2:49.-.-', 'The Inhabited Worlds', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('50', '2:50.-.-', 'The Planetary Princes', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('51', '2:51.-.-', 'The Planetary Adams', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('52', '2:52.-.-', 'Planetary Mortal Epochs', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('53', '2:53.-.-', 'The Lucifer Rebellion', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('54', '2:54.-.-', 'Problems of the Lucifer Rebellion', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('55', '2:55.-.-', 'The Spheres of Light and Life', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('56', '2:56.-.-', 'Universal Unity', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('57', '3:57.-.-', 'The Origin of Urantia', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('58', '3:58.-.-', 'Life Establishment on Urantia', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('59', '3:59.-.-', 'The Marine-Life Era on Urantia', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('60', '3:60.-.-', 'Urantia During the Early Land-Life Era', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('61', '3:61.-.-', 'The Mammalian Era on Urantia', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('62', '3:62.-.-', 'The Dawn Races of Early Man', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('63', '3:63.-.-', 'The First Human Family', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('64', '3:64.-.-', 'The Evolutionary Races of Color', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('65', '3:65.-.-', 'The Overcontrol of Evolution', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('66', '3:66.-.-', 'The Planetary Prince of Urantia', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('67', '3:67.-.-', 'The Planetary Rebellion', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('68', '3:68.-.-', 'The Dawn of Civilization', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('69', '3:69.-.-', 'Primitive Human Institutions', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('70', '3:70.-.-', 'The Evolution of Human Government', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('71', '3:71.-.-', 'Development of the State', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('72', '3:72.-.-', 'Government on a Neighboring Planet', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('73', '3:73.-.-', 'The Garden of Eden', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('74', '3:74.-.-', 'Adam and Eve', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('75', '3:75.-.-', 'The Default of Adam and Eve', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('76', '3:76.-.-', 'The Second Garden', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('77', '3:77.-.-', 'The Midway Creatures', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('78', '3:78.-.-', 'The Violet Race After the Days of Adam', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('79', '3:79.-.-', 'Andite Expansion in the Orient', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('80', '3:80.-.-', 'Andite Expansion in the Occident', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('81', '3:81.-.-', 'Development of Modern Civilization', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('82', '3:82.-.-', 'The Evolution of Marriage', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('83', '3:83.-.-', 'The Marriage Institution', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('84', '3:84.-.-', 'Marriage and Family Life', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('85', '3:85.-.-', 'The Origins of Worship', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('86', '3:86.-.-', 'Early Evolution of Religion', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('87', '3:87.-.-', 'The Ghost Cults', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('88', '3:88.-.-', 'Fetishes, Charms, and Magic', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('89', '3:89.-.-', 'Sin, Sacrifice, and Atonement', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('90', '3:90.-.-', 'Shamanism—Medicine Men and Priests', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('91', '3:91.-.-', 'The Evolution of Prayer', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('92', '3:92.-.-', 'The Later Evolution of Religion', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('93', '3:93.-.-', 'Machiventa Melchizedek', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('94', '3:94.-.-', 'The Melchizedek Teachings in the Orient', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('95', '3:95.-.-', 'The Melchizedek Teachings in the Levant', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('96', '3:96.-.-', 'Yahweh—God of the Hebrews', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('97', '3:97.-.-', 'Evolution of the God Concept Among the Hebrews', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('98', '3:98.-.-', 'The Melchizedek Teachings in the Occident', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('99', '3:99.-.-', 'The Social Problems of Religion', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('100', '3:100.-.-', 'Religion in Human Experience', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('101', '3:101.-.-', 'The Real Nature of Religion', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('102', '3:102.-.-', 'The Foundations of Religious Faith', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('103', '3:103.-.-', 'The Reality of Religious Experience', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('104', '3:104.-.-', 'Growth of the Trinity Concept', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('105', '3:105.-.-', 'Deity and Reality', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('106', '3:106.-.-', 'Universe Levels of Reality', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('107', '3:107.-.-', 'Origin and Nature of Thought Adjusters', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('108', '3:108.-.-', 'Mission and Ministry of Thought Adjusters', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('109', '3:109.-.-', 'Relation of Adjusters to Universe Creatures', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('110', '3:110.-.-', 'Relation of Adjusters to Individual Mortals', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('111', '3:111.-.-', 'The Adjuster and the Soul', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('112', '3:112.-.-', 'Personality Survival', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('113', '3:113.-.-', 'Seraphic Guardians of Destiny', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('114', '3:114.-.-', 'Seraphic Planetary Government', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('115', '3:115.-.-', 'The Supreme Being', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('116', '3:116.-.-', 'The Almighty Supreme', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('117', '3:117.-.-', 'God the Supreme', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('118', '3:118.-.-', 'Supreme and Ultimate—Time and Space', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('119', '3:119.-.-', 'The Bestowals of Christ Michael', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('120', '4:120.-.-', 'The Bestowal of Michael on Urantia', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('121', '4:121.-.-', 'The Times of Michael’s Bestowal', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('122', '4:122.-.-', 'Birth and Infancy of Jesus', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('123', '4:123.-.-', 'The Early Childhood of Jesus', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('124', '4:124.-.-', 'The Later Childhood of Jesus', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('125', '4:125.-.-', 'Jesus at Jerusalem', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('126', '4:126.-.-', 'The Two Crucial Years', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('127', '4:127.-.-', 'The Adolescent Years', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('128', '4:128.-.-', 'Jesus’ Early Manhood', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('129', '4:129.-.-', 'The Later Adult Life of Jesus', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('130', '4:130.-.-', 'On the Way to Rome', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('131', '4:131.-.-', 'The World’s Religions', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('132', '4:132.-.-', 'The Sojourn at Rome', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('133', '4:133.-.-', 'The Return from Rome', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('134', '4:134.-.-', 'The Transition Years', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('135', '4:135.-.-', 'John the Baptist', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('136', '4:136.-.-', 'Baptism and the Forty Days', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('137', '4:137.-.-', 'Tarrying Time in Galilee', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('138', '4:138.-.-', 'Training the Kingdom’s Messengers', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('139', '4:139.-.-', 'The Twelve Apostles', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('140', '4:140.-.-', 'The Ordination of the Twelve', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('141', '4:141.-.-', 'Beginning the Public Work', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('142', '4:142.-.-', 'The Passover at Jerusalem', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('143', '4:143.-.-', 'Going Through Samaria', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('144', '4:144.-.-', 'At Gilboa and in the Decapolis', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('145', '4:145.-.-', 'Four Eventful Days at Capernaum', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('146', '4:146.-.-', 'First Preaching Tour of Galilee', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('147', '4:147.-.-', 'The Interlude Visit to Jerusalem', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('148', '4:148.-.-', 'Training Evangelists at Bethsaida', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('149', '4:149.-.-', 'The Second Preaching Tour', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('150', '4:150.-.-', 'The Third Preaching Tour', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('151', '4:151.-.-', 'Tarrying and Teaching by the Seaside', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('152', '4:152.-.-', 'Events Leading up to the Capernaum Crisis', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('153', '4:153.-.-', 'The Crisis at Capernaum', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('154', '4:154.-.-', 'Last Days at Capernaum', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('155', '4:155.-.-', 'Fleeing Through Northern Galilee', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('156', '4:156.-.-', 'The Sojourn at Tyre and Sidon', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('157', '4:157.-.-', 'At Caesarea-Philippi', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('158', '4:158.-.-', 'The Mount of Transfiguration', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('159', '4:159.-.-', 'The Decapolis Tour', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('160', '4:160.-.-', 'Rodan of Alexandria', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('161', '4:161.-.-', 'Further Discussions with Rodan', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('162', '4:162.-.-', 'At the Feast of Tabernacles', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('163', '4:163.-.-', 'Ordination of the Seventy at Magadan', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('164', '4:164.-.-', 'At the Feast of Dedication', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('165', '4:165.-.-', 'The Perean Mission Begins', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('166', '4:166.-.-', 'Last Visit to Northern Perea', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('167', '4:167.-.-', 'The Visit to Philadelphia', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('168', '4:168.-.-', 'The Resurrection of Lazarus', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('169', '4:169.-.-', 'Last Teaching at Pella', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('170', '4:170.-.-', 'The Kingdom of Heaven', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('171', '4:171.-.-', 'On the Way to Jerusalem', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('172', '4:172.-.-', 'Going into Jerusalem', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('173', '4:173.-.-', 'Monday in Jerusalem', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('174', '4:174.-.-', 'Tuesday Morning in the Temple', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('175', '4:175.-.-', 'The Last Temple Discourse', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('176', '4:176.-.-', 'Tuesday Evening on Mount Olivet', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('177', '4:177.-.-', 'Wednesday, the Rest Day', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('178', '4:178.-.-', 'Last Day at the Camp', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('179', '4:179.-.-', 'The Last Supper', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('180', '4:180.-.-', 'The Farewell Discourse', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('181', '4:181.-.-', 'Final Admonitions and Warnings', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('182', '4:182.-.-', 'In Gethsemane', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('183', '4:183.-.-', 'The Betrayal and Arrest of Jesus', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('184', '4:184.-.-', 'Before the Sanhedrin Court', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('185', '4:185.-.-', 'The Trial Before Pilate', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('186', '4:186.-.-', 'Just Before the Crucifixion', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('187', '4:187.-.-', 'The Crucifixion', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('188', '4:188.-.-', 'The Time of the Tomb', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('189', '4:189.-.-', 'The Resurrection', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('190', '4:190.-.-', 'Morontia Appearances of Jesus', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('191', '4:191.-.-', 'Appearances to the Apostles and Other Leaders', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('192', '4:192.-.-', 'Appearances in Galilee', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('193', '4:193.-.-', 'Final Appearances and Ascension', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('194', '4:194.-.-', 'Bestowal of the Spirit of Truth', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('195', '4:195.-.-', 'After Pentecost', NOW(), NOW());
-INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES ('196', '4:196.-.-', 'The Faith of Jesus', NOW(), NOW());
+INSERT INTO papers (id, "globalId", title, "createdAt", "updatedAt") VALUES
+('0', '0:0.-.-', 'Foreword', NOW(), NOW()),
+('1', '1:1.-.-', 'The Universal Father', NOW(), NOW()),
+('2', '1:2.-.-', 'The Nature of God', NOW(), NOW()),
+('3', '1:3.-.-', 'The Attributes of God', NOW(), NOW()),
+('4', '1:4.-.-', 'God’s Relation to the Universe', NOW(), NOW()),
+('5', '1:5.-.-', 'God’s Relation to the Individual', NOW(), NOW()),
+('6', '1:6.-.-', 'The Eternal Son', NOW(), NOW()),
+('7', '1:7.-.-', 'Relation of the Eternal Son to the Universe', NOW(), NOW()),
+('8', '1:8.-.-', 'The Infinite Spirit', NOW(), NOW()),
+('9', '1:9.-.-', 'Relation of the Infinite Spirit to the Universe', NOW(), NOW()),
+('10', '1:10.-.-', 'The Paradise Trinity', NOW(), NOW()),
+('11', '1:11.-.-', 'The Eternal Isle of Paradise', NOW(), NOW()),
+('12', '1:12.-.-', 'The Universe of Universes', NOW(), NOW()),
+('13', '1:13.-.-', 'The Sacred Spheres of Paradise', NOW(), NOW()),
+('14', '1:14.-.-', 'The Central and Divine Universe', NOW(), NOW()),
+('15', '1:15.-.-', 'The Seven Superuniverses', NOW(), NOW()),
+('16', '1:16.-.-', 'The Seven Master Spirits', NOW(), NOW()),
+('17', '1:17.-.-', 'The Seven Supreme Spirit Groups', NOW(), NOW()),
+('18', '1:18.-.-', 'The Supreme Trinity Personalities', NOW(), NOW()),
+('19', '1:19.-.-', 'The Co-ordinate Trinity-Origin Beings', NOW(), NOW()),
+('20', '1:20.-.-', 'The Paradise Sons of God', NOW(), NOW()),
+('21', '1:21.-.-', 'The Paradise Creator Sons', NOW(), NOW()),
+('22', '1:22.-.-', 'The Trinitized Sons of God', NOW(), NOW()),
+('23', '1:23.-.-', 'The Solitary Messengers', NOW(), NOW()),
+('24', '1:24.-.-', 'Higher Personalities of the Infinite Spirit', NOW(), NOW()),
+('25', '1:25.-.-', 'The Messenger Hosts of Space', NOW(), NOW()),
+('26', '1:26.-.-', 'Ministering Spirits of the Central Universe', NOW(), NOW()),
+('27', '1:27.-.-', 'Ministry of the Primary Supernaphim', NOW(), NOW()),
+('28', '1:28.-.-', 'Ministering Spirits of the Superuniverses', NOW(), NOW()),
+('29', '1:29.-.-', 'The Universe Power Directors', NOW(), NOW()),
+('30', '1:30.-.-', 'Personalities of the Grand Universe', NOW(), NOW()),
+('31', '1:31.-.-', 'The Corps of the Finality', NOW(), NOW()),
+('32', '2:32.-.-', 'The Evolution of Local Universes', NOW(), NOW()),
+('33', '2:33.-.-', 'Administration of the Local Universe', NOW(), NOW()),
+('34', '2:34.-.-', 'The Local Universe Mother Spirit', NOW(), NOW()),
+('35', '2:35.-.-', 'The Local Universe Sons of God', NOW(), NOW()),
+('36', '2:36.-.-', 'The Life Carriers', NOW(), NOW()),
+('37', '2:37.-.-', 'Personalities of the Local Universe', NOW(), NOW()),
+('38', '2:38.-.-', 'Ministering Spirits of the Local Universe', NOW(), NOW()),
+('39', '2:39.-.-', 'The Seraphic Hosts', NOW(), NOW()),
+('40', '2:40.-.-', 'The Ascending Sons of God', NOW(), NOW()),
+('41', '2:41.-.-', 'Physical Aspects of the Local Universe', NOW(), NOW()),
+('42', '2:42.-.-', 'Energy—Mind and Matter', NOW(), NOW()),
+('43', '2:43.-.-', 'The Constellations', NOW(), NOW()),
+('44', '2:44.-.-', 'The Celestial Artisans', NOW(), NOW()),
+('45', '2:45.-.-', 'The Local System Administration', NOW(), NOW()),
+('46', '2:46.-.-', 'The Local System Headquarters', NOW(), NOW()),
+('47', '2:47.-.-', 'The Seven Mansion Worlds', NOW(), NOW()),
+('48', '2:48.-.-', 'The Morontia Life', NOW(), NOW()),
+('49', '2:49.-.-', 'The Inhabited Worlds', NOW(), NOW()),
+('50', '2:50.-.-', 'The Planetary Princes', NOW(), NOW()),
+('51', '2:51.-.-', 'The Planetary Adams', NOW(), NOW()),
+('52', '2:52.-.-', 'Planetary Mortal Epochs', NOW(), NOW()),
+('53', '2:53.-.-', 'The Lucifer Rebellion', NOW(), NOW()),
+('54', '2:54.-.-', 'Problems of the Lucifer Rebellion', NOW(), NOW()),
+('55', '2:55.-.-', 'The Spheres of Light and Life', NOW(), NOW()),
+('56', '2:56.-.-', 'Universal Unity', NOW(), NOW()),
+('57', '3:57.-.-', 'The Origin of Urantia', NOW(), NOW()),
+('58', '3:58.-.-', 'Life Establishment on Urantia', NOW(), NOW()),
+('59', '3:59.-.-', 'The Marine-Life Era on Urantia', NOW(), NOW()),
+('60', '3:60.-.-', 'Urantia During the Early Land-Life Era', NOW(), NOW()),
+('61', '3:61.-.-', 'The Mammalian Era on Urantia', NOW(), NOW()),
+('62', '3:62.-.-', 'The Dawn Races of Early Man', NOW(), NOW()),
+('63', '3:63.-.-', 'The First Human Family', NOW(), NOW()),
+('64', '3:64.-.-', 'The Evolutionary Races of Color', NOW(), NOW()),
+('65', '3:65.-.-', 'The Overcontrol of Evolution', NOW(), NOW()),
+('66', '3:66.-.-', 'The Planetary Prince of Urantia', NOW(), NOW()),
+('67', '3:67.-.-', 'The Planetary Rebellion', NOW(), NOW()),
+('68', '3:68.-.-', 'The Dawn of Civilization', NOW(), NOW()),
+('69', '3:69.-.-', 'Primitive Human Institutions', NOW(), NOW()),
+('70', '3:70.-.-', 'The Evolution of Human Government', NOW(), NOW()),
+('71', '3:71.-.-', 'Development of the State', NOW(), NOW()),
+('72', '3:72.-.-', 'Government on a Neighboring Planet', NOW(), NOW()),
+('73', '3:73.-.-', 'The Garden of Eden', NOW(), NOW()),
+('74', '3:74.-.-', 'Adam and Eve', NOW(), NOW()),
+('75', '3:75.-.-', 'The Default of Adam and Eve', NOW(), NOW()),
+('76', '3:76.-.-', 'The Second Garden', NOW(), NOW()),
+('77', '3:77.-.-', 'The Midway Creatures', NOW(), NOW()),
+('78', '3:78.-.-', 'The Violet Race After the Days of Adam', NOW(), NOW()),
+('79', '3:79.-.-', 'Andite Expansion in the Orient', NOW(), NOW()),
+('80', '3:80.-.-', 'Andite Expansion in the Occident', NOW(), NOW()),
+('81', '3:81.-.-', 'Development of Modern Civilization', NOW(), NOW()),
+('82', '3:82.-.-', 'The Evolution of Marriage', NOW(), NOW()),
+('83', '3:83.-.-', 'The Marriage Institution', NOW(), NOW()),
+('84', '3:84.-.-', 'Marriage and Family Life', NOW(), NOW()),
+('85', '3:85.-.-', 'The Origins of Worship', NOW(), NOW()),
+('86', '3:86.-.-', 'Early Evolution of Religion', NOW(), NOW()),
+('87', '3:87.-.-', 'The Ghost Cults', NOW(), NOW()),
+('88', '3:88.-.-', 'Fetishes, Charms, and Magic', NOW(), NOW()),
+('89', '3:89.-.-', 'Sin, Sacrifice, and Atonement', NOW(), NOW()),
+('90', '3:90.-.-', 'Shamanism—Medicine Men and Priests', NOW(), NOW()),
+('91', '3:91.-.-', 'The Evolution of Prayer', NOW(), NOW()),
+('92', '3:92.-.-', 'The Later Evolution of Religion', NOW(), NOW()),
+('93', '3:93.-.-', 'Machiventa Melchizedek', NOW(), NOW()),
+('94', '3:94.-.-', 'The Melchizedek Teachings in the Orient', NOW(), NOW()),
+('95', '3:95.-.-', 'The Melchizedek Teachings in the Levant', NOW(), NOW()),
+('96', '3:96.-.-', 'Yahweh—God of the Hebrews', NOW(), NOW()),
+('97', '3:97.-.-', 'Evolution of the God Concept Among the Hebrews', NOW(), NOW()),
+('98', '3:98.-.-', 'The Melchizedek Teachings in the Occident', NOW(), NOW()),
+('99', '3:99.-.-', 'The Social Problems of Religion', NOW(), NOW()),
+('100', '3:100.-.-', 'Religion in Human Experience', NOW(), NOW()),
+('101', '3:101.-.-', 'The Real Nature of Religion', NOW(), NOW()),
+('102', '3:102.-.-', 'The Foundations of Religious Faith', NOW(), NOW()),
+('103', '3:103.-.-', 'The Reality of Religious Experience', NOW(), NOW()),
+('104', '3:104.-.-', 'Growth of the Trinity Concept', NOW(), NOW()),
+('105', '3:105.-.-', 'Deity and Reality', NOW(), NOW()),
+('106', '3:106.-.-', 'Universe Levels of Reality', NOW(), NOW()),
+('107', '3:107.-.-', 'Origin and Nature of Thought Adjusters', NOW(), NOW()),
+('108', '3:108.-.-', 'Mission and Ministry of Thought Adjusters', NOW(), NOW()),
+('109', '3:109.-.-', 'Relation of Adjusters to Universe Creatures', NOW(), NOW()),
+('110', '3:110.-.-', 'Relation of Adjusters to Individual Mortals', NOW(), NOW()),
+('111', '3:111.-.-', 'The Adjuster and the Soul', NOW(), NOW()),
+('112', '3:112.-.-', 'Personality Survival', NOW(), NOW()),
+('113', '3:113.-.-', 'Seraphic Guardians of Destiny', NOW(), NOW()),
+('114', '3:114.-.-', 'Seraphic Planetary Government', NOW(), NOW()),
+('115', '3:115.-.-', 'The Supreme Being', NOW(), NOW()),
+('116', '3:116.-.-', 'The Almighty Supreme', NOW(), NOW()),
+('117', '3:117.-.-', 'God the Supreme', NOW(), NOW()),
+('118', '3:118.-.-', 'Supreme and Ultimate—Time and Space', NOW(), NOW()),
+('119', '3:119.-.-', 'The Bestowals of Christ Michael', NOW(), NOW()),
+('120', '4:120.-.-', 'The Bestowal of Michael on Urantia', NOW(), NOW()),
+('121', '4:121.-.-', 'The Times of Michael’s Bestowal', NOW(), NOW()),
+('122', '4:122.-.-', 'Birth and Infancy of Jesus', NOW(), NOW()),
+('123', '4:123.-.-', 'The Early Childhood of Jesus', NOW(), NOW()),
+('124', '4:124.-.-', 'The Later Childhood of Jesus', NOW(), NOW()),
+('125', '4:125.-.-', 'Jesus at Jerusalem', NOW(), NOW()),
+('126', '4:126.-.-', 'The Two Crucial Years', NOW(), NOW()),
+('127', '4:127.-.-', 'The Adolescent Years', NOW(), NOW()),
+('128', '4:128.-.-', 'Jesus’ Early Manhood', NOW(), NOW()),
+('129', '4:129.-.-', 'The Later Adult Life of Jesus', NOW(), NOW()),
+('130', '4:130.-.-', 'On the Way to Rome', NOW(), NOW()),
+('131', '4:131.-.-', 'The World’s Religions', NOW(), NOW()),
+('132', '4:132.-.-', 'The Sojourn at Rome', NOW(), NOW()),
+('133', '4:133.-.-', 'The Return from Rome', NOW(), NOW()),
+('134', '4:134.-.-', 'The Transition Years', NOW(), NOW()),
+('135', '4:135.-.-', 'John the Baptist', NOW(), NOW()),
+('136', '4:136.-.-', 'Baptism and the Forty Days', NOW(), NOW()),
+('137', '4:137.-.-', 'Tarrying Time in Galilee', NOW(), NOW()),
+('138', '4:138.-.-', 'Training the Kingdom’s Messengers', NOW(), NOW()),
+('139', '4:139.-.-', 'The Twelve Apostles', NOW(), NOW()),
+('140', '4:140.-.-', 'The Ordination of the Twelve', NOW(), NOW()),
+('141', '4:141.-.-', 'Beginning the Public Work', NOW(), NOW()),
+('142', '4:142.-.-', 'The Passover at Jerusalem', NOW(), NOW()),
+('143', '4:143.-.-', 'Going Through Samaria', NOW(), NOW()),
+('144', '4:144.-.-', 'At Gilboa and in the Decapolis', NOW(), NOW()),
+('145', '4:145.-.-', 'Four Eventful Days at Capernaum', NOW(), NOW()),
+('146', '4:146.-.-', 'First Preaching Tour of Galilee', NOW(), NOW()),
+('147', '4:147.-.-', 'The Interlude Visit to Jerusalem', NOW(), NOW()),
+('148', '4:148.-.-', 'Training Evangelists at Bethsaida', NOW(), NOW()),
+('149', '4:149.-.-', 'The Second Preaching Tour', NOW(), NOW()),
+('150', '4:150.-.-', 'The Third Preaching Tour', NOW(), NOW()),
+('151', '4:151.-.-', 'Tarrying and Teaching by the Seaside', NOW(), NOW()),
+('152', '4:152.-.-', 'Events Leading up to the Capernaum Crisis', NOW(), NOW()),
+('153', '4:153.-.-', 'The Crisis at Capernaum', NOW(), NOW()),
+('154', '4:154.-.-', 'Last Days at Capernaum', NOW(), NOW()),
+('155', '4:155.-.-', 'Fleeing Through Northern Galilee', NOW(), NOW()),
+('156', '4:156.-.-', 'The Sojourn at Tyre and Sidon', NOW(), NOW()),
+('157', '4:157.-.-', 'At Caesarea-Philippi', NOW(), NOW()),
+('158', '4:158.-.-', 'The Mount of Transfiguration', NOW(), NOW()),
+('159', '4:159.-.-', 'The Decapolis Tour', NOW(), NOW()),
+('160', '4:160.-.-', 'Rodan of Alexandria', NOW(), NOW()),
+('161', '4:161.-.-', 'Further Discussions with Rodan', NOW(), NOW()),
+('162', '4:162.-.-', 'At the Feast of Tabernacles', NOW(), NOW()),
+('163', '4:163.-.-', 'Ordination of the Seventy at Magadan', NOW(), NOW()),
+('164', '4:164.-.-', 'At the Feast of Dedication', NOW(), NOW()),
+('165', '4:165.-.-', 'The Perean Mission Begins', NOW(), NOW()),
+('166', '4:166.-.-', 'Last Visit to Northern Perea', NOW(), NOW()),
+('167', '4:167.-.-', 'The Visit to Philadelphia', NOW(), NOW()),
+('168', '4:168.-.-', 'The Resurrection of Lazarus', NOW(), NOW()),
+('169', '4:169.-.-', 'Last Teaching at Pella', NOW(), NOW()),
+('170', '4:170.-.-', 'The Kingdom of Heaven', NOW(), NOW()),
+('171', '4:171.-.-', 'On the Way to Jerusalem', NOW(), NOW()),
+('172', '4:172.-.-', 'Going into Jerusalem', NOW(), NOW()),
+('173', '4:173.-.-', 'Monday in Jerusalem', NOW(), NOW()),
+('174', '4:174.-.-', 'Tuesday Morning in the Temple', NOW(), NOW()),
+('175', '4:175.-.-', 'The Last Temple Discourse', NOW(), NOW()),
+('176', '4:176.-.-', 'Tuesday Evening on Mount Olivet', NOW(), NOW()),
+('177', '4:177.-.-', 'Wednesday, the Rest Day', NOW(), NOW()),
+('178', '4:178.-.-', 'Last Day at the Camp', NOW(), NOW()),
+('179', '4:179.-.-', 'The Last Supper', NOW(), NOW()),
+('180', '4:180.-.-', 'The Farewell Discourse', NOW(), NOW()),
+('181', '4:181.-.-', 'Final Admonitions and Warnings', NOW(), NOW()),
+('182', '4:182.-.-', 'In Gethsemane', NOW(), NOW()),
+('183', '4:183.-.-', 'The Betrayal and Arrest of Jesus', NOW(), NOW()),
+('184', '4:184.-.-', 'Before the Sanhedrin Court', NOW(), NOW()),
+('185', '4:185.-.-', 'The Trial Before Pilate', NOW(), NOW()),
+('186', '4:186.-.-', 'Just Before the Crucifixion', NOW(), NOW()),
+('187', '4:187.-.-', 'The Crucifixion', NOW(), NOW()),
+('188', '4:188.-.-', 'The Time of the Tomb', NOW(), NOW()),
+('189', '4:189.-.-', 'The Resurrection', NOW(), NOW()),
+('190', '4:190.-.-', 'Morontia Appearances of Jesus', NOW(), NOW()),
+('191', '4:191.-.-', 'Appearances to the Apostles and Other Leaders', NOW(), NOW()),
+('192', '4:192.-.-', 'Appearances in Galilee', NOW(), NOW()),
+('193', '4:193.-.-', 'Final Appearances and Ascension', NOW(), NOW()),
+('194', '4:194.-.-', 'Bestowal of the Spirit of Truth', NOW(), NOW()),
+('195', '4:195.-.-', 'After Pentecost', NOW(), NOW()),
+('196', '4:196.-.-', 'The Faith of Jesus', NOW(), NOW());
