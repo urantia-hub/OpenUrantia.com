@@ -59,6 +59,13 @@ export class LabelService implements BaseService<Label> {
   async upsert(args: Prisma.LabelUpsertArgs): Promise<Label> {
     return await this.model.upsert(args);
   }
+
+  // Custom methods
+  async findAll(): Promise<Label[]> {
+    return await this.model.findMany({
+      where: {},
+    });
+  }
 }
 
 export default LabelService;

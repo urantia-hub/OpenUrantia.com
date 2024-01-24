@@ -75,10 +75,11 @@ model Paper {
 }
 
 model Label {
-  createdAt DateTime @default(now())
-  id   String @id @default(cuid())
-  name String @unique
-  updatedAt DateTime @updatedAt
+  createdAt   DateTime @default(now())
+  description String
+  id          String   @id @default(cuid())
+  name        String   @unique
+  updatedAt   DateTime @updatedAt
 
   papers        PaperLabel[]
   userInterests UserInterest[]
@@ -88,8 +89,8 @@ model Label {
 
 model PaperLabel {
   createdAt DateTime @default(now())
-  paperId String
-  labelId String
+  paperId   String
+  labelId   String
   updatedAt DateTime @updatedAt
 
   label Label @relation(fields: [labelId], references: [id], onDelete: Cascade)

@@ -21,6 +21,17 @@ const getSessionDetails = async (
   // Retrieve the user ID from the database
   const user = await userService.find({
     where: { email: session?.user?.email },
+    include: {
+      userInterests: {
+        include: {
+          label: {
+            include: {
+              papers: true,
+            },
+          },
+        },
+      },
+    },
   });
   if (!user) {
     res.status(404).json({ message: "User not found" });

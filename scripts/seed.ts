@@ -113,7 +113,12 @@ const createLabelsFromApiData = async (apiData: any) => {
       where: { name: label as string },
     });
     if (!existingLabel) {
-      await labelService.create({ data: { name: label as string } });
+      await labelService.create({
+        data: {
+          description: "",
+          name: label as string,
+        },
+      });
     }
   }
 };
