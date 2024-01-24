@@ -19,14 +19,28 @@ export class PaperLabelService implements BaseService<PaperLabel> {
   ) {
     this.model = dependencies.model;
   }
+
   get(
     id: string,
     options: any
-  ): Promise<{ paperId: string; labelId: string } | null> {
+  ): Promise<{
+    createdAt: Date;
+    paperId: string;
+    labelId: string;
+    updatedAt: Date;
+  } | null> {
     throw new Error("Method not implemented.");
   }
 
-  update(id: string, data: any): Promise<{ paperId: string; labelId: string }> {
+  update(
+    id: string,
+    data: any
+  ): Promise<{
+    createdAt: Date;
+    paperId: string;
+    labelId: string;
+    updatedAt: Date;
+  }> {
     throw new Error("Method not implemented.");
   }
 
