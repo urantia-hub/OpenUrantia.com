@@ -9,7 +9,6 @@ export const paperLabels = [
   "Cosmology",
   "Eschatology",
   "Ethics",
-  "Evolution",
   "History",
   "Paleontology",
   "Philosophy",

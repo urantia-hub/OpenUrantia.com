@@ -27,7 +27,6 @@ model Account {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
-
   @@map("accounts")
 }
 
@@ -44,7 +43,6 @@ model Bookmark {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([globalId, userId])
-
   @@map("bookmarks")
 }
 
@@ -62,6 +60,43 @@ model Note {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("notes")
+}
+
+model Paper {
+  createdAt DateTime @default(now())
+  globalId  String
+  id        String   @id
+  title     String
+  updatedAt DateTime @updatedAt
+
+  paperLabels PaperLabel[]
+
+  @@map("papers")
+}
+
+model Label {
+  createdAt DateTime @default(now())
+  id   String @id @default(cuid())
+  name String @unique
+  updatedAt DateTime @updatedAt
+
+  papers        PaperLabel[]
+  userInterests UserInterest[]
+
+  @@map("labels")
+}
+
+model PaperLabel {
+  createdAt DateTime @default(now())
+  paperId String
+  labelId String
+  updatedAt DateTime @updatedAt
+
+  label Label @relation(fields: [labelId], references: [id], onDelete: Cascade)
+  paper Paper @relation(fields: [paperId], references: [id], onDelete: Cascade)
+
+  @@id([paperId, labelId])
+  @@map("paper_labels")
 }
 
 model ReadNode {
@@ -131,14 +166,28 @@ model User {
   emailNotificationsEnabled Boolean?  @default(false)
   updatedAt                 DateTime  @updatedAt
 
-  accounts  Account[]
-  bookmarks Bookmark[]
-  notes     Note[]
-  readNodes ReadNode[]
-  sessions  Session[]
-  shares    Share[]
+  accounts      Account[]
+  bookmarks     Bookmark[]
+  notes         Note[]
+  readNodes     ReadNode[]
+  sessions      Session[]
+  shares        Share[]
+  userInterests UserInterest[]
 
   @@map("users")
+}
+
+model UserInterest {
+  createdAt DateTime @default(now())
+  labelId   String
+  updatedAt DateTime @updatedAt
+  userId    String
+
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  label Label @relation(fields: [labelId], references: [id], onDelete: Cascade)
+
+  @@id([userId, labelId])
+  @@map("user_interests")
 }
 
 model VerificationToken {
@@ -147,6 +196,5 @@ model VerificationToken {
   token      String   @unique
 
   @@unique([identifier, token])
-
   @@map("verification_tokens")
 }

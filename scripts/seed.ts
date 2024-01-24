@@ -1,9 +1,22 @@
+// Node modules.
+import axios from "axios";
 // Relative modules.
 import BookmarkService from "@/services/bookmark";
+import LabelService from "@/services/label";
 import NoteService from "@/services/note";
+import PaperLabelService from "@/services/paperLabel";
+import PaperService from "@/services/paper";
 import ShareService from "@/services/share";
 import UserService from "@/services/user";
 import { SharePlatform, User } from "@prisma/client";
+
+const bookmarkService = new BookmarkService();
+const labelService = new LabelService();
+const noteService = new NoteService();
+const paperLabelService = new PaperLabelService();
+const paperService = new PaperService();
+const shareService = new ShareService();
+const userService = new UserService();
 
 const globalIds = [
   "1:2.-.-",
@@ -69,9 +82,84 @@ const globalIds = [
   "1:2.6.9",
 ];
 
-const seedUser = async (): Promise<User> => {
-  const userService = new UserService();
+const fetchPapersFromApi = async () => {
+  try {
+    if (!process.env.NEXT_PUBLIC_URANTIA_DEV_API_HOST) {
+      throw new Error("Missing env variable: NEXT_PUBLIC_URANTIA_DEV_API_HOST");
+    }
 
+    const response = await axios.get(
+      `${process.env.NEXT_PUBLIC_URANTIA_DEV_API_HOST}/api/v1/urantia-book/toc`
+    );
+    return response.data.data.results;
+  } catch (error) {
+    console.error("Error fetching papers from API:", error);
+    return [];
+  }
+};
+
+const createLabelsFromApiData = async (apiData: any) => {
+  const uniqueLabelsSet = new Set();
+  apiData.forEach((node: any) => {
+    if (node.type === "paper" && node.labels) {
+      node.labels.forEach((label: any) => uniqueLabelsSet.add(label));
+    }
+  });
+
+  const uniqueLabels = Array.from(uniqueLabelsSet);
+
+  for (const label of uniqueLabels) {
+    const existingLabel = await labelService.find({
+      where: { name: label as string },
+    });
+    if (!existingLabel) {
+      await labelService.create({ data: { name: label as string } });
+    }
+  }
+};
+
+const createPapersAndPaperLabelsFromApiData = async (apiData: any) => {
+  for (const item of apiData) {
+    if (item.type === "paper") {
+      const existingPaper = await paperService.find({
+        where: { id: item.paperId },
+      });
+      if (!existingPaper) {
+        await paperService.create({
+          data: {
+            id: item.paperId,
+            title: item.paperTitle,
+            globalId: item.globalId,
+          },
+        });
+      }
+
+      if (item.labels) {
+        for (const labelName of item.labels) {
+          const label = await labelService.find({ where: { name: labelName } });
+          if (label) {
+            const existingPaperLabel = await paperLabelService.find({
+              where: {
+                paperId: item.paperId,
+                labelId: label.id,
+              },
+            });
+            if (!existingPaperLabel) {
+              await paperLabelService.create({
+                data: {
+                  paperId: item.paperId,
+                  labelId: label.id,
+                },
+              });
+            }
+          }
+        }
+      }
+    }
+  }
+};
+
+const seedUser = async (): Promise<User> => {
   if (!process.env.SEED_EMAIL) {
     throw new Error("Missing env variable: SEED_EMAIL");
   }
@@ -90,7 +178,6 @@ const seedUser = async (): Promise<User> => {
 };
 
 const createShares = async (user: User): Promise<void> => {
-  const shareService = new ShareService();
   const sharePlatforms: SharePlatform[] = [
     "COPY_LINK",
     "COPY_TEXT",
@@ -121,7 +208,6 @@ const createShares = async (user: User): Promise<void> => {
 };
 
 const createBookmarks = async (user: User) => {
-  const bookmarkService = new BookmarkService();
   const count = 10;
   for (let i = 0; i < count; i++) {
     await bookmarkService.create({
@@ -139,7 +225,6 @@ const createBookmarks = async (user: User) => {
 };
 
 const createNotes = async (user: User) => {
-  const noteService = new NoteService();
   const count = 10;
   for (let i = 0; i < count; i++) {
     await noteService.create({
@@ -169,6 +254,11 @@ const createNotes = async (user: User) => {
     await createShares(user);
     await createBookmarks(user);
     await createNotes(user);
+
+    // Common seed.
+    const apiData = await fetchPapersFromApi();
+    await createLabelsFromApiData(apiData);
+    await createPapersAndPaperLabelsFromApiData(apiData);
 
     console.log("[SEED DB] Database seeding complete.");
   } catch (err) {
