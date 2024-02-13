@@ -23,6 +23,11 @@ const getSessionDetails = async (
     where: { email: session?.user?.email },
     include: {
       userInterests: {
+        orderBy: {
+          label: {
+            name: "asc",
+          },
+        },
         include: {
           label: {
             include: {

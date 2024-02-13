@@ -61,10 +61,8 @@ export class LabelService implements BaseService<Label> {
   }
 
   // Custom methods
-  async findAll(): Promise<Label[]> {
-    return await this.model.findMany({
-      where: {},
-    });
+  async findAll(args: Prisma.LabelFindManyArgs): Promise<Label[]> {
+    return await this.model.findMany(args);
   }
 }
 

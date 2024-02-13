@@ -7,6 +7,7 @@ import Footer from "@/components/Footer";
 import HeadTag from "@/components/HeadTag";
 import Navbar from "@/components/Navbar";
 import ResetProgress from "@/components/ResetProgress";
+import Link from "next/link";
 
 const Settings = () => {
   // Hooks.
@@ -90,6 +91,30 @@ const Settings = () => {
           {/* Notifications */}
           {status === "authenticated" && (
             <>
+              {/* Personal */}
+              <h2 className="text-xl md:text-2xl text-white font-bold mb-4">
+                Personal
+              </h2>
+              <div className="flex flex-col md:flex-row justify-end border border-zinc-700 rounded-lg p-4 mb-4">
+                <div className="flex flex-col w-full justify-center text-base flex-1 mb-4 md:mb-0">
+                  <h3 className="text-white font-bold mb-1 mt-0">
+                    Your Interests
+                  </h3>
+                  <p className="text-gray-300 text-sm">
+                    Update interests to get relevant recommendations.
+                  </p>
+                </div>
+                <div className="flex flex-col justify-center flex-1">
+                  <Link
+                    className="border-0 text-center rounded-lg bg-zinc-700 hover:bg-zinc-700 hover:no-underline transition-colors duration-300 ease-in-out py-2 px-4"
+                    href="/settings/interests"
+                  >
+                    Update Interests
+                  </Link>
+                </div>
+              </div>
+
+              {/* Notifications */}
               <h2 className="text-xl md:text-2xl text-white font-bold mb-4">
                 Notifications
               </h2>

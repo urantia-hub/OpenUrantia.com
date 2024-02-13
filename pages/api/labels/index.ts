@@ -13,7 +13,11 @@ async function handleGET(
   res: NextApiResponse,
   user: User
 ) {
-  const labels = await labelService.findAll();
+  const labels = await labelService.findAll({
+    orderBy: {
+      name: "asc",
+    },
+  });
   res.status(200).json(labels);
 }
 
