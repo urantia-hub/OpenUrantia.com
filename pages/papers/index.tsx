@@ -1,6 +1,6 @@
 // Node modules.
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 // Relative modules.
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -27,6 +27,45 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
   // State.
   const [activeFilters, setActiveFilters] = useState<string[]>([]);
   const [showFilters, setShowFilters] = useState<boolean>(false);
+  const [userInterests, setUserInterests] = useState<any[]>([]);
+  const [topPapers, setTopPapers] = useState<TOCNode[]>([]);
+
+  useEffect(() => {
+    if (userInterests.length > 0) {
+      setTopPapers(getRandomPapersForUser(nodes, userInterests));
+    }
+  }, [userInterests, nodes]);
+
+  useEffect(() => {
+    const fetchUserInterests = async () => {
+      const response = await fetch("/api/user/interests");
+      if (response.ok) {
+        const data = await response.json();
+        setUserInterests(data.userInterests);
+      }
+    };
+
+    fetchUserInterests();
+  }, []);
+
+  // Function to get a random set of papers that match user interests
+  const getRandomPapersForUser = (
+    allPapers: TOCNode[],
+    userInterests: any[],
+    maxPapers: number = 6
+  ) => {
+    // Filter papers that match at least one user interest
+    const papersMatchingInterests = allPapers.filter((paper) =>
+      paper.labels.some((label) =>
+        userInterests.some((interest) => interest.label.name === label)
+      )
+    );
+
+    // Shuffle the array and take the first 'maxPapers' elements
+    return papersMatchingInterests
+      .sort(() => 0.5 - Math.random())
+      .slice(0, maxPapers);
+  };
 
   // Function to handle filter toggle.
   const toggleFilter = (label: string) => {
@@ -137,6 +176,77 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
       <main className="mt-8 flex-grow container mx-auto px-4 my-4 max-w-4xl">
         <div className="mt-4 mb-8 text-center">
           <h1 className="text-5xl font-bold mb-8">The Urantia Papers</h1>
+
+          {/* -- Papers You Might Like --- */}
+          {topPapers.length > 0 && (
+            <div className="mb-8">
+              <h2 className="text-sm mb-6 pb-2 text-center border-b text-gray-400 border-gray-600">
+                Papers You Might Like
+              </h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {topPapers.map((paper) => {
+                  const highlightLabels = (
+                    paperLabels: string[],
+                    userInterests: any[]
+                  ) => {
+                    // Derive the labels that match user interests.
+                    const matchingLabels = paperLabels.filter((label) =>
+                      userInterests.some(
+                        (userInterest) => userInterest.label.name === label
+                      )
+                    );
+
+                    // Derive the labels that do not match user interests.
+                    const nonMatchingLabels = paperLabels.filter(
+                      (label) => !matchingLabels.includes(label)
+                    );
+
+                    // Return the matching labels in bold and the non-matching labels as is.
+                    return [
+                      ...matchingLabels.map(
+                        (label) =>
+                          `<span class="text-green-400">${label}</span>`
+                      ),
+                      ...nonMatchingLabels,
+                    ];
+                  };
+
+                  return (
+                    <Link
+                      key={paper.globalId}
+                      href={`/papers/${paper.paperId}`}
+                      className="flex flex-col items-start text-left justify-between px-4 py-2 mb-2 bg-neutral-700 rounded hover:bg-neutral-600 transition-colors hover:no-underline"
+                    >
+                      <div className="flex flex-col">
+                        <span className="text-xs text-gray-400">
+                          Paper {paper.paperId}
+                        </span>
+                        <h3 className="mt-1 text-lg font-bold">
+                          {paper.paperTitle}
+                        </h3>
+                      </div>
+                      <span
+                        className="mt-1 text-xs text-gray-400 truncate w-full"
+                        title={paper.labels.sort().join(" | ")}
+                        dangerouslySetInnerHTML={{
+                          __html: highlightLabels(paper.labels, userInterests)
+                            .sort()
+                            .join(" | "),
+                        }}
+                      ></span>
+                    </Link>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* -- All Papers --- */}
+          <div className="mb-8">
+            <h2 className="text-sm mb-6 pb-2 text-center border-b text-gray-400 border-gray-600">
+              All Papers
+            </h2>
+          </div>
 
           {/* Render filter toggle buttons */}
           {showFilters ? (

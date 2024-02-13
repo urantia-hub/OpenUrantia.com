@@ -8,7 +8,22 @@ import UserInterestService from "@/services/userInterest";
 const userInterestService = new UserInterestService();
 
 // GET handler
-async function handleGet(_: NextApiRequest, res: NextApiResponse, user: User) {}
+async function handleGet(_: NextApiRequest, res: NextApiResponse, user: User) {
+  try {
+    const userInterests = await userInterestService.findMany({
+      where: {
+        userId: user.id,
+      },
+      include: {
+        label: true,
+      },
+    });
+
+    res.status(200).json({ userInterests });
+  } catch (error) {
+    res.status(500).json({ message: "Internal server error" });
+  }
+}
 
 // PUT handler
 async function handlePut(
