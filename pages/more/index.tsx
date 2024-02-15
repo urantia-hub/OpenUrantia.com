@@ -59,7 +59,10 @@ const More = () => {
 
   return (
     <div className="flex flex-col min-h-screen bg-neutral-800 text-white">
-      <HeadTag titlePrefix="More" />
+      <HeadTag
+        metaDescription="Discover additional resources and information on OpenUrantia, expanding your understanding of The Urantia Papers and our community."
+        titlePrefix="More"
+      />
 
       <Navbar />
 

@@ -82,7 +82,10 @@ Calibri;color:#595959;mso-themecolor:text1;mso-themetint:166;"><strong><bdt clas
       </div>`;
   return (
     <div className="flex flex-col min-h-screen bg-neutral-800 text-white">
-      <HeadTag titlePrefix="Terms of Service" />
+      <HeadTag
+        metaDescription="Review the Terms of Service for OpenUrantia, understanding your rights and responsibilities as a member of our community exploring The Urantia Papers."
+        titlePrefix="Terms of Service"
+      />
 
       <Navbar />
 

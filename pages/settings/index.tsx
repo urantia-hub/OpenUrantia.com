@@ -71,7 +71,10 @@ const Settings = () => {
 
   return (
     <div className="flex flex-col min-h-screen bg-neutral-800 text-white">
-      <HeadTag titlePrefix="Settings" />
+      <HeadTag
+        metaDescription="Customize your OpenUrantia experience in Settings, tailoring the platform to suit your reading preferences and accessibility needs."
+        titlePrefix="Settings"
+      />
 
       <Navbar />
 

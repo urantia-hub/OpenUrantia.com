@@ -10,7 +10,10 @@ const PrivacyPolicy = () => {
       `;
   return (
     <div className="flex flex-col min-h-screen bg-neutral-800 text-white">
-      <HeadTag titlePrefix="Cookie Policy" />
+      <HeadTag
+        metaDescription="Read our Cookie Policy to understand how OpenUrantia uses cookies to enhance your browsing experience and provide personalized content."
+        titlePrefix="Cookie Policy"
+      />
 
       <Navbar />
 

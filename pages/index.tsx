@@ -67,7 +67,7 @@ const HomePage = () => {
 
   return (
     <div className="flex flex-col min-h-screen text-white bg-neutral-900">
-      <HeadTag />
+      <HeadTag metaDescription="Explore the OpenUrantia platform: your digital gateway to the profound teachings and insights of The Urantia Papers, accessible to all." />
 
       <HomepageNavbar />
 

@@ -9,7 +9,10 @@ const PrivacyPolicy = () => {
       </div>`;
   return (
     <div className="flex flex-col min-h-screen bg-neutral-800 text-white">
-      <HeadTag titlePrefix="Privacy Policy" />
+      <HeadTag
+        metaDescription="Learn about our commitment to protecting your privacy on OpenUrantia. Our Privacy Policy outlines how we handle your personal information."
+        titlePrefix="Privacy Policy"
+      />
 
       <Navbar />
 

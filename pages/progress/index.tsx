@@ -71,7 +71,10 @@ const Progress = () => {
 
   return (
     <div className="flex flex-col min-h-screen bg-neutral-800 text-white">
-      <HeadTag titlePrefix="Progress" />
+      <HeadTag
+        metaDescription="Track your reading progress on OpenUrantia and set personal goals to deepen your engagement with the teachings of The Urantia Papers."
+        titlePrefix="Progress"
+      />
 
       <Navbar />
 

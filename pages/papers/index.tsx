@@ -171,7 +171,10 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
 
   return (
     <div className="flex flex-col min-h-screen bg-neutral-800">
-      <HeadTag titlePrefix="Discover" />
+      <HeadTag
+        metaDescription="Explore the rich tapestry of wisdom within The Urantia Papers on OpenUrantia, discovering insights and teachings that resonate with you."
+        titlePrefix="Discover"
+      />
       <Navbar />
       <main className="mt-8 flex-grow container mx-auto px-4 my-4 max-w-4xl">
         <div className="mt-4 mb-8 text-center">

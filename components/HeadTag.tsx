@@ -1,5 +1,8 @@
 import Head from "next/head";
 
+const DEFAULT_META_DESCRIPTION =
+  "An open source version of The Urantia Papers for generations to come.";
+
 type HeadTagProps = {
   metaDescription?: string;
   titlePrefix?: string;
@@ -66,10 +69,7 @@ const HeadTag = ({ metaDescription, titlePrefix }: HeadTagProps) => {
       <meta name="apple-mobile-web-app-title" content="OpenUrantia" />
       <meta
         name="description"
-        content={
-          metaDescription ||
-          "An open source version of The Urantia Papers for generations to come."
-        }
+        content={metaDescription || DEFAULT_META_DESCRIPTION}
       />
       <meta name="format-detection" content="telephone=no" />
       <meta name="mobile-web-app-capable" content="yes" />
@@ -84,7 +84,7 @@ const HeadTag = ({ metaDescription, titlePrefix }: HeadTagProps) => {
       <meta name="twitter:title" content="OpenUrantia" />
       <meta
         name="twitter:description"
-        content="An open source version of The Urantia Papers for generations to come."
+        content={metaDescription || DEFAULT_META_DESCRIPTION}
       />
       <meta
         name="twitter:image"
@@ -95,7 +95,7 @@ const HeadTag = ({ metaDescription, titlePrefix }: HeadTagProps) => {
       <meta property="og:title" content="OpenUrantia" />
       <meta
         property="og:description"
-        content="An open source version of The Urantia Papers for generations to come."
+        content={metaDescription || DEFAULT_META_DESCRIPTION}
       />
       <meta property="og:site_name" content="OpenUrantia" />
       <meta property="og:url" content="https://www.openurantia.com" />

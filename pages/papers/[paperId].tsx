@@ -943,7 +943,9 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
   return (
     <div className="flex flex-col min-h-screen bg-neutral-800 text-white">
       <HeadTag
-        metaDescription={paperTitle}
+        metaDescription={`Dive into the depths of ${
+          paperIdNumber > 0 ? `Paper ${paperId} - ${paperTitle}` : "Foreword"
+        }. Read, listen, and share your thoughts.`}
         titlePrefix={
           paperIdNumber > 0 ? `Paper ${paperId} - ${paperTitle}` : "Foreword"
         }

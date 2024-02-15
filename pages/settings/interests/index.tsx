@@ -99,7 +99,10 @@ const SettingsInterests = () => {
 
   return (
     <div className="flex flex-col min-h-screen bg-neutral-800 text-white">
-      <HeadTag titlePrefix="My Interests" />
+      <HeadTag
+        metaDescription="Personalize your journey through The Urantia Papers on OpenUrantia by setting your interests, guiding your exploration and discovery."
+        titlePrefix="My Interests"
+      />
 
       <Navbar />
 
