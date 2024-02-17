@@ -1,6 +1,7 @@
 // Node modules.
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
 // Relative modules.
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -24,6 +25,9 @@ type TOCPageProps = {
 };
 
 const ReadPage = ({ nodes }: TOCPageProps) => {
+  // Hooks.
+  const { status } = useSession();
+
   // State.
   const [activeFilters, setActiveFilters] = useState<string[]>([]);
   const [showFilters, setShowFilters] = useState<boolean>(false);
@@ -36,17 +40,32 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
     }
   }, [userInterests, nodes]);
 
-  useEffect(() => {
-    const fetchUserInterests = async () => {
-      const response = await fetch("/api/user/interests");
-      if (response.ok) {
-        const data = await response.json();
-        setUserInterests(data.userInterests);
-      }
-    };
+  const fetchUserInterests = async () => {
+    const response = await fetch(`/api/user/interests`);
+    const data = await response.json();
 
-    fetchUserInterests();
-  }, []);
+    // Check if the user has interests, if they have been redirected before, or if they skipped the selection
+    if (
+      data.userInterests.length === 0 &&
+      !sessionStorage.getItem("redirectedToInterests") &&
+      !sessionStorage.getItem("skippedInterestsSelection")
+    ) {
+      sessionStorage.setItem("redirectedToInterests", "true");
+      window.location.href = "/onboarding/interests"; // Redirect to the onboarding interests selection page
+    } else {
+      setUserInterests(data.userInterests);
+    }
+  };
+
+  const onAuthenticated = async () => {
+    await fetchUserInterests();
+  };
+
+  useEffect(() => {
+    if (status === "authenticated") {
+      void onAuthenticated();
+    }
+  }, [status]);
 
   // Function to get a random set of papers that match user interests
   const getRandomPapersForUser = (
@@ -61,10 +80,16 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
       )
     );
 
-    // Shuffle the array and take the first 'maxPapers' elements
+    // Shuffle the array and take the first 'maxPapers' elements, then sort them by paperId (if there is a paperId).
     return papersMatchingInterests
       .sort(() => 0.5 - Math.random())
-      .slice(0, maxPapers);
+      .slice(0, maxPapers)
+      .sort((a, b) => {
+        if (a.paperId && b.paperId) {
+          return parseInt(a.paperId) - parseInt(b.paperId);
+        }
+        return 0;
+      });
   };
 
   // Function to handle filter toggle.
@@ -175,7 +200,9 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
         metaDescription="Explore the rich tapestry of wisdom within The Urantia Papers on OpenUrantia, discovering insights and teachings that resonate with you."
         titlePrefix="Discover"
       />
+
       <Navbar />
+
       <main className="mt-8 flex-grow container mx-auto px-4 my-4 max-w-4xl">
         <div className="mt-4 mb-8 text-center">
           <h1 className="text-5xl font-bold mb-8">The Urantia Papers</h1>
@@ -183,9 +210,20 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
           {/* -- Papers You Might Like --- */}
           {topPapers.length > 0 && (
             <div className="mb-8">
-              <h2 className="text-sm mb-6 pb-2 text-center border-b text-gray-400 border-gray-600">
+              <h2 className="text-sm mb-2 pb-2 text-center border-b text-gray-400 border-gray-600">
                 Papers You Might Like
               </h2>
+
+              <p className="text-xs text-gray-400 mb-6">
+                (Suggestions based on{" "}
+                <Link
+                  className="text-blue-400 hover:underline"
+                  href="/onboarding/interests"
+                >
+                  your interests
+                </Link>
+                )
+              </p>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {topPapers.map((paper) => {
                   const highlightLabels = (
@@ -207,8 +245,7 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
                     // Return the matching labels in bold and the non-matching labels as is.
                     return [
                       ...matchingLabels.map(
-                        (label) =>
-                          `<span class="text-green-400">${label}</span>`
+                        (label) => `<span class="text-blue-400">${label}</span>`
                       ),
                       ...nonMatchingLabels,
                     ];
@@ -220,10 +257,17 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
                       href={`/papers/${paper.paperId}`}
                       className="flex flex-col items-start text-left justify-between px-4 py-2 mb-2 bg-neutral-700 rounded hover:bg-neutral-600 transition-colors hover:no-underline"
                     >
-                      <div className="flex flex-col">
-                        <span className="text-xs text-gray-400">
-                          Paper {paper.paperId}
-                        </span>
+                      <div className="flex flex-col w-full">
+                        <div className="text-xs text-gray-400 flex items-center justify-between w-full">
+                          {paper.paperId === "0" ? (
+                            "Foreword"
+                          ) : (
+                            <>
+                              <span>Paper {paper.paperId}</span>{" "}
+                              <span>Part {paper.partId}</span>
+                            </>
+                          )}
+                        </div>
                         <h3 className="mt-1 text-lg font-bold">
                           {paper.paperTitle}
                         </h3>

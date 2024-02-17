@@ -42,9 +42,25 @@ const HomePage = () => {
     }
   };
 
+  const onAuthenticated = async () => {
+    await fetchLastVisitedNode();
+    const response = await fetch(`/api/user/interests`);
+    const data = await response.json();
+
+    // Check if the user has interests, if they have been redirected before, or if they skipped the selection
+    if (
+      data.userInterests.length === 0 &&
+      !sessionStorage.getItem("redirectedToInterests") &&
+      !sessionStorage.getItem("skippedInterestsSelection")
+    ) {
+      sessionStorage.setItem("redirectedToInterests", "true");
+      window.location.href = "/onboarding/interests"; // Redirect to the onboarding interests selection page
+    }
+  };
+
   useEffect(() => {
     if (status === "authenticated") {
-      fetchLastVisitedNode();
+      void onAuthenticated();
     }
     if (status === "unauthenticated") {
       const lastVisitedNode: LastVisitedNode = localStorage.getItem(
@@ -145,9 +161,9 @@ const HomePage = () => {
             <div className="container mx-auto grid grid-cols-1 md:grid-cols-2 gap-6 text-left px-4">
               {features.map((feature, index) => (
                 <FeatureItem
+                  description={feature.description}
                   key={index}
                   title={feature.title}
-                  description={feature.description}
                 />
               ))}
             </div>
