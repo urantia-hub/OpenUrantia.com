@@ -1,11 +1,11 @@
-// UBNode modules.
+// Node modules.
 import Link from "next/link";
 import moment from "moment";
 import throttle from "lodash/throttle";
 import { Note as NoteType, ReadNode, Bookmark } from "@prisma/client";
+import { signIn, useSession } from "next-auth/react";
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
-import { useSession } from "next-auth/react";
 // Relative modules.
 import Note from "@/components/Note";
 import Explain from "@/components/Explain";
@@ -70,6 +70,9 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
     Record<string, { startsAt: number; node: UBNode }>
   >({});
   const [readNodes, setReadNodes] = useState<Set<string>>(new Set());
+
+  // Sign-up prompt state.
+  const [showSignUpPrompt, setShowSignUpPrompt] = useState<boolean>(false);
 
   // Get the nodes from the paper data.
   const nodes = paperData.data.results;
@@ -169,6 +172,36 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
       // If there's no current audio (first time play), start from the beginning
       playAudio(currentPlayingNode || 0);
     }
+  };
+
+  const findTopMostVisibleNode = (): HTMLElement | null => {
+    const paragraphs = document.querySelectorAll(".paragraph");
+    let topMostVisibleNode = null;
+    let smallestPositiveTop = Infinity;
+
+    paragraphs.forEach((paragraph) => {
+      const rect = paragraph.getBoundingClientRect();
+      if (rect.top >= 0 && rect.top < smallestPositiveTop) {
+        smallestPositiveTop = rect.top;
+        topMostVisibleNode = paragraph;
+      }
+    });
+
+    return topMostVisibleNode;
+  };
+
+  const onSignUpClick = () => {
+    // Get the top most visible node in the viewport.
+    const topMostVisibleNode = findTopMostVisibleNode();
+
+    // Set the callback URL.
+    let callbackUrl = `/papers/${paperId}`;
+    if (topMostVisibleNode) {
+      callbackUrl += `#${topMostVisibleNode.id}`;
+    }
+
+    // Sign in.
+    signIn("google", { callbackUrl });
   };
 
   const fetchNotes = async () => {
@@ -401,6 +434,33 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
 
     fetchNotes();
   }, [paperData.data.results, status]);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      // Only show the sign-up prompt if the user is not authenticated,
+      // the prompt is not hidden via sessionStorage, and the scroll position is over 400px
+      const shouldShowPrompt =
+        status === "unauthenticated" &&
+        !sessionStorage.getItem("hideSignUpPrompt") &&
+        window.scrollY > 400;
+
+      setShowSignUpPrompt(shouldShowPrompt);
+    };
+
+    if (
+      status === "unauthenticated" &&
+      !sessionStorage.getItem("hideSignUpPrompt")
+    ) {
+      // Initially set the prompt based on the scroll position
+      setShowSignUpPrompt(window.scrollY > 400);
+
+      // Add scroll event listener
+      window.addEventListener("scroll", handleScroll);
+    }
+
+    // Cleanup function to remove the event listener
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [status]);
 
   // Start reading timer checks.
   useEffect(() => {
@@ -962,6 +1022,34 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
         paperTitle={paperTitle}
         showAudio={false}
       />
+
+      {/* Conditional Sign-up Prompt */}
+      {status === "unauthenticated" && showSignUpPrompt && (
+        // purple box shadow
+        <div className="z-10 fixed top-4 left-4 right-4 bg-neutral-900 p-4 rounded-lg text-white text-sm pr-8 max-w-lg mx-auto fade-in shadow-lg shadow-purple-400/20">
+          <p>
+            Unlock handy features like bookmarking and notes.{" "}
+            <button
+              className="text-sky-400 hover:underline p-0 m-0 border-none bg-transparent focus:outline-none"
+              onClick={onSignUpClick}
+              type="button"
+            >
+              Sign in or create an account
+            </button>
+          </p>
+          <button
+            className="absolute top-2 right-2 text-lg bg-transparent border-none p-0 m-0 focus:outline-none text-gray-400 hover:text-white transition duration-300 ease-in-out"
+            onClick={() => {
+              sessionStorage.setItem("hideSignUpPrompt", "true");
+              setShowSignUpPrompt(false);
+            }}
+          >
+            <svg className="w-3 h-3 fill-current" viewBox="0 0 122.878 122.88">
+              <path d="M1.426 8.313a4.87 4.87 0 0 1 6.886-6.886l53.127 53.127 53.127-53.127a4.87 4.87 0 1 1 6.887 6.886L68.324 61.439l53.128 53.128a4.87 4.87 0 0 1-6.887 6.886L61.438 68.326 8.312 121.453a4.868 4.868 0 1 1-6.886-6.886l53.127-53.128L1.426 8.313z" />
+            </svg>
+          </button>
+        </div>
+      )}
 
       {/* Explain Modal */}
       {selectedGlobalIdExplain && (
