@@ -67,14 +67,19 @@ export class CuratedQuoteService implements BaseService<CuratedQuote> {
   }
 
   async getRandomUnsent(): Promise<CuratedQuote | null> {
-    return await this.model.findFirst({
+    const unsentCuratedQuotes = await this.model.findMany({
       where: {
         sentAt: null,
       },
-      orderBy: {
-        createdAt: "asc",
-      },
     });
+
+    if (!unsentCuratedQuotes.length) {
+      return null;
+    }
+
+    const randomIndex = Math.floor(Math.random() * unsentCuratedQuotes.length);
+
+    return unsentCuratedQuotes[randomIndex];
   }
 }
 
