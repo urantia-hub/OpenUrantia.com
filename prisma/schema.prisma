@@ -46,6 +46,19 @@ model Bookmark {
   @@map("bookmarks")
 }
 
+model CuratedQuote {
+  createdAt DateTime  @default(now())
+  globalId  String
+  id        String    @id @default(cuid())
+  paperId   String
+  sentAt    DateTime?
+  updatedAt DateTime  @updatedAt
+
+  paper Paper @relation(fields: [paperId], references: [id], onDelete: Cascade)
+
+  @@map("curated_quotes")
+}
+
 model Note {
   createdAt               DateTime @default(now())
   globalId                String
@@ -69,7 +82,9 @@ model Paper {
   title     String
   updatedAt DateTime @updatedAt
 
-  paperLabels PaperLabel[]
+  curatedQuotes CuratedQuote[]
+  paperLabels   PaperLabel[]
+  sentQuotes    SentQuote[]
 
   @@map("papers")
 }
@@ -113,6 +128,20 @@ model ReadNode {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("read_nodes")
+}
+
+model SentQuote {
+  globalId String
+  id       String   @id @default(cuid())
+  paperId  String
+  sentAt   DateTime @default(now())
+  userId   String
+
+  paper Paper @relation(fields: [paperId], references: [id], onDelete: Cascade)
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, globalId])
+  @@map("sent_quotes")
 }
 
 model Session {
@@ -171,6 +200,7 @@ model User {
   bookmarks     Bookmark[]
   notes         Note[]
   readNodes     ReadNode[]
+  sentQuotes    SentQuote[]
   sessions      Session[]
   shares        Share[]
   userInterests UserInterest[]
