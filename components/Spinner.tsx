@@ -5,7 +5,7 @@ type SpinnerProps = {
 
 const Spinner = (props: SpinnerProps) => {
   return (
-    <div className={`${props.className} spinner`} style={props.style}>
+    <div className={`${props.className || ""} spinner`} style={props.style}>
       <div className="dot1"></div>
       <div className="dot2"></div>
     </div>

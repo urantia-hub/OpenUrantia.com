@@ -8,6 +8,7 @@ import HeadTag from "@/components/HeadTag";
 import Navbar from "@/components/Navbar";
 import ResetProgress from "@/components/ResetProgress";
 import Link from "next/link";
+import Spinner from "@/components/Spinner";
 
 const Settings = () => {
   // Hooks.
@@ -91,6 +92,13 @@ const Settings = () => {
           Settings
         </h1>
         <div className="flex flex-col w-full">
+          {status === "loading" && (
+            <div className="flex flex-col items-center justify-center mb-8">
+              <p className="text-white mb-4">Loading...</p>
+              <Spinner style={{ margin: 0 }} />
+            </div>
+          )}
+
           {/* Notifications */}
           {status === "authenticated" && (
             <>
