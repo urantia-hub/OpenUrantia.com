@@ -48,7 +48,7 @@ model Bookmark {
 
 model CuratedQuote {
   createdAt DateTime  @default(now())
-  globalId  String
+  globalId  String    @unique
   id        String    @id @default(cuid())
   paperId   String
   sentAt    DateTime?
