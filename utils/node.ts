@@ -97,6 +97,10 @@ export function getStandardReferenceIdFromGlobalId(
   return `${paperId}:${sectionId}:${paragraphId}`;
 }
 
+export function getPaperIdFromGlobalId(globalId: string): string {
+  return globalId.split(":")[1].split(".")[0];
+}
+
 // Function to zero-pad a number to a specified length
 function zeroPad(number: number, length: number): string {
   return number.toString().padStart(length, "0");
