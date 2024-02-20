@@ -96,12 +96,17 @@ async function handlePOST(req: NextApiRequest, res: NextApiResponse) {
     return res.status(500).json({ error: error.message });
   }
 
-  const curatedQuote = await curatedQuoteService.create({
-    data: {
-      globalId,
-      paperId,
-    },
-  });
+  let curatedQuote;
+  try {
+    curatedQuote = await curatedQuoteService.create({
+      data: {
+        globalId,
+        paperId,
+      },
+    });
+  } catch (error: any) {
+    return res.status(500).json({ error: error.message });
+  }
 
   res.status(201).json(curatedQuote);
 }
