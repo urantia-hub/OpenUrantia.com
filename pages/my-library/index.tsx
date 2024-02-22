@@ -28,6 +28,11 @@ const MyLibrary = () => {
   const [nodes, setNodes] = useState<Activity[]>([]);
   const [fetchingUser, setFetchingUser] = useState(true);
   const [fetchingNodes, setFetchingNodes] = useState(true);
+  const [filterType, setFilterType] = useState<"all" | "note" | "bookmark">(
+    "all"
+  );
+  const [sortBy, setSortBy] = useState<"updatedAt" | "globalId">("updatedAt");
+  const [paperFilter, setPaperFilter] = useState<number | "all">("all");
 
   // Fetch user data on component mount
   useEffect(() => {
@@ -43,21 +48,8 @@ const MyLibrary = () => {
       }
     };
 
-    const fetchActivityData = async () => {
-      try {
-        const response = await fetch("/api/user/activity");
-        const data = await response.json();
-        setNodes(data);
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setFetchingNodes(false);
-      }
-    };
-
     if (status === "authenticated") {
       void fetchUserData();
-      void fetchActivityData();
       return;
     }
     if (status !== "loading") {
@@ -66,12 +58,37 @@ const MyLibrary = () => {
     }
   }, [status]);
 
+  useEffect(() => {
+    if (status === "authenticated") {
+      void fetchActivityData();
+    }
+  }, [filterType, sortBy, paperFilter, status]);
+
+  const fetchActivityData = async () => {
+    try {
+      const queryParams = new URLSearchParams({
+        filterType,
+        sortBy,
+        paperFilter: paperFilter.toString(),
+      }).toString();
+
+      const response = await fetch(`/api/user/activity?${queryParams}`);
+      const data = await response.json();
+
+      setNodes(data);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setFetchingNodes(false);
+    }
+  };
+
   const renderNode = (node: Activity) => {
     switch (node.type) {
       case "note": {
         return (
           <Link
-            className="mb-6 text-left hover:no-underline"
+            className="mb-6 text-left hover:no-underline note"
             href={`/papers/${node.paperId}#${node.globalId}`}
             id={node.createdAt}
             key={node.globalId}
@@ -89,12 +106,14 @@ const MyLibrary = () => {
                 </div>
               </div>
               <div
-                className="max-h-96 overflow-y-auto text-gray-500 text-sm"
+                className="max-h-96 overflow-y-auto text-gray-500 text-xs"
                 dangerouslySetInnerHTML={{
                   __html: node.htmlText as string,
                 }}
               />
-              <div className="note-text text-white pt-2">{node.noteText}</div>
+              <div className="note-text text-white pt-2 text-base">
+                {node.noteText}
+              </div>
             </div>
           </Link>
         );
@@ -102,7 +121,7 @@ const MyLibrary = () => {
       case "bookmark": {
         return (
           <Link
-            className="mb-6 text-left hover:no-underline"
+            className="mb-6 text-left hover:no-underline bookmark"
             href={`/papers/${node.paperId}#${node.globalId}`}
             id={node.createdAt}
             key={node.globalId}
@@ -120,7 +139,7 @@ const MyLibrary = () => {
                 </div>
               </div>
               <div
-                className="max-h-96 overflow-y-auto text-white text-sm"
+                className="max-h-96 overflow-y-auto text-white text-base"
                 dangerouslySetInnerHTML={{
                   __html: node.htmlText as string,
                 }}
@@ -149,6 +168,80 @@ const MyLibrary = () => {
         {/* Navigation links for previous and next papers */}
         <div className="flex flex-col items-center mt-2 mb-4">
           <h1 className="text-3xl font-bold mb-8">My Library</h1>
+
+          <div className="flex flex-col md:flex-row justify-between w-full mb-8">
+            <div className="flex flex-col md:items-center md:flex-row">
+              {/* Filters icon */}
+              <svg
+                className="w-6 h-6 text-gray-400 md:mr-1 mb-2 md:mb-0 hidden md:block"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M4 6h16M4 12h16m-7 6h7"
+                />
+              </svg>
+              <button
+                className={`${
+                  filterType === "all" ? "bg-zinc-600" : "bg-zinc-900"
+                } border-0 text-center rounded-lg hover:no-underline transition-colors duration-300 ease-in-out px-4 mb-2 md:mb-0 mx-1 text-sm`}
+                onClick={() => setFilterType("all")}
+              >
+                All
+              </button>
+              <button
+                className={`${
+                  filterType === "note" ? "bg-zinc-600" : "bg-zinc-900"
+                } border-0 text-center rounded-lg hover:no-underline transition-colors duration-300 ease-in-out px-4 mb-2 md:mb-0 mx-1 text-sm`}
+                onClick={() => setFilterType("note")}
+              >
+                Notes
+              </button>
+              <button
+                className={`${
+                  filterType === "bookmark" ? "bg-zinc-600" : "bg-zinc-900"
+                } border-0 text-center rounded-lg hover:no-underline transition-colors duration-300 ease-in-out px-4 mb-2 md:mb-0 mx-1 text-sm`}
+                onClick={() => setFilterType("bookmark")}
+              >
+                Bookmarks
+              </button>
+              <select
+                className="bg-zinc-900 border-0 text-center rounded-lg hover:no-underline transition-colors duration-300 ease-in-out px-4 mb-2 md:mb-0 mx-1 text-sm select-style"
+                onChange={(event) =>
+                  setPaperFilter(
+                    event.target.value === "all"
+                      ? "all"
+                      : parseInt(event.target.value)
+                  )
+                }
+              >
+                <option value="all">All Papers</option>
+                {Array.from({ length: 197 }, (_, index) => (
+                  <option key={index} value={index}>
+                    {index === 0 ? "Foreword" : `Paper ${index}`}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="flex flex-col md:flex-row md:flex-end">
+              <select
+                className="bg-zinc-900 border-0 text-center rounded-lg hover:no-underline transition-colors duration-300 ease-in-out px-4 mx-1 text-sm select-style"
+                onChange={(event) =>
+                  setSortBy(event.target.value as "updatedAt" | "globalId")
+                }
+              >
+                <option value="updatedAt">Most Recent</option>
+                <option value="globalId">Sequentially</option>
+              </select>
+            </div>
+          </div>
+
           {/* Loading */}
           {(fetchingUser || fetchingNodes) && <Spinner />}
 

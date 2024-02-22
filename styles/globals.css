@@ -292,3 +292,30 @@ footer a:hover {
 .scaps {
   font-variant-caps: small-caps;
 }
+
+.note .urantia-dev-pb-4 {
+  margin-bottom: 0;
+}
+
+.note .urantia-dev-pb-2 {
+  margin-bottom: 0;
+}
+
+.bookmark .urantia-dev-pb-4 {
+  margin-bottom: 0;
+}
+
+.bookmark .urantia-dev-pb-2 {
+  margin-bottom: 0;
+}
+
+.select-style {
+  -webkit-appearance: none;  /* Remove default arrow in WebKit browsers */
+  -moz-appearance: none;     /* Remove default arrow in older Firefox browsers */
+  appearance: none;          /* Remove default arrow from standard-compliant browsers */
+  background-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 140 140" xmlns="http://www.w3.org/2000/svg"><polygon points="70,90 100,50 40,50" style="fill:%23ffffff;"/></svg>'); /* Custom arrow */
+  background-repeat: no-repeat;
+  background-position: right 0.5rem center;
+  background-size: 1.3em;
+  padding-right: 2rem;
+}

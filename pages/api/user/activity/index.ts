@@ -2,19 +2,30 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { User } from "@prisma/client";
 // Relative modules.
-import NoteService from "@/services/note";
 import BookmarkService from "@/services/bookmark";
+import NoteService from "@/services/note";
 import getSessionDetails from "@/utils/getSessionDetails";
+import { createSortId } from "@/utils/node";
 
 const noteService = new NoteService();
 const bookmarkService = new BookmarkService();
 
-const getBookmarksWithDetails = async (userId: string) => {
+const getBookmarksWithDetails = async (
+  userId: string,
+  filter: { paperId?: number }
+) => {
   // Handle fetching all bookmarks for a user.
   const bookmarks = await bookmarkService.findMany({
-    where: { userId },
-    orderBy: { createdAt: "desc" },
+    where: {
+      userId,
+      ...(filter.paperId !== undefined && { paperId: `${filter.paperId}` }),
+    },
   });
+
+  // If there are no bookmarks, return an empty array.
+  if (!bookmarks?.length) {
+    return [];
+  }
 
   // Fetch the paperSectionParagraphId details for each bookmark.
   const paperSectionParagraphId = bookmarks.map(
@@ -40,12 +51,19 @@ const getBookmarksWithDetails = async (userId: string) => {
   return bookmarksWithDetails;
 };
 
-const getNotesWithDetails = async (userId: string) => {
+const getNotesWithDetails = async (
+  userId: string,
+  filter: { paperId?: number }
+) => {
   // Handle fetching all notes for a user.
   const notes = await noteService.findMany({
-    where: { userId },
-    orderBy: { createdAt: "desc" },
+    where: { userId, ...(filter.paperId && { paperId: `${filter.paperId}` }) },
   });
+
+  // If there are no notes, return an empty array.
+  if (!notes?.length) {
+    return [];
+  }
 
   // Fetch the paperSectionParagraphId details for each note.
   const paperSectionParagraphId = notes.map(
@@ -73,17 +91,46 @@ const getNotesWithDetails = async (userId: string) => {
 };
 
 // GET handler
-async function handleGet(_: NextApiRequest, res: NextApiResponse, user: User) {
-  const bookmarksWithDetails = await getBookmarksWithDetails(user.id);
-  const notesWithDetails = await getNotesWithDetails(user.id);
+async function handleGet(
+  req: NextApiRequest,
+  res: NextApiResponse,
+  user: User
+) {
+  const { filterType, sortBy, paperFilter } = req.query;
+
+  const filter: any = {};
+  if (paperFilter !== "all") {
+    filter.paperId = parseInt(paperFilter as string, 10);
+  }
+
+  let bookmarksWithDetails = [];
+  let notesWithDetails = [];
+
+  if (filterType === "all" || filterType === "bookmark") {
+    bookmarksWithDetails = await getBookmarksWithDetails(user.id, filter);
+  }
+
+  if (filterType === "all" || filterType === "note") {
+    notesWithDetails = await getNotesWithDetails(user.id, filter);
+  }
 
   // Combine bookmarks and notes.
-  const activity = [...bookmarksWithDetails, ...notesWithDetails];
+  let activity = [...bookmarksWithDetails, ...notesWithDetails];
 
-  // Sort by createdAt.
-  activity.sort((a, b) => {
-    return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-  });
+  // Apply sorting to the combined list
+  if (sortBy === "updatedAt") {
+    activity.sort(
+      (a, b) =>
+        new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+    );
+  } else if (sortBy === "globalId") {
+    // Sort by derived sortId ascending.
+    activity.sort((a, b) => {
+      const sortIdA = createSortId(a.globalId);
+      const sortIdB = createSortId(b.globalId);
+      return sortIdA.localeCompare(sortIdB);
+    });
+  }
 
   res.status(200).json(activity);
 }
