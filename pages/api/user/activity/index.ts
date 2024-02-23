@@ -148,6 +148,15 @@ async function handleGet(
   console.log("[GET /api/user/activity] Combining bookmarks and notes");
   let activity = [...bookmarksWithDetails, ...notesWithDetails];
 
+  console.log(
+    "DEBUG: globalIds:",
+    activity.map((i) => i.globalId)
+  );
+  console.log(
+    "DEBUG: sortIds:",
+    activity.map((i) => createSortId(i.globalId))
+  );
+
   // Apply sorting to the combined list
   if (sortBy === "updatedAt") {
     console.log("[GET /api/user/activity] sortBy: updatedAt");
