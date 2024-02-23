@@ -89,7 +89,7 @@ const MyLibrary = () => {
     }
   };
 
-  const renderNode = (node: Activity) => {
+  const renderNode = (node: Activity, index: number) => {
     switch (node.type) {
       case "note": {
         return (
@@ -97,7 +97,7 @@ const MyLibrary = () => {
             className="mb-6 text-left hover:no-underline note"
             href={`/papers/${node.paperId}#${node.globalId}`}
             id={node.createdAt}
-            key={node.globalId}
+            key={index}
           >
             <div className="leading-relaxed border-l-4 border-gray-500 pl-3 mb-1 pb-1 hover:border-orange-600 transition duration-300 ease-in-out">
               <div className="flex items-center justify-between mb-1 text-gray-500 text-xs">
@@ -130,7 +130,7 @@ const MyLibrary = () => {
             className="mb-6 text-left hover:no-underline bookmark"
             href={`/papers/${node.paperId}#${node.globalId}`}
             id={node.createdAt}
-            key={node.globalId}
+            key={index}
           >
             <div className="leading-relaxed border-l-4 border-gray-500 pl-3 mb-1 pb-1 hover:border-emerald-600 transition duration-300 ease-in-out">
               <div className="flex items-center justify-between mb-1 text-gray-500 text-xs">
@@ -256,7 +256,7 @@ const MyLibrary = () => {
           {/* Activity nodes */}
           {nodes.length && !fetchingNodes ? (
             <div className="flex flex-col">
-              {nodes?.map((node) => renderNode(node))}
+              {nodes?.map((node, index) => renderNode(node, index))}
             </div>
           ) : null}
 
