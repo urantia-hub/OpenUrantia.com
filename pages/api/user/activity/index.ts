@@ -157,16 +157,18 @@ async function handleGet(
     activity.map((i) => createSortId(i.globalId))
   );
 
-  // Apply sorting to the combined list
+  let sortedActivity = [...activity]; // Create a new array that's a copy of 'activity'
+
+  // Then apply sorting to this new array
   if (sortBy === "updatedAt") {
-    console.log("[GET /api/user/activity] sortBy: updatedAt");
-    activity.sort(
+    console.log("[GET /api/user/activity] Sorting by updatedAt");
+    sortedActivity.sort(
       (a, b) =>
         new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
     );
   } else if (sortBy === "globalId") {
-    console.log("[GET /api/user/activity] sortBy: globalId");
-    activity.sort((a, b) => {
+    console.log("[GET /api/user/activity] Sorting by globalId");
+    sortedActivity.sort((a, b) => {
       if (!a.globalId || !b.globalId) {
         console.error("Missing globalId in node", a, b);
       }
@@ -176,7 +178,7 @@ async function handleGet(
     });
   }
 
-  res.status(200).json(activity);
+  res.status(200).json(sortedActivity);
 }
 
 // POST handler
