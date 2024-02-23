@@ -148,16 +148,7 @@ async function handleGet(
   console.log("[GET /api/user/activity] Combining bookmarks and notes");
   let activity = [...bookmarksWithDetails, ...notesWithDetails];
 
-  console.log(
-    "DEBUG: globalIds:",
-    activity.map((i) => i.globalId)
-  );
-  console.log(
-    "DEBUG: sortIds:",
-    activity.map((i) => createSortId(i.globalId))
-  );
-
-  let sortedActivity = [...activity]; // Create a new array that's a copy of 'activity'
+  let sortedActivity = [...activity];
 
   // Then apply sorting to this new array
   if (sortBy === "updatedAt") {
@@ -176,13 +167,6 @@ async function handleGet(
       const sortIdB = createSortId(b.globalId);
       return sortIdA.localeCompare(sortIdB);
     });
-    console.log(
-      "GET /api/user/activity] sortedActivity:",
-      sortedActivity.map((i) => ({
-        globalId: i.globalId,
-        sortId: createSortId(i.globalId),
-      }))
-    );
   }
 
   res.status(200).json(sortedActivity);
