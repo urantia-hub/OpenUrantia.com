@@ -66,11 +66,14 @@ const MyLibrary = () => {
 
   const fetchActivityData = async () => {
     try {
-      const queryParams = new URLSearchParams({
+      const queryParamsObj: any = {
         filterType,
         sortBy,
-        paperFilter: paperFilter.toString(),
-      }).toString();
+      };
+      if (paperFilter !== "all") {
+        queryParamsObj.paperId = paperFilter;
+      }
+      const queryParams = new URLSearchParams(queryParamsObj).toString();
 
       const response = await fetch(`/api/user/activity?${queryParams}`);
       const data = await response.json();
@@ -256,7 +259,7 @@ const MyLibrary = () => {
           {!nodes.length && !fetchingNodes ? (
             <div className="flex flex-col items-center justify-center h-full">
               <p className="text-gray-400 mb-8">
-                You haven&apos;t bookmarked any passages yet.
+                No {filterType === "all" ? "activitie" : filterType}s found
               </p>
               <button
                 className="bg-white text-black font-bold py-3 px-6 rounded-full shadow-lg hover:bg-blue-100 transition duration-300 ease-in-out"
