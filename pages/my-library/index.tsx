@@ -75,8 +75,11 @@ const MyLibrary = () => {
       }
       const queryParams = new URLSearchParams(queryParamsObj).toString();
 
-      const response = await fetch(`/api/user/activity?${queryParams}`);
+      const response = await fetch(`/api/user/activity?${queryParams}`, {
+        headers: { "Cache-Control": "no-cache" },
+      });
       const data = await response.json();
+      console.log("response", data);
 
       setNodes(data);
     } catch (error) {
@@ -157,6 +160,8 @@ const MyLibrary = () => {
       }
     }
   };
+
+  console.log("nodes", nodes);
 
   return (
     <div className="flex flex-col min-h-screen bg-neutral-800 text-white">
