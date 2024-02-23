@@ -176,6 +176,13 @@ async function handleGet(
       const sortIdB = createSortId(b.globalId);
       return sortIdA.localeCompare(sortIdB);
     });
+    console.log(
+      "GET /api/user/activity] sortedActivity:",
+      sortedActivity.map((i) => ({
+        globalId: i.globalId,
+        sortId: createSortId(i.globalId),
+      }))
+    );
   }
 
   res.status(200).json(sortedActivity);
