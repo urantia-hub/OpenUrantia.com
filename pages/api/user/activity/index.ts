@@ -61,7 +61,7 @@ const getBookmarksWithDetails = async (
 
   console.log(
     "[getBookmarksWithDetails] bookmarksWithDetails:",
-    bookmarksWithDetails
+    bookmarksWithDetails?.length
   );
   return bookmarksWithDetails;
 };
@@ -109,7 +109,10 @@ const getNotesWithDetails = async (
     };
   });
 
-  console.log("[getNotesWithDetails] notesWithDetails:", notesWithDetails);
+  console.log(
+    "[getNotesWithDetails] notesWithDetails:",
+    notesWithDetails?.length
+  );
   return notesWithDetails;
 };
 
