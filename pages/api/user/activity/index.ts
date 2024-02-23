@@ -155,6 +155,9 @@ async function handleGet(
   } else if (sortBy === "globalId") {
     console.log("[GET /api/user/activity] sortBy: globalId");
     activity.sort((a, b) => {
+      if (!a.globalId || !b.globalId) {
+        console.error("Missing globalId in node", a, b);
+      }
       const sortIdA = createSortId(a.globalId);
       const sortIdB = createSortId(b.globalId);
       return sortIdA.localeCompare(sortIdB);
