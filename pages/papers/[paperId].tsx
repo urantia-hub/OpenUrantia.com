@@ -759,7 +759,7 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
     }
   };
 
-  const deBookmarkGlobalId = async (globalId: string) => {
+  const deleteBookmarkGlobalId = async (globalId: string) => {
     // Escape early if we are already saving.
     if (savingGlobalIds.includes(globalId)) {
       return;
@@ -780,12 +780,15 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
 
     try {
       // Make request to de-bookmark node for user.
-      const response = await fetch(`/api/user/nodes/bookmarks/${globalId}`, {
-        method: "DELETE",
-      });
+      const response = await fetch(
+        `/api/user/nodes/bookmarks?globalId=${globalId}`,
+        {
+          method: "DELETE",
+        }
+      );
       if (response.status !== 204) {
         throw new Error(
-          `Unexpected response status ${response.status} when attempting to de-bookmark global ID ${globalId} for user.`
+          `Unexpected response status ${response.status} when attempting to delete bookmark global ID ${globalId} for user.`
         );
       }
     } catch (error: any) {
@@ -813,7 +816,7 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
     // De-bookmark the node if it's already bookmarked.
     if (bookmarks.some((bookmark) => bookmark.globalId === node.globalId)) {
       // Make request to de-bookmark globalId for user.
-      await deBookmarkGlobalId(node.globalId);
+      await deleteBookmarkGlobalId(node.globalId);
 
       // Remove the id.
       setBookmarks(
