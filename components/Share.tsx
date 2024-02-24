@@ -4,6 +4,8 @@ import Link from "next/link";
 // Relative modules.
 import Modal from "@/components/Modal";
 import Spinner from "@/components/Spinner";
+import { getStandardReferenceIdFromGlobalId } from "@/utils/node";
+import { renderLeadingText } from "@/utils/renderNode";
 
 const constructShareUrl = (node: UBNode) => {
   // Replace this with actual URL construction logic
@@ -21,28 +23,54 @@ const Share = ({ onClose, node }: ShareProps) => {
 
   // Create links.
   const shareUrl = node ? constructShareUrl(node) : "";
-  const shareText = node ? `${node.text}\n` : "";
+  const shareText = node
+    ? `"${node.text?.trim()}"\n\nUrantia ${renderLeadingText(
+        node as UBNodeLeadingTextProps
+      )}\n`
+    : "";
 
   return (
     <Modal onClose={onClose}>
       <>
-        <div className="flex flex-col p-4">
-          <h2 className="text-2xl mb-2">Where to?</h2>
+        <div className="flex flex-col px-3 py-2">
+          <h2 className="text-2xl mb-4">Share this Quote</h2>
           {!node && <Spinner />}
           {node && (
             <>
-              <div className="border-l-2 pl-4 border-gray-500 my-2 py-1 leading-relaxed-7">
-                <p className="text-gray-500 text-sm mb-1">
-                  {node?.globalId?.split(":")[1]}
-                </p>{" "}
-                <p
-                  className="text-gray-400"
-                  dangerouslySetInnerHTML={{ __html: node?.htmlText as string }}
+              <div className="leading-relaxed border-l-4 border-gray-500 pl-3 pb-1 mb-4">
+                <div className="flex items-center justify-between mb-2 text-gray-500 text-xs">
+                  <span>
+                    {renderLeadingText(node as UBNodeLeadingTextProps)}
+                  </span>
+                </div>
+                <div
+                  className="max-h-96 overflow-y-auto text-white text-base isolated-quote"
+                  dangerouslySetInnerHTML={{
+                    __html: node.htmlText as string,
+                  }}
                 />
               </div>
-              <div className="flex justify-center my-3">
+
+              <div className="flex flex-col-reverse md:flex-row justify-center mb-2">
+                <button
+                  className="rounded px-4 text-sm mr-2 bg-gray-600 hover:bg-gray-700"
+                  onClick={onClose}
+                  type="button"
+                >
+                  Cancel
+                </button>
+                <button
+                  className="rounded px-4 text-sm mr-2 mb-3 md:mb-0 bg-gray-600 hover:bg-gray-700"
+                  onClick={() => {
+                    navigator.clipboard.writeText(shareUrl);
+                    setCopiedLink(true);
+                  }}
+                  type="button"
+                >
+                  {copiedLink ? "Copied!" : "Copy Link"}
+                </button>
                 <Link
-                  className="bg-white text-black py-1.5 px-4 mr-4 shadow-lg hover:bg-gray-400 transition duration-300 ease-in-out rounded-full"
+                  className="flex items-center justify-center rounded px-4 text-sm mr-2 mb-3 md:mb-0 hover:no-underline bg-blue-600 hover:bg-blue-700 py-2"
                   href={`https://x.com/intent/tweet?text=${encodeURIComponent(
                     shareText
                   )}&url=${encodeURIComponent(shareUrl)}`}
@@ -52,7 +80,7 @@ const Share = ({ onClose, node }: ShareProps) => {
                   Share on X (Twitter)
                 </Link>
                 <Link
-                  className="bg-white text-black py-1.5 px-4 mr-4 shadow-lg hover:bg-gray-400 transition duration-300 ease-in-out rounded-full"
+                  className="flex items-center justify-center rounded px-4 text-sm mr-2 mb-3 md:mb-0 hover:no-underline bg-blue-600 hover:bg-blue-700 py-2"
                   href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
                     shareUrl
                   )}`}
@@ -61,16 +89,6 @@ const Share = ({ onClose, node }: ShareProps) => {
                 >
                   Share on Facebook
                 </Link>
-                <button
-                  className="bg-white text-black py-1.5 px-4 shadow-lg hover:bg-gray-400 transition duration-300 ease-in-out rounded-full"
-                  onClick={() => {
-                    navigator.clipboard.writeText(shareUrl);
-                    setCopiedLink(true);
-                  }}
-                  type="button"
-                >
-                  {copiedLink ? "Copied!" : "Copy Link"}
-                </button>
               </div>
             </>
           )}

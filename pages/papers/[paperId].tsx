@@ -664,10 +664,6 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
     setSelectedGlobalIdExplain("");
   };
 
-  const onExplainClick = (globalId: string) => () => {
-    setSelectedGlobalIdExplain(globalId);
-  };
-
   const onNoteClose = () => {
     setSelectedGlobalIdNote("");
     void fetchNotes();
@@ -679,10 +675,6 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
 
   const onRelatedWorksClose = () => {
     setSelectedGlobalIdRelatedWorks("");
-  };
-
-  const onRelatedWorksClick = (globalId: string) => () => {
-    setSelectedGlobalIdRelatedWorks(globalId);
   };
 
   const onShareClose = () => {
@@ -707,22 +699,6 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
 
       setExpandedGlobalId(globalId);
     };
-
-  const deriveBookmarkText = (globalId: string) => {
-    if (savingGlobalIds.includes(globalId)) {
-      return "Bookmarking";
-    }
-
-    if (savingErrorGlobalIds.includes(globalId)) {
-      return "Bookmarking Error";
-    }
-
-    if (bookmarks.some((node) => node.globalId === globalId)) {
-      return "Bookmarked";
-    }
-
-    return "Bookmark";
-  };
 
   const bookmarkGlobalId = async (
     globalId: string,
@@ -783,9 +759,66 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
     }
   };
 
+  const deBookmarkGlobalId = async (globalId: string) => {
+    // Escape early if we are already saving.
+    if (savingGlobalIds.includes(globalId)) {
+      return;
+    }
+
+    // Escape early if we aren't logged in.
+    if (status !== "authenticated") {
+      console.warn("User is not logged in, cannot de-bookmark global ID.");
+      return;
+    }
+
+    // Set saving state + reset error for globalId.
+    setSavingGlobalIds([...savingGlobalIds, globalId]);
+    const updatedSavingErrorGlobalIds = savingErrorGlobalIds.filter(
+      (id) => id !== globalId
+    );
+    setSavingErrorGlobalIds(updatedSavingErrorGlobalIds);
+
+    try {
+      // Make request to de-bookmark node for user.
+      const response = await fetch(`/api/user/nodes/bookmarks/${globalId}`, {
+        method: "DELETE",
+      });
+      if (response.status !== 204) {
+        throw new Error(
+          `Unexpected response status ${response.status} when attempting to de-bookmark global ID ${globalId} for user.`
+        );
+      }
+    } catch (error: any) {
+      // Set error state for globalId.
+      console.error(
+        "Error attempting to de-bookmark global ID for user:",
+        error
+      );
+      setSavingErrorGlobalIds([...savingErrorGlobalIds, globalId]);
+    } finally {
+      // Remove globalId from saving list.
+      const updatedSavingGlobalIds = savingGlobalIds.filter(
+        (id) => id !== globalId
+      );
+      setSavingGlobalIds(updatedSavingGlobalIds);
+    }
+  };
+
   const onBookmarkClick = (node: UBNode) => async () => {
-    // Escape early if it's already bookmark.
+    // Escape early if we are already saving.
+    if (savingGlobalIds.includes(node.globalId)) {
+      return;
+    }
+
+    // De-bookmark the node if it's already bookmarked.
     if (bookmarks.some((bookmark) => bookmark.globalId === node.globalId)) {
+      // Make request to de-bookmark globalId for user.
+      await deBookmarkGlobalId(node.globalId);
+
+      // Remove the id.
+      setBookmarks(
+        bookmarks.filter((bookmark) => bookmark.globalId !== node.globalId)
+      );
       return;
     }
 
@@ -828,7 +861,6 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
         );
       }
       case "paragraph": {
-        // const readNode = readNodes.has(node.globalId);
         const bookmark = bookmarks.find(
           (bookmark) => bookmark.globalId === node.globalId
         );
@@ -852,103 +884,97 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
           >
             <div className="text-lg leading-relaxed">
               <div
-                className="flex items-center justify-between block mb-2 text-gray-400 text-sm"
-                style={{ minHeight: "24px" }}
+                className="flex items-center justify-between block text-gray-400 text-sm"
+                style={{ minHeight: "28px" }}
               >
                 <div className="flex items-center">
                   <span className="flex items-center text-xs">
-                    {node.standardReferenceId}{" "}
-                    {/* {readNode && (
-                      <span
-                        className="ml-1 text-xs text-gray-400 cursor-help select-none"
-                        title={readNode ? `You read the paragraph` : ""}
-                      >
-                        <svg
-                          className="w-2.5 h-2.5 fill-current fade-in"
-                          viewBox="0 0 122.881 89.842"
-                        >
-                          <path d="M1.232 55.541a3.746 3.746 0 0 1 5.025-5.554L40.31 80.865l76.099-79.699a3.752 3.752 0 0 1 5.438 5.173L43.223 88.683l-.005-.005a3.746 3.746 0 0 1-5.227.196L1.232 55.541z" />
-                        </svg>
-                      </span>
-                    )} */}
+                    ({node.standardReferenceId})
                   </span>
-                  {bookmark && (
-                    <Link
-                      className="ml-2 text-xs bg-emerald-600 text-white font-bold py-1 px-2 rounded-full hover:no-underline select-none"
-                      href={`/my-library?createdAt=${bookmark.createdAt}`}
-                    >
-                      Bookmarked
-                    </Link>
-                  )}
-                  {notesForNode.length > 0 ? (
-                    <Link
-                      className="ml-2 text-xs bg-orange-600 text-white font-bold py-1 px-2 rounded-full hover:no-underline select-none"
-                      href={`/my-library?createdAt=${notesForNode[0].createdAt}`}
-                    >
-                      {notesForNode.length} Note
-                      {notesForNode.length > 1 ? "s" : ""}
-                    </Link>
-                  ) : null}
                 </div>
                 <div className="flex items-center select-none">
-                  {expandedGlobalId === node.globalId && (
-                    <div className="flex items-center mr-2 fade-in">
-                      {/* <button
-                        className="bg-transparent border-none p-0 m-0 mr-2 focus:outline-none text-gray-400 text-sm hover:text-white transition duration-300 ease-in-out"
-                        onClick={onExplainClick(node.globalId)}
-                        type="button"
-                      >
-                        Explain
-                      </button>
-                      <span className="mr-2">|</span> */}
-                      {status === "authenticated" && (
-                        <>
-                          <button
-                            className="bg-transparent border-none p-0 m-0 mr-2 focus:outline-none text-gray-400 text-sm hover:text-white transition duration-300 ease-in-out"
-                            onClick={onNoteClick(node.globalId)}
-                            type="button"
-                          >
-                            Note
-                          </button>
-                          <span className="mr-2">|</span>
-                        </>
+                  <div className="flex items-center mr-2 fade-in">
+                    {/* Notes Button */}
+                    {status === "authenticated" &&
+                      (expandedGlobalId === node.globalId ||
+                        notesForNode.length > 0) && (
+                        <button
+                          className="bg-transparent border-none p-0 m-0 mr-3 focus:outline-none text-gray-400 text-sm hover:text-white transition duration-300 ease-in-out relative"
+                          onClick={onNoteClick(node.globalId)}
+                          type="button"
+                        >
+                          <svg className="w-7 h-7" viewBox="0 0 24 24">
+                            <path
+                              className="fill-current"
+                              d="M3 10h11v2H3zm0-2h11V6H3zm0 8h7v-2H3zm15.01-3.13.71-.71c.39-.39 1.02-.39 1.41 0l.71.71c.39.39.39 1.02 0 1.41l-.71.71zm-.71.71-5.3 5.3V21h2.12l5.3-5.3z"
+                            />
+                          </svg>
+
+                          {/* Number of notes created for the paragraph in top left */}
+                          {notesForNode.length > 0 && (
+                            <span className="absolute -top-1 -right-1 text-white text-xs font-semibold rounded-full px-1 bg-orange-500">
+                              {notesForNode.length > 9
+                                ? "9+"
+                                : notesForNode.length}
+                            </span>
+                          )}
+                        </button>
                       )}
-                      {/* <button
-                        className="bg-transparent border-none p-0 m-0 focus:outline-none mr-2 text-gray-400 text-sm hover:text-white transition duration-300 ease-in-out"
-                        onClick={onRelatedWorksClick(node.globalId)}
-                        type="button"
-                      >
-                        Related
-                      </button>
-                      <span className="mr-2">|</span> */}
+
+                    {/* Share Button */}
+                    {expandedGlobalId === node.globalId && (
                       <button
-                        className="bg-transparent border-none p-0 m-0 focus:outline-none mr-2 text-gray-400 text-sm hover:text-white transition duration-300 ease-in-out"
+                        className="bg-transparent border-none p-0 m-0 focus:outline-none text-gray-400 text-sm hover:text-white transition duration-300 ease-in-out"
                         onClick={onShareClick(node.globalId)}
                         type="button"
                       >
-                        Share
+                        <svg className="w-5 h-5" viewBox="0 0 24 24">
+                          <path
+                            className="fill-current"
+                            d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92"
+                          />
+                        </svg>
                       </button>
-                      {status === "authenticated" && (
-                        <>
-                          <span className="mr-2">|</span>
-                          <button
-                            className="bg-transparent border-none p-0 m-0 focus:outline-none text-gray-400 text-sm hover:text-white transition duration-300 ease-in-out"
-                            onClick={onBookmarkClick(node)}
-                            type="button"
-                          >
-                            {deriveBookmarkText(node.globalId)}
-                          </button>
-                        </>
+                    )}
+
+                    {/* Bookmark Button */}
+                    {status === "authenticated" &&
+                      (expandedGlobalId === node.globalId || bookmark) && (
+                        <button
+                          className="bg-transparent border-none p-0 m-0 ml-4 focus:outline-none text-gray-400 text-sm hover:text-white transition duration-300 ease-in-out"
+                          onClick={onBookmarkClick(node)}
+                          type="button"
+                        >
+                          <svg className="w-5 h-5" viewBox="0 0 24 24">
+                            {bookmark ? (
+                              <path
+                                className="fill-emerald-400"
+                                d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+                              />
+                            ) : (
+                              <path
+                                className="stroke-current fill-transparent stroke-2"
+                                d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+                              />
+                            )}
+                          </svg>
+                        </button>
                       )}
-                    </div>
+                  </div>
+                  {expandedGlobalId !== node.globalId && (
+                    <button
+                      className="bg-transparent border-none p-0 m-0 focus:outline-none text-gray-400 text-sm hover:text-white transition duration-300 ease-in-out"
+                      onClick={onNodeSettingsClick(node.globalId)}
+                      type="button"
+                    >
+                      <svg className="w-5 h-5" viewBox="0 0 24 24">
+                        <path
+                          className="fill-current"
+                          d="M6 10c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2m12 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2m-6 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2"
+                        />
+                      </svg>
+                    </button>
                   )}
-                  <button
-                    className="bg-transparent border-none p-0 m-0 focus:outline-none text-gray-400 text-sm hover:text-white transition duration-300 ease-in-out"
-                    onClick={onNodeSettingsClick(node.globalId)}
-                    type="button"
-                  >
-                    ⋯
-                  </button>
                 </div>
               </div>
               <div
@@ -966,9 +992,6 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
                   onlyOpen: true,
                 })}
               >
-                {/* <small className="text-gray-400 mr-2 text-sm">
-                  ({node.standardReferenceId})
-                </small>{" "} */}
                 <span
                   dangerouslySetInnerHTML={{ __html: node.htmlText as string }}
                 />
@@ -1051,18 +1074,8 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
         </div>
       )}
 
-      {/* Explain Modal */}
-      {selectedGlobalIdExplain && (
-        <Explain onClose={onExplainClose} node={explainNode} />
-      )}
-
       {/* Note Modal */}
       {selectedGlobalIdNote && <Note onClose={onNoteClose} node={noteNode} />}
-
-      {/* Related Works Modal */}
-      {selectedGlobalIdRelatedWorks && (
-        <RelatedWorks onClose={onRelatedWorksClose} node={relatedWorksNode} />
-      )}
 
       {/* Share Modal */}
       {selectedGlobalIdShare && (

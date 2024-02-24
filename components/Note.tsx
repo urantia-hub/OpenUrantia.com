@@ -45,7 +45,7 @@ const Note = ({ onClose, node }: NoteProps) => {
 
     try {
       // Make request to save note for user.
-      const response = await fetch(`/api/user/nodes/notes`, {
+      await fetch(`/api/user/nodes/notes`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -77,12 +77,12 @@ const Note = ({ onClose, node }: NoteProps) => {
         {node && (
           <>
             {/* Leading text */}
-            <div className="leading-relaxed border-l-4 border-gray-500 pl-3 mb-4 pb-1 note">
+            <div className="leading-relaxed border-l-4 border-gray-500 pl-3 mb-4 pb-1">
               <div className="flex items-center justify-between mb-2 text-gray-500 text-xs">
                 <span>{renderLeadingText(node as UBNodeLeadingTextProps)}</span>
               </div>
               <div
-                className="max-h-96 overflow-y-auto text-gray-500 text-xs"
+                className="max-h-96 overflow-y-auto text-gray-500 text-xs isolated-quote"
                 dangerouslySetInnerHTML={{
                   __html: node.htmlText as string,
                 }}
