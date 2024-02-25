@@ -53,7 +53,7 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
 
     // Check if the user has interests, if they have been redirected before, or if they skipped the selection
     if (
-      data.userInterests.length === 0 &&
+      data.userInterests?.length === 0 &&
       !sessionStorage.getItem("redirectedToInterests") &&
       !sessionStorage.getItem("skippedInterestsSelection")
     ) {
@@ -171,6 +171,52 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
     return labels.some((label) => activeFilters.includes(label));
   };
 
+  const highlightUserInterestLabels = (
+    paperLabels: string[],
+    userInterests: any[]
+  ) => {
+    // Derive the labels that match user interests.
+    const matchingLabels = paperLabels.filter((label) =>
+      userInterests.some((userInterest) => userInterest.label.name === label)
+    );
+
+    // Derive the labels that do not match user interests.
+    const nonMatchingLabels = paperLabels.filter(
+      (label) => !matchingLabels.includes(label)
+    );
+
+    // Return the matching labels in bold and the non-matching labels as is.
+    return [
+      ...matchingLabels.map(
+        (label) => `<span class="text-orange-400">${label}</span>`
+      ),
+      ...nonMatchingLabels,
+    ];
+  };
+
+  const highlightActiveFilterLabels = (
+    paperLabels: string[],
+    activeFilters: string[]
+  ) => {
+    // Derive the labels that match user interests.
+    const matchingLabels = paperLabels.filter((label) =>
+      activeFilters.includes(label)
+    );
+
+    // Derive the labels that do not match user interests.
+    const nonMatchingLabels = paperLabels.filter(
+      (label) => !matchingLabels.includes(label)
+    );
+
+    // Return the matching labels in bold and the non-matching labels as is.
+    return [
+      ...matchingLabels.map(
+        (label) => `<span class="text-blue-400">${label}</span>`
+      ),
+      ...nonMatchingLabels,
+    ];
+  };
+
   // Function to render each part and its papers
   const renderNode = (currentNode: TOCNode) => {
     switch (currentNode.type) {
@@ -202,7 +248,7 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
                   ? "bg-zinc-600"
                   : isCompleted
                   ? "bg-gradient-to-r from-purple-400 via-pink-500 to-red-500"
-                  : "bg-blue-400";
+                  : "bg-white";
 
                 return (
                   <Link
@@ -214,40 +260,48 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
                       <span className="text-xs text-gray-400">
                         Paper {paper.paperId}
                       </span>
-                      <h3 className="mt-1 text-lg font-bold">
+                      <h3 className="mt-1 text-lg font-bold leading-6">
                         {paper.paperTitle}
                       </h3>
                     </div>
-                    <span
-                      className="mt-1 text-xs text-gray-400 truncate w-full"
-                      title={paper.labels.sort().join(" | ")}
-                    >
-                      {paper.labels.sort().join(" | ")}
-                    </span>
-                    {/* Progress */}
-                    {progressResult && (
-                      <div className="flex flex-col mt-1">
-                        <div className="bg-zinc-600 rounded-full h-2.5 w-full relative mb-1">
-                          <div
-                            className={`absolute h-2.5 rounded-full ${progressClasses}`}
-                            style={{ width: `${progressResult.progress}%` }}
-                          />
+                    <div className="flex flex-col">
+                      <span
+                        className="mt-1 text-xs text-gray-400 truncate w-full"
+                        title={paper.labels.sort().join(" | ")}
+                        dangerouslySetInnerHTML={{
+                          __html: highlightActiveFilterLabels(
+                            paper.labels,
+                            activeFilters
+                          )
+                            .sort()
+                            .join(" | "),
+                        }}
+                      />
+                      {/* Progress */}
+                      {progressResult && (
+                        <div className="flex flex-col mt-1">
+                          <div className="bg-zinc-600 rounded-full h-2.5 w-full relative mb-1">
+                            <div
+                              className={`absolute h-2.5 rounded-full ${progressClasses}`}
+                              style={{ width: `${progressResult.progress}%` }}
+                            />
+                          </div>
+                          {progressResult.progress < 100 && (
+                            <div className="text-xs">
+                              Continue Reading{" "}
+                              {progressResult.progress < 100
+                                ? ` (${progressResult.progress.toFixed(0)}%)`
+                                : ""}
+                            </div>
+                          )}
+                          {progressResult.progress === 100 && (
+                            <div className="text-green-400 text-xs">
+                              Completed (100%)
+                            </div>
+                          )}
                         </div>
-                        {progressResult.progress < 100 && (
-                          <div className="text-xs">
-                            Continue Reading{" "}
-                            {progressResult.progress < 100
-                              ? ` (${progressResult.progress.toFixed(0)}%)`
-                              : ""}
-                          </div>
-                        )}
-                        {progressResult.progress === 100 && (
-                          <div className="text-green-400 text-xs">
-                            Completed (100%)
-                          </div>
-                        )}
-                      </div>
-                    )}
+                      )}
+                    </div>
                   </Link>
                 );
               })}
@@ -271,7 +325,7 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
             ? "bg-zinc-600"
             : isCompleted
             ? "bg-gradient-to-r from-purple-400 via-pink-500 to-red-500"
-            : "bg-blue-400";
+            : "bg-white";
 
           return (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 pb-6">
@@ -281,9 +335,18 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
               >
                 <span className="text-xs text-gray-400">Foreword</span>
                 <h3 className="text-lg font-bold">{currentNode.paperTitle}</h3>
-                <span className="text-xs text-gray-400 truncate">
-                  {currentNode.labels.sort().join(" | ")}
-                </span>
+                <span
+                  className="text-xs text-gray-400 truncate"
+                  title={currentNode.labels.sort().join(" | ")}
+                  dangerouslySetInnerHTML={{
+                    __html: highlightActiveFilterLabels(
+                      currentNode.labels,
+                      activeFilters
+                    )
+                      .sort()
+                      .join(" | "),
+                  }}
+                />
                 {/* Progress */}
                 {progressResult && (
                   <div className="flex flex-col mt-1">
@@ -335,7 +398,7 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
       <Navbar />
 
       <main className="mt-8 flex-grow container mx-auto px-4 my-4 max-w-4xl">
-        <div className="mt-4 mb-8 text-center">
+        <div className="mt-4 mb-4 text-center">
           <h1 className="text-5xl font-bold mb-8">The Urantia Papers</h1>
 
           {/* -- Papers You Might Like --- */}
@@ -357,32 +420,6 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
               </p>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {topPapers.map((paper) => {
-                  const highlightLabels = (
-                    paperLabels: string[],
-                    userInterests: any[]
-                  ) => {
-                    // Derive the labels that match user interests.
-                    const matchingLabels = paperLabels.filter((label) =>
-                      userInterests.some(
-                        (userInterest) => userInterest.label.name === label
-                      )
-                    );
-
-                    // Derive the labels that do not match user interests.
-                    const nonMatchingLabels = paperLabels.filter(
-                      (label) => !matchingLabels.includes(label)
-                    );
-
-                    // Return the matching labels in bold and the non-matching labels as is.
-                    return [
-                      ...matchingLabels.map(
-                        (label) =>
-                          `<span class="text-orange-400">${label}</span>`
-                      ),
-                      ...nonMatchingLabels,
-                    ];
-                  };
-
                   // Find the progress result for the current paper and derive its completion status.
                   const progressResult = progressResults.find(
                     (progressResult) => progressResult.paperId === paper.paperId
@@ -393,7 +430,7 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
                     ? "bg-zinc-600"
                     : isCompleted
                     ? "bg-gradient-to-r from-purple-400 via-pink-500 to-red-500"
-                    : "bg-blue-400";
+                    : "bg-white";
 
                   return (
                     <Link
@@ -412,7 +449,7 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
                             </>
                           )}
                         </div>
-                        <h3 className="mt-1 text-lg font-bold">
+                        <h3 className="mt-1 text-lg font-bold leading-6">
                           {paper.paperTitle}
                         </h3>
                       </div>
@@ -421,7 +458,10 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
                           className="mt-1 text-xs text-gray-400 truncate w-full"
                           title={paper.labels.sort().join(" | ")}
                           dangerouslySetInnerHTML={{
-                            __html: highlightLabels(paper.labels, userInterests)
+                            __html: highlightUserInterestLabels(
+                              paper.labels,
+                              userInterests
+                            )
                               .sort()
                               .join(" | "),
                           }}
@@ -466,17 +506,15 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
           )}
 
           {/* -- All Papers --- */}
-          <div className="mb-8">
-            <h2 className="text-sm mb-6 pb-2 text-center border-b text-gray-400 border-gray-600">
-              All Papers
-            </h2>
-          </div>
+          <h2 className="text-sm pb-2 text-center border-b text-gray-400 border-gray-600">
+            All Papers
+          </h2>
 
           {/* Render filter toggle buttons */}
           {showFilters ? (
             <>
               <button
-                className="bg-white text-sm md:text-xs text-black py-1.5 px-4 shadow-lg hover:bg-gray-400 transition duration-300 ease-in-out rounded-full"
+                className="px-3 py-1 rounded text-sm md:text-xs font-semibold bg-neutral-600 text-neutral-300 mt-4"
                 onClick={() => {
                   setShowFilters(false);
                   setActiveFilters([]);
@@ -484,11 +522,11 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
               >
                 Hide Filters
               </button>
-              <div className="flex flex-wrap justify-center gap-2 mt-8 mb-4">
+              <div className="flex flex-wrap gap-2 mt-4 mb-4">
                 {paperLabels.map((label) => (
                   <button
                     key={label}
-                    className={`px-3 py-1 rounded-full text-sm md:text-xs font-semibold ${
+                    className={`px-3 py-1 rounded text-sm md:text-xs font-semibold ${
                       activeFilters.includes(label)
                         ? "bg-blue-600 text-white"
                         : "bg-neutral-600 text-neutral-300"
@@ -501,9 +539,9 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
               </div>
             </>
           ) : (
-            <div className="flex flex-wrap justify-center gap-2 mb-4">
+            <div className="flex justify-center mt-4">
               <button
-                className="bg-white text-sm md:text-xs text-black py-1.5 px-4 shadow-lg hover:bg-gray-400 transition duration-300 ease-in-out rounded-full"
+                className="px-3 py-1 rounded text-sm md:text-xs font-semibold bg-neutral-600 text-neutral-300"
                 onClick={() => setShowFilters(true)}
               >
                 Filter by Topics

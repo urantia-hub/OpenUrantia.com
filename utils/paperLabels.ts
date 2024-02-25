@@ -1,4 +1,5 @@
 export const paperLabels = [
+  "After Life",
   "Angelology",
   "Anthropology",
   "Art",
@@ -7,7 +8,6 @@ export const paperLabels = [
   "Christology",
   "Cosmic Administration",
   "Cosmology",
-  "After Life",
   "Ethics",
   "History",
   "Paleontology",
