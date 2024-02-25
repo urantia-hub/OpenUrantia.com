@@ -193,7 +193,7 @@ model User {
   lastVisitedPaperId        String?
   lastVisitedPaperTitle     String?
   name                      String?
-  emailNotificationsEnabled Boolean?  @default(false)
+  emailNotificationsEnabled Boolean?  @default(true)
   updatedAt                 DateTime  @updatedAt
 
   accounts      Account[]

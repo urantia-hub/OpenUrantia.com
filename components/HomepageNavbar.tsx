@@ -85,22 +85,19 @@ const HomepageNavbar = () => {
             >
               Read
             </Link>
-            <Link
-              className="text-center hover:no-underline mr-4 md:mr-6 text-gray-200 hover:text-white transition-colors duration-200"
-              href="/search"
-            >
-              Search
-            </Link>
             {status === "authenticated" && (
-              <button
-                className="border-0 p-0 bg-transparent text-right hover:no-underline text-gray-200 hover:text-red-300 transition-colors duration-200"
-                onClick={() => {
-                  signOut();
-                  onResetState();
-                }}
+              <Link
+                className="text-center hover:no-underline mr-4 md:mr-6 text-gray-200 hover:text-white transition-colors duration-200"
+                href="/more"
               >
-                Sign Out
-              </button>
+                <svg
+                  className="w-6 h-6 fill-current mb-1"
+                  viewBox="0 0 100 100"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path d="M10 15h80v10H10zM10 45h80v10H10zM10 75h80v10H10z" />
+                </svg>
+              </Link>
             )}
             {status === "unauthenticated" && (
               <button
