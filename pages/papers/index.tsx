@@ -34,11 +34,18 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
   const [userInterests, setUserInterests] = useState<any[]>([]);
   const [topPapers, setTopPapers] = useState<TOCNode[]>([]);
 
+  // Progress state.
+  const [progressResults, setProgressResults] = useState<ProgressResult[]>([]);
+  const [fetchingProgress, setFetchingProgress] = useState<boolean>(true);
+
   useEffect(() => {
     if (userInterests.length > 0) {
-      setTopPapers(getRandomPapersForUser(nodes, userInterests));
+      setTopPapers([
+        ...getInProgressPapersForUser(nodes, progressResults),
+        ...getRandomPapersForUser(nodes, userInterests),
+      ]);
     }
-  }, [userInterests, nodes]);
+  }, [userInterests, nodes, progressResults]);
 
   const fetchUserInterests = async () => {
     const response = await fetch(`/api/user/interests`);
@@ -57,8 +64,26 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
     }
   };
 
+  const fetchProgress = async () => {
+    try {
+      const response = await fetch("/api/user/nodes/progress", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const data = await response.json();
+      setProgressResults(data.data);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setFetchingProgress(false);
+    }
+  };
+
   const onAuthenticated = async () => {
     await fetchUserInterests();
+    await fetchProgress();
   };
 
   useEffect(() => {
@@ -66,6 +91,38 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
       void onAuthenticated();
     }
   }, [status]);
+
+  const getInProgressPapersForUser = (
+    allPapers: TOCNode[],
+    progressResults: ProgressResult[],
+    maxPapers: number = 3
+  ): TOCNode[] => {
+    const paperIds = progressResults
+      .filter(
+        (progressResult) =>
+          progressResult.progress < 100 && progressResult.progress > 0
+      )
+      .filter((progressResult) => {
+        return allPapers.some(
+          (paper) => paper.paperId === progressResult.paperId
+        );
+      })
+      .map((progressResult) => progressResult.paperId);
+
+    const papersInProgress = allPapers.filter((paper) =>
+      paperIds.includes(paper?.paperId as string)
+    );
+
+    return papersInProgress
+      .sort(() => 0.5 - Math.random())
+      .slice(0, maxPapers)
+      .sort((a, b) => {
+        if (a.paperId && b.paperId) {
+          return parseInt(a.paperId) - parseInt(b.paperId);
+        }
+        return 0;
+      });
+  };
 
   // Function to get a random set of papers that match user interests
   const getRandomPapersForUser = (
@@ -134,28 +191,66 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
               {currentNode.partTitle || `Part ${currentNode.partId}`}
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {papers.map((paper) => (
-                <Link
-                  className="flex flex-col justify-between px-4 py-2 mb-2 bg-neutral-700 rounded hover:bg-neutral-600 transition-colors hover:no-underline"
-                  href={`/papers/${paper.paperId}`}
-                  key={paper.globalId}
-                >
-                  <div className="flex flex-col">
-                    <span className="text-xs text-gray-400">
-                      Paper {paper.paperId}
-                    </span>
-                    <h3 className="mt-1 text-lg font-bold">
-                      {paper.paperTitle}
-                    </h3>
-                  </div>
-                  <span
-                    className="mt-1 text-xs text-gray-400 truncate w-full"
-                    title={paper.labels.sort().join(" | ")}
+              {papers.map((paper) => {
+                // Derive progress result for the current paper.
+                const progressResult = progressResults.find(
+                  (progressResult) => progressResult.paperId === paper.paperId
+                );
+                const isCompleted = progressResult?.progress === 100;
+                const isNotStarted = progressResult?.progress === 0;
+                const progressClasses = isNotStarted
+                  ? "bg-zinc-600"
+                  : isCompleted
+                  ? "bg-gradient-to-r from-purple-400 via-pink-500 to-red-500"
+                  : "bg-blue-400";
+
+                return (
+                  <Link
+                    className="flex flex-col justify-between px-4 py-2 mb-2 bg-neutral-700 rounded hover:bg-neutral-600 transition-colors hover:no-underline"
+                    href={`/papers/${paper.paperId}`}
+                    key={paper.globalId}
                   >
-                    {paper.labels.sort().join(" | ")}
-                  </span>
-                </Link>
-              ))}
+                    <div className="flex flex-col">
+                      <span className="text-xs text-gray-400">
+                        Paper {paper.paperId}
+                      </span>
+                      <h3 className="mt-1 text-lg font-bold">
+                        {paper.paperTitle}
+                      </h3>
+                    </div>
+                    <span
+                      className="mt-1 text-xs text-gray-400 truncate w-full"
+                      title={paper.labels.sort().join(" | ")}
+                    >
+                      {paper.labels.sort().join(" | ")}
+                    </span>
+                    {/* Progress */}
+                    {progressResult && (
+                      <div className="flex flex-col mt-1">
+                        <div className="bg-zinc-600 rounded-full h-2.5 w-full relative mb-1">
+                          <div
+                            className={`absolute h-2.5 rounded-full ${progressClasses}`}
+                            style={{ width: `${progressResult.progress}%` }}
+                          />
+                        </div>
+                        {progressResult.progress < 100 && (
+                          <div className="text-xs">
+                            Continue Reading{" "}
+                            {progressResult.progress < 100
+                              ? ` (${progressResult.progress.toFixed(0)}%)`
+                              : ""}
+                          </div>
+                        )}
+                        {progressResult.progress === 100 && (
+                          <div className="text-green-400 text-xs">
+                            Completed (100%)
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </Link>
+                );
+              })}
             </div>
           </div>
         );
@@ -166,6 +261,18 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
           currentNode.paperId === "0" &&
           shouldShowPaper(currentNode.labels)
         ) {
+          // Derive progress result for the current paper.
+          const progressResult = progressResults.find(
+            (progressResult) => progressResult.paperId === currentNode.paperId
+          );
+          const isCompleted = progressResult?.progress === 100;
+          const isNotStarted = progressResult?.progress === 0;
+          const progressClasses = isNotStarted
+            ? "bg-zinc-600"
+            : isCompleted
+            ? "bg-gradient-to-r from-purple-400 via-pink-500 to-red-500"
+            : "bg-blue-400";
+
           return (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 pb-6">
               <Link
@@ -177,6 +284,30 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
                 <span className="text-xs text-gray-400 truncate">
                   {currentNode.labels.sort().join(" | ")}
                 </span>
+                {/* Progress */}
+                {progressResult && (
+                  <div className="flex flex-col mt-1">
+                    <div className="bg-zinc-600 rounded-full h-2.5 w-full relative mb-1">
+                      <div
+                        className={`absolute h-2.5 rounded-full ${progressClasses}`}
+                        style={{ width: `${progressResult.progress}%` }}
+                      />
+                    </div>
+                    {progressResult.progress < 100 && (
+                      <div className="text-xs">
+                        Continue Reading{" "}
+                        {progressResult.progress < 100
+                          ? ` (${progressResult.progress.toFixed(0)}%)`
+                          : ""}
+                      </div>
+                    )}
+                    {progressResult.progress === 100 && (
+                      <div className="text-green-400 text-xs">
+                        Completed (100%)
+                      </div>
+                    )}
+                  </div>
+                )}
               </Link>
             </div>
           );
@@ -217,7 +348,7 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
               <p className="text-xs text-gray-400 mb-6">
                 (Suggestions based on{" "}
                 <Link
-                  className="text-blue-400 hover:underline"
+                  className="text-orange-400 hover:underline"
                   href="/onboarding/interests"
                 >
                   your interests
@@ -245,11 +376,24 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
                     // Return the matching labels in bold and the non-matching labels as is.
                     return [
                       ...matchingLabels.map(
-                        (label) => `<span class="text-blue-400">${label}</span>`
+                        (label) =>
+                          `<span class="text-orange-400">${label}</span>`
                       ),
                       ...nonMatchingLabels,
                     ];
                   };
+
+                  // Find the progress result for the current paper and derive its completion status.
+                  const progressResult = progressResults.find(
+                    (progressResult) => progressResult.paperId === paper.paperId
+                  );
+                  const isCompleted = progressResult?.progress === 100;
+                  const isNotStarted = progressResult?.progress === 0;
+                  const progressClasses = isNotStarted
+                    ? "bg-zinc-600"
+                    : isCompleted
+                    ? "bg-gradient-to-r from-purple-400 via-pink-500 to-red-500"
+                    : "bg-blue-400";
 
                   return (
                     <Link
@@ -272,15 +416,48 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
                           {paper.paperTitle}
                         </h3>
                       </div>
-                      <span
-                        className="mt-1 text-xs text-gray-400 truncate w-full"
-                        title={paper.labels.sort().join(" | ")}
-                        dangerouslySetInnerHTML={{
-                          __html: highlightLabels(paper.labels, userInterests)
-                            .sort()
-                            .join(" | "),
-                        }}
-                      ></span>
+                      <div className="flex flex-col w-full">
+                        <span
+                          className="mt-1 text-xs text-gray-400 truncate w-full"
+                          title={paper.labels.sort().join(" | ")}
+                          dangerouslySetInnerHTML={{
+                            __html: highlightLabels(paper.labels, userInterests)
+                              .sort()
+                              .join(" | "),
+                          }}
+                        />
+                        {/* Progress */}
+                        {progressResult && (
+                          <div className="flex flex-col mt-1 w-full">
+                            <div className="bg-zinc-600 rounded-full h-2.5 w-full relative mb-1">
+                              <div
+                                className={`absolute h-2.5 rounded-full ${progressClasses}`}
+                                style={{ width: `${progressResult.progress}%` }}
+                              />
+                            </div>
+                            {progressResult.progress < 100 && (
+                              <div className="text-xs">
+                                Continue Reading{" "}
+                                {progressResult.progress < 100 ? (
+                                  <>
+                                    {" "}
+                                    <span className="text-gray-400">
+                                      ({progressResult.progress.toFixed(0)}%)
+                                    </span>
+                                  </>
+                                ) : (
+                                  ""
+                                )}
+                              </div>
+                            )}
+                            {progressResult.progress === 100 && (
+                              <div className="text-green-400 text-xs">
+                                Completed (100%)
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </div>
                     </Link>
                   );
                 })}

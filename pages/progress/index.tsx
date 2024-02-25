@@ -52,11 +52,6 @@ const Progress = () => {
     }
 
     return progressResults.map((paper, index) => {
-      // const notStarted = paper.nextGlobalId?.endsWith(".0.1");
-      // if (notStarted) {
-      //   return null;
-      // }
-
       return (
         <PaperCard
           nextGlobalId={paper.nextGlobalId}
