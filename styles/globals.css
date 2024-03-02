@@ -327,3 +327,15 @@ footer a:hover {
   background-size: 1.3em;
   padding-right: 2rem;
 }
+
+@keyframes moveGradient {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.animated-gradient {
+  background: linear-gradient(45deg, #6b7280, #4b5563, #374151, #1f2937);
+  background-size: 400% 400%;
+  animation: moveGradient 5s ease infinite;
+}
