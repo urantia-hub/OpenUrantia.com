@@ -59,10 +59,10 @@ const Login = () => {
         <p className="text-neutral-400 text-xs mt-4">
           By signing in, you agree to the{" "}
           <Link
-            href="/terms-of-use"
+            href="/terms-of-service"
             className="underline text-neutral-300 hover:text-neutral-200 transition-colors duration-200"
           >
-            Terms of Use
+            Terms of Service
           </Link>{" "}
           and{" "}
           <Link
