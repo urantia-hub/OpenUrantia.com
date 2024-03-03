@@ -50,7 +50,7 @@ const Login = () => {
       </header>
 
       <main className="flex flex-col items-center justify-center min-h-screen md:min-h-0 w-full md:w-auto p-6 rounded-md bg-zinc-800 shadow-lg shadow-black/50">
-        <h1 className="font-bold tracking-wide text-3xl m-0 mb-4">
+        <h1 className="font-bold tracking-wide text-3xl m-0 mb-6">
           <span className="font-light">Open</span>
           Urantia
         </h1>
