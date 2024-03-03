@@ -107,7 +107,7 @@ const HomepageNavbar = () => {
               <button
                 className="border-0 p-0 bg-transparent text-right hover:no-underline text-gray-200 hover:text-white transition-colors duration-200"
                 onClick={() => {
-                  router.push("/login");
+                  router.push("/auth/sign-in");
                   onResetState();
                 }}
               >

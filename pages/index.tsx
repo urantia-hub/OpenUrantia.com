@@ -111,7 +111,7 @@ const HomePage = () => {
               lastVisitedNode?.globalId &&
               status === "authenticated"
                 ? `/papers/${lastVisitedNode.paperId}#${lastVisitedNode.globalId}`
-                : "/login"
+                : "/auth/sign-in"
             }
           >
             {lastVisitedNode && status === "authenticated"
@@ -239,7 +239,7 @@ const HomePage = () => {
               lastVisitedNode?.globalId &&
               status === "authenticated"
                 ? `/papers/${lastVisitedNode.paperId}#${lastVisitedNode.globalId}`
-                : "/login"
+                : "/auth/sign-in"
             }
           >
             {lastVisitedNode?.paperId && status === "authenticated"

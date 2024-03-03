@@ -8,7 +8,7 @@ import HeadTag from "@/components/HeadTag";
 
 const DEFAULT_CALLBACK_URL = "/papers";
 
-const Login = () => {
+const SignInPage = () => {
   // Get the router.
   const router = useRouter();
 
@@ -50,7 +50,7 @@ const Login = () => {
       </header>
 
       <main className="flex flex-col items-center justify-center min-h-screen md:min-h-0 w-full md:w-auto p-6 rounded-md bg-zinc-800 shadow-lg shadow-black/50">
-        <h1 className="font-bold tracking-wide text-3xl m-0 mb-6">
+        <h1 className="font-bold tracking-wide text-3xl m-0 mb-6 text-center">
           <span className="font-light">Open</span>
           Urantia
         </h1>
@@ -152,4 +152,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default SignInPage;
