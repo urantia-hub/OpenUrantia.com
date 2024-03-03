@@ -2,9 +2,11 @@
 import Link from "next/link";
 import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 // Relative modules.
 import HeadTag from "@/components/HeadTag";
+
+const DEFAULT_CALLBACK_URL = "/papers";
 
 const Login = () => {
   // Get the router.
@@ -13,10 +15,21 @@ const Login = () => {
   // Get the session.
   const { status } = useSession();
 
+  // Add a state to hold the email address
+  const [email, setEmail] = useState("");
+
+  // Function to handle email sign-in
+  const handleEmailSignIn = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    await signIn("email", { email, callbackUrl: DEFAULT_CALLBACK_URL });
+  };
+
   // If user is already authenticated, redirect to the /papers page.
   useEffect(() => {
     if (status === "authenticated") {
-      router.push((router?.query?.callbackUrl as string) || "/papers");
+      router.push(
+        (router?.query?.callbackUrl as string) || DEFAULT_CALLBACK_URL
+      );
     }
   }, [router, status]);
 
@@ -27,7 +40,7 @@ const Login = () => {
         titlePrefix="Sign In"
       />
 
-      <header className="fixed top-0 left-0 right-0 md:top-4 md:left-4 md:right-unset hidden md:block z-10 mx-auto p-2">
+      <header className="fixed top-0 left-0 right-0 md:top-4 md:left-6 md:right-unset hidden md:block z-10 mx-auto p-2">
         <Link className="text-2xl text-left hover:no-underline" href="/">
           <span className="flex items-center font-bold tracking-wide text-2xl">
             <span className="flex items-center font-light">Open</span>
@@ -37,20 +50,58 @@ const Login = () => {
       </header>
 
       <main className="flex flex-col items-center justify-center min-h-screen md:min-h-0 w-full md:w-auto p-6 rounded-md bg-zinc-800 shadow-lg shadow-black/50">
-        <h1 className="font-bold tracking-wide text-3xl m-0 mb-6">
+        <h1 className="font-bold tracking-wide text-3xl m-0 mb-4">
           <span className="font-light">Open</span>
           Urantia
         </h1>
 
+        {/* Email */}
+        <form
+          className="flex flex-col w-full"
+          onSubmit={handleEmailSignIn}
+          noValidate
+        >
+          <label
+            className="flex flex-col w-full"
+            htmlFor="email"
+            id="email-label"
+          >
+            <span className="text-neutral-400 text-sm mb-1">Email</span>
+            <input
+              className="rounded-md px-4 py-2 bg-zinc-700 text-neutral-100"
+              id="email"
+              name="email"
+              onChange={(event) => setEmail(event.target.value)}
+              placeholder="email@example.com"
+              required
+              type="email"
+            />
+          </label>
+          <button
+            className="flex items-center justify-center rounded-md px-6 py-2 bg-blue-500 text-white hover:bg-blue-600 transition-all duration-300 mt-2 w-full"
+            type="submit"
+          >
+            Send magic link
+          </button>
+        </form>
+
+        <div className="flex items-center justify-center w-full mt-6">
+          <hr className="w-full border-neutral-500" />
+          <span className="text-neutral-400 text-xs mx-4">or</span>
+          <hr className="w-full border-neutral-500" />
+        </div>
+
+        {/* Google oAuth */}
         <button
-          className="flex items-center justify-center bg-white text-neutral-700 rounded-md px-6 py-2 hover:bg-neutral-100 transition-all duration-300"
+          className="flex items-center justify-center bg-white text-neutral-700 rounded-md px-6 py-2 hover:bg-neutral-100 transition-all duration-300 mt-6 w-full"
           onClick={() => {
             console.log(
               "router?.query?.callbackUrl",
               router?.query?.callbackUrl
             );
             signIn("google", {
-              callbackUrl: (router?.query?.callbackUrl as string) || "/papers",
+              callbackUrl:
+                (router?.query?.callbackUrl as string) || DEFAULT_CALLBACK_URL,
             });
           }}
         >
