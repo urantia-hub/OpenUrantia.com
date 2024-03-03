@@ -1,11 +1,15 @@
 // Node modules.
 import Link from "next/link";
 import { signIn, signOut, useSession } from "next-auth/react";
+import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
 
 const HomepageNavbar = () => {
   // Hooks.
   const { status } = useSession();
+
+  // Router.
+  const router = useRouter();
 
   // State.
   const [lastVisitedNode, setLastVisitedNode] =
@@ -103,7 +107,7 @@ const HomepageNavbar = () => {
               <button
                 className="border-0 p-0 bg-transparent text-right hover:no-underline text-gray-200 hover:text-white transition-colors duration-200"
                 onClick={() => {
-                  signIn("google", { callbackUrl: "/papers" });
+                  router.push("/login");
                   onResetState();
                 }}
               >

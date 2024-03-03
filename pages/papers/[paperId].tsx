@@ -201,7 +201,7 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
     }
 
     // Sign in.
-    signIn("google", { callbackUrl });
+    router.push(`/login?callbackUrl=${encodeURIComponent(callbackUrl)}`);
   };
 
   const fetchNotes = async () => {

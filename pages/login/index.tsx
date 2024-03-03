@@ -1,12 +1,27 @@
 // Node modules.
 import Link from "next/link";
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
 // Relative modules.
 import HeadTag from "@/components/HeadTag";
 
 const Login = () => {
+  // Get the router.
+  const router = useRouter();
+
+  // Get the session.
+  const { status } = useSession();
+
+  // If user is already authenticated, redirect to the /papers page.
+  useEffect(() => {
+    if (status === "authenticated") {
+      router.push((router?.query?.callbackUrl as string) || "/papers");
+    }
+  }, [router, status]);
+
   return (
-    <div className="flex flex-col min-h-screen bg-gradient-to-b from-neutral-600 to-neutral-800 items-center justify-center">
+    <div className="flex flex-col min-h-screen bg-gradient-to-b from-black to-blue-900 items-center justify-center">
       <HeadTag
         metaDescription="Sign in to your OpenUrantia account to access your profile, create bookmarks, create notes, track your progress, and more."
         titlePrefix="Sign In"
@@ -21,7 +36,7 @@ const Login = () => {
         </Link>
       </header>
 
-      <main className="flex flex-col items-center justify-center min-h-screen md:min-h-0 w-full md:w-auto p-6 rounded-md shadow-lg bg-zinc-800">
+      <main className="flex flex-col items-center justify-center min-h-screen md:min-h-0 w-full md:w-auto p-6 rounded-md bg-zinc-800 shadow-lg shadow-black/50">
         <h1 className="font-bold tracking-wide text-3xl m-0 mb-6">
           <span className="font-light">Open</span>
           Urantia
@@ -29,7 +44,15 @@ const Login = () => {
 
         <button
           className="flex items-center justify-center bg-white text-neutral-700 rounded-md px-6 py-2 hover:bg-neutral-100 transition-all duration-300"
-          onClick={() => signIn("google", { callbackUrl: "/papers" })}
+          onClick={() => {
+            console.log(
+              "router?.query?.callbackUrl",
+              router?.query?.callbackUrl
+            );
+            signIn("google", {
+              callbackUrl: (router?.query?.callbackUrl as string) || "/papers",
+            });
+          }}
         >
           <svg
             className="w-6 h-6 mr-2"
@@ -56,7 +79,7 @@ const Login = () => {
           </svg>
           Sign in with Google
         </button>
-        <p className="text-neutral-400 text-xs mt-4">
+        <p className="text-neutral-400 text-xs mt-6">
           By signing in, you agree to the{" "}
           <Link
             href="/terms-of-service"
