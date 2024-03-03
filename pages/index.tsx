@@ -111,12 +111,12 @@ const HomePage = () => {
               lastVisitedNode?.globalId &&
               status === "authenticated"
                 ? `/papers/${lastVisitedNode.paperId}#${lastVisitedNode.globalId}`
-                : "/papers"
+                : "/login"
             }
           >
             {lastVisitedNode && status === "authenticated"
               ? "Continue right where you left off"
-              : "Start Reading"}
+              : "Sign in to get started"}
           </Link>
 
           {showDownButton && (
@@ -239,7 +239,7 @@ const HomePage = () => {
               lastVisitedNode?.globalId &&
               status === "authenticated"
                 ? `/papers/${lastVisitedNode.paperId}#${lastVisitedNode.globalId}`
-                : "/papers"
+                : "/login"
             }
           >
             {lastVisitedNode?.paperId && status === "authenticated"
@@ -248,7 +248,7 @@ const HomePage = () => {
                     ? "the Foreword"
                     : `Paper ${lastVisitedNode.paperId}`
                 }`
-              : "Start Reading"}
+              : "Sign in to get started"}
           </Link>
         </section>
       </main>
