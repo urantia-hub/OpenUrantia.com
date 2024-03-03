@@ -184,7 +184,7 @@ model Share {
 model User {
   createdAt                 DateTime  @default(now())
   email                     String?   @unique
-  emailVerified             Boolean?
+  emailVerified             DateTime?
   id                        String    @id @default(cuid())
   image                     String?
   lastAskedNotificationsAt  DateTime?
