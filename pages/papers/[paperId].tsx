@@ -853,11 +853,13 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
             <h1 className="text-5xl font-bold" id={node.globalId}>
               {parseInt(node.paperId) > 0 ? node.paperId : "Foreword"}
             </h1>
+
+            {/* Small - XL Screen TOC */}
             <div className="flex flex-col items-left text-left xl:hidden mt-8">
               <h2
                 className={`${
                   tocExpanded ? "text-white" : "text-gray-400"
-                } flex items-center hover:text-white transition-all duration-300 cursor-pointer`}
+                } text-sm flex items-center hover:text-white transition-all duration-300 cursor-pointer`}
                 onClick={() => setTOCExpanded(!tocExpanded)}
               >
                 Table of Contents{" "}
