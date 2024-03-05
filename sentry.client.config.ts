@@ -23,8 +23,16 @@ Sentry.init({
   integrations: [
     Sentry.replayIntegration({
       // Additional Replay configuration goes in here, for example:
-      maskAllText: true,
-      blockAllMedia: true,
+      maskAllText: false,
+      blockAllMedia: false,
     }),
+    // Sentry.feedbackIntegration({
+    //   colorScheme: "dark",
+    //   showBranding: false,
+    //   themeDark: {
+    //     background: "#000",
+    //     border: "#000",
+    //   },
+    // }),
   ],
 });
