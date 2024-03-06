@@ -142,7 +142,7 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
   const getRandomPapersForUser = (
     allPapers: TOCNode[],
     userInterests: any[],
-    maxPapers: number = 6
+    maxPapers: number = 3
   ) => {
     // Filter papers that match at least one user interest
     const papersMatchingInterests = allPapers.filter((paper) =>
