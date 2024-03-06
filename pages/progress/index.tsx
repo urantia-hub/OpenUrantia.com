@@ -19,7 +19,7 @@ const Progress = () => {
 
   // Redirect to homepage if not logged in.
   useEffect(() => {
-    if (status !== "authenticated" && status !== "loading") {
+    if (status === "unauthenticated") {
       window.location.href = "/";
     }
   }, [status]);

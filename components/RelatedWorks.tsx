@@ -26,17 +26,17 @@ const RelatedWorks = ({ onClose, node }: RelatedWorksProps) => {
               </div>
               <ul className="flex flex-col list-disc pl-3.5 my-2">
                 <li>
-                  <Link href="/">
+                  <Link href="/papers">
                     Plato: <em>Some work</em>
                   </Link>
                 </li>
                 <li>
-                  <Link href="/">
+                  <Link href="/papers">
                     Bible: <em>Another work</em>
                   </Link>
                 </li>
                 <li>
-                  <Link href="/">
+                  <Link href="/papers">
                     Immanuel Kant: <em>And another work</em>
                   </Link>
                 </li>

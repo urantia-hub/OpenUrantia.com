@@ -55,6 +55,8 @@ const HomePage = () => {
     ) {
       sessionStorage.setItem("redirectedToInterests", "true");
       window.location.href = "/onboarding/interests"; // Redirect to the onboarding interests selection page
+    } else {
+      window.location.href = "/papers"; // Redirect to the papers page
     }
   };
 

@@ -52,7 +52,7 @@ const MyLibrary = () => {
       void fetchUserData();
       return;
     }
-    if (status !== "loading") {
+    if (status === "unauthenticated") {
       window.location.href = "/";
       return;
     }

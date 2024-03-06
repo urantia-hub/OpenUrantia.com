@@ -79,12 +79,12 @@ const Navbar = ({
           showAudio={showAudio}
         />
 
-        <div className="flex items-center justify-around w-full max-w-md pt-1 pb-2">
+        <div className="flex items-center justify-around w-full max-w-sm pt-1 pb-2">
           <Link
             className={`flex-1 flex flex-col items-center text-xs text-center ${
-              router.asPath === "/" ? "text-white" : "text-gray-400"
+              router.asPath === "/papers" ? "text-white" : "text-gray-400"
             } line-clamp-1 hover:text-white hover:no-underline transition duration-300 ease-in-out`}
-            href="/"
+            href="/papers"
           >
             <svg
               className="w-6 h-6 fill-current mb-1"
@@ -118,26 +118,6 @@ const Navbar = ({
           </Link>
           <Link
             className={`flex-1 flex flex-col items-center text-xs text-center ${
-              router.asPath.endsWith("/papers") ? "text-white" : "text-gray-400"
-            } line-clamp-1 hover:text-white hover:no-underline transition duration-300 ease-in-out`}
-            href="/papers"
-          >
-            <svg
-              className="w-6 h-6 fill-current mb-1"
-              viewBox="0 0 122.88 78.5"
-            >
-              <path
-                d="M50.57 17.2C40.73 10.31 31 8.79 20.94 11.42c2.2-5.29 5.51-8.76 9.4-10.39C35.85-1.28 44.87.36 48.42 5.3c1.82 2.52 2.73 6.26 2.15 11.9zm32.95 38.12a2.086 2.086 0 1 1 4.06-.96c.54 2.27 1.47 4.03 2.71 5.3 1.27 1.29 2.9 2.12 4.84 2.5 1.13.22 1.86 1.31 1.64 2.44a2.075 2.075 0 0 1-2.44 1.64c-2.76-.55-5.13-1.76-7-3.67-1.79-1.82-3.09-4.22-3.81-7.25zm-69.98 0a2.086 2.086 0 1 1 4.06-.96c.54 2.27 1.47 4.03 2.71 5.3 1.27 1.29 2.9 2.12 4.84 2.5 1.13.22 1.86 1.31 1.64 2.44a2.075 2.075 0 0 1-2.44 1.64c-2.76-.55-5.13-1.76-7-3.67-1.79-1.82-3.09-4.22-3.81-7.25zm47.76-7.61c2.8 0 5.07 2.21 5.07 4.93 0 2.72-2.27 4.93-5.07 4.93-2.8 0-5.07-2.21-5.07-4.93 0-2.72 2.27-4.93 5.07-4.93zM26.66 34.57c10 0 18.11 7.88 18.11 17.61 0 9.72-8.11 17.61-18.11 17.61S8.55 61.91 8.55 52.18s8.1-17.61 18.11-17.61zm69.98 0c10 0 18.11 7.88 18.11 17.61 0 9.72-8.11 17.61-18.11 17.61s-18.11-7.88-18.11-17.61 8.1-17.61 18.11-17.61zM72.31 17.2c9.84-6.89 19.57-8.41 29.62-5.78-2.2-5.29-5.51-8.76-9.4-10.39C87.02-1.28 78 .36 74.46 5.3c-1.82 2.52-2.73 6.26-2.15 11.9zm35.26.2c-3.42-3.52-8.96-5.11-16.63-4.77-8.69.43-17.87 4.06-20.82 12.29-2.47-5.42-14.89-5.42-17.35 0-2.95-8.23-12.13-11.87-20.82-12.29-7.67-.34-13.2 1.26-16.63 4.77C10.5 23.86.96 40.74.16 48.99-3.1 82.47 44.92 90.87 52.62 56.3c4.37 7.75 13.27 7.75 17.64 0 7.7 34.58 55.72 26.17 52.46-7.31-.8-8.25-10.34-25.13-15.15-31.59z"
-                style={{
-                  fillRule: "evenodd",
-                  clipRule: "evenodd",
-                }}
-              />
-            </svg>
-            Discover
-          </Link>
-          <Link
-            className={`flex-1 flex flex-col items-center text-xs text-center ${
               router.asPath.startsWith("/search")
                 ? "text-white"
                 : "text-gray-400"
@@ -168,24 +148,26 @@ const Navbar = ({
               Sign In
             </button>
           )}
-          {status === "authenticated" && (
-            <Link
-              className={`flex-1 flex flex-col items-center text-xs text-center ${
-                router.asPath.startsWith("/more")
-                  ? "text-white"
-                  : "text-gray-400"
-              } line-clamp-1 hover:text-white hover:no-underline transition duration-300 ease-in-out`}
-              href="/more"
-            >
-              <svg
-                className="w-6 h-6 fill-current mb-1"
-                viewBox="0 0 100 100"
-                xmlns="http://www.w3.org/2000/svg"
+          {status !== "unauthenticated" && (
+            <>
+              <Link
+                className={`flex-1 flex flex-col items-center text-xs text-center ${
+                  router.asPath.startsWith("/more")
+                    ? "text-white"
+                    : "text-gray-400"
+                } line-clamp-1 hover:text-white hover:no-underline transition duration-300 ease-in-out`}
+                href="/more"
               >
-                <path d="M10 15h80v10H10zM10 45h80v10H10zM10 75h80v10H10z" />
-              </svg>
-              More
-            </Link>
+                <svg
+                  className="w-6 h-6 fill-current mb-1"
+                  viewBox="0 0 100 100"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path d="M10 15h80v10H10zM10 45h80v10H10zM10 75h80v10H10z" />
+                </svg>
+                More
+              </Link>
+            </>
           )}
         </div>
       </header>
