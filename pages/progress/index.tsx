@@ -65,7 +65,7 @@ const Progress = () => {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-neutral-800 text-white">
+    <div className="flex flex-col min-h-screen bg-slate-100 text-gray-700 dark:bg-neutral-800 dark:text-white">
       <HeadTag
         metaDescription="Track your reading progress on OpenUrantia and set personal goals to deepen your engagement with the teachings of The Urantia Papers."
         titlePrefix="Progress"
@@ -73,9 +73,13 @@ const Progress = () => {
 
       <Navbar />
 
-      <main className="mt-12 flex-grow container mx-auto px-4 my-4 max-w-4xl">
-        <h1 className="text-5xl font-bold mb-14 text-center">Progress</h1>
+      <main className="mt-8 flex-grow container mx-auto px-4 my-4 max-w-4xl">
+        <h1 className="text-5xl font-bold mb-8 text-center">Progress</h1>
+
+        {/* Loading */}
         {fetchingProgress && <Spinner />}
+
+        {/* Papers */}
         {progressResults?.length ? (
           <div className="mb-8">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -83,10 +87,12 @@ const Progress = () => {
             </div>
           </div>
         ) : null}
+
+        {/* No Papers */}
         {!fetchingProgress && !progressResults?.length ? (
           <div className="text-center">
-            <p className="text-2xl font-bold mb-4">
-              You haven&apos;t started any papers yet!
+            <p className="text-2xl font-bold mb-2">
+              You haven&apos;t started any papers yet.
             </p>
             <p className="text-xl">
               <Link

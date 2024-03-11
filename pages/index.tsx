@@ -106,6 +106,22 @@ const HomePage = () => {
               : `Embark on an enlightening journey with a personalized, seamless
             reading experience.`}
           </p>
+          {/* <div className="flex flex-col md:flex-row items-center md:items-end justify-center pb-10">
+            <Image
+              alt="Urantia Papers on an iPhone 14 Pro"
+              className="md:mr-4 mb-4 md:mb-0"
+              height={350}
+              src="/paper-63-iphone-14-pro.png"
+              width={176}
+            />
+            <Image
+              alt="Urantia Papers on a MacBook Pro"
+              className="hidden md:block"
+              height={600}
+              src="/foreword-macbook-pro.png"
+              width={600}
+            />
+          </div> */}
           <Link
             className="bg-white text-black font-bold py-4 px-8 rounded-full shadow-xl hover:bg-blue-100 transition duration-300 ease-in-out"
             href={

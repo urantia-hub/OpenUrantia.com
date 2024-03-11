@@ -58,7 +58,7 @@ const More = () => {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-neutral-800 text-white">
+    <div className="flex flex-col min-h-screen bg-slate-100 text-gray-700 dark:bg-neutral-800 dark:text-white">
       <HeadTag
         metaDescription="Discover additional resources and information on OpenUrantia, expanding your understanding of The Urantia Papers and our community."
         titlePrefix="More"
@@ -67,7 +67,7 @@ const More = () => {
       <Navbar />
 
       <main className="mt-8 flex-grow container mx-auto px-4 my-4 max-w-3xl paper-content">
-        <h1 className="text-2xl md:text-4xl text-white font-bold mb-8 text-center">
+        <h1 className="text-2xl md:text-4xl dark:text-white font-bold mb-8 text-center">
           More
         </h1>
         <div className="flex flex-col w-full">
@@ -78,11 +78,11 @@ const More = () => {
 
             return (
               <Link
-                className="flex flex-row items-center justify-start w-full py-3 px-4 rounded-lg bg-zinc-900 hover:bg-zinc-950 hover:no-underline transition-colors duration-300 ease-in-out mb-4"
+                className="flex flex-row items-center justify-start w-full py-3 px-4 rounded-lg text-gray-600 bg-white dark:text-white dark:bg-zinc-900 hover:dark:bg-zinc-950 hover:no-underline transition-all duration-300 ease-in-out mb-4 hover:shadow-lg"
                 href={route.path}
                 key={route.path}
               >
-                <div className="flex flex-row items-center justify-center h-8 w-8 rounded-lg bg-zinc-700 mr-3">
+                <div className="flex flex-row items-center justify-center h-8 w-8 rounded-lg bg-slate-200 dark:bg-zinc-700 text-gray-600 dark:text-white mr-3">
                   {route.icon}
                 </div>
                 <div className="flex flex-col">
@@ -93,7 +93,7 @@ const More = () => {
           })}
           {status === "authenticated" && (
             <button
-              className="border-0 text-center text-lg w-full p-3 rounded-lg bg-zinc-900 hover:bg-zinc-950 hover:no-underline transition-colors duration-300 ease-in-out mb-4"
+              className="border-0 dark:border-0 text-center text-lg w-full p-3 rounded-lg text-gray-600 bg-white dark:text-white dark:bg-zinc-900 hover:dark:bg-zinc-950 hover:no-underline transition-all duration-300 ease-in-out mb-4 hover:shadow-lg"
               onClick={() => signOut()}
               type="button"
             >

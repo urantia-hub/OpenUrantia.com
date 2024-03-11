@@ -124,7 +124,7 @@ const Search = () => {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-neutral-800 text-white">
+    <div className="flex flex-col min-h-screen bg-slate-100 text-gray-700 dark:bg-neutral-800 dark:text-white">
       <HeadTag
         metaDescription="Utilize OpenUrantia's search feature to find specific teachings, papers, or topics within The Urantia Papers, aiding your study and exploration."
         titlePrefix="Search"
@@ -133,13 +133,13 @@ const Search = () => {
       <Navbar />
 
       <main className="mt-8 flex-grow container mx-auto px-4 my-4 max-w-3xl paper-content">
-        <h1 className="text-2xl md:text-4xl text-white font-bold mb-8 text-center">
+        <h1 className="text-2xl md:text-4xl dark:text-white font-bold mb-8 text-center">
           Search the Urantia Papers
         </h1>
         <div className="relative flex items-center w-full mb-8 pb-2">
           <input
             autoFocus
-            className="w-full bg-transparent border-b border-white/50 text-white rounded-full focus:outline-none px-4"
+            className="w-full bg-transparent border-b border-gray-300 dark:border-white/50 text-gray-600 dark:text-white rounded focus:outline-none px-4"
             id="search"
             onChange={handleSearchInput}
             onKeyDown={handleKeyPress}
@@ -148,17 +148,17 @@ const Search = () => {
             value={query}
           />
           {query.includes(" ") && results.length > 1 && (
-            <p className="text-gray-600 text-xs ml-2 absolute right-0 -bottom-3">
+            <p className="text-gray-400 dark:text-gray-600 text-xs ml-2 absolute right-0 -bottom-3">
               Use double quotes (&quot;Urantia Papers&quot;) to search for exact
               phrases
             </p>
           )}
-          <p className="text-gray-600 text-xs ml-2 absolute -left-2 -bottom-3">
+          <p className="text-gray-400 dark:text-gray-600 text-xs ml-2 absolute -left-2 -bottom-3">
             {deriveSearchStatus()}
           </p>
           {query && (
             <button
-              className="absolute top-0.5 right-4 text-gray-200 text-xl border-0 bg-transparent focus:outline-none p-1 hover:text-white transition-colors duration-200"
+              className="absolute top-0.5 dark:-top-0.5 right-4 text-gray-400 dark:text-gray-400 text-xl border-0 dark:border-0 bg-transparent dark:bg-transparent focus:outline-none p-1 hover:text-gray-500 hover:dark:text-white transition-colors duration-200"
               onClick={onClearSearch}
               type="button"
             >
@@ -177,7 +177,7 @@ const Search = () => {
         <div className="flex flex-col">
           {results?.map((result) => (
             <Link
-              className="mb-6 text-left hover:no-underline"
+              className="mb-6 text-left hover:no-underline isolated-quote"
               key={result.globalId}
               href={`/papers/${result.paperId}#${
                 result.globalId
@@ -188,7 +188,7 @@ const Search = () => {
                   <span>{renderLeadingText(result)}</span>
                 </div>
                 <div
-                  className="leading-tight max-h-96 overflow-y-auto"
+                  className="leading-tight max-h-96 overflow-y-auto text-gray-600 dark:text-white"
                   dangerouslySetInnerHTML={{
                     __html: result._highlightResult?.htmlText?.value as string,
                   }}

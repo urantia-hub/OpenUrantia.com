@@ -11,7 +11,7 @@ const Footer = ({ marginBottom }: FooterProps) => {
 
   return (
     <footer
-      className={`py-4 text-xs`}
+      className="py-4 text-xs"
       style={{ marginBottom: marginBottom || "4.3rem" }}
     >
       <div className="flex flex-col md:flex-row justify-between items-center container mx-auto px-4">

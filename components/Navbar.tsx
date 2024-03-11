@@ -70,7 +70,7 @@ const Navbar = ({
 
   return (
     <>
-      <header className="flex flex-col items-center pt-2 pb-1 px-2 fixed bottom-0 left-0 right-0 z-10 bg-neutral-800 border-t border-neutral-700 mx-auto">
+      <header className="flex flex-col items-center pt-2 pb-1 px-2 fixed bottom-0 left-0 right-0 z-10 bg-white dark:bg-neutral-800 dark:border-t dark:border-neutral-700 mx-auto dark:shadow-none shadow">
         <PaperNavbar
           audioContent={audioContent}
           audioOnPlay={audioOnPlay}
@@ -82,8 +82,10 @@ const Navbar = ({
         <div className="flex items-center justify-around w-full max-w-sm pt-1 pb-2">
           <Link
             className={`flex-1 flex flex-col items-center text-xs text-center ${
-              router.asPath === "/papers" ? "text-white" : "text-gray-400"
-            } line-clamp-1 hover:text-white hover:no-underline transition duration-300 ease-in-out`}
+              router.asPath === "/papers"
+                ? "text-gray-600 dark:text-white"
+                : "text-gray-400 dark:text-gray-400"
+            } line-clamp-1 hover:text-gray-600 hover:dark:text-white hover:no-underline transition duration-300 ease-in-out`}
             href="/papers"
           >
             <svg
@@ -99,9 +101,9 @@ const Navbar = ({
           <Link
             className={`flex-1 flex flex-col items-center text-xs text-center ${
               router.asPath.startsWith("/papers/")
-                ? "text-white"
-                : "text-gray-400"
-            } line-clamp-1 hover:text-white hover:no-underline transition duration-300 ease-in-out`}
+                ? "text-gray-600 dark:text-white"
+                : "text-gray-400 dark:text-gray-400"
+            } line-clamp-1 hover:text-gray-600 hover:dark:text-white hover:no-underline transition duration-300 ease-in-out`}
             href={
               status === "authenticated" && lastVisitedNode
                 ? `/papers/${lastVisitedNode.paperId}#${lastVisitedNode.globalId}`
@@ -119,9 +121,9 @@ const Navbar = ({
           <Link
             className={`flex-1 flex flex-col items-center text-xs text-center ${
               router.asPath.startsWith("/search")
-                ? "text-white"
-                : "text-gray-400"
-            } line-clamp-1 hover:text-white hover:no-underline transition duration-300 ease-in-out`}
+                ? "text-gray-600 dark:text-white"
+                : "text-gray-400 dark:text-gray-400"
+            } line-clamp-1 hover:text-gray-600 hover:dark:text-white hover:no-underline transition duration-300 ease-in-out`}
             href="/search"
           >
             <svg
@@ -134,7 +136,7 @@ const Navbar = ({
           </Link>
           {status === "unauthenticated" && (
             <button
-              className="flex-1 flex flex-col border-0 items-center p-0 text-xs text-center text-gray-400 line-clamp-1 hover:text-white hover:no-underline transition duration-300 ease-in-out focus:outline-none"
+              className="flex-1 flex flex-col border-0 items-center p-0 text-xs text-center text-gray-500 hover:text-gray-600 dark:text-gray-400 hover:dark:text-white bg-transparent line-clamp-1 hover:no-underline transition duration-300 ease-in-out focus:outline-none"
               onClick={() => {
                 router.push("/auth/sign-in");
               }}
@@ -153,9 +155,9 @@ const Navbar = ({
               <Link
                 className={`flex-1 flex flex-col items-center text-xs text-center ${
                   router.asPath.startsWith("/more")
-                    ? "text-white"
-                    : "text-gray-400"
-                } line-clamp-1 hover:text-white hover:no-underline transition duration-300 ease-in-out`}
+                    ? "text-gray-600 dark:text-white"
+                    : "text-gray-400 dark:text-gray-400"
+                } hover:text-gray-600 hover:dark:text-white line-clamp-1 hover:no-underline transition duration-300 ease-in-out`}
                 href="/more"
               >
                 <svg

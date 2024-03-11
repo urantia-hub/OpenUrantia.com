@@ -22,11 +22,11 @@ const PaperNavbar = ({
   return (
     <div className="flex items-center justify-between w-full max-w-3xl mt-1 mb-6">
       <div
-        className="flex-grow flex items-center justify-between bg-neutral-700 rounded-full w-full"
+        className="flex-grow flex items-center justify-between bg-gray-200 dark:bg-neutral-700 rounded-full w-full"
         style={showAudio ? { maxWidth: "calc(100% - 48px)" } : {}}
       >
         <Link
-          className="px-2 py-2 hover:text-white transition duration-300 ease-in-out"
+          className="px-2 py-2 text-gray-400 hover:text-gray-600 dark:text-white hover:dark:text-white transition duration-300 ease-in-out"
           href={`/papers/${paperId - 1 === -1 ? "0" : paperId - 1}`}
         >
           <svg className="w-6 h-6" viewBox="0 0 24 24">
@@ -37,13 +37,13 @@ const PaperNavbar = ({
           </svg>
         </Link>
         <Link
-          className="flex-1 py-2 text-sm font-bold text-center whitespace-nowrap overflow-hidden text-ellipsis hover:text-white hover:no-underline transition duration-300 ease-in-out"
+          className="flex-1 py-2 text-sm font-bold text-center whitespace-nowrap overflow-hidden text-ellipsis text-gray-500 hover:text-gray-600 dark:text-white hover:dark:text-white hover:no-underline transition duration-300 ease-in-out"
           href="/papers"
         >
           {paperId > 0 ? `Paper ${paperId} - ${paperTitle}` : "Foreword"}
         </Link>
         <Link
-          className="px-2 py-2 flex text-right justify-end hover:text-white transition duration-300 ease-in-out"
+          className="px-2 py-2 flex text-right justify-end text-gray-400 hover:text-gray-600 dark:text-white hover:dark:text-white transition duration-300 ease-in-out"
           href={`/papers/${paperId + 1 <= 196 ? paperId + 1 : "196"}`}
         >
           <svg className="w-6 h-6" viewBox="0 0 24 24">
@@ -58,7 +58,7 @@ const PaperNavbar = ({
       {/* Play audio button */}
       {showAudio && (
         <button
-          className="flex-shrink-0 ml-2 bg-neutral-700 border-0 rounded-full p-2 text-white focus:outline-none transition duration-300 ease-in-out"
+          className="flex-shrink-0 ml-2 bg-gray-200 text-gray-400 hover:text-gray-600 dark:text-white dark:bg-neutral-700 hover:dark:text-white border-0 rounded-full p-2 focus:outline-none transition duration-300 ease-in-out"
           onClick={audioOnPlay}
           type="button"
         >

@@ -99,7 +99,7 @@ const OnboardingInterests = () => {
     userInterests.map((interest) => interest.labelId).join();
 
   return (
-    <div className="flex flex-col min-h-screen bg-neutral-800 text-white">
+    <div className="flex flex-col min-h-screen bg-slate-100 text-gray-700 dark:bg-neutral-800 dark:text-white">
       <HeadTag
         metaDescription="Personalize your journey through The Urantia Papers on OpenUrantia by setting your interests, guiding your exploration and discovery."
         titlePrefix="My Interests"
@@ -110,11 +110,15 @@ const OnboardingInterests = () => {
       {/* Save Interests Button */}
       {hasToggledInterests && !saved && (
         <aside
-          className="z-10 fixed bottom-16 left-0 right-0 p-4 text-center bg-neutral-800 border-t border-neutral-700"
+          className="z-10 fixed bottom-16 left-0 right-0 p-4 text-center bg-white dark:bg-neutral-800 border-t dark:border-neutral-700"
           style={{ bottom: "4.2rem" }}
         >
           <button
-            className={`text-white bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 hover:from-blue-400 hover:via-purple-400 hover:to-pink-400 py-2 px-4 rounded-lg font-bold`}
+            className={`w-1/8 border-0 dark:border-0 rounded py-2 px-4 dark:py-2 dark:px-4 text-base ${
+              saving
+                ? "bg-gray-600 dark:bg-gray-600 cursor-not-allowed"
+                : "bg-blue-400 hover:bg-blue-500 dark:bg-blue-500 hover:dark:bg-blue-600"
+            }`}
             onClick={saveInterests}
             disabled={saving}
             type="button"
@@ -125,11 +129,11 @@ const OnboardingInterests = () => {
       )}
 
       <main className="mt-8 flex-grow container mx-auto px-4 my-4 max-w-4xl paper-content">
-        <h1 className="text-2xl md:text-4xl text-white font-bold mb-6 text-center">
-          What Interests You?
+        <h1 className="text-2xl md:text-4xl dark:text-white font-bold mb-6 text-center">
+          What topics are you most interested in?
         </h1>
 
-        <p className="text-lg text-center mb-8">
+        <p className="text-gray-400 text-center mb-8">
           Select the topics you are most interested in to personalize your
           journey through The Urantia Papers.
         </p>
@@ -137,22 +141,28 @@ const OnboardingInterests = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
           {availableLabels.map((label: Label) => (
             <button
-              className={`relative flex flex-col px-4 py-2 rounded-lg shadow-lg overflow-hidden ${
+              className={`border-0 dark:border-0 relative flex flex-col justify-between px-3 py-2 dark:px-3 dark:py-2 rounded shadow-lg overflow-hidden ${
                 selectedLabels.has(label.id)
                   ? selectedGradient
-                  : "bg-neutral-700"
-              } transition-all duration-300 ease-in-out cursor-pointer text-left border-0 focus:outline-none`}
+                  : "bg-white dark:bg-neutral-700"
+              } transition-all duration-300 ease-in-out cursor-pointer text-left focus:outline-none focus:dark:outline-none`}
               onClick={() => toggleLabel(label.id)}
               key={label.id}
               type="button"
             >
-              <h3 className="m-0 p-0 text-xl font-bold text-white">
+              <h3
+                className={`m-0 p-0 text-xl font-bold dark:text-white ${
+                  selectedLabels.has(label.id) ? "text-white" : "text-gray-600"
+                }`}
+              >
                 {label.name}
               </h3>
 
               <p
                 className={`text-sm ${
-                  selectedLabels.has(label.id) ? "text-white" : "text-gray-400"
+                  selectedLabels.has(label.id)
+                    ? "text-white dark:text-white"
+                    : "text-gray-400 dark:text-gray-400"
                 }`}
               >
                 {label.description}
@@ -179,7 +189,7 @@ const OnboardingInterests = () => {
           {!selectedLabels.size ? (
             <>
               <button
-                className="text-white bg-neutral-700 hover:bg-neutral-600 py-2 px-4 rounded-lg font-bold"
+                className="border-0 dark:border-0 text-white bg-blue-400 hover:bg-blue-500 dark:bg-neutral-700 hover:dark:bg-neutral-600 py-2 px-4 dark:py-2 dark:px-4 rounded shadow-lg font-bold"
                 onClick={() => {
                   sessionStorage.setItem("skippedInterestsSelection", "true");
                   window.location.href = "/papers";
@@ -188,7 +198,8 @@ const OnboardingInterests = () => {
                 Skip for Now
               </button>
               <p className="mt-4">
-                You can always modify your interests later in Settings.
+                You can always update your interests later in More &gt;
+                Settings.
               </p>
             </>
           ) : null}

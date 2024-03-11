@@ -848,7 +848,9 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
         return (
           <div key={node.globalId} className="mt-4 mb-8 text-center">
             {parseInt(node.paperId) > 0 && (
-              <p className="mb-2 text-gray-400">{node.paperTitle}</p>
+              <p className="mb-2 text-gray-600 dark:text-gray-400">
+                {node.paperTitle}
+              </p>
             )}
             <h1 className="text-5xl font-bold" id={node.globalId}>
               {parseInt(node.paperId) > 0 ? node.paperId : "Foreword"}
@@ -858,8 +860,10 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
             <div className="flex flex-col items-left text-left xl:hidden mt-8">
               <h2
                 className={`${
-                  tocExpanded ? "text-white" : "text-gray-400"
-                } text-sm flex items-center hover:text-white transition-all duration-300 cursor-pointer`}
+                  tocExpanded
+                    ? "text-gray-600 dark:text-white"
+                    : "text-gray-400"
+                } text-sm flex items-center hover:text-gray-600 hover:dark:text-white transition-all duration-300 cursor-pointer`}
                 onClick={() => setTOCExpanded(!tocExpanded)}
               >
                 Table of Contents{" "}
@@ -909,7 +913,7 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
               currentPlayingNode &&
               isPlayingNode &&
               (isPlaying || isTransitioning)
-                ? "border-l-4 border-white pl-4 -ml-5"
+                ? "border-l-4 border-gray-200 dark:border-white pl-4 -ml-5"
                 : ""
             }`}
             id={node.globalId}
@@ -932,7 +936,7 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
                       (expandedGlobalId === node.globalId ||
                         notesForNode.length > 0) && (
                         <button
-                          className="bg-transparent border-none p-0 m-0 mr-3 focus:outline-none text-gray-400 text-sm hover:text-white transition duration-300 ease-in-out relative"
+                          className="bg-transparent border-0 dark:border-0 p-0 dark:p-0 m-0 mr-3 focus:outline-0 focus:dark:outline-0 text-gray-400 dark:text-gray-400 text-sm hover:text-gray-600 hover:dark:text-white transition duration-300 ease-in-out relative"
                           onClick={onNoteClick(node.globalId)}
                           type="button"
                         >
@@ -957,7 +961,7 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
                     {/* Share Button */}
                     {expandedGlobalId === node.globalId && (
                       <button
-                        className="bg-transparent border-none p-0 m-0 focus:outline-none text-gray-400 text-sm hover:text-white transition duration-300 ease-in-out"
+                        className="bg-transparent border-0 dark:border-0 p-0 dark:p-0 m-0 focus:outline-0 focus:dark:outline-0 text-gray-400 dark:text-gray-400 text-sm hover:text-gray-600 hover:dark:text-white transition duration-300 ease-in-out"
                         onClick={onShareClick(node.globalId)}
                         type="button"
                       >
@@ -974,7 +978,7 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
                     {status === "authenticated" &&
                       (expandedGlobalId === node.globalId || bookmark) && (
                         <button
-                          className="bg-transparent border-none p-0 m-0 ml-4 focus:outline-none text-gray-400 text-sm hover:text-white transition duration-300 ease-in-out"
+                          className="bg-transparent border-0 dark:border-0 p-0 dark:p-0 m-0 ml-4 focus:outline-0 focus:dark:outline-0 text-gray-400 dark:text-gray-400 text-sm hover:text-gray-600 hover:dark:text-white transition duration-300 ease-in-out"
                           onClick={onBookmarkClick(node)}
                           type="button"
                         >
@@ -996,7 +1000,7 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
                   </div>
                   {expandedGlobalId !== node.globalId && (
                     <button
-                      className="bg-transparent border-none p-0 m-0 focus:outline-none text-gray-400 text-sm hover:text-white transition duration-300 ease-in-out"
+                      className="bg-transparent border-0 dark:border-0 p-0 dark:p-0 m-0 focus:outline-0 focus:dark:outline-0 text-gray-400 dark:text-gray-400 text-sm hover:text-gray-600 hover:dark:text-white transition duration-300 ease-in-out"
                       onClick={onNodeSettingsClick(node.globalId)}
                       type="button"
                     >
@@ -1073,7 +1077,7 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
         return (
           <p className="text-sm mt-2 text-gray-400">
             <Link
-              className="text-gray-400 hover:text-white transition-all duration-300"
+              className="text-gray-400 hover:text-gray-600 hover:dark:text-white transition-all duration-300"
               href={node.sectionId === "0" ? "#" : `#${node.globalId}`}
             >
               {node.sectionTitle || "Introduction"}
@@ -1089,7 +1093,7 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
 
   // Page content
   return (
-    <div className="flex flex-col min-h-screen bg-neutral-800 text-white">
+    <div className="flex flex-col min-h-screen bg-slate-100 text-gray-700 dark:bg-neutral-800 dark:text-white">
       <HeadTag
         metaDescription={`Dive into the depths of ${
           paperIdNumber > 0 ? `Paper ${paperId} - ${paperTitle}` : "Foreword"
@@ -1114,11 +1118,11 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
       {/* Conditional Sign-up Prompt */}
       {status === "unauthenticated" && showSignUpPrompt && (
         // purple box shadow
-        <div className="z-10 fixed top-4 left-4 right-4 bg-neutral-900 p-4 rounded-lg text-white text-sm pr-8 max-w-lg mx-auto fade-in shadow-lg shadow-purple-400/20">
+        <div className="z-10 fixed top-4 left-4 right-4 text-gray-600 bg-slate-50 dark:text-white dark:bg-neutral-900 p-4 rounded-lg text-sm pr-8 max-w-lg mx-auto fade-in shadow-lg shadow-purple-600/30 dark:shadow-purple-400/20">
           <p>
             Unlock handy features like bookmarking and notes.{" "}
             <button
-              className="text-sky-400 hover:underline p-0 m-0 border-none bg-transparent focus:outline-none"
+              className="text-sky-600 dark:text-sky-400 hover:underline p-0 m-0 border-none bg-transparent focus:outline-none"
               onClick={onSignUpClick}
               type="button"
             >
@@ -1126,7 +1130,7 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
             </button>
           </p>
           <button
-            className="absolute top-2 right-2 text-lg bg-transparent border-none p-0 m-0 focus:outline-none text-gray-400 hover:text-white transition duration-300 ease-in-out"
+            className="absolute top-4 right-4 text-lg bg-transparent border-none p-0 m-0 focus:outline-none text-gray-400 hover:text-gray-600 hover:dark:text-white transition duration-300 ease-in-out"
             onClick={() => {
               sessionStorage.setItem("hideSignUpPrompt", "true");
               setShowSignUpPrompt(false);
@@ -1157,7 +1161,7 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
         <div className="flex justify-end text-right mb-12">
           {nextPaperId ? (
             <Link
-              className="flex text-right text-gray-400 hover:text-white transition duration-300 ease-in-out"
+              className="flex text-right text-gray-400 hover:text-gray-600 hover:dark:text-white transition duration-300 ease-in-out"
               href={`/papers/${nextPaperId}`}
             >
               Next{" "}
@@ -1175,11 +1179,11 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
 
         {/* XL Screen TOC */}
         {tocExpanded ? (
-          <div className="hidden rounded-lg xl:flex xl:flex-col fixed top-6 left-6 bg-neutral-700/80 z-10 px-4 py-4 max-w-xs">
+          <div className="hidden rounded-lg xl:flex xl:flex-col fixed top-6 left-6 bg-white dark:bg-neutral-700/80 z-10 p-4 max-w-xs shadow-lg dark:shadow-none">
             <svg
               className={`w-6 h-6 ${
                 tocExpanded ? "-rotate-90" : "rotate-90"
-              } absolute top-2 right-2 cursor-pointer`}
+              } absolute top-2 right-2 cursor-pointer text-gray-400 hover:text-gray-600 dark:text-white dark:hover:text-white transition-all duration-300`}
               onClick={() => setTOCExpanded(!tocExpanded)}
               viewBox="0 0 24 24"
             >
@@ -1193,13 +1197,13 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
         ) : (
           <div
             aria-label="button"
-            className="hidden rounded-lg xl:flex xl:flex-col fixed top-6 left-6 bg-neutral-700/80 z-10 p-2 max-w-xs"
+            className="hidden rounded-lg xl:flex xl:flex-col fixed top-6 left-6 bg-white dark:bg-neutral-700/80 z-10 p-2 max-w-xs shadow-lg dark:shadow-none"
             onClick={() => setTOCExpanded(!tocExpanded)}
           >
             <svg
               className={`w-6 h-6 ${
                 tocExpanded ? "-rotate-90" : "rotate-90"
-              } cursor-pointer`}
+              } cursor-pointer text-gray-400 hover:text-gray-600 dark:text-white dark:hover:text-white transition-all duration-300`}
               onClick={() => setTOCExpanded(!tocExpanded)}
               viewBox="0 0 24 24"
             >

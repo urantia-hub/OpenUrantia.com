@@ -5,6 +5,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Lato } from "next/font/google";
 import { useRouter } from "next/router";
 // Relative modules.
+import { ThemeProvider } from "@/context/theme";
 import "@/styles/globals.css";
 
 const googleFont = Lato({
@@ -18,9 +19,11 @@ export default function App({
 }) {
   return (
     <div className={googleFont.className}>
-      <SessionProvider session={session}>
-        <Component {...pageProps} />
-      </SessionProvider>
+      <ThemeProvider>
+        <SessionProvider session={session}>
+          <Component {...pageProps} />
+        </SessionProvider>
+      </ThemeProvider>
       {process.env.NODE_ENV === "production" && <SpeedInsights />}
       {process.env.NODE_ENV === "production" && <Analytics />}
       <script

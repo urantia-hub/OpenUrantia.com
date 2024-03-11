@@ -36,18 +36,6 @@ const MyLibrary = () => {
 
   // Fetch user data on component mount
   useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const response = await fetch("/api/user");
-        const data = await response.json();
-        setUserData(data);
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setFetchingUser(false);
-      }
-    };
-
     if (status === "authenticated") {
       void fetchUserData();
       return;
@@ -63,6 +51,18 @@ const MyLibrary = () => {
       void fetchActivityData();
     }
   }, [filterType, sortBy, paperFilter, status]);
+
+  const fetchUserData = async () => {
+    try {
+      const response = await fetch("/api/user");
+      const data = await response.json();
+      setUserData(data);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setFetchingUser(false);
+    }
+  };
 
   const fetchActivityData = async () => {
     try {
@@ -91,30 +91,36 @@ const MyLibrary = () => {
       case "note": {
         return (
           <Link
-            className="mb-6 text-left hover:no-underline note"
+            className="mb-6 text-left hover:no-underline note bg-white dark:bg-zinc-900 p-4 rounded hover:shadow-lg transition duration-300 ease-in-out"
             href={`/papers/${node.paperId}#${node.globalId}`}
             id={node.createdAt}
             key={index}
           >
-            <div className="leading-relaxed border-l-4 border-gray-500 pl-3 mb-1 pb-1 hover:border-orange-600 transition duration-300 ease-in-out">
-              <div className="flex items-center justify-between mb-1 text-gray-500 text-xs">
+            <div className="leading-relaxed border-l-4 border-gray-200 dark:border-gray-500 pl-3 mb-1 pb-1 hover:dark:border-white transition duration-300 ease-in-out">
+              <div className="flex items-center justify-between mb-1 text-gray-400 dark:text-gray-500 text-xs">
                 <span>{renderLeadingText(node as UBNodeLeadingTextProps)}</span>
                 <div className="labels flex flex-row items-center mb-2">
-                  <span className="text-xs text-gray-500">
+                  <svg
+                    className="w-6 h-6 mr-1.5 text-orange-500 dark:text-orange-400"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      className="fill-current"
+                      d="M3 10h11v2H3zm0-2h11V6H3zm0 8h7v-2H3zm15.01-3.13.71-.71c.39-.39 1.02-.39 1.41 0l.71.71c.39.39.39 1.02 0 1.41l-.71.71zm-.71.71-5.3 5.3V21h2.12l5.3-5.3z"
+                    />
+                  </svg>
+                  <span className="text-xs text-gray-400 dark:text-gray-500">
                     {moment(node.createdAt).fromNow()}
-                  </span>
-                  <span className="text-xs bg-orange-600 text-white font-bold py-1 px-2 rounded-full ml-2">
-                    Note
                   </span>
                 </div>
               </div>
               <div
-                className="max-h-96 overflow-y-auto text-gray-500 text-xs"
+                className="max-h-96 overflow-y-auto text-gray-400 dark:text-gray-500 text-xs"
                 dangerouslySetInnerHTML={{
                   __html: node.htmlText as string,
                 }}
               />
-              <div className="note-text text-white pt-2 text-base">
+              <div className="note-text text-gray-600 dark:text-white pt-2 text-base">
                 {node.noteText}
               </div>
             </div>
@@ -124,25 +130,28 @@ const MyLibrary = () => {
       case "bookmark": {
         return (
           <Link
-            className="mb-6 text-left hover:no-underline bookmark"
+            className="mb-6 text-left hover:no-underline bookmark bg-white dark:bg-zinc-900 p-4 rounded hover:shadow-lg transition duration-300 ease-in-out"
             href={`/papers/${node.paperId}#${node.globalId}`}
             id={node.createdAt}
             key={index}
           >
-            <div className="leading-relaxed border-l-4 border-gray-500 pl-3 mb-1 pb-1 hover:border-emerald-600 transition duration-300 ease-in-out">
-              <div className="flex items-center justify-between mb-1 text-gray-500 text-xs">
+            <div className="leading-relaxed border-l-4 border-gray-200 dark:border-gray-500 pl-3 mb-1 pb-1 hover:dark:border-white transition duration-300 ease-in-out">
+              <div className="flex items-center justify-between mb-1 text-gray-400 dark:text-gray-500 text-xs">
                 <span>{renderLeadingText(node as UBNodeLeadingTextProps)}</span>
                 <div className="labels flex flex-row items-center mb-2">
-                  <span className="text-xs text-gray-500">
+                  <svg className="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24">
+                    <path
+                      className="fill-emerald-400"
+                      d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+                    />
+                  </svg>
+                  <span className="text-xs text-gray-400 dark:text-gray-500">
                     {moment(node.createdAt).fromNow()}
-                  </span>
-                  <span className="text-xs bg-emerald-600 text-white font-bold py-1 px-2 rounded-full ml-2">
-                    Bookmark
                   </span>
                 </div>
               </div>
               <div
-                className="max-h-96 overflow-y-auto text-white text-base"
+                className="max-h-96 overflow-y-auto text-gray-600 dark:text-white text-base"
                 dangerouslySetInnerHTML={{
                   __html: node.htmlText as string,
                 }}
@@ -159,7 +168,7 @@ const MyLibrary = () => {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-neutral-800 text-white">
+    <div className="flex flex-col min-h-screen bg-slate-100 text-gray-700 dark:bg-neutral-800 dark:text-white">
       <HeadTag
         metaDescription="Access your personal library on OpenUrantia, where you can view your bookmarks and comments from The Urantia Papers."
         titlePrefix="My Library"
@@ -172,7 +181,7 @@ const MyLibrary = () => {
         <div className="flex flex-col items-center mt-2 mb-4">
           <h1 className="text-3xl font-bold mb-8">My Library</h1>
 
-          <div className="flex flex-col md:flex-row justify-between w-full mb-8">
+          <div className="flex flex-col md:flex-row justify-between w-full mb-6">
             <div className="flex flex-col md:items-center md:flex-row">
               {/* Filters icon */}
               <svg
@@ -191,30 +200,40 @@ const MyLibrary = () => {
               </svg>
               <button
                 className={`${
-                  filterType === "all" ? "bg-zinc-600" : "bg-zinc-900"
-                } border-0 text-center rounded-lg hover:no-underline transition-colors duration-300 ease-in-out px-4 mb-2 md:mb-0 mx-1 text-sm`}
+                  filterType === "all"
+                    ? "bg-blue-400 dark:bg-blue-500"
+                    : "text-gray-400 dark:text-white bg-white dark:bg-zinc-700 hover:bg-white hover:dark:bg-zinc-700"
+                } mb-2 md:mb-0 mr-0 md:mr-2 py-1 px-3 border-0 dark:py-1 dark:px-3 dark:border-0 text-center rounded hover:no-underline transition-colors duration-300 ease-in-out`}
                 onClick={() => setFilterType("all")}
               >
                 All
               </button>
               <button
                 className={`${
-                  filterType === "note" ? "bg-zinc-600" : "bg-zinc-900"
-                } border-0 text-center rounded-lg hover:no-underline transition-colors duration-300 ease-in-out px-4 mb-2 md:mb-0 mx-1 text-sm`}
+                  filterType === "note"
+                    ? "bg-blue-400 dark:bg-blue-500"
+                    : "text-gray-400 dark:text-white bg-white dark:bg-zinc-700 hover:bg-white hover:dark:bg-zinc-700"
+                } mb-2 md:mb-0 mr-0 md:mr-2 py-1 px-3 border-0 dark:py-1 dark:px-3 dark:border-0 text-center rounded hover:no-underline transition-colors duration-300 ease-in-out`}
                 onClick={() => setFilterType("note")}
               >
                 Notes
               </button>
               <button
                 className={`${
-                  filterType === "bookmark" ? "bg-zinc-600" : "bg-zinc-900"
-                } border-0 text-center rounded-lg hover:no-underline transition-colors duration-300 ease-in-out px-4 mb-2 md:mb-0 mx-1 text-sm`}
+                  filterType === "bookmark"
+                    ? "bg-blue-400 dark:bg-blue-500"
+                    : "text-gray-400 dark:text-white bg-white dark:bg-zinc-700 hover:bg-white hover:dark:bg-zinc-700"
+                } mb-2 md:mb-0 mr-0 md:mr-2 py-1 px-3 border-0 dark:py-1 dark:px-3 dark:border-0 text-center rounded hover:no-underline transition-colors duration-300 ease-in-out`}
                 onClick={() => setFilterType("bookmark")}
               >
                 Bookmarks
               </button>
               <select
-                className="bg-zinc-900 border-0 text-center rounded-lg hover:no-underline transition-colors duration-300 ease-in-out px-4 mb-2 md:mb-0 mx-1 text-sm select-style"
+                className={`${
+                  paperFilter !== "all"
+                    ? "bg-blue-400 dark:bg-blue-500 select-selected"
+                    : "text-gray-400 dark:text-white bg-white dark:bg-zinc-700 hover:bg-white hover:dark:bg-zinc-700"
+                } mb-2 md:mb-0 mr-0 md:mr-2 py-1 px-3 pr-7 border-0 dark:py-1 dark:px-3 dark:pr-7 dark:border-0 text-center rounded hover:no-underline transition-colors duration-300 ease-in-out`}
                 onChange={(event) =>
                   setPaperFilter(
                     event.target.value === "all"
@@ -234,7 +253,7 @@ const MyLibrary = () => {
 
             <div className="flex flex-col md:flex-row md:flex-end">
               <select
-                className="bg-zinc-900 border-0 text-center rounded-lg hover:no-underline transition-colors duration-300 ease-in-out px-4 mx-1 text-sm select-style"
+                className="text-gray-400 dark:text-white bg-white dark:bg-zinc-700 hover:bg-white hover:dark:bg-zinc-700 mb-2 md:mb-0 py-1 px-3 pr-7 border-0 dark:py-1 dark:px-3 dark:pr-7 dark:border-0 text-center rounded hover:no-underline transition-colors duration-300 ease-in-out"
                 onChange={(event) =>
                   setSortBy(event.target.value as "updatedAt" | "globalId")
                 }
@@ -258,15 +277,23 @@ const MyLibrary = () => {
           {/* No activity nodes */}
           {!nodes.length && !fetchingNodes ? (
             <div className="flex flex-col items-center justify-center h-full">
-              <p className="text-gray-400 mb-8">
-                No {filterType === "all" ? "activitie" : filterType}s found
+              <p className="text-gray-400">
+                No {filterType === "all" ? "bookmarks or note" : filterType}s
+                found
+                {filterType !== "all" || paperFilter !== "all"
+                  ? ", try changing your filters"
+                  : null}
+                .
               </p>
-              <button
-                className="bg-white text-black font-bold py-3 px-6 rounded-full shadow-lg hover:bg-blue-100 transition duration-300 ease-in-out"
-                onClick={() => router.push("/papers")}
-              >
-                Find a paper to read
-              </button>
+              {filterType === "all" && paperFilter === "all" ? (
+                <p className="text-gray-400">
+                  Start by adding a{" "}
+                  <Link className="text-blue-400" href="/papers/0">
+                    note or bookmark to the Foreword
+                  </Link>
+                  .
+                </p>
+              ) : null}
             </div>
           ) : null}
         </div>

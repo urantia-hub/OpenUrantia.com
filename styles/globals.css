@@ -5,13 +5,23 @@
 
 html,
 body {
-  background-color: #262626;
-  color: #fff;
+  background-color: #f1f5f9;
+  color: #6b7280;
   padding: 0;
   margin: 0;
 }
 
+html.dark,
+.dark body {
+  background-color: #262626;
+  color: #fff;
+}
+
 * {
+  border-color: #f1f5f9;
+}
+
+.dark * {
   border-color: #404040;
 }
 
@@ -22,6 +32,14 @@ button {
 
 /* Input and other form fields */
 input, textarea, select, button {
+  background-color: #404040;
+  color: #ffffff;
+  border: 1px solid #404040;
+  padding: 0.5rem;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.dark input, .dark textarea, .dark select, .dark button {
   background-color: #262626;
   color: #ffffff;
   border: 1px solid #404040;
@@ -30,6 +48,11 @@ input, textarea, select, button {
 
 /* Apply a focus ring for accessibility */
 input:focus, select:focus, button:focus {
+  outline: 4px solid #c8c8c8;
+  outline-offset: 2px;
+}
+
+.dark input:focus, .dark select:focus, .dark button:focus {
   outline: 4px solid #444;
   outline-offset: 2px;
 }
@@ -50,6 +73,10 @@ a:hover {
 
 /* Footer styles */
 footer {
+  background-color: #f1f5f9;
+}
+
+.dark footer {
   background-color: #262626;
 }
 
@@ -62,6 +89,30 @@ footer a:hover {
   text-decoration: underline;
 }
 
+select {
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  appearance: none;
+  background-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 140 140" xmlns="http://www.w3.org/2000/svg"><polygon points="70,90 100,50 40,50" style="fill:%239ca3af;"/></svg>');
+  background-position: right 0.5rem center;
+  background-repeat: no-repeat;
+  background-size: 1.3em;
+}
+
+select.select-selected {
+  background-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 140 140" xmlns="http://www.w3.org/2000/svg"><polygon points="70,90 100,50 40,50" style="fill:%23ffffff;"/></svg>');
+}
+
+.dark select {
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  appearance: none;
+  background-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 140 140" xmlns="http://www.w3.org/2000/svg"><polygon points="70,90 100,50 40,50" style="fill:%23ffffff;"/></svg>');
+  background-position: right 0.5rem center;
+  background-repeat: no-repeat;
+  background-size: 1.3em;
+}
+
 .spinner {
   height: 40px;
   margin: 50px auto;
@@ -70,17 +121,20 @@ footer a:hover {
 }
 
 .dot1, .dot2 {
-  width: 100%;
-  height: 100%;
+  -webkit-animation: bounce 2.0s infinite ease-in-out;
+  animation: bounce 2.0s infinite ease-in-out;
+  background-color: #000;
   border-radius: 50%;
-  background-color: #fff;
+  height: 100%;
+  left: 0;
   opacity: 0.6;
   position: absolute;
   top: 0;
-  left: 0;
+  width: 100%;
+}
 
-  -webkit-animation: bounce 2.0s infinite ease-in-out;
-  animation: bounce 2.0s infinite ease-in-out;
+.dark .dot1, .dark .dot2 {
+  background-color: #b8b8b8;
 }
 
 .dot2 {
@@ -151,9 +205,13 @@ footer a:hover {
 }
 
 .urantia-api-highlighted {
-  color: rgb(56 189 248); /* text-sky-400 */
+  color: rgb(45, 163, 214); /* text-sky-400 */
   font-style: normal;
   text-decoration: underline;
+}
+
+.dark .urantia-api-highlighted {
+  color: rgb(56 189 248); /* text-sky-400 */
 }
 
 [id] { /* Target all elements with an ID */
@@ -321,6 +379,17 @@ footer a:hover {
   -webkit-appearance: none;  /* Remove default arrow in WebKit browsers */
   -moz-appearance: none;     /* Remove default arrow in older Firefox browsers */
   appearance: none;          /* Remove default arrow from standard-compliant browsers */
+  background-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 140 140" xmlns="http://www.w3.org/2000/svg"><polygon points="70,90 100,50 40,50" style="fill:#9ca3af;"/></svg>'); /* Custom arrow */
+  background-repeat: no-repeat;
+  background-position: right 0.5rem center;
+  background-size: 1.3em;
+  padding-right: 2rem;
+}
+
+.dark .select-style {
+  -webkit-appearance: none;  /* Remove default arrow in WebKit browsers */
+  -moz-appearance: none;     /* Remove default arrow in older Firefox browsers */
+  appearance: none;          /* Remove default arrow from standard-compliant browsers */
   background-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 140 140" xmlns="http://www.w3.org/2000/svg"><polygon points="70,90 100,50 40,50" style="fill:%23ffffff;"/></svg>'); /* Custom arrow */
   background-repeat: no-repeat;
   background-position: right 0.5rem center;
@@ -335,7 +404,7 @@ footer a:hover {
 }
 
 .animated-gradient {
-  background: linear-gradient(45deg, #6b7280, #4b5563, #374151, #1f2937);
-  background-size: 400% 400%;
   animation: moveGradient 5s ease infinite;
+  background-size: 400% 400%;
+  background: linear-gradient(45deg, #6b7280, #4b5563, #374151, #1f2937);
 }
