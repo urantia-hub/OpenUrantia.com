@@ -34,7 +34,7 @@ const SignInPage = () => {
   }, [router, status]);
 
   return (
-    <div className="flex flex-col min-h-screen bg-gradient-to-b from-black to-blue-900 items-center justify-center">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-slate-100 text-gray-600 dark:text-white">
       <HeadTag
         metaDescription="Sign in to your OpenUrantia account to access your profile, create bookmarks, create notes, track your progress, and more."
         titlePrefix="Sign In"
@@ -42,14 +42,14 @@ const SignInPage = () => {
 
       <header className="fixed top-0 left-0 right-0 md:top-4 md:left-6 md:right-unset hidden md:block z-10 mx-auto p-2">
         <Link className="text-2xl text-left hover:no-underline" href="/">
-          <span className="flex items-center font-bold tracking-wide text-2xl">
+          <span className="flex items-center font-bold tracking-wide text-2xl text-gray-600">
             <span className="flex items-center font-light">Open</span>
             Urantia
           </span>
         </Link>
       </header>
 
-      <main className="flex flex-col items-center justify-center min-h-screen md:min-h-0 w-full md:w-auto p-6 rounded-md bg-zinc-800 shadow-lg shadow-black/50">
+      <main className="flex flex-col items-center justify-center min-h-screen md:min-h-0 w-full md:w-auto p-6 rounded bg-white shadow-lg">
         <h1 className="font-bold tracking-wide text-3xl m-0 mb-6 text-center">
           <span className="font-light">Open</span>
           Urantia
@@ -66,9 +66,10 @@ const SignInPage = () => {
             htmlFor="email"
             id="email-label"
           >
-            <span className="text-neutral-400 text-sm mb-1">Email</span>
+            <span className="text-gray-400 text-sm mb-1">Email</span>
             <input
-              className="rounded-md px-4 py-2 bg-zinc-700 text-neutral-100"
+              autoFocus
+              className="text-sm focus:outline-0 border-0 bg-slate-200 text-gray-600 rounded py-2.5 px-3 mb-2"
               id="email"
               name="email"
               onChange={(event) => setEmail(event.target.value)}
@@ -78,7 +79,7 @@ const SignInPage = () => {
             />
           </label>
           <button
-            className="flex items-center justify-center rounded-md px-6 py-2 bg-blue-500 text-white hover:bg-blue-600 transition-all duration-300 mt-2 w-full"
+            className="py-2 px-3 border-0 text-center rounded bg-blue-400 hover:bg-blue-500 hover:no-underline transition-colors duration-300 ease-in-out"
             type="submit"
           >
             Send magic link
@@ -86,19 +87,15 @@ const SignInPage = () => {
         </form>
 
         <div className="flex items-center justify-center w-full mt-6">
-          <hr className="w-full border-neutral-500" />
-          <span className="text-neutral-400 text-xs mx-4">or</span>
-          <hr className="w-full border-neutral-500" />
+          <hr className="w-full border-gray-200" />
+          <span className="text-gray-400 text-xs mx-4">or</span>
+          <hr className="w-full border-gray-200" />
         </div>
 
         {/* Google oAuth */}
         <button
-          className="flex items-center justify-center bg-white text-neutral-700 rounded-md px-6 py-2 hover:bg-neutral-100 transition-all duration-300 mt-6 w-full"
+          className="flex items-center justify-center border-1 border-gray-200 bg-white text-gray-600 rounded px-6 py-2 hover:bg-slate-200 transition-all duration-300 mt-6 w-full"
           onClick={() => {
-            console.log(
-              "router?.query?.callbackUrl",
-              router?.query?.callbackUrl
-            );
             signIn("google", {
               callbackUrl:
                 (router?.query?.callbackUrl as string) || DEFAULT_CALLBACK_URL,
@@ -130,18 +127,18 @@ const SignInPage = () => {
           </svg>
           Sign in with Google
         </button>
-        <p className="text-neutral-400 text-xs mt-6">
+        <p className="text-gray-400 text-xs mt-6">
           By signing in, you agree to the{" "}
           <Link
             href="/terms-of-service"
-            className="underline text-neutral-300 hover:text-neutral-200 transition-colors duration-200"
+            className="text-blue-400 hover:text-blue-500 transition-all duration-200 ease-in-out"
           >
             Terms of Service
           </Link>{" "}
           and{" "}
           <Link
             href="/privacy-policy"
-            className="underline text-neutral-300 hover:text-neutral-200 transition-colors duration-200"
+            className="text-blue-400 hover:text-blue-500 transition-all duration-200 ease-in-out"
           >
             Privacy Policy
           </Link>
