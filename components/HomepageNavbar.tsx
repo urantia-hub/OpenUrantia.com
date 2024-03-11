@@ -70,17 +70,17 @@ const HomepageNavbar = () => {
 
   return (
     <>
-      <header className="flex flex-col items-center pt-2 pb-1 px-2 fixed top-0 left-0 right-0 z-10 mx-auto bg-gradient-to-b from-black to-transparent backdrop-filter backdrop-blur-sm">
+      <header className="flex flex-col items-center pt-2 pb-1 px-2 bg-white shadow-lg">
         <div className="flex items-center justify-between w-full max-w-5xl pt-1 pb-2">
           <Link className="text-2xl text-left hover:no-underline" href="/">
-            <h1 className="flex items-center font-bold tracking-wide text-base md:text-2xl">
+            <h1 className="flex items-center font-bold tracking-wide text-base md:text-2xl text-gray-600">
               <span className="flex items-center font-light">Open</span>
               Urantia
             </h1>
           </Link>
           <div className="flex justify-end text-sm md:text-base">
             <Link
-              className="text-center hover:no-underline mr-4 md:mr-6 text-gray-200 hover:text-white transition-colors duration-200"
+              className="text-center hover:no-underline mr-4 md:mr-6 text-gray-400 hover:text-gray-600 transition-colors duration-200"
               href={
                 status === "authenticated" && lastVisitedNode
                   ? `/papers/${lastVisitedNode.paperId}#${lastVisitedNode.globalId}`
@@ -91,7 +91,7 @@ const HomepageNavbar = () => {
             </Link>
             {status === "authenticated" && (
               <Link
-                className="text-center hover:no-underline mr-4 md:mr-6 text-gray-200 hover:text-white transition-colors duration-200"
+                className="text-center hover:no-underline mr-4 md:mr-6 text-gray-400 hover:text-gray-600 transition-colors duration-200"
                 href="/more"
               >
                 <svg
@@ -105,7 +105,7 @@ const HomepageNavbar = () => {
             )}
             {status === "unauthenticated" && (
               <button
-                className="border-0 p-0 bg-transparent text-right hover:no-underline text-gray-200 hover:text-white transition-colors duration-200"
+                className="border-0 p-0 bg-transparent text-right hover:no-underline text-gray-400 hover:text-gray-600 transition-colors duration-200"
                 onClick={() => {
                   router.push("/auth/sign-in");
                   onResetState();

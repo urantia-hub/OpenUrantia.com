@@ -84,19 +84,19 @@ const HomePage = () => {
   }, []);
 
   return (
-    <div className="flex flex-col min-h-screen text-white bg-neutral-900">
+    <div className="flex flex-col min-h-screen bg-slate-100 text-gray-600">
       <HeadTag metaDescription="Explore the OpenUrantia platform: your digital gateway to the profound teachings and insights of The Urantia Papers, accessible to all." />
 
       <HomepageNavbar />
 
       <main>
         {/* Hero Section */}
-        <section className="hero-image min-h-screen pt-16 md:pt-56 px-6 md:px-12 text-center bg-cover bg-center bg-neutral-900">
-          {/* Consider adding a background image that resonates with the reading experience */}
-          <h1 className="mt-8 mb-2 text-6xl md:text-7xl font-bold">
+        <section className="min-h-screen pt-16 md:pt-15 px-6 md:px-12 text-center bg-cover bg-center bg-slate-100">
+          <h1 className="mt-8 mb-2 text-6xl md:text-7xl font-bold text-gray-700">
             Discover the Urantia Papers
           </h1>
-          <p className="text-lg mx-auto leading-relaxed max-w-2xl pb-10">
+
+          <p className="text-lg mx-auto leading-relaxed max-w-2xl">
             {lastVisitedNode?.paperId && status === "authenticated"
               ? `Welcome back! Ready to continue your journey reading ${
                   lastVisitedNode.paperId === "0"
@@ -106,7 +106,8 @@ const HomePage = () => {
               : `Embark on an enlightening journey with a personalized, seamless
             reading experience.`}
           </p>
-          {/* <div className="flex flex-col md:flex-row items-center md:items-end justify-center pb-10">
+
+          <div className="flex flex-col md:flex-row items-center md:items-end justify-center mt-10 mb-20">
             <Image
               alt="Urantia Papers on an iPhone 14 Pro"
               className="md:mr-4 mb-4 md:mb-0"
@@ -121,9 +122,10 @@ const HomePage = () => {
               src="/foreword-macbook-pro.png"
               width={600}
             />
-          </div> */}
+          </div>
+
           <Link
-            className="bg-white text-black font-bold py-4 px-8 rounded-full shadow-xl hover:bg-blue-100 transition duration-300 ease-in-out"
+            className="bg-blue-400 text-white font-bold py-4 px-8 rounded shadow-xl hover:bg-blue-500 transition duration-300 ease-in-out hover:no-underline"
             href={
               lastVisitedNode?.paperId &&
               lastVisitedNode?.globalId &&
@@ -139,7 +141,7 @@ const HomePage = () => {
 
           {showDownButton && (
             <div
-              className="fade-in fixed bottom-0 left-0 right-0 mx-auto w-12 h-12 mb-8 bg-neutral-900/80 rounded-full p-2 z-10 cursor-pointer hover:bg-neutral-900/100 transition duration-300 ease-in-out"
+              className="fade-in fixed bottom-0 left-0 right-0 mx-auto w-12 h-12 mb-8 bg-gray-200 rounded-full p-2 z-10 cursor-pointer hover:bg-gray-300 transition duration-300 ease-in-out"
               onClick={() => {
                 const afterHero = document.getElementById("after-hero");
                 afterHero?.scrollIntoView({
@@ -168,10 +170,10 @@ const HomePage = () => {
         </section>
 
         {/* Features Overview */}
-        <div className="relative">
+        <div className="relative bg-slate-50">
           <section className="pt-12 lg:pt-72 lg:pb-96 lg:mb-80">
             <h2
-              className="text-5xl font-semibold lg:text-center mb-16 leading-normal text-sky-300 tracking-wide px-4 lg:px-0"
+              className="text-5xl font-semibold lg:text-center mb-16 leading-normal text-blue-400 tracking-wide px-4 lg:px-0"
               id="after-hero"
             >
               Read, learn, share, and grow.
@@ -188,17 +190,19 @@ const HomePage = () => {
           </section>
 
           {/* Upcoming Features */}
-          <section className="upcoming-features lg:absolute lg:left-0 lg:right-0 lg:container lg:mx-auto lg:px-12 pt-20 pb-12 lg:pb-20 bg-neutral-800 rounded-xl mt-10 lg:my-32 mb-0 lg:mb-10">
-            <h2 className="text-5xl font-semibold lg:text-center text-blue-400 px-4 lg:px-0">
+          <section className="upcoming-features lg:absolute lg:left-0 lg:right-0 lg:container lg:mx-auto lg:px-12 pt-20 pb-12 lg:pb-20 rounded mt-10 lg:my-32 mb-0 lg:mb-10 bg-gradient-to-br from-sky-400 to-blue-800 shadow-xl">
+            <h2 className="text-5xl font-semibold lg:text-center text-white px-4 lg:px-0">
               Upcoming Enhancements
             </h2>
-            <p className="text-2xl mx-auto leading-relaxed max-w-4xl pt-4 lg:text-center px-4 lg:px-0">
+            <p className="text-2xl mx-auto leading-relaxed max-w-4xl pt-4 lg:text-center text-white px-4 lg:px-0">
               We&apos;re constantly innovating to enrich your journey through
               the Urantia Papers.
             </p>
             <div className="container mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 text-left px-4 mt-20">
               {upcomingFeatures.map((feature, index) => (
                 <FeatureItem
+                  titleClassName="text-white"
+                  descriptionClassName="text-white"
                   description={feature.description}
                   key={index}
                   title={feature.title}
@@ -209,8 +213,8 @@ const HomePage = () => {
         </div>
 
         {/* Vision and Mission */}
-        <section className="vision-and-mission pt-20 bg-black pb-20 lg:pb-60">
-          <h2 className="text-5xl font-semibold lg:text-center text-indigo-300 px-4 lg:px-0">
+        <section className="vision-and-mission pt-20 bg-slate-200 pb-20 lg:pb-60">
+          <h2 className="text-5xl font-semibold lg:text-center text-gray-600 px-4 lg:px-0">
             Our Vision and Mission
           </h2>
           <p className="text-xl mx-auto leading-relaxed max-w-4xl pt-4 lg:text-center px-4 lg:px-0">
@@ -240,18 +244,18 @@ const HomePage = () => {
         </section>
 
         {/* Secondary CTA */}
-        <section className="flex flex-col items-center py-20 bg-gradient-to-br from-sky-400 to-blue-800">
-          <h2 className="text-3xl font-semibold mb-4 px-4 lg:px-0 text-left w-full lg:text-center">
+        <section className="flex flex-col items-center py-20 lg:py-20 bg-slate-50">
+          <h2 className="text-3xl font-semibold mb-2 px-4 lg:px-0 text-left w-full lg:text-center text-gray-600">
             {status === "authenticated" ? "Continue" : "Join"} the Journey
           </h2>
           {status !== "authenticated" && (
-            <p className="text-lg mx-auto leading-relaxed max-w-2xl pb-8 px-4 lg:px-0">
+            <p className="text-lg mx-auto leading-relaxed max-w-2xl pb-8 px-4 lg:px-0 text-gray-400">
               We&apos;re just getting started. Begin reading the Urantia Papers
               today.
             </p>
           )}
           <Link
-            className="bg-white text-black font-bold py-4 px-8 rounded-full shadow-xl hover:bg-blue-100 transition duration-300 ease-in-out"
+            className="bg-blue-400 text-white font-bold py-4 px-8 rounded shadow-xl hover:bg-blue-500 transition duration-300 ease-in-out hover:no-underline"
             href={
               lastVisitedNode?.paperId &&
               lastVisitedNode?.globalId &&
@@ -365,12 +369,27 @@ const visionAndMission = [
   },
 ];
 
-const FeatureItem = ({ title, description, titleClassName }: any) => (
+const FeatureItem = ({
+  title,
+  description,
+  titleClassName,
+  descriptionClassName,
+}: any) => (
   <div className="flex flex-col mb-10">
-    <h3 className={`text-3xl font-bold mb-2 ${titleClassName || ""}`}>
+    <h3
+      className={`text-3xl font-bold mb-2 text-gray-600 ${
+        titleClassName || ""
+      }`}
+    >
       {title}
     </h3>
-    <p className="text-lg leading-relaxed">{description}</p>
+    <p
+      className={`text-lg leading-relaxed text-gray-400 ${
+        descriptionClassName || ""
+      }`}
+    >
+      {description}
+    </p>
   </div>
 );
 
