@@ -4,28 +4,28 @@ import HeadTag from "@/components/HeadTag";
 
 const ErrorPage = () => {
   return (
-    <div className="flex flex-col min-h-screen bg-gradient-to-b from-black to-blue-900 items-center justify-center">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-slate-100 text-gray-600 dark:text-white">
       <HeadTag titlePrefix="Error" />
 
       <header className="fixed top-0 left-0 right-0 md:top-4 md:left-6 md:right-unset hidden md:block z-10 mx-auto p-2">
         <Link className="text-2xl text-left hover:no-underline" href="/">
-          <span className="flex items-center font-bold tracking-wide text-2xl">
+          <span className="flex items-center font-bold tracking-wide text-2xl text-gray-600">
             <span className="flex items-center font-light">Open</span>
             Urantia
           </span>
         </Link>
       </header>
 
-      <main className="flex flex-col items-center justify-center min-h-screen md:min-h-0 w-full md:w-auto p-6 rounded-md bg-zinc-800 shadow-lg shadow-black/50">
-        <h1 className="font-bold text-3xl text-white mb-4 text-center">
+      <main className="flex flex-col items-center justify-center min-h-screen md:min-h-0 w-full md:w-auto p-6 rounded bg-white shadow-lg">
+        <h1 className="font-bold text-2xl text-gray-600 mb-2 text-center">
           Authentication Error
         </h1>
-        <p className="text-neutral-400 mb-6 text-center">
+        <p className="text-gray-400 mb-4 text-center">
           An error occurred during the sign-in process. Please try signing in
           again.
         </p>
         <Link
-          className="inline-block bg-blue-500 text-white rounded-md px-6 py-2 hover:bg-blue-600 transition-all duration-300 text-center"
+          className="py-2 px-3 border-0 text-center rounded bg-blue-400 hover:bg-blue-500 hover:no-underline transition-colors duration-300 ease-in-out"
           href="/auth/sign-in"
         >
           Return to Sign In
