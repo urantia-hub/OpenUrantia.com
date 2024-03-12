@@ -136,7 +136,7 @@ const Navbar = ({
           </Link>
           {status === "unauthenticated" && (
             <button
-              className="flex-1 flex flex-col border-0 items-center p-0 text-xs text-center text-gray-500 hover:text-gray-600 dark:text-gray-400 hover:dark:text-white bg-transparent line-clamp-1 hover:no-underline transition duration-300 ease-in-out focus:outline-none"
+              className="flex-1 flex flex-col border-0 dark:border-0 items-center p-0 dark:p-0 text-xs text-center text-gray-500 hover:text-gray-600 dark:text-gray-400 hover:dark:text-white bg-transparent line-clamp-1 hover:no-underline transition duration-300 ease-in-out focus:outline-none"
               onClick={() => {
                 router.push("/auth/sign-in");
               }}

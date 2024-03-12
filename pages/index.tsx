@@ -91,8 +91,8 @@ const HomePage = () => {
 
       <main>
         {/* Hero Section */}
-        <section className="min-h-screen pt-16 md:pt-15 px-6 md:px-12 text-center bg-cover bg-center bg-slate-100">
-          <h1 className="mt-8 mb-2 text-6xl md:text-7xl font-bold text-gray-700">
+        <section className="min-h-screen pt-8 md:pt-16 md:pt-15 px-6 md:px-12 text-center bg-cover bg-center bg-slate-100">
+          <h1 className="mt-0 md:mt-8 mb-2 text-4xl md:text-7xl font-bold text-gray-700">
             Discover the Urantia Papers
           </h1>
 
@@ -107,7 +107,7 @@ const HomePage = () => {
             reading experience.`}
           </p>
 
-          <div className="flex flex-col md:flex-row items-center md:items-end justify-center mt-10 mb-20">
+          <div className="flex flex-col md:flex-row items-center md:items-end justify-center mt-10 mb-10 md:mb-20">
             <Image
               alt="Urantia Papers on an iPhone 14 Pro"
               className="md:mr-4 mb-4 md:mb-0"
@@ -244,8 +244,8 @@ const HomePage = () => {
         </section>
 
         {/* Secondary CTA */}
-        <section className="flex flex-col items-center py-20 lg:py-20 bg-slate-50">
-          <h2 className="text-3xl font-semibold mb-2 px-4 lg:px-0 text-left w-full lg:text-center text-gray-600">
+        <section className="flex flex-col items-center py-20 lg:py-20 bg-slate-50 text-center">
+          <h2 className="text-3xl font-semibold mb-2 px-4 lg:px-0 text-left w-full lg:text-center text-gray-600 text-center">
             {status === "authenticated" ? "Continue" : "Join"} the Journey
           </h2>
           {status !== "authenticated" && (

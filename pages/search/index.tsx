@@ -139,7 +139,7 @@ const Search = () => {
         <div className="relative flex items-center w-full mb-8 pb-2">
           <input
             autoFocus
-            className="w-full bg-transparent border-b border-gray-300 dark:border-white/50 text-gray-600 dark:text-white rounded focus:outline-none px-4"
+            className="w-full bg-white dark:bg-zinc-900 border-0 dark:border-0 text-gray-600 dark:text-white rounded focus:outline-none px-4 focus:shadow-lg transition duration-300 ease-in-out"
             id="search"
             onChange={handleSearchInput}
             onKeyDown={handleKeyPress}

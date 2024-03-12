@@ -10,7 +10,7 @@ import "@/styles/globals.css";
 
 const googleFont = Lato({
   subsets: ["latin"],
-  weight: ["100", "400", "700"],
+  weight: ["300", "400", "700"],
 });
 
 export default function App({

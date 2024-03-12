@@ -22,7 +22,7 @@ const PaperNavbar = ({
   return (
     <div className="flex items-center justify-between w-full max-w-3xl mt-1 mb-6">
       <div
-        className="flex-grow flex items-center justify-between bg-gray-200 dark:bg-neutral-700 rounded-full w-full"
+        className="flex-grow flex items-center justify-between bg-slate-100 dark:bg-neutral-700 rounded-full w-full"
         style={showAudio ? { maxWidth: "calc(100% - 48px)" } : {}}
       >
         <Link
@@ -37,7 +37,7 @@ const PaperNavbar = ({
           </svg>
         </Link>
         <Link
-          className="flex-1 py-2 text-sm font-bold text-center whitespace-nowrap overflow-hidden text-ellipsis text-gray-500 hover:text-gray-600 dark:text-white hover:dark:text-white hover:no-underline transition duration-300 ease-in-out"
+          className="flex-1 py-2 text-sm font-bold text-center whitespace-nowrap overflow-hidden text-ellipsis text-gray-600 hover:text-gray-600 dark:text-white hover:dark:text-white hover:no-underline transition duration-300 ease-in-out"
           href="/papers"
         >
           {paperId > 0 ? `Paper ${paperId} - ${paperTitle}` : "Foreword"}

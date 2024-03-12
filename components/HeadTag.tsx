@@ -16,51 +16,10 @@ const HeadTag = ({ metaDescription, titlePrefix }: HeadTagProps) => {
       </title>
 
       {/* Favicon */}
-      <link rel="icon" href="/logo-black-circular.png" />
-
-      {/* Apple Touch Icons */}
-      <link rel="apple-touch-icon" sizes="180x180" href="/ios/180.png" />
-      <link rel="apple-touch-icon" sizes="152x152" href="/ios/152.png" />
-      <link rel="apple-touch-icon" sizes="167x167" href="/ios/167.png" />
-      <link rel="apple-touch-icon" sizes="120x120" href="/ios/120.png" />
-
-      {/* Android Icons */}
-      <link
-        rel="icon"
-        type="image/png"
-        sizes="192x192"
-        href="/android/android-launchericon-192-192.png"
-      />
-      <link
-        rel="icon"
-        type="image/png"
-        sizes="512x512"
-        href="/android/android-launchericon-512-512.png"
-      />
-
-      {/* Microsoft Tiles */}
-      <meta
-        name="msapplication-square150x150logo"
-        content="/windows11/Square150x150Logo.scale-100.png"
-      />
-      <meta
-        name="msapplication-wide310x150logo"
-        content="/windows11/Wide310x150Logo.scale-100.png"
-      />
-      <meta
-        name="msapplication-largeTileImage"
-        content="/windows11/LargeTile.scale-100.png"
-      />
-      <meta
-        name="msapplication-TileImage"
-        content="/windows11/StoreLogo.scale-100.png"
-      />
+      <link rel="icon" href="/logo-symbol.ico" />
 
       {/* Web App Manifest */}
       <link rel="manifest" href="/manifest.json" />
-
-      {/* Safari Pinned Tab Icon */}
-      <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5" />
 
       {/* Meta Tags */}
       <meta name="application-name" content="OpenUrantia" />
@@ -76,7 +35,7 @@ const HeadTag = ({ metaDescription, titlePrefix }: HeadTagProps) => {
       <meta name="msapplication-config" content="/browserconfig.xml" />
       <meta name="msapplication-TileColor" content="#ffffff" />
       <meta name="msapplication-tap-highlight" content="no" />
-      <meta name="theme-color" content="#262626" />
+      <meta name="theme-color" content="#ffffff" />
 
       {/* Social Media Meta Tags */}
       <meta name="twitter:card" content="summary" />
@@ -88,7 +47,7 @@ const HeadTag = ({ metaDescription, titlePrefix }: HeadTagProps) => {
       />
       <meta
         name="twitter:image"
-        content="https://www.openurantia.com/android/android-launchericon-192-192.png"
+        content="https://www.openurantia.com/background_small.png"
       />
       <meta name="twitter:creator" content="@OpenUrantia" />
       <meta property="og:type" content="website" />
@@ -101,7 +60,7 @@ const HeadTag = ({ metaDescription, titlePrefix }: HeadTagProps) => {
       <meta property="og:url" content="https://www.openurantia.com" />
       <meta
         property="og:image"
-        content="https://www.openurantia.com/ios/120.png"
+        content="https://www.openurantia.com/background_small.png"
       />
 
       {/* Viewport Meta Tag */}
