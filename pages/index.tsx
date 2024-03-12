@@ -336,7 +336,7 @@ const upcomingFeatures = [
   {
     title: "Personalized Reading Experience",
     description:
-      "Customize your reading experience to your liking with adjustable font sizes and line spacing.",
+      "Customize your reading experience to your liking with adjustable font sizes, line spacing, and theming.",
   },
   {
     title: "Discover Related Content",
