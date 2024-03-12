@@ -1034,7 +1034,7 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
                 </div>
               </div>
               <div
-                className={`text-lg/7 md:text-lg/8 ${
+                className={`text-base/7 md:text-lg/8 ${
                   currentPlayingNode &&
                   !isPlayingNode &&
                   (isPlaying || isTransitioning)
