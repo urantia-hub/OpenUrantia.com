@@ -173,7 +173,7 @@ const HomePage = () => {
         <div className="relative bg-slate-50">
           <section className="pt-12 lg:pt-72 lg:pb-96 lg:mb-80">
             <h2
-              className="text-5xl font-semibold lg:text-center mb-16 leading-normal text-blue-400 tracking-wide px-4 lg:px-0"
+              className="text-5xl font-semibold lg:text-center mb-16 md:leading-normal text-blue-400 tracking-wide px-4 lg:px-0"
               id="after-hero"
             >
               Read, learn, share, and grow.
@@ -213,15 +213,14 @@ const HomePage = () => {
         </div>
 
         {/* Vision and Mission */}
-        <section className="vision-and-mission pt-20 bg-slate-200 pb-20 lg:pb-60">
+        <section className="vision-and-mission pt-20 pb-20 lg:pb-60 bg-gradient-to-b from-slate-100 to-slate-50">
           <h2 className="text-5xl font-semibold lg:text-center text-gray-600 px-4 lg:px-0">
             Our Vision and Mission
           </h2>
-          <p className="text-xl mx-auto leading-relaxed max-w-4xl pt-4 lg:text-center px-4 lg:px-0">
+          <p className="text-lg mx-auto text-gray-400 leading-relaxed max-w-4xl pt-4 lg:text-center px-4 lg:px-0">
             Tomorrow&apos;s technology will give an individual more potential
-            impact than ever before.
-            <br />
-            Let&apos;s give them the tools to make a difference.
+            impact than ever before. Let&apos;s give them the tools to make a
+            difference.
           </p>
           <div className="container mx-auto px-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 text-left mt-16">
             {visionAndMission.map((feature, index) => (
