@@ -124,20 +124,14 @@ const HomePage = () => {
             />
           </div>
 
-          <Link
-            className="bg-blue-400 text-white font-bold py-4 px-8 rounded shadow-xl hover:bg-blue-500 transition duration-300 ease-in-out hover:no-underline"
-            href={
-              lastVisitedNode?.paperId &&
-              lastVisitedNode?.globalId &&
-              status === "authenticated"
-                ? `/papers/${lastVisitedNode.paperId}#${lastVisitedNode.globalId}`
-                : "/auth/sign-in"
-            }
-          >
-            {lastVisitedNode && status === "authenticated"
-              ? "Continue right where you left off"
-              : "Sign in to get started"}
-          </Link>
+          {status === "unauthenticated" && (
+            <Link
+              className="bg-blue-400 text-white font-bold py-4 px-8 rounded shadow-xl hover:bg-blue-500 transition duration-300 ease-in-out hover:no-underline"
+              href="/auth/sign-in"
+            >
+              Sign in to get started
+            </Link>
+          )}
 
           {showDownButton && (
             <div
@@ -253,24 +247,14 @@ const HomePage = () => {
               today.
             </p>
           )}
-          <Link
-            className="bg-blue-400 text-white font-bold py-4 px-8 rounded shadow-xl hover:bg-blue-500 transition duration-300 ease-in-out hover:no-underline"
-            href={
-              lastVisitedNode?.paperId &&
-              lastVisitedNode?.globalId &&
-              status === "authenticated"
-                ? `/papers/${lastVisitedNode.paperId}#${lastVisitedNode.globalId}`
-                : "/auth/sign-in"
-            }
-          >
-            {lastVisitedNode?.paperId && status === "authenticated"
-              ? `Continue reading ${
-                  lastVisitedNode.paperId === "0"
-                    ? "the Foreword"
-                    : `Paper ${lastVisitedNode.paperId}`
-                }`
-              : "Sign in to get started"}
-          </Link>
+          {status === "unauthenticated" && (
+            <Link
+              className="bg-blue-400 text-white font-bold py-4 px-8 rounded shadow-xl hover:bg-blue-500 transition duration-300 ease-in-out hover:no-underline"
+              href="/auth/sign-in"
+            >
+              Sign in to get started
+            </Link>
+          )}
         </section>
       </main>
 

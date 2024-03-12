@@ -660,7 +660,7 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
               {showFilters ? (
                 <>
                   <button
-                    className="px-3 py-1 rounded text-sm md:text-xs font-semibold bg-white text-gray-600 dark:bg-neutral-600 dark:text-neutral-300 border-0 mt-4"
+                    className="px-3 py-1 rounded text-sm md:text-xs font-semibold bg-white text-gray-600 dark:bg-neutral-600 dark:text-neutral-300 border-0 mt-4 shadow-lg"
                     onClick={() => {
                       setShowFilters(false);
                       setActiveFilters([]);
@@ -676,7 +676,7 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
                           activeFilters.includes(label)
                             ? "bg-blue-400 text-white dark:bg-blue-600 dark:text-white"
                             : "bg-white text-gray-400 dark:bg-neutral-600 dark:text-neutral-300"
-                        } border-0`}
+                        } border-0 hover:shadow-lg transition-shadow duration-300`}
                         onClick={() => toggleFilter(label)}
                       >
                         {label}
@@ -687,7 +687,7 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
               ) : (
                 <div className="flex justify-center mt-4">
                   <button
-                    className="px-3 py-1 rounded text-sm md:text-xs font-semibold bg-white text-gray-400 dark:bg-neutral-600 dark:text-neutral-300 border-0"
+                    className="px-3 py-1 rounded text-sm md:text-xs font-semibold bg-white text-gray-400 dark:bg-neutral-600 dark:text-neutral-300 border-0 shadow-lg"
                     onClick={() => setShowFilters(true)}
                   >
                     Filter by Topics
