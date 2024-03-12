@@ -2,8 +2,9 @@
 import Link from "next/link";
 import moment from "moment";
 import throttle from "lodash/throttle";
+import { Noto_Serif, Nova_Mono } from "next/font/google";
 import { Note as NoteType, ReadNode, Bookmark } from "@prisma/client";
-import { signIn, useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
 // Relative modules.
@@ -18,6 +19,14 @@ import Spinner from "@/components/Spinner";
 
 const AVERAGE_READING_SPEED = 300; // Words per minute
 const NEXT_AUDIO_DELAY = 300; // Milliseconds
+const notoSerifFont = Noto_Serif({
+  subsets: ["latin"],
+  weight: ["400", "700"],
+});
+const notoMonoFont = Nova_Mono({
+  subsets: ["latin"],
+  weight: ["400"],
+});
 
 type PaperPageProps = {
   paperData: {
@@ -846,7 +855,10 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
     switch (node.type) {
       case "paper": {
         return (
-          <div key={node.globalId} className="mt-4 mb-8 text-center">
+          <div
+            key={node.globalId}
+            className={`${notoSerifFont.className} tracking-tight font-serif antialiased leading-relaxed mt-4 mb-8 text-center`}
+          >
             {parseInt(node.paperId) > 0 && (
               <p className="mb-2 text-gray-600 dark:text-gray-400">
                 {node.paperTitle}
@@ -891,7 +903,10 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
         if (!node.sectionTitle) return null;
         return (
           <div key={node.globalId} className="mt-16 mb-6 text-center">
-            <h2 className="text-3xl font-bold" id={node.globalId}>
+            <h2
+              className={`${notoSerifFont.className} tracking-tight font-serif antialiased leading-relaxed text-3xl font-bold`}
+              id={node.globalId}
+            >
               {node.sectionTitle}
             </h2>
           </div>
@@ -919,13 +934,17 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
             id={node.globalId}
             key={node.globalId}
           >
-            <div className="text-lg leading-relaxed">
+            <div
+              className={`${notoSerifFont.className} tracking-tight font-serif antialiased text-lg leading-relaxed`}
+            >
               <div
-                className="flex items-center justify-between block text-gray-400 text-sm"
+                className="flex items-center justify-between block text-gray-400 text-sm -mb-1.5"
                 style={{ minHeight: "28px" }}
               >
                 <div className="flex items-center">
-                  <span className="flex items-center text-xs">
+                  <span
+                    className={`${notoMonoFont.className} flex items-center text-xs tracking-tighter font-mono`}
+                  >
                     ({node.standardReferenceId})
                   </span>
                 </div>
@@ -1015,11 +1034,11 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
                 </div>
               </div>
               <div
-                className={`text-xl/9 md:text-lg/8 ${
+                className={`text-lg/7 md:text-lg/8 ${
                   currentPlayingNode &&
                   !isPlayingNode &&
                   (isPlaying || isTransitioning)
-                    ? "text-neutral-400"
+                    ? "text-gray-400"
                     : ""
                 }`}
                 onClick={onNodeSettingsClick(node.globalId, {
