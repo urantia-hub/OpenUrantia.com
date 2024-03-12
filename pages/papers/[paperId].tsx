@@ -9,7 +9,6 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
 // Relative modules.
 import Note from "@/components/Note";
-import Explain from "@/components/Explain";
 import Footer from "@/components/Footer";
 import HeadTag from "@/components/HeadTag";
 import Navbar from "@/components/Navbar";
@@ -22,10 +21,6 @@ const NEXT_AUDIO_DELAY = 300; // Milliseconds
 const notoSerifFont = Noto_Serif({
   subsets: ["latin"],
   weight: ["400", "700"],
-});
-const notoMonoFont = Nova_Mono({
-  subsets: ["latin"],
-  weight: ["400"],
 });
 
 type PaperPageProps = {
@@ -943,7 +938,7 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
               >
                 <div className="flex items-center">
                   <span
-                    className={`${notoMonoFont.className} flex items-center text-xs tracking-tighter font-mono`}
+                    className={`flex items-center text-xs tracking-tighter`}
                   >
                     ({node.standardReferenceId})
                   </span>
