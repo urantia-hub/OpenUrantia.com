@@ -126,7 +126,7 @@ const HomePage = () => {
 
           {status === "unauthenticated" && (
             <Link
-              className="bg-blue-400 text-white font-bold py-4 px-8 rounded shadow-xl hover:bg-blue-500 transition duration-300 ease-in-out hover:no-underline"
+              className="fade-in bg-blue-400 text-white font-bold py-4 px-8 rounded shadow-xl hover:bg-blue-500 transition duration-300 ease-in-out hover:no-underline"
               href="/auth/sign-in"
             >
               Sign in to get started
@@ -249,7 +249,7 @@ const HomePage = () => {
           )}
           {status === "unauthenticated" && (
             <Link
-              className="bg-blue-400 text-white font-bold py-4 px-8 rounded shadow-xl hover:bg-blue-500 transition duration-300 ease-in-out hover:no-underline"
+              className="fade-in bg-blue-400 text-white font-bold py-4 px-8 rounded shadow-xl hover:bg-blue-500 transition duration-300 ease-in-out hover:no-underline"
               href="/auth/sign-in"
             >
               Sign in to get started
