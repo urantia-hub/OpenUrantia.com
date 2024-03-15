@@ -13,7 +13,7 @@ import ThemeSwitcher from "@/components/ThemeSwitcher";
 
 const Settings = () => {
   // Hooks.
-  const { status } = useSession();
+  const session = useSession();
 
   // Delete user state.
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
@@ -32,7 +32,7 @@ const Settings = () => {
 
   useEffect(() => {
     // Fetch user data if authenticated.
-    if (status === "authenticated") {
+    if (session.status === "authenticated") {
       fetch("/api/user")
         .then((res) => res.json())
         .then((data) => {
@@ -40,10 +40,10 @@ const Settings = () => {
           setTheme(data.theme);
         });
     }
-    if (status === "unauthenticated") {
+    if (session.status === "unauthenticated") {
       window.location.href = "/";
     }
-  }, [status]);
+  }, [session.status]);
 
   const handleToggleNotifications = async () => {
     setIsUpdating(true);
@@ -64,7 +64,7 @@ const Settings = () => {
   };
 
   const deriveNotificationStatus = () => {
-    if (status !== "authenticated") {
+    if (session.status !== "authenticated") {
       return "...";
     }
 
@@ -100,9 +100,10 @@ const Settings = () => {
         <h1 className="text-2xl md:text-4xl dark:text-white font-bold mb-8 text-center">
           Settings
         </h1>
+
         <div className="flex flex-col w-full">
           {/* Loading */}
-          {status === "loading" && (
+          {session.status === "loading" && (
             <div className="flex flex-col items-center justify-center mb-8">
               <p className="dark:text-white mb-4">Loading...</p>
               <Spinner style={{ margin: 0 }} />
@@ -110,8 +111,13 @@ const Settings = () => {
           )}
 
           {/* Authenticated */}
-          {status === "authenticated" && (
+          {session.status === "authenticated" && (
             <>
+              {/* Logged in user */}
+              <p className="text-right text-gray-400 dark:text-gray-500 text-xs">
+                Logged in as {session?.data?.user?.email}
+              </p>
+
               {/* Personal */}
               <h2 className="text-xl md:text-2xl dark:text-white font-bold mb-4">
                 Personal
