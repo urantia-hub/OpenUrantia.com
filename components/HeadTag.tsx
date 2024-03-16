@@ -33,9 +33,9 @@ const HeadTag = ({ metaDescription, titlePrefix }: HeadTagProps) => {
       <meta name="format-detection" content="telephone=no" />
       <meta name="mobile-web-app-capable" content="yes" />
       <meta name="msapplication-config" content="/browserconfig.xml" />
-      <meta name="msapplication-TileColor" content="#ffffff" />
+      <meta name="msapplication-TileColor" content="#e2e8f0" />
       <meta name="msapplication-tap-highlight" content="no" />
-      <meta name="theme-color" content="#ffffff" />
+      <meta name="theme-color" content="#e2e8f0" />
 
       {/* Social Media Meta Tags */}
       <meta name="twitter:card" content="summary" />
