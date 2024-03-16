@@ -2,7 +2,7 @@
 import Link from "next/link";
 import moment from "moment";
 import throttle from "lodash/throttle";
-import { Noto_Serif, Nova_Mono } from "next/font/google";
+import { Noto_Serif } from "next/font/google";
 import { Note as NoteType, ReadNode, Bookmark } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import { useEffect, useRef, useState } from "react";
@@ -12,11 +12,10 @@ import Note from "@/components/Note";
 import Footer from "@/components/Footer";
 import HeadTag from "@/components/HeadTag";
 import Navbar from "@/components/Navbar";
-import RelatedWorks from "@/components/RelatedWorks";
 import Share from "@/components/Share";
 import Spinner from "@/components/Spinner";
 
-const AVERAGE_READING_SPEED = 300; // Words per minute
+const AVERAGE_READING_SPEED = 400; // Words per minute
 const NEXT_AUDIO_DELAY = 300; // Milliseconds
 const notoSerifFont = Noto_Serif({
   subsets: ["latin"],
@@ -911,7 +910,6 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
         const bookmark = bookmarks.find(
           (bookmark) => bookmark.globalId === node.globalId
         );
-        // Find all notes.
         const notesForNode = notes.filter(
           (note) => note.globalId === node.globalId
         );
@@ -938,9 +936,20 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
               >
                 <div className="flex items-center">
                   <span
-                    className={`flex items-center text-xs tracking-tighter`}
+                    className={`fade-in flex items-center text-xs tracking-tighter`}
                   >
-                    ({node.standardReferenceId})
+                    ({node.standardReferenceId}){" "}
+                    {readNodes.has(node.globalId) && (
+                      <svg
+                        className="fade-in w-3.5 h-3.5 text-gray-400 ml-0.5"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          className="fill-current"
+                          d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"
+                        />
+                      </svg>
+                    )}
                   </span>
                 </div>
                 <div className="flex items-center select-none">
