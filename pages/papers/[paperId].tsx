@@ -1119,8 +1119,10 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
     <div className="flex flex-col min-h-screen bg-slate-100 text-gray-700 dark:bg-neutral-800 dark:text-white">
       <HeadTag
         metaDescription={`${
-          paperIdNumber > 0 ? `Paper ${paperId} - ${paperTitle}` : "Foreword"
-        }: ${paperData.data.results[2].text}`}
+          paperIdNumber > 0
+            ? `Urantia Paper ${paperId} - ${paperTitle}`
+            : "Urantia Papers Foreword"
+        } - ${paperData.data.results[2].text}`}
         titlePrefix={
           paperIdNumber > 0 ? `Paper ${paperId} - ${paperTitle}` : "Foreword"
         }
