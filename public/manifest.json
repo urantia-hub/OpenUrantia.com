@@ -3,8 +3,8 @@
   "short_name": "OpenUrantia",
   "start_url": "/papers",
   "display": "standalone",
-  "background_color": "#262626",
-  "theme_color": "#ffffff",
+  "background_color": "#e2e8f0",
+  "theme_color": "#e2e8f0",
   "description": "An open source version of The Urantia Papers for generations to come.",
   "icons": [
     {
