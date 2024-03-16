@@ -114,14 +114,14 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
     const paperIds = progressResults
       .filter(
         (progressResult) =>
-          progressResult.progress < 100 && progressResult.progress > 0
+          progressResult?.progress < 100 && progressResult?.progress > 0
       )
       .filter((progressResult) => {
         return allPapers.some(
-          (paper) => paper.paperId === progressResult.paperId
+          (paper) => paper.paperId === progressResult?.paperId
         );
       })
-      .map((progressResult) => progressResult.paperId);
+      .map((progressResult) => progressResult?.paperId);
 
     const papersInProgress = allPapers.filter((paper) =>
       paperIds.includes(paper?.paperId as string)
@@ -252,7 +252,7 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
               {papers.map((paper) => {
                 // Derive progress result for the current paper.
                 const progressResult = progressResults.find(
-                  (progressResult) => progressResult.paperId === paper.paperId
+                  (progressResult) => progressResult?.paperId === paper.paperId
                 );
                 const isCompleted = progressResult?.progress === 100;
                 const isNotStarted = progressResult?.progress === 0;
@@ -264,7 +264,7 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
 
                 return (
                   <Link
-                    className="flex flex-col justify-between px-4 py-2 mb-2 bg-white dark:bg-neutral-700 hover:dark:bg-neutral-600 rounded transition-colors hover:no-underline hover:shadow-lg hover:dark:shadow-none transition-shadow duration-300"
+                    className="relative flex flex-col justify-between px-4 py-2 mb-2 bg-white dark:bg-neutral-700 hover:dark:bg-neutral-600 rounded transition-colors hover:no-underline hover:shadow-lg hover:dark:shadow-none transition-shadow duration-300"
                     href={`/papers/${paper.paperId}`}
                     key={paper.globalId}
                   >
@@ -289,28 +289,37 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
                             .join(" | "),
                         }}
                       />
-                      {/* Progress */}
-                      {progressResult && (
-                        <div className="flex flex-col mt-1">
+
+                      {/* Progress Bar */}
+                      {progressResult && progressResult?.progress < 100 && (
+                        <div className="flex flex-col mt-2 w-full">
                           <div className="bg-gray-200 dark:bg-zinc-600 rounded-full h-2.5 w-full relative mb-1">
                             <div
                               className={`absolute h-2.5 rounded-full ${progressClasses}`}
-                              style={{ width: `${progressResult.progress}%` }}
+                              style={{
+                                width: `${progressResult?.progress}%`,
+                              }}
                             />
                           </div>
-                          {progressResult.progress < 100 && (
-                            <div className="text-xs mt-0.5 text-gray-400 dark:text-white">
-                              Continue Reading{" "}
-                              {progressResult.progress < 100
-                                ? ` (${progressResult.progress.toFixed(0)}%)`
-                                : ""}
-                            </div>
-                          )}
-                          {progressResult.progress === 100 && (
-                            <div className="text-green-500 dark:text-green-400 text-xs">
-                              Completed (100%)
-                            </div>
-                          )}
+                          <div className="text-xs mt-0.5 text-gray-400 dark:text-white">
+                            Continue Reading{" "}
+                            <span className="text-gray-400">
+                              ({progressResult?.progress.toFixed(0)}
+                              %)
+                            </span>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Completed Checkmark */}
+                      {progressResult && progressResult?.progress >= 100 && (
+                        <div className="absolute -top-2 -right-2 bg-green-400 text-white shadow-lg p-1 rounded-full dark:text-green-400 text-xs">
+                          <svg className="w-4 h-4" viewBox="0 0 20 20">
+                            <path
+                              fill="currentColor"
+                              d="M0 11l2-2 5 5L18 3l2 2L7 18z"
+                            />
+                          </svg>
                         </div>
                       )}
                     </div>
@@ -329,7 +338,7 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
         ) {
           // Derive progress result for the current paper.
           const progressResult = progressResults.find(
-            (progressResult) => progressResult.paperId === currentNode.paperId
+            (progressResult) => progressResult?.paperId === currentNode.paperId
           );
           const isCompleted = progressResult?.progress === 100;
           const isNotStarted = progressResult?.progress === 0;
@@ -361,28 +370,37 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
                       .join(" | "),
                   }}
                 />
-                {/* Progress */}
-                {progressResult && (
-                  <div className="flex flex-col mt-1">
+
+                {/* Progress Bar */}
+                {progressResult && progressResult?.progress < 100 && (
+                  <div className="flex flex-col mt-2 w-full">
                     <div className="bg-gray-200 dark:bg-zinc-600 rounded-full h-2.5 w-full relative mb-1">
                       <div
                         className={`absolute h-2.5 rounded-full ${progressClasses}`}
-                        style={{ width: `${progressResult.progress}%` }}
+                        style={{
+                          width: `${progressResult?.progress}%`,
+                        }}
                       />
                     </div>
-                    {progressResult.progress < 100 && (
-                      <div className="text-xs mt-0.5 text-gray-400 dark:text-white">
-                        Continue Reading{" "}
-                        {progressResult.progress < 100
-                          ? ` (${progressResult.progress.toFixed(0)}%)`
-                          : ""}
-                      </div>
-                    )}
-                    {progressResult.progress === 100 && (
-                      <div className="text-green-500 dark:text-green-400 text-xs">
-                        Completed (100%)
-                      </div>
-                    )}
+                    <div className="text-xs mt-0.5 text-gray-400 dark:text-white">
+                      Continue Reading{" "}
+                      <span className="text-gray-400">
+                        ({progressResult?.progress.toFixed(0)}
+                        %)
+                      </span>
+                    </div>
+                  </div>
+                )}
+
+                {/* Completed Checkmark */}
+                {progressResult && progressResult?.progress >= 100 && (
+                  <div className="absolute -top-2 -right-2 bg-green-400 text-white shadow-lg p-1 rounded-full dark:text-green-400 text-xs">
+                    <svg className="w-4 h-4" viewBox="0 0 20 20">
+                      <path
+                        fill="currentColor"
+                        d="M0 11l2-2 5 5L18 3l2 2L7 18z"
+                      />
+                    </svg>
                   </div>
                 )}
               </Link>
@@ -456,7 +474,7 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
                         // Find the progress result for the current paper and derive its completion status.
                         const progressResult = progressResults.find(
                           (progressResult) =>
-                            progressResult.paperId === paper.paperId
+                            progressResult?.paperId === paper.paperId
                         );
                         const isCompleted = progressResult?.progress === 100;
                         const isNotStarted = progressResult?.progress === 0;
@@ -468,7 +486,7 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
 
                         return (
                           <Link
-                            className="flex flex-col items-start text-left justify-between px-4 py-2 mb-2 bg-white dark:bg-neutral-700 hover:dark:bg-neutral-600 rounded transition-colors hover:no-underline hover:shadow-lg hover:dark:shadow-none transition-shadow duration-300"
+                            className="relative flex flex-col items-start text-left justify-between px-4 py-2 mb-2 bg-white dark:bg-neutral-700 hover:dark:bg-neutral-600 rounded transition-colors hover:no-underline hover:shadow-lg hover:dark:shadow-none transition-shadow duration-300"
                             href={`/papers/${paper.paperId}`}
                             key={paper.globalId}
                           >
@@ -506,41 +524,43 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
                                 }}
                               />
 
-                              {/* Progress */}
-                              {progressResult && (
-                                <div className="flex flex-col mt-2 w-full">
-                                  <div className="bg-gray-200 dark:bg-zinc-600 rounded-full h-2.5 w-full relative mb-1">
-                                    <div
-                                      className={`absolute h-2.5 rounded-full ${progressClasses}`}
-                                      style={{
-                                        width: `${progressResult.progress}%`,
-                                      }}
-                                    />
-                                  </div>
-                                  {progressResult.progress < 100 && (
+                              {/* Progress Bar */}
+                              {progressResult &&
+                                progressResult?.progress < 100 && (
+                                  <div className="flex flex-col mt-2 w-full">
+                                    <div className="bg-gray-200 dark:bg-zinc-600 rounded-full h-2.5 w-full relative mb-1">
+                                      <div
+                                        className={`absolute h-2.5 rounded-full ${progressClasses}`}
+                                        style={{
+                                          width: `${progressResult?.progress}%`,
+                                        }}
+                                      />
+                                    </div>
                                     <div className="text-xs mt-0.5 text-gray-400 dark:text-white">
                                       Continue Reading{" "}
-                                      {progressResult.progress < 100 ? (
-                                        <>
-                                          {" "}
-                                          <span className="text-gray-400">
-                                            (
-                                            {progressResult.progress.toFixed(0)}
-                                            %)
-                                          </span>
-                                        </>
-                                      ) : (
-                                        ""
-                                      )}
+                                      <span className="text-gray-400">
+                                        ({progressResult?.progress.toFixed(0)}
+                                        %)
+                                      </span>
                                     </div>
-                                  )}
-                                  {progressResult.progress === 100 && (
-                                    <div className="text-green-500 dark:text-green-400 text-xs">
-                                      Completed (100%)
-                                    </div>
-                                  )}
-                                </div>
-                              )}
+                                  </div>
+                                )}
+
+                              {/* Completed Checkmark */}
+                              {progressResult &&
+                                progressResult?.progress >= 100 && (
+                                  <div className="absolute -top-2 -right-2 bg-green-400 text-white shadow-lg p-1 rounded-full dark:text-green-400 text-xs">
+                                    <svg
+                                      className="w-4 h-4"
+                                      viewBox="0 0 20 20"
+                                    >
+                                      <path
+                                        fill="currentColor"
+                                        d="M0 11l2-2 5 5L18 3l2 2L7 18z"
+                                      />
+                                    </svg>
+                                  </div>
+                                )}
                             </div>
                           </Link>
                         );
@@ -585,7 +605,7 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
                         // Find the progress result for the current paper and derive its completion status.
                         const progressResult = progressResults.find(
                           (progressResult) =>
-                            progressResult.paperId === paper.paperId
+                            progressResult?.paperId === paper.paperId
                         );
                         const isCompleted = progressResult?.progress === 100;
                         const isNotStarted = progressResult?.progress === 0;
@@ -599,7 +619,7 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
                           <Link
                             key={paper.globalId}
                             href={`/papers/${paper.paperId}`}
-                            className="flex flex-col items-start text-left justify-between px-4 py-2 mb-2 bg-white dark:bg-neutral-700 hover:dark:bg-neutral-600 rounded transition-colors hover:no-underline hover:shadow-lg hover:dark:shadow-none transition-shadow duration-300"
+                            className="relative flex flex-col items-start text-left justify-between px-4 py-2 mb-2 bg-white dark:bg-neutral-700 hover:dark:bg-neutral-600 rounded transition-colors hover:no-underline hover:shadow-lg hover:dark:shadow-none transition-shadow duration-300"
                           >
                             <div className="flex flex-col w-full">
                               <div className="text-xs text-gray-400 flex items-center justify-between w-full">
@@ -630,40 +650,42 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
                                 }}
                               />
                               {/* Progress */}
-                              {progressResult && (
-                                <div className="flex flex-col mt-2 w-full">
-                                  <div className="bg-gray-200 dark:bg-zinc-600 rounded-full h-2.5 w-full relative mb-1">
-                                    <div
-                                      className={`absolute h-2.5 rounded-full ${progressClasses}`}
-                                      style={{
-                                        width: `${progressResult.progress}%`,
-                                      }}
-                                    />
-                                  </div>
-                                  {progressResult.progress < 100 && (
+                              {progressResult &&
+                                progressResult?.progress < 100 && (
+                                  <div className="flex flex-col mt-2 w-full">
+                                    <div className="bg-gray-200 dark:bg-zinc-600 rounded-full h-2.5 w-full relative mb-1">
+                                      <div
+                                        className={`absolute h-2.5 rounded-full ${progressClasses}`}
+                                        style={{
+                                          width: `${progressResult?.progress}%`,
+                                        }}
+                                      />
+                                    </div>
                                     <div className="text-xs mt-0.5 text-gray-400 dark:text-white">
                                       Continue Reading{" "}
-                                      {progressResult.progress < 100 ? (
-                                        <>
-                                          {" "}
-                                          <span className="text-gray-400">
-                                            (
-                                            {progressResult.progress.toFixed(0)}
-                                            %)
-                                          </span>
-                                        </>
-                                      ) : (
-                                        ""
-                                      )}
+                                      <span className="text-gray-400">
+                                        ({progressResult?.progress.toFixed(0)}
+                                        %)
+                                      </span>
                                     </div>
-                                  )}
-                                  {progressResult.progress === 100 && (
-                                    <div className="text-green-500 dark:text-green-400 text-xs">
-                                      Completed (100%)
-                                    </div>
-                                  )}
-                                </div>
-                              )}
+                                  </div>
+                                )}
+
+                              {/* Completed Checkmark */}
+                              {progressResult &&
+                                progressResult?.progress >= 100 && (
+                                  <div className="absolute -top-2 -right-2 bg-green-400 text-white shadow-lg p-1 rounded-full dark:text-green-400 text-xs">
+                                    <svg
+                                      className="w-4 h-4"
+                                      viewBox="0 0 20 20"
+                                    >
+                                      <path
+                                        fill="currentColor"
+                                        d="M0 11l2-2 5 5L18 3l2 2L7 18z"
+                                      />
+                                    </svg>
+                                  </div>
+                                )}
                             </div>
                           </Link>
                         );
