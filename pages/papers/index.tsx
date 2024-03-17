@@ -281,7 +281,7 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
               Part {currentNode.partId}:{" "}
               {currentNode.partTitle || `Part ${currentNode.partId}`}
             </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {papers.map((paper) => {
                 // Derive progress result for the current paper.
                 const progressResult = progressResults.find(
@@ -338,7 +338,7 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
           );
 
           return (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 pb-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pb-6">
               <Link
                 className="relative block px-4 py-2 bg-white dark:bg-neutral-700 hover:dark:bg-neutral-600 rounded transition-colors hover:no-underline hover:shadow-lg hover:dark:shadow-none transition-shadow duration-300"
                 href={`/papers/${currentNode.paperId}`}
@@ -417,17 +417,11 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
                   </p>
 
                   {fetchingProgress ? (
-                    <div
-                      className="flex justify-center items-center"
-                      style={{ minHeight: "152px" }}
-                    >
+                    <div className="flex justify-center items-center papers-row">
                       <Spinner />
                     </div>
                   ) : (
-                    <div
-                      className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
-                      style={{ minHeight: "152px" }}
-                    >
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 papers-row">
                       {papersInProgress.map((paper) => {
                         // Find the progress result for the current paper and derive its completion status.
                         const progressResult = progressResults.find(
@@ -505,17 +499,11 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
                   </p>
 
                   {fetchingUserInterests ? (
-                    <div
-                      className="flex justify-center items-center"
-                      style={{ minHeight: "152px" }}
-                    >
+                    <div className="flex justify-center items-center papers-row">
                       <Spinner />
                     </div>
                   ) : (
-                    <div
-                      className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
-                      style={{ minHeight: "152px" }}
-                    >
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 papers-row">
                       {papersYouMightLike.map((paper) => {
                         // Find the progress result for the current paper and derive its completion status.
                         const progressResult = progressResults.find(

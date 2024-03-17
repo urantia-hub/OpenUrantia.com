@@ -404,3 +404,13 @@ select.select-selected {
   background-size: 400% 400%;
   background: linear-gradient(45deg, #6b7280, #4b5563, #374151, #1f2937);
 }
+
+.papers-row {
+  min-height: 300px;
+}
+
+@media screen and (min-width: 768px) {
+  .papers-row {
+    min-height: 152px;
+  }
+}
