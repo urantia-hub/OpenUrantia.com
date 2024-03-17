@@ -96,8 +96,8 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
   };
 
   const onAuthenticated = async () => {
-    await fetchUserInterests();
     await fetchProgress();
+    await fetchUserInterests();
   };
 
   useEffect(() => {
@@ -145,10 +145,21 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
     maxPapers: number = 3
   ) => {
     // Filter papers that match at least one user interest
-    const papersMatchingInterests = allPapers.filter((paper) =>
+    let papersMatchingInterests = allPapers.filter((paper) =>
       paper.labels.some((label) =>
         userInterests.some((interest) => interest.label.name === label)
       )
+    );
+
+    // Filter out papers that are already in progress.
+    const paperIdsInProgress = progressResults
+      .filter(
+        (progressResult) =>
+          progressResult?.progress < 100 && progressResult?.progress > 0
+      )
+      .map((progressResult) => progressResult?.paperId);
+    papersMatchingInterests = papersMatchingInterests.filter(
+      (paper) => !paperIdsInProgress.includes(paper.paperId as string)
     );
 
     // Shuffle the array and take the first 'maxPapers' elements, then sort them by paperId (if there is a paperId).
@@ -229,6 +240,28 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
     ];
   };
 
+  const deriveProgressBadge = (progressResult: ProgressResult | undefined) => {
+    return (
+      <>
+        {/* Progress Bar */}
+        {progressResult && progressResult?.progress < 100 && (
+          <div className="flex items-center justify-center absolute -top-4 -right-3 h-8 w-8 bg-slate-400 text-white shadow-lg rounded-full dark:text-green-400 text-xs">
+            {progressResult.progress.toFixed(0)}%
+          </div>
+        )}
+
+        {/* Completed Checkmark */}
+        {progressResult && progressResult?.progress === 100 && (
+          <div className="flex items-center justify-center absolute -top-4 -right-3 h-8 w-8 bg-green-400 text-white shadow-lg rounded-full dark:text-green-400 text-xs">
+            <svg className="w-4 h-4" viewBox="0 0 20 20">
+              <path fill="currentColor" d="M0 11l2-2 5 5L18 3l2 2L7 18z" />
+            </svg>
+          </div>
+        )}
+      </>
+    );
+  };
+
   // Function to render each part and its papers
   const renderNode = (currentNode: TOCNode) => {
     switch (currentNode.type) {
@@ -254,13 +287,6 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
                 const progressResult = progressResults.find(
                   (progressResult) => progressResult?.paperId === paper.paperId
                 );
-                const isCompleted = progressResult?.progress === 100;
-                const isNotStarted = progressResult?.progress === 0;
-                const progressClasses = isNotStarted
-                  ? "bg-gray-200 dark:bg-zinc-600"
-                  : isCompleted
-                  ? "bg-gradient-to-r from-purple-400 via-pink-500 to-red-500"
-                  : "bg-gray-400 dark:bg-white";
 
                 return (
                   <Link
@@ -276,6 +302,7 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
                         {paper.paperTitle}
                       </h3>
                     </div>
+
                     <div className="flex flex-col">
                       <span
                         className="mt-1 text-xs text-gray-400 truncate w-full"
@@ -290,38 +317,7 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
                         }}
                       />
 
-                      {/* Progress Bar */}
-                      {progressResult && progressResult?.progress < 100 && (
-                        <div className="flex flex-col mt-2 w-full">
-                          <div className="bg-gray-200 dark:bg-zinc-600 rounded-full h-2.5 w-full relative mb-1">
-                            <div
-                              className={`absolute h-2.5 rounded-full ${progressClasses}`}
-                              style={{
-                                width: `${progressResult?.progress}%`,
-                              }}
-                            />
-                          </div>
-                          <div className="text-xs mt-0.5 text-gray-400 dark:text-white">
-                            Continue Reading{" "}
-                            <span className="text-gray-400">
-                              ({progressResult?.progress.toFixed(0)}
-                              %)
-                            </span>
-                          </div>
-                        </div>
-                      )}
-
-                      {/* Completed Checkmark */}
-                      {progressResult && progressResult?.progress >= 100 && (
-                        <div className="absolute -top-2 -right-2 bg-green-400 text-white shadow-lg p-1 rounded-full dark:text-green-400 text-xs">
-                          <svg className="w-4 h-4" viewBox="0 0 20 20">
-                            <path
-                              fill="currentColor"
-                              d="M0 11l2-2 5 5L18 3l2 2L7 18z"
-                            />
-                          </svg>
-                        </div>
-                      )}
+                      {deriveProgressBadge(progressResult)}
                     </div>
                   </Link>
                 );
@@ -340,18 +336,11 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
           const progressResult = progressResults.find(
             (progressResult) => progressResult?.paperId === currentNode.paperId
           );
-          const isCompleted = progressResult?.progress === 100;
-          const isNotStarted = progressResult?.progress === 0;
-          const progressClasses = isNotStarted
-            ? "bg-gray-200 dark:bg-zinc-600"
-            : isCompleted
-            ? "bg-gradient-to-r from-purple-400 via-pink-500 to-red-500"
-            : "bg-gray-400 dark:bg-white";
 
           return (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 pb-6">
               <Link
-                className="block px-4 py-2 bg-white dark:bg-neutral-700 hover:dark:bg-neutral-600 rounded transition-colors hover:no-underline hover:shadow-lg hover:dark:shadow-none transition-shadow duration-300"
+                className="relative block px-4 py-2 bg-white dark:bg-neutral-700 hover:dark:bg-neutral-600 rounded transition-colors hover:no-underline hover:shadow-lg hover:dark:shadow-none transition-shadow duration-300"
                 href={`/papers/${currentNode.paperId}`}
               >
                 <span className="text-xs text-gray-400">Foreword</span>
@@ -371,38 +360,7 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
                   }}
                 />
 
-                {/* Progress Bar */}
-                {progressResult && progressResult?.progress < 100 && (
-                  <div className="flex flex-col mt-2 w-full">
-                    <div className="bg-gray-200 dark:bg-zinc-600 rounded-full h-2.5 w-full relative mb-1">
-                      <div
-                        className={`absolute h-2.5 rounded-full ${progressClasses}`}
-                        style={{
-                          width: `${progressResult?.progress}%`,
-                        }}
-                      />
-                    </div>
-                    <div className="text-xs mt-0.5 text-gray-400 dark:text-white">
-                      Continue Reading{" "}
-                      <span className="text-gray-400">
-                        ({progressResult?.progress.toFixed(0)}
-                        %)
-                      </span>
-                    </div>
-                  </div>
-                )}
-
-                {/* Completed Checkmark */}
-                {progressResult && progressResult?.progress >= 100 && (
-                  <div className="absolute -top-2 -right-2 bg-green-400 text-white shadow-lg p-1 rounded-full dark:text-green-400 text-xs">
-                    <svg className="w-4 h-4" viewBox="0 0 20 20">
-                      <path
-                        fill="currentColor"
-                        d="M0 11l2-2 5 5L18 3l2 2L7 18z"
-                      />
-                    </svg>
-                  </div>
-                )}
+                {deriveProgressBadge(progressResult)}
               </Link>
             </div>
           );
@@ -476,13 +434,6 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
                           (progressResult) =>
                             progressResult?.paperId === paper.paperId
                         );
-                        const isCompleted = progressResult?.progress === 100;
-                        const isNotStarted = progressResult?.progress === 0;
-                        const progressClasses = isNotStarted
-                          ? "bg-gray-200 dark:bg-zinc-600"
-                          : isCompleted
-                          ? "bg-gradient-to-r from-purple-400 via-pink-500 to-red-500"
-                          : "bg-gray-400 dark:bg-white";
 
                         return (
                           <Link
@@ -524,43 +475,7 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
                                 }}
                               />
 
-                              {/* Progress Bar */}
-                              {progressResult &&
-                                progressResult?.progress < 100 && (
-                                  <div className="flex flex-col mt-2 w-full">
-                                    <div className="bg-gray-200 dark:bg-zinc-600 rounded-full h-2.5 w-full relative mb-1">
-                                      <div
-                                        className={`absolute h-2.5 rounded-full ${progressClasses}`}
-                                        style={{
-                                          width: `${progressResult?.progress}%`,
-                                        }}
-                                      />
-                                    </div>
-                                    <div className="text-xs mt-0.5 text-gray-400 dark:text-white">
-                                      Continue Reading{" "}
-                                      <span className="text-gray-400">
-                                        ({progressResult?.progress.toFixed(0)}
-                                        %)
-                                      </span>
-                                    </div>
-                                  </div>
-                                )}
-
-                              {/* Completed Checkmark */}
-                              {progressResult &&
-                                progressResult?.progress >= 100 && (
-                                  <div className="absolute -top-2 -right-2 bg-green-400 text-white shadow-lg p-1 rounded-full dark:text-green-400 text-xs">
-                                    <svg
-                                      className="w-4 h-4"
-                                      viewBox="0 0 20 20"
-                                    >
-                                      <path
-                                        fill="currentColor"
-                                        d="M0 11l2-2 5 5L18 3l2 2L7 18z"
-                                      />
-                                    </svg>
-                                  </div>
-                                )}
+                              {deriveProgressBadge(progressResult)}
                             </div>
                           </Link>
                         );
@@ -607,13 +522,6 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
                           (progressResult) =>
                             progressResult?.paperId === paper.paperId
                         );
-                        const isCompleted = progressResult?.progress === 100;
-                        const isNotStarted = progressResult?.progress === 0;
-                        const progressClasses = isNotStarted
-                          ? "bg-gray-200 dark:bg-zinc-600"
-                          : isCompleted
-                          ? "bg-gradient-to-r from-purple-400 via-pink-500 to-red-500"
-                          : "bg-gray-400 dark:bg-white";
 
                         return (
                           <Link
@@ -649,43 +557,8 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
                                     .join(" | "),
                                 }}
                               />
-                              {/* Progress */}
-                              {progressResult &&
-                                progressResult?.progress < 100 && (
-                                  <div className="flex flex-col mt-2 w-full">
-                                    <div className="bg-gray-200 dark:bg-zinc-600 rounded-full h-2.5 w-full relative mb-1">
-                                      <div
-                                        className={`absolute h-2.5 rounded-full ${progressClasses}`}
-                                        style={{
-                                          width: `${progressResult?.progress}%`,
-                                        }}
-                                      />
-                                    </div>
-                                    <div className="text-xs mt-0.5 text-gray-400 dark:text-white">
-                                      Continue Reading{" "}
-                                      <span className="text-gray-400">
-                                        ({progressResult?.progress.toFixed(0)}
-                                        %)
-                                      </span>
-                                    </div>
-                                  </div>
-                                )}
 
-                              {/* Completed Checkmark */}
-                              {progressResult &&
-                                progressResult?.progress >= 100 && (
-                                  <div className="absolute -top-2 -right-2 bg-green-400 text-white shadow-lg p-1 rounded-full dark:text-green-400 text-xs">
-                                    <svg
-                                      className="w-4 h-4"
-                                      viewBox="0 0 20 20"
-                                    >
-                                      <path
-                                        fill="currentColor"
-                                        d="M0 11l2-2 5 5L18 3l2 2L7 18z"
-                                      />
-                                    </svg>
-                                  </div>
-                                )}
+                              {deriveProgressBadge(progressResult)}
                             </div>
                           </Link>
                         );
