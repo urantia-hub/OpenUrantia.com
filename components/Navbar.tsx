@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
 // Relative modules.
 import PaperNavbar from "@/components/PaperNavbar";
+import { deriveReadLink } from "@/utils/readPaperLink";
 
 type NavbarProps = {
   audioContent?: JSX.Element;
@@ -25,48 +26,8 @@ const Navbar = ({
   const router = useRouter();
   const { status } = useSession();
 
-  // State.
-  const [lastVisitedNode, setLastVisitedNode] =
-    useState<LastVisitedNode | null>(null);
-
-  const fetchLastVisitedNode = async () => {
-    try {
-      const response = await fetch(`/api/user/nodes/last-visited`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      const data = await response.json();
-      setLastVisitedNode(data);
-      localStorage.setItem("lastVisitedNode", JSON.stringify(data));
-    } catch (error) {
-      console.error(`Unable to fetch last visited node`, error);
-
-      // Fallback to local storage.
-      console.warn(`Falling back to local storage for last visited node`);
-      const lastVisitedNode: LastVisitedNode = localStorage.getItem(
-        "lastVisitedNode"
-      )
-        ? JSON.parse(localStorage.getItem("lastVisitedNode") as string)
-        : null;
-      setLastVisitedNode(lastVisitedNode);
-    }
-  };
-
-  useEffect(() => {
-    if (status === "authenticated") {
-      fetchLastVisitedNode();
-    }
-    if (status === "unauthenticated") {
-      const lastVisitedNode: LastVisitedNode = localStorage.getItem(
-        "lastVisitedNode"
-      )
-        ? JSON.parse(localStorage.getItem("lastVisitedNode") as string)
-        : null;
-      setLastVisitedNode(lastVisitedNode);
-    }
-  }, [status]);
+  // Derive the Read link based on the authentication status.
+  const continueReadingLink = deriveReadLink(status);
 
   return (
     <>
@@ -104,11 +65,11 @@ const Navbar = ({
                 ? "text-gray-600 dark:text-white"
                 : "text-gray-400 dark:text-gray-400"
             } line-clamp-1 hover:text-gray-600 hover:dark:text-white hover:no-underline transition duration-300 ease-in-out`}
-            href={
-              status === "authenticated" && lastVisitedNode
-                ? `/papers/${lastVisitedNode.paperId}#${lastVisitedNode.globalId}`
-                : "/papers/0"
-            }
+            href={continueReadingLink}
+            onClick={(event) => {
+              // Prevent the default behavior if the user is already on the Read page.
+              if (router.asPath.startsWith("/papers/")) event.preventDefault();
+            }}
           >
             <svg
               className="w-6 h-6 fill-current mb-1"

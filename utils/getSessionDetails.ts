@@ -10,11 +10,13 @@ const userService = new UserService();
 
 const getSessionDetails = async (
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse,
+  options?: { skipUnauthorized?: boolean }
 ): Promise<{ session: any; user: User } | undefined> => {
   const session = await getServerSession(req, res, authOptions);
   if (!session?.user?.email) {
-    res.status(401).json({ message: "Unauthorized" });
+    if (!options?.skipUnauthorized)
+      res.status(401).json({ message: "Unauthorized" });
     return;
   }
 

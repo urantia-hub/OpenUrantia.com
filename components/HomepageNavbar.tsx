@@ -4,6 +4,7 @@ import { signIn, signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
 import LogoSymbol from "./LogoSymbol";
+import { deriveReadLink } from "@/utils/readPaperLink";
 
 const HomepageNavbar = () => {
   // Hooks.
@@ -69,6 +70,9 @@ const HomepageNavbar = () => {
     setIsSearchOpen(false);
   };
 
+  // Derive the Read link based on the authentication status.
+  const continueReadingLink = deriveReadLink(status);
+
   return (
     <>
       <header className="flex flex-col items-center pt-2 pb-1 px-2 bg-white shadow-lg">
@@ -86,11 +90,7 @@ const HomepageNavbar = () => {
           <div className="flex-1 flex justify-end text-base">
             <Link
               className="text-center hover:no-underline mr-4 md:mr-6 text-gray-600 hover:text-gray-600 transition-colors duration-200"
-              href={
-                status === "authenticated" && lastVisitedNode
-                  ? `/papers/${lastVisitedNode.paperId}#${lastVisitedNode.globalId}`
-                  : "/papers"
-              }
+              href={continueReadingLink}
             >
               Read
             </Link>
