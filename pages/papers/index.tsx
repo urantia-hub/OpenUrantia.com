@@ -245,14 +245,14 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
       <>
         {/* Progress Bar */}
         {progressResult && progressResult?.progress < 100 && (
-          <div className="flex items-center justify-center absolute -top-4 -right-3 h-8 w-8 bg-slate-400 text-white shadow-lg rounded-full dark:text-green-400 text-xs">
+          <div className="flex items-center justify-center absolute -top-4 -right-3 h-8 w-8 bg-slate-400 text-white shadow-lg rounded-full dark:bg-neutral-200 dark:text-gray-600 text-xs">
             {progressResult.progress.toFixed(0)}%
           </div>
         )}
 
         {/* Completed Checkmark */}
         {progressResult && progressResult?.progress === 100 && (
-          <div className="flex items-center justify-center absolute -top-4 -right-3 h-8 w-8 bg-green-400 text-white shadow-lg rounded-full dark:text-green-400 text-xs">
+          <div className="flex items-center justify-center absolute -top-4 -right-3 h-8 w-8 bg-green-400 text-white shadow-lg rounded-full dark:bg-green-400 dark:text-white text-xs">
             <svg className="w-4 h-4" viewBox="0 0 20 20">
               <path fill="currentColor" d="M0 11l2-2 5 5L18 3l2 2L7 18z" />
             </svg>
