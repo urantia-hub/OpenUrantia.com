@@ -34,7 +34,7 @@ const handleGet = async (
   user?: User
 ) => {
   // If unauthorized, use req.query if provided (e.g. they stored last visited node in localStorage).
-  if (!user) {
+  if (!user?.lastVisitedGlobalId) {
     return redirectToPaper(
       res,
       req.query.paperId as string,
