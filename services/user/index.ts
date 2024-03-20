@@ -58,6 +58,12 @@ export class UserService implements BaseService<User> {
   async upsert(args: Prisma.UserUpsertArgs): Promise<User> {
     return await this.model.upsert(args);
   }
+
+  async updateMany(
+    args: Prisma.UserUpdateManyArgs
+  ): Promise<Prisma.BatchPayload> {
+    return await this.model.updateMany(args);
+  }
 }
 
 export default UserService;

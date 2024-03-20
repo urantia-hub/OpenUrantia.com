@@ -48,11 +48,21 @@ const handleCron = async (req: NextApiRequest, res: NextApiResponse) => {
   const users = await userService.findMany({
     where: {
       emailNotificationsEnabled: true,
-      lastVisitedAt: {
-        // Last visited between 24 and 48 hours ago.
-        gte: new Date(Date.now() - 48 * 60 * 60 * 1000),
-        lt: new Date(Date.now() - 24 * 60 * 60 * 1000),
-      },
+      OR: [
+        {
+          lastVisitedAt: {
+            // Last visited between 24 and 48 hours ago.
+            gte: new Date(Date.now() - 48 * 60 * 60 * 1000),
+            lt: new Date(Date.now() - 24 * 60 * 60 * 1000),
+          },
+        },
+        {
+          lastAskedNotificationsAt: {
+            // is null
+            equals: null,
+          },
+        },
+      ],
     },
   });
 
@@ -87,6 +97,18 @@ const handleCron = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     // Send the emails
     await sgMail.send(messages);
+
+    // Update the lastAskedNotificationsAt field for each user
+    await userService.updateMany({
+      data: {
+        lastAskedNotificationsAt: new Date(),
+      },
+      where: {
+        id: {
+          in: users.map((user) => user.id),
+        },
+      },
+    });
 
     res
       .status(200)
