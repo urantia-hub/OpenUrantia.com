@@ -49,13 +49,57 @@ const handleDelete = async (
   res: NextApiResponse,
   user: User
 ) => {
-  // Delete a user's account, bookmarks, notes, readNodes, sessions, and shares.
-  await accountService.deleteMany({ where: { userId: user.id } });
-  await bookmarkService.deleteMany({ where: { userId: user.id } });
-  await noteService.deleteMany({ where: { userId: user.id } });
-  await readNodeService.deleteMany({ where: { userId: user.id } });
-  await sessionService.deleteMany({ where: { userId: user.id } });
-  await shareService.deleteMany({ where: { userId: user.id } });
+  // Attempt to delete a user's account, bookmarks, notes, readNodes, sessions, and shares.
+  try {
+    await accountService.deleteMany({ where: { userId: user.id } });
+  } catch (error) {
+    console.error(
+      `Error attempting to delete accounts for userId ${user.id}`,
+      error
+    );
+  }
+  try {
+    await bookmarkService.deleteMany({ where: { userId: user.id } });
+  } catch (error) {
+    console.error(
+      `Error attempting to delete bookmarks for userId ${user.id}`,
+      error
+    );
+  }
+  try {
+    await noteService.deleteMany({ where: { userId: user.id } });
+  } catch (error) {
+    console.error(
+      `Error attempting to delete notes for userId ${user.id}`,
+      error
+    );
+  }
+  try {
+    await readNodeService.deleteMany({ where: { userId: user.id } });
+  } catch (error) {
+    console.error(
+      `Error attempting to delete readNodes for userId ${user.id}`,
+      error
+    );
+  }
+  try {
+    await sessionService.deleteMany({ where: { userId: user.id } });
+  } catch (error) {
+    console.error(
+      `Error attempting to delete sessions for userId ${user.id}`,
+      error
+    );
+  }
+  try {
+    await shareService.deleteMany({ where: { userId: user.id } });
+  } catch (error) {
+    console.error(
+      `Error attempting to delete shares for userId ${user.id}`,
+      error
+    );
+  }
+
+  // Ensure we error if we can't delete the user.
   await userService.delete({ where: { id: user.id } });
 
   res.status(204).end();
