@@ -5,7 +5,7 @@
       "schedule": "0 17 * * *"
     },
     {
-      "path": "/api/crons/sendWeeklyQuote",
+      "path": "/api/crons/sendContinueReadingAfter24Hours",
       "schedule": "0 17 * * 1"
     }
   ]
