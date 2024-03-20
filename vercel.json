@@ -1,12 +1,10 @@
 {
   "crons": [
     {
-      "name": "sendDailyQuote",
       "path": "/api/crons/sendDailyQuote",
       "schedule": "0 17 * * *"
     },
     {
-      "name": "sendWeeklyQuote",
       "path": "/api/crons/sendWeeklyQuote",
       "schedule": "0 17 * * 1"
     }
