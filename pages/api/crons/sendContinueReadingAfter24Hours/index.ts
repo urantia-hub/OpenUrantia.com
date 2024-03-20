@@ -26,7 +26,7 @@ const deriveOtherPaperLabels = (paperId: string): string => {
 const derivePaperLabels = (paperId: string): string => {
   const labels = paperLabelsLookup[paperId as keyof typeof paperLabelsLookup];
 
-  return formatLabels(labels.slice(0, 3));
+  return formatLabels(labels?.slice(0, 3) || []);
 };
 
 const formatLabels = (labels: string[]): string => {
@@ -48,21 +48,17 @@ const handleCron = async (req: NextApiRequest, res: NextApiResponse) => {
   const users = await userService.findMany({
     where: {
       emailNotificationsEnabled: true,
-      OR: [
-        {
-          lastVisitedAt: {
-            // Last visited between 24 and 48 hours ago.
-            gte: new Date(Date.now() - 48 * 60 * 60 * 1000),
-            lt: new Date(Date.now() - 24 * 60 * 60 * 1000),
-          },
-        },
-        {
-          lastAskedNotificationsAt: {
-            // is null
-            equals: null,
-          },
-        },
-      ],
+      lastVisitedGlobalId: {
+        not: null,
+      },
+      lastVisitedPaperId: {
+        not: null,
+      },
+      lastVisitedAt: {
+        // Last visited between 24 and 48 hours ago.
+        gte: new Date(Date.now() - 48 * 60 * 60 * 1000),
+        lt: new Date(Date.now() - 24 * 60 * 60 * 1000),
+      },
     },
   });
 
