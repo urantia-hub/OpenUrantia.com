@@ -44,7 +44,7 @@ const formatLabels = (labels: string[]): string => {
   }
 };
 
-const handlePOST = async (req: NextApiRequest, res: NextApiResponse) => {
+const handleCron = async (req: NextApiRequest, res: NextApiResponse) => {
   const users = await userService.findMany({
     where: {
       emailNotificationsEnabled: true,
@@ -108,13 +108,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     return res.status(401).json({ message: "Unauthorized" });
   }
 
-  if (req.method === "POST") {
-    return handlePOST(req, res);
-  } else {
-    // Handle any non-POST requests
-    res.setHeader("Allow", ["POST"]);
-    res.status(405).end(`Method ${req.method} Not Allowed`);
-  }
+  await handleCron(req, res);
 };
 
 export default handler;

@@ -14,7 +14,7 @@ const userService = new UserService();
 // Setting SendGrid API Key
 sgMail.setApiKey(process.env.SENDGRID_API_KEY as string);
 
-const handlePOST = async (_: NextApiRequest, res: NextApiResponse) => {
+const handleCron = async (_: NextApiRequest, res: NextApiResponse) => {
   // Get users who have email notifications enabled.
   console.log("[sendDailyQuote] Fetching users");
   const users = await userService.findMany({
@@ -149,13 +149,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     return res.status(401).json({ message: "Unauthorized" });
   }
 
-  if (req.method === "POST") {
-    return handlePOST(req, res);
-  } else {
-    // Handle any non-POST requests
-    res.setHeader("Allow", ["POST"]);
-    res.status(405).end(`Method ${req.method} Not Allowed`);
-  }
+  await handleCron(req, res);
 };
 
 export default handler;
