@@ -142,10 +142,8 @@ const handleCron = async (_: NextApiRequest, res: NextApiResponse) => {
 };
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-  const secretKey = process.env.CRON_SECRET;
-
   // Check if the secret key matches
-  if (req.headers["x-cron-secret"] !== secretKey) {
+  if (req.headers.authorization !== `Bearer ${process.env.CRON_SECRET}`) {
     return res.status(401).json({ message: "Unauthorized" });
   }
 
