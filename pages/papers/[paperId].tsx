@@ -321,6 +321,12 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
     }
   };
 
+  // Update the fontSize state and also save it to localStorage
+  const updateFontSize = (size: "small" | "medium" | "large") => {
+    setFontSize(size); // Update the state
+    localStorage.setItem("fontSize", size); // Save the font size to localStorage
+  };
+
   const updateLastVisitedNode = async (
     globalId: string,
     paperId: string,
@@ -391,6 +397,20 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
         audioRef.current = null;
       }
     };
+  }, []);
+
+  // Fetch the initial font size from localStorage when the component mounts
+  useEffect(() => {
+    // Get the saved font size from localStorage, if it exists
+    const savedFontSize = localStorage.getItem("fontSize") as
+      | "small"
+      | "medium"
+      | "large";
+
+    // If there's a saved font size, update the state
+    if (savedFontSize) {
+      setFontSize(savedFontSize);
+    }
   }, []);
 
   // Fetch read nodes on mount
@@ -956,7 +976,8 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
                     className={`fade-in flex items-center text-xs tracking-tighter`}
                   >
                     ({node.standardReferenceId}){" "}
-                    {readNodes.has(node.globalId) && (
+                    {false && readNodes.has(node.globalId) && (
+                      // Hiding the read indicator for now.
                       <svg
                         className="fade-in w-3.5 h-3.5 text-gray-400 ml-0.5"
                         viewBox="0 0 24 24"
@@ -1145,7 +1166,7 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
         }
       />
 
-      <TopReadingNavbar fontSize={fontSize} setFontSize={setFontSize} />
+      <TopReadingNavbar fontSize={fontSize} setFontSize={updateFontSize} />
 
       <Navbar
         audioContent={deriveAudioContent()}
