@@ -14,6 +14,7 @@ import HeadTag from "@/components/HeadTag";
 import Navbar from "@/components/Navbar";
 import Share from "@/components/Share";
 import Spinner from "@/components/Spinner";
+import TopReadingNavbar from "@/components/TopReadingNavbar";
 
 const AVERAGE_READING_SPEED = 400; // Words per minute
 const NEXT_AUDIO_DELAY = 300; // Milliseconds
@@ -48,6 +49,11 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
   const [savingGlobalIds, setSavingGlobalIds] = useState<string[]>([]);
   const [savingErrorGlobalIds, setSavingErrorGlobalIds] = useState<string[]>(
     []
+  );
+
+  // Font size state.
+  const [fontSize, setFontSize] = useState<"small" | "medium" | "large">(
+    "medium"
   );
 
   // TOC states.
@@ -102,6 +108,17 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
   const shareNode = selectedGlobalIdShare
     ? nodes.find((node) => node.globalId === selectedGlobalIdShare)
     : undefined;
+
+  const getFontSizeClasses = () => {
+    switch (fontSize) {
+      case "small":
+        return "text-sm/6 md:text-base/7";
+      case "large":
+        return "text-lg/8 md:text-xl/9";
+      default:
+        return "text-base/7 md:text-lg/8";
+    }
+  };
 
   const playAudio = async (nodeIndex: number = 0) => {
     // If there's already an audio and it's for the current node, resume it
@@ -1038,7 +1055,7 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
                 </div>
               </div>
               <div
-                className={`text-base/7 md:text-lg/8 ${
+                className={`${getFontSizeClasses()} ${
                   currentPlayingNode &&
                   !isPlayingNode &&
                   (isPlaying || isTransitioning)
@@ -1128,6 +1145,8 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
         }
       />
 
+      <TopReadingNavbar fontSize={fontSize} setFontSize={setFontSize} />
+
       <Navbar
         audioContent={deriveAudioContent()}
         audioOnPlay={() =>
@@ -1176,7 +1195,7 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
         <Share onClose={onShareClose} node={shareNode} />
       )}
 
-      <main className="relative mt-8 flex-grow container mx-auto px-4 my-4 max-w-3xl paper-content">
+      <main className="relative mt-16 flex-grow container mx-auto px-4 my-4 max-w-3xl paper-content">
         {/* Paper content */}
         <div className="mb-12 subpixel-antialiased">
           {nodes.map((node: UBNode) => renderNode(node))}
