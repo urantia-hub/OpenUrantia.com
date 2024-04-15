@@ -26,6 +26,7 @@ const Search = () => {
     const queryParams = new URLSearchParams(router.asPath.split(/\?/)[1]);
     const q = queryParams.get("q");
     if (q) {
+      setQuery(q);
       search(q);
     }
   }, []);

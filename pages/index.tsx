@@ -47,16 +47,14 @@ const HomePage = () => {
     const response = await fetch(`/api/user/interests`);
     const data = await response.json();
 
-    // Check if the user has interests, if they have been redirected before, or if they skipped the selection
+    // Redirect to interests selection if user has no interests.
     if (
-      data.userInterests.length === 0 &&
+      data?.userInterests?.length === 0 &&
       !sessionStorage.getItem("redirectedToInterests") &&
       !sessionStorage.getItem("skippedInterestsSelection")
     ) {
       sessionStorage.setItem("redirectedToInterests", "true");
-      window.location.href = "/onboarding/interests"; // Redirect to the onboarding interests selection page
-    } else {
-      window.location.href = "/papers"; // Redirect to the papers page
+      window.location.href = "/onboarding/interests";
     }
   };
 

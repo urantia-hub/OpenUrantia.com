@@ -76,7 +76,7 @@ const OnboardingInterests = () => {
       });
       if (response.ok) {
         setSaved(true);
-        window.location.href = "/papers";
+        window.location.href = "/api/redirect/user/read";
       } else {
         console.error("Error saving interests");
         setSaved(false);
@@ -192,7 +192,7 @@ const OnboardingInterests = () => {
                 className="border-0 dark:border-0 text-white bg-blue-400 hover:bg-blue-500 dark:bg-neutral-700 hover:dark:bg-neutral-600 py-2 px-4 dark:py-2 dark:px-4 rounded shadow-lg font-bold"
                 onClick={() => {
                   sessionStorage.setItem("skippedInterestsSelection", "true");
-                  window.location.href = "/papers";
+                  window.location.href = "/api/redirect/user/read";
                 }}
               >
                 Skip for Now

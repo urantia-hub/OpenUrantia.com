@@ -4,7 +4,6 @@ import Link from "next/link";
 // Relative modules.
 import Modal from "@/components/Modal";
 import Spinner from "@/components/Spinner";
-import { getStandardReferenceIdFromGlobalId } from "@/utils/node";
 import { renderLeadingText } from "@/utils/renderNode";
 
 const constructShareUrl = (node: UBNode) => {
