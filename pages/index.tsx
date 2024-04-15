@@ -7,6 +7,7 @@ import { useSession } from "next-auth/react";
 import Footer from "@/components/Footer";
 import HeadTag from "@/components/HeadTag";
 import HomepageNavbar from "@/components/HomepageNavbar";
+import { deriveReadLink } from "@/utils/readPaperLink";
 
 const HomePage = () => {
   // Hooks.
@@ -122,6 +123,14 @@ const HomePage = () => {
             />
           </div>
 
+          {status === "authenticated" && (
+            <Link
+              className="fade-in bg-blue-400 text-white font-bold py-4 px-8 rounded shadow-xl hover:bg-blue-500 transition duration-300 ease-in-out hover:no-underline"
+              href={deriveReadLink(status)}
+            >
+              Continue Reading
+            </Link>
+          )}
           {status === "unauthenticated" && (
             <Link
               className="fade-in bg-blue-400 text-white font-bold py-4 px-8 rounded shadow-xl hover:bg-blue-500 transition duration-300 ease-in-out hover:no-underline"
@@ -239,11 +248,13 @@ const HomePage = () => {
           <h2 className="text-3xl font-semibold mb-2 px-4 lg:px-0 text-left w-full lg:text-center text-gray-600 text-center">
             {status === "authenticated" ? "Continue" : "Join"} the Journey
           </h2>
-          {status !== "authenticated" && (
-            <p className="text-lg mx-auto leading-relaxed max-w-2xl pb-8 px-4 lg:px-0 text-gray-400">
-              We&apos;re just getting started. Begin reading the Urantia Papers
-              today.
-            </p>
+          {status === "authenticated" && (
+            <Link
+              className="fade-in bg-blue-400 text-white font-bold py-4 px-8 rounded shadow-xl hover:bg-blue-500 transition duration-300 ease-in-out hover:no-underline"
+              href={deriveReadLink(status)}
+            >
+              Continue Reading
+            </Link>
           )}
           {status === "unauthenticated" && (
             <Link
