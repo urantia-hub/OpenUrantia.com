@@ -58,6 +58,7 @@ const PaperNavbar = ({
       {/* Play audio button */}
       {showAudio && (
         <button
+          aria-label="Play audio"
           className="flex-shrink-0 ml-2 bg-gray-200 text-gray-400 hover:text-gray-600 dark:text-white dark:bg-neutral-700 hover:dark:text-white border-0 rounded-full p-2 focus:outline-none transition duration-300 ease-in-out"
           onClick={audioOnPlay}
           type="button"

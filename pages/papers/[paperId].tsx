@@ -997,6 +997,7 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
                       (expandedGlobalId === node.globalId ||
                         notesForNode.length > 0) && (
                         <button
+                          aria-label="Notes"
                           className="bg-transparent border-0 dark:border-0 p-0 dark:p-0 m-0 mr-3 focus:outline-0 focus:dark:outline-0 text-gray-400 dark:text-gray-400 text-sm hover:text-gray-600 hover:dark:text-white transition duration-300 ease-in-out relative"
                           onClick={onNoteClick(node.globalId)}
                           type="button"
@@ -1022,6 +1023,7 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
                     {/* Share Button */}
                     {expandedGlobalId === node.globalId && (
                       <button
+                        aria-label="Share"
                         className="bg-transparent border-0 dark:border-0 p-0 dark:p-0 m-0 focus:outline-0 focus:dark:outline-0 text-gray-400 dark:text-gray-400 text-sm hover:text-gray-600 hover:dark:text-white transition duration-300 ease-in-out"
                         onClick={onShareClick(node.globalId)}
                         type="button"
@@ -1039,6 +1041,7 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
                     {status === "authenticated" &&
                       (expandedGlobalId === node.globalId || bookmark) && (
                         <button
+                          aria-label="Bookmark"
                           className="bg-transparent border-0 dark:border-0 p-0 dark:p-0 m-0 ml-4 focus:outline-0 focus:dark:outline-0 text-gray-400 dark:text-gray-400 text-sm hover:text-gray-600 hover:dark:text-white transition duration-300 ease-in-out"
                           onClick={onBookmarkClick(node)}
                           type="button"
@@ -1061,6 +1064,7 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
                   </div>
                   {expandedGlobalId !== node.globalId && (
                     <button
+                      aria-label="Settings"
                       className="bg-transparent border-0 dark:border-0 p-0 dark:p-0 m-0 focus:outline-0 focus:dark:outline-0 text-gray-400 dark:text-gray-400 text-sm hover:text-gray-600 hover:dark:text-white transition duration-300 ease-in-out"
                       onClick={onNodeSettingsClick(node.globalId)}
                       type="button"
@@ -1195,6 +1199,7 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
             </button>
           </p>
           <button
+            aria-label="Close sign-up prompt"
             className="absolute top-4 right-4 text-lg bg-transparent border-none p-0 m-0 focus:outline-none text-gray-400 hover:text-gray-600 hover:dark:text-white transition duration-300 ease-in-out"
             onClick={() => {
               sessionStorage.setItem("hideSignUpPrompt", "true");

@@ -42,6 +42,7 @@ const TopReadingNavbar = ({ fontSize, setFontSize }: NavbarProps) => {
       <div className="max-w-3xl px-4 w-full flex items-baseline justify-end">
         {/* Small */}
         <button
+          aria-label="Small font size"
           className={`px-1.5 bg-transparent border-0 text-xs text-center ${
             fontSize === "small"
               ? "text-gray-600 dark:text-white underline"
@@ -53,6 +54,7 @@ const TopReadingNavbar = ({ fontSize, setFontSize }: NavbarProps) => {
         </button>
         {/* Medium */}
         <button
+          aria-label="Medium font size"
           className={`px-1.5 bg-transparent border-0 text-sm text-center ${
             fontSize === "medium"
               ? "text-gray-600 dark:text-white underline"
@@ -64,6 +66,7 @@ const TopReadingNavbar = ({ fontSize, setFontSize }: NavbarProps) => {
         </button>
         {/* Large */}
         <button
+          aria-label="Large font size"
           className={`px-1.5 bg-transparent border-0 text-base text-center ${
             fontSize === "large"
               ? "text-gray-600 dark:text-white underline"

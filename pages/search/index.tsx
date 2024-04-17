@@ -159,6 +159,7 @@ const Search = () => {
           </p>
           {query && (
             <button
+              aria-label="Clear search"
               className="absolute top-0.5 dark:-top-0.5 right-4 text-gray-400 dark:text-gray-400 text-xl border-0 dark:border-0 bg-transparent dark:bg-transparent focus:outline-none p-1 hover:text-gray-500 hover:dark:text-white transition-colors duration-200"
               onClick={onClearSearch}
               type="button"

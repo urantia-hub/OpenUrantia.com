@@ -199,6 +199,7 @@ const MyLibrary = () => {
                 />
               </svg>
               <button
+                aria-label="Filter by all"
                 className={`${
                   filterType === "all"
                     ? "bg-blue-400 dark:bg-blue-500"
@@ -209,6 +210,7 @@ const MyLibrary = () => {
                 All
               </button>
               <button
+                aria-label="Filter by notes"
                 className={`${
                   filterType === "note"
                     ? "bg-blue-400 dark:bg-blue-500"
@@ -219,6 +221,7 @@ const MyLibrary = () => {
                 Notes
               </button>
               <button
+                aria-label="Filter by bookmarks"
                 className={`${
                   filterType === "bookmark"
                     ? "bg-blue-400 dark:bg-blue-500"

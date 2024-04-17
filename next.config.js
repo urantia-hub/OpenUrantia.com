@@ -7,8 +7,12 @@ const withPWA = require("next-pwa");
 //   skipWaiting: true,
 // });
 
-module.exports = {};
-
+module.exports = {
+  i18n: {
+    locales: ["en"],
+    defaultLocale: "en",
+  },
+};
 
 // Injected content via Sentry wizard below
 

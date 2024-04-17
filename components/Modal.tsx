@@ -42,6 +42,7 @@ const Modal = ({ children, onClose }: ModalProps): JSX.Element => {
         {children}
         {onClose && (
           <button
+            aria-label="Close modal"
             className="absolute top-4 right-4 dark:top-4 dark:right-4 text-lg bg-transparent border-0 dark:border-0 p-0 dark:p-0 m-0 focus:outline-none focus:dark:outline-none text-gray-400 dark:text-gray-400 hover:text-gray-600 hover:dark:text-white transition duration-300 ease-in-out"
             onClick={onClose}
           >

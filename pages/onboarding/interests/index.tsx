@@ -142,6 +142,7 @@ const OnboardingInterests = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
           {availableLabels.map((label: Label) => (
             <button
+              aria-label="Select label"
               className={`border-0 dark:border-0 relative flex flex-col justify-between px-3 py-2 dark:px-3 dark:py-2 rounded shadow-lg overflow-hidden ${
                 selectedLabels.has(label.id)
                   ? selectedGradient

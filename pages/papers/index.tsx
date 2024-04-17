@@ -576,6 +576,7 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
                   <div className="flex flex-wrap gap-2 mt-4 mb-4">
                     {paperLabels.map((label) => (
                       <button
+                        aria-label={`Filter by ${label}`}
                         key={label}
                         className={`px-3 py-1 rounded text-sm md:text-xs font-semibold ${
                           activeFilters.includes(label)
