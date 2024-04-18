@@ -179,6 +179,7 @@ const Search = () => {
         <div className="flex flex-col">
           {results?.map((result) => (
             <Link
+              aria-label="View paragraph in context"
               className="mb-6 text-left hover:no-underline isolated-quote"
               key={result.globalId}
               href={`/papers/${result.paperId}#${

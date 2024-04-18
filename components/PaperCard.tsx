@@ -26,6 +26,7 @@ const PaperCard = ({
 
   return (
     <Link
+      aria-label="Read paper"
       className="flex flex-col justify-between px-4 py-2 bg-white dark:bg-neutral-700 hover:dark:bg-neutral-600 rounded transition-colors hover:no-underline hover:shadow-lg hover:dark:shadow-none transition-shadow duration-300"
       href={`/papers/${paperId}${
         progress > 0 && progress < 100 && !nextGlobalId?.endsWith("0.1")

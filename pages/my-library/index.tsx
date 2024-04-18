@@ -91,6 +91,7 @@ const MyLibrary = () => {
       case "note": {
         return (
           <Link
+            aria-label="View note"
             className="mb-6 text-left hover:no-underline note bg-white dark:bg-zinc-900 p-4 rounded hover:shadow-lg transition duration-300 ease-in-out"
             href={`/papers/${node.paperId}#${node.globalId}`}
             id={node.createdAt}
@@ -130,6 +131,7 @@ const MyLibrary = () => {
       case "bookmark": {
         return (
           <Link
+            aria-label="View bookmark"
             className="mb-6 text-left hover:no-underline bookmark bg-white dark:bg-zinc-900 p-4 rounded hover:shadow-lg transition duration-300 ease-in-out"
             href={`/papers/${node.paperId}#${node.globalId}`}
             id={node.createdAt}

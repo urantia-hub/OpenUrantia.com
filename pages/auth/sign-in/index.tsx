@@ -130,15 +130,15 @@ const SignInPage = () => {
         <p className="text-gray-400 text-xs mt-6">
           By signing in, you agree to the{" "}
           <Link
-            href="/terms-of-service"
             className="text-blue-400 hover:text-blue-500 transition-all duration-200 ease-in-out"
+            href="/terms-of-service"
           >
             Terms of Service
           </Link>{" "}
           and{" "}
           <Link
-            href="/privacy-policy"
             className="text-blue-400 hover:text-blue-500 transition-all duration-200 ease-in-out"
+            href="/privacy-policy"
           >
             Privacy Policy
           </Link>

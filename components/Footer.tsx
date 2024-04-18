@@ -55,6 +55,7 @@ const Footer = ({ marginBottom }: FooterProps) => {
             )}
           </div>
           <Link
+            aria-label="Uptime Robot status page"
             className="flex items-center text-green-400 text-xs hover:text-green-500 ml-4"
             href="https://stats.uptimerobot.com/6qzJEHV7rN"
             rel="noopener noreferrer"

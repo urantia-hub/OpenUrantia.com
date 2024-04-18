@@ -26,6 +26,7 @@ const PaperNavbar = ({
         style={showAudio ? { maxWidth: "calc(100% - 48px)" } : {}}
       >
         <Link
+          aria-label="Previous paper"
           className="px-2 py-2 text-gray-400 hover:text-gray-600 dark:text-white hover:dark:text-white transition duration-300 ease-in-out"
           href={`/papers/${paperId - 1 === -1 ? "0" : paperId - 1}`}
         >
@@ -43,6 +44,7 @@ const PaperNavbar = ({
           {paperId > 0 ? `Paper ${paperId} - ${paperTitle}` : "Foreword"}
         </Link>
         <Link
+          aria-label="Next paper"
           className="px-2 py-2 flex text-right justify-end text-gray-400 hover:text-gray-600 dark:text-white hover:dark:text-white transition duration-300 ease-in-out"
           href={`/papers/${paperId + 1 <= 196 ? paperId + 1 : "196"}`}
         >
