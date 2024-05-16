@@ -17,7 +17,7 @@ import Spinner from "@/components/Spinner";
 import TopReadingNavbar from "@/components/TopReadingNavbar";
 
 const AUDIO_ENABLED = true;
-const AUDIO_ENABLED_PAPER_IDS = ["0"];
+const AUDIO_ENABLED_PAPER_IDS = ["0", "1"];
 const PAPER_ID_TO_MP3_URL = {
   "0": `${process.env.NEXT_PUBLIC_URANTIA_DEV_API_HOST}/data/mp3/eng/tts-1-hd-nova-`,
   "1": `${process.env.NEXT_PUBLIC_URANTIA_DEV_API_HOST}/data/mp3/eng/tts-1-hd-onyx-`,
@@ -73,7 +73,9 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
   const [currentPlayingNode, setCurrentPlayingNode] = useState<number | null>(
     null
   );
-  const [preloadedAudio, setPreloadedAudio] = useState<Map<number, HTMLAudioElement>>(new Map());
+  const [preloadedAudio, setPreloadedAudio] = useState<
+    Map<number, HTMLAudioElement>
+  >(new Map());
 
   // Modal states.
   const [selectedGlobalIdNote, setSelectedGlobalIdNote] = useState<string>("");
@@ -138,7 +140,8 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
       return;
     }
 
-    const audio = preloadedAudio.get(nodeIndex) || new Audio(nodes[nodeIndex].mp3Url);
+    const audio =
+      preloadedAudio.get(nodeIndex) || new Audio(nodes[nodeIndex].mp3Url);
 
     if (audio) {
       try {
@@ -170,7 +173,11 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
       const nextAudioMap = new Map(prev);
       for (let i = 1; i <= 2; i++) {
         const nextIndex = currentIndex + i;
-        if (nextIndex < nodes.length && nodes[nextIndex].mp3Url && !nextAudioMap.has(nextIndex)) {
+        if (
+          nextIndex < nodes.length &&
+          nodes[nextIndex].mp3Url &&
+          !nextAudioMap.has(nextIndex)
+        ) {
           const audio = new Audio(nodes[nextIndex].mp3Url);
           nextAudioMap.set(nextIndex, audio);
         }
@@ -1373,7 +1380,9 @@ export async function getStaticProps(context: any) {
   // Add mp3 file URLs for each node if there is one.
   paperData?.data?.results?.forEach((node: UBNode) => {
     if (PAPER_ID_TO_MP3_URL[node.paperId as keyof typeof PAPER_ID_TO_MP3_URL]) {
-      node.mp3Url = `${PAPER_ID_TO_MP3_URL[node.paperId as keyof typeof PAPER_ID_TO_MP3_URL]}${node.globalId}.mp3`;
+      node.mp3Url = `${
+        PAPER_ID_TO_MP3_URL[node.paperId as keyof typeof PAPER_ID_TO_MP3_URL]
+      }${node.globalId}.mp3`;
     }
   });
 
