@@ -18,6 +18,10 @@ import TopReadingNavbar from "@/components/TopReadingNavbar";
 
 const AUDIO_ENABLED = true;
 const AUDIO_ENABLED_PAPER_IDS = ["0"];
+const PAPER_ID_TO_MP3_URL = {
+  "0": `${process.env.NEXT_PUBLIC_URANTIA_DEV_API_HOST}/data/mp3/eng/tts-1-hd-nova-`,
+  "1": `${process.env.NEXT_PUBLIC_URANTIA_DEV_API_HOST}/data/mp3/eng/tts-1-hd-onyx-`,
+};
 const AVERAGE_READING_SPEED = 400; // Words per minute
 const NEXT_AUDIO_DELAY = 300; // Milliseconds
 const notoSerifFont = Noto_Serif({
@@ -69,6 +73,7 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
   const [currentPlayingNode, setCurrentPlayingNode] = useState<number | null>(
     null
   );
+  const [preloadedAudio, setPreloadedAudio] = useState<Map<number, HTMLAudioElement>>(new Map());
 
   // Modal states.
   const [selectedGlobalIdNote, setSelectedGlobalIdNote] = useState<string>("");
@@ -123,7 +128,6 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
   };
 
   const playAudio = async (nodeIndex: number = 0) => {
-    // If there's already an audio and it's for the current node, resume it
     if (audioRef.current && currentPlayingNode === nodeIndex) {
       try {
         await audioRef.current.play();
@@ -134,34 +138,26 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
       return;
     }
 
-    // Otherwise, create a new audio for the node
-    if (nodes[nodeIndex].mp3Url) {
+    const audio = preloadedAudio.get(nodeIndex) || new Audio(nodes[nodeIndex].mp3Url);
+
+    if (audio) {
       try {
-        // Stop and clean up any existing audio
         if (audioRef.current && !audioRef.current.paused) {
           audioRef.current.pause();
         }
 
-        // Create a new audio
-        const audio = new Audio(nodes[nodeIndex].mp3Url);
-
-        // Add event listeners
         audio.onplay = () => setIsPlaying(true);
         audio.onpause = () => setIsPlaying(false);
 
-        // Set the current audio.
         audioRef.current = audio;
-
-        // Play the audio.
         await audio.play();
 
-        // Set the current playing node.
         setCurrentPlayingNode(nodeIndex);
-
-        // Play the next audio when this one ends.
         audio.onended = () => {
           playNextAudio(nodeIndex + 1);
         };
+
+        preloadNextAudio(nodeIndex);
       } catch (error) {
         console.error("Error playing audio:", error);
         playNextAudio(nodeIndex + 1);
@@ -169,8 +165,22 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
     }
   };
 
+  const preloadNextAudio = (currentIndex: number) => {
+    setPreloadedAudio((prev) => {
+      const nextAudioMap = new Map(prev);
+      for (let i = 1; i <= 2; i++) {
+        const nextIndex = currentIndex + i;
+        if (nextIndex < nodes.length && nodes[nextIndex].mp3Url && !nextAudioMap.has(nextIndex)) {
+          const audio = new Audio(nodes[nextIndex].mp3Url);
+          nextAudioMap.set(nextIndex, audio);
+        }
+      }
+      return nextAudioMap;
+    });
+  };
+
   const playNextAudio = (nodeIndex: number) => {
-    setIsTransitioning(true); // Start transitioning
+    setIsTransitioning(true);
     audioTimeoutRef.current = setTimeout(() => {
       if (nodeIndex < nodes.length) {
         playAudio(nodeIndex);
@@ -178,23 +188,20 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
         setIsPlaying(false);
         setCurrentPlayingNode(null);
       }
-      setIsTransitioning(false); // End transitioning
+      setIsTransitioning(false);
     }, NEXT_AUDIO_DELAY);
   };
 
   const togglePlayPause = () => {
     if (audioRef.current) {
       if (isPlaying) {
-        // Pause the current audio
         audioRef.current.pause();
         setIsPlaying(false);
       } else {
-        // Resume playing the current audio from where it was paused
         audioRef.current.play();
         setIsPlaying(true);
       }
     } else {
-      // If there's no current audio (first time play), start from the beginning
       playAudio(currentPlayingNode || 0);
     }
   };
@@ -384,6 +391,10 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
     setIsPlaying(false);
     setCurrentPlayingNode(null);
   };
+
+  useEffect(() => {
+    preloadNextAudio(0);
+  }, []);
 
   useEffect(() => {
     if (currentPlayingNode !== null) {
@@ -1361,7 +1372,9 @@ export async function getStaticProps(context: any) {
 
   // Add mp3 file URLs for each node if there is one.
   paperData?.data?.results?.forEach((node: UBNode) => {
-    node.mp3Url = `${process.env.NEXT_PUBLIC_URANTIA_DEV_API_HOST}/data/mp3/eng/tts-1-hd-nova-${node.globalId}.mp3`;
+    if (PAPER_ID_TO_MP3_URL[node.paperId as keyof typeof PAPER_ID_TO_MP3_URL]) {
+      node.mp3Url = `${PAPER_ID_TO_MP3_URL[node.paperId as keyof typeof PAPER_ID_TO_MP3_URL]}${node.globalId}.mp3`;
+    }
   });
 
   return {
