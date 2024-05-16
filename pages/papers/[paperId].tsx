@@ -16,6 +16,8 @@ import Share from "@/components/Share";
 import Spinner from "@/components/Spinner";
 import TopReadingNavbar from "@/components/TopReadingNavbar";
 
+const AUDIO_ENABLED = true;
+const AUDIO_ENABLED_PAPER_IDS = ["0"];
 const AVERAGE_READING_SPEED = 400; // Words per minute
 const NEXT_AUDIO_DELAY = 300; // Milliseconds
 const notoSerifFont = Noto_Serif({
@@ -371,6 +373,18 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
   // Now throttle the safe version of the update function
   const throttledUpdate = throttle(updateLastVisitedNode, 2000);
 
+  // Reset the audio state.
+  const resetAudio = async () => {
+    // Stop and reset the audio
+    if (audioRef?.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+      audioRef.current = null;
+    }
+    setIsPlaying(false);
+    setCurrentPlayingNode(null);
+  };
+
   useEffect(() => {
     if (currentPlayingNode !== null) {
       const element = document.getElementById(
@@ -389,15 +403,19 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
     };
   }, [currentPlayingNode]);
 
-  // Cleanup audio when component unmounts
+  // Cleanup audio when the route changes
   useEffect(() => {
-    return () => {
-      if (audioRef.current && !audioRef.current.paused) {
-        audioRef.current.pause();
-        audioRef.current = null;
-      }
+    const handleRouteChange = () => {
+      resetAudio();
     };
-  }, []);
+
+    router.events.on("routeChangeStart", handleRouteChange);
+
+    return () => {
+      router.events.off("routeChangeStart", handleRouteChange);
+      resetAudio();
+    };
+  }, [router]);
 
   // Fetch the initial font size from localStorage when the component mounts
   useEffect(() => {
@@ -992,6 +1010,27 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
                 </div>
                 <div className="flex items-center select-none">
                   <div className="flex items-center mr-2 fade-in">
+                    {/* Audio Button */}
+                    {AUDIO_ENABLED &&
+                      AUDIO_ENABLED_PAPER_IDS.includes(node.paperId) &&
+                      node.mp3Url &&
+                      (expandedGlobalId === node.globalId ||
+                        notesForNode.length > 0) && (
+                        <button
+                          aria-label="Play"
+                          className="flex-shrink-0 ml-2 text-gray-400 hover:text-gray-600 dark:text-white dark:bg-neutral-700 hover:dark:text-white border-0 rounded-full p-0.5 mr-3 focus:outline-none transition duration-300 ease-in-out relative"
+                          onClick={() =>
+                            currentPlayingNode === nodes.indexOf(node) &&
+                            (isPlaying || isTransitioning)
+                              ? togglePlayPause()
+                              : playAudio(nodes.indexOf(node))
+                          }
+                          type="button"
+                        >
+                          {deriveAudioContent(nodes.indexOf(node))}
+                        </button>
+                      )}
+
                     {/* Notes Button */}
                     {status === "authenticated" &&
                       (expandedGlobalId === node.globalId ||
@@ -1062,6 +1101,8 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
                         </button>
                       )}
                   </div>
+
+                  {/* Ellipsis button */}
                   {expandedGlobalId !== node.globalId && (
                     <button
                       aria-label="Settings"
@@ -1108,7 +1149,25 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
     }
   };
 
-  const deriveAudioContent = (): JSX.Element => {
+  const deriveAudioContent = (nodeIndex?: number): JSX.Element => {
+    // If a node index is provided, we can determine if it's playing or not.
+    if (typeof nodeIndex !== "undefined") {
+      if (currentPlayingNode === nodeIndex && (isPlaying || isTransitioning)) {
+        return (
+          <svg className="w-6 h-6" viewBox="0 0 24 24">
+            <path fill="currentColor" d="M14 19h4V5h-4v14zM6 5v14h4V5H6z" />
+          </svg>
+        );
+      }
+
+      return (
+        <svg className="w-6 h-6" viewBox="0 0 24 24">
+          <path fill="currentColor" d="M8 5v14l11-7z" />
+        </svg>
+      );
+    }
+
+    // If no node index is provided, we can only determine if the audio is playing or not.
     if (isPlaying || isTransitioning) {
       return (
         <svg className="w-6 h-6" viewBox="0 0 24 24">
@@ -1117,6 +1176,7 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
       );
     }
 
+    // Default to play icon.
     return (
       <svg className="w-6 h-6" viewBox="0 0 24 24">
         <path fill="currentColor" d="M8 5v14l11-7z" />
@@ -1181,7 +1241,7 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
         }
         paperId={paperIdNumber}
         paperTitle={paperTitle}
-        showAudio={false}
+        showAudio={AUDIO_ENABLED && AUDIO_ENABLED_PAPER_IDS.includes(paperId)}
       />
 
       {/* Conditional Sign-up Prompt */}
@@ -1301,7 +1361,7 @@ export async function getStaticProps(context: any) {
 
   // Add mp3 file URLs for each node if there is one.
   paperData?.data?.results?.forEach((node: UBNode) => {
-    node.mp3Url = `${process.env.NEXT_PUBLIC_URANTIA_DEV_API_HOST}/data/mp3/eng/tts-1-hd-echo-${node.globalId}.mp3`;
+    node.mp3Url = `${process.env.NEXT_PUBLIC_URANTIA_DEV_API_HOST}/data/mp3/eng/tts-1-hd-nova-${node.globalId}.mp3`;
   });
 
   return {
