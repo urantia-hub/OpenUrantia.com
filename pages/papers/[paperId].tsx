@@ -15,18 +15,14 @@ import Navbar from "@/components/Navbar";
 import Share from "@/components/Share";
 import Spinner from "@/components/Spinner";
 import TopReadingNavbar from "@/components/TopReadingNavbar";
+import {
+  AUDIO_ENABLED,
+  AUDIO_ENABLED_PAPER_IDS,
+  AVERAGE_READING_SPEED,
+  NEXT_AUDIO_DELAY,
+  PAPER_ID_TO_MP3_URL,
+} from "@/utils/config";
 
-const AUDIO_ENABLED = true;
-const AUDIO_ENABLED_PAPER_IDS = ["0", "1", "2", "3", "4"];
-const PAPER_ID_TO_MP3_URL = {
-  "0": `${process.env.NEXT_PUBLIC_AUDIO_FILES_CDN}/tts-1-hd-nova-`,
-  "1": `${process.env.NEXT_PUBLIC_AUDIO_FILES_CDN}/tts-1-hd-nova-`,
-  "2": `${process.env.NEXT_PUBLIC_AUDIO_FILES_CDN}/tts-1-hd-nova-`,
-  "3": `${process.env.NEXT_PUBLIC_AUDIO_FILES_CDN}/tts-1-hd-nova-`,
-  "4": `${process.env.NEXT_PUBLIC_AUDIO_FILES_CDN}/tts-1-hd-nova-`,
-};
-const AVERAGE_READING_SPEED = 400; // Words per minute
-const NEXT_AUDIO_DELAY = 300; // Milliseconds
 const notoSerifFont = Noto_Serif({
   subsets: ["latin"],
   weight: ["400", "700"],
@@ -48,10 +44,10 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
   // Toggled states.
   const [expandedGlobalId, setExpandedGlobalId] = useState<string>("");
 
-  // bookmarks.
+  // Bookmark states.
   const [bookmarks, setBookmarks] = useState<Bookmark[]>([]);
 
-  // notes.
+  // Notes states.
   const [notes, setNotes] = useState<NoteType[]>([]);
 
   // Network states.
@@ -76,9 +72,6 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
   const [currentPlayingNode, setCurrentPlayingNode] = useState<number | null>(
     null
   );
-  const [preloadedAudio, setPreloadedAudio] = useState<
-    Map<number, HTMLAudioElement>
-  >(new Map());
 
   // Modal states.
   const [selectedGlobalIdNote, setSelectedGlobalIdNote] = useState<string>("");
@@ -143,8 +136,7 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
       return;
     }
 
-    const audio =
-      preloadedAudio.get(nodeIndex) || new Audio(nodes[nodeIndex].mp3Url);
+    const audio = new Audio(nodes[nodeIndex].mp3Url);
 
     if (audio) {
       try {
@@ -162,31 +154,11 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
         audio.onended = () => {
           playNextAudio(nodeIndex + 1);
         };
-
-        preloadNextAudio(nodeIndex);
       } catch (error) {
         console.error("Error playing audio:", error);
         playNextAudio(nodeIndex + 1);
       }
     }
-  };
-
-  const preloadNextAudio = (currentIndex: number) => {
-    setPreloadedAudio((prev) => {
-      const nextAudioMap = new Map(prev);
-      for (let i = 1; i <= 2; i++) {
-        const nextIndex = currentIndex + i;
-        if (
-          nextIndex < nodes.length &&
-          nodes[nextIndex].mp3Url &&
-          !nextAudioMap.has(nextIndex)
-        ) {
-          const audio = new Audio(nodes[nextIndex].mp3Url);
-          nextAudioMap.set(nextIndex, audio);
-        }
-      }
-      return nextAudioMap;
-    });
   };
 
   const playNextAudio = (nodeIndex: number) => {
@@ -401,10 +373,6 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
     setIsPlaying(false);
     setCurrentPlayingNode(null);
   };
-
-  useEffect(() => {
-    preloadNextAudio(0);
-  }, []);
 
   useEffect(() => {
     if (currentPlayingNode !== null) {
