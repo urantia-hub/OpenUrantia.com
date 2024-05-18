@@ -436,7 +436,7 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
       router.events.off("routeChangeStart", handleRouteChange);
       resetAudio();
     };
-  }, [router]);
+  }, [router, nodes]);
 
   // Fetch the initial font size from localStorage when the component mounts
   useEffect(() => {
