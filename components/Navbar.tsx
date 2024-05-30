@@ -1,8 +1,7 @@
 // Node modules.
 import Link from "next/link";
-import { signIn, useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
-import { useState, useEffect } from "react";
 // Relative modules.
 import PaperNavbar from "@/components/PaperNavbar";
 import { deriveReadLink } from "@/utils/readPaperLink";

@@ -2,11 +2,12 @@
 import Link from "next/link";
 import moment from "moment";
 import throttle from "lodash/throttle";
-import { Noto_Serif } from "next/font/google";
 import { Note as NoteType, ReadNode, Bookmark } from "@prisma/client";
-import { useSession } from "next-auth/react";
+import { Noto_Serif } from "next/font/google";
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
+import { useSession } from "next-auth/react";
+import { useWakeLock } from "react-screen-wake-lock";
 // Relative modules.
 import Note from "@/components/Note";
 import Footer from "@/components/Footer";
@@ -40,6 +41,12 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
   // Hooks.
   const router = useRouter();
   const { status } = useSession();
+  const { isSupported, released, request, release } = useWakeLock({
+    onRequest: () =>
+      console.log(`[Screen Wake Lock]: Requested. Released: ${released}`),
+    onError: (error) => console.log("[Screen Wake Lock]: Error", error),
+    onRelease: () => console.log("[Screen Wake Lock]: Released"),
+  });
 
   // Toggled states.
   const [expandedGlobalId, setExpandedGlobalId] = useState<string>("");
@@ -418,6 +425,23 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
     if (savedFontSize) {
       setFontSize(savedFontSize);
     }
+  }, []);
+
+  useEffect(() => {
+    console.log(`[Screen Wake Lock]: isSupported: ${isSupported}`);
+    console.log(`[Screen Wake Lock]: Released: ${released}`);
+
+    // Ensure the screen wake lock is requested when the component mounts
+    if (isSupported) {
+      void request();
+    }
+
+    // Ensure the screen wake lock is released when the component unmounts
+    return () => {
+      if (isSupported) {
+        void release();
+      }
+    };
   }, []);
 
   // Fetch read nodes on mount
