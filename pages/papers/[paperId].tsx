@@ -159,6 +159,8 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
 
         setCurrentPlayingNode(nodeIndex);
         audio.onended = () => {
+          // Mark the paragraph as read after the audio finishes playing
+          markParagraphAsRead(nodes[nodeIndex]);
           playNextAudio(nodeIndex + 1);
         };
       } catch (error) {
