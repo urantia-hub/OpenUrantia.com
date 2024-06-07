@@ -930,9 +930,20 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
                 {node.paperTitle}
               </p>
             )}
-            <h1 className="text-5xl font-bold" id={node.globalId}>
+
+            <h1 className="text-5xl font-bold mb-2" id={node.globalId}>
               {parseInt(node.paperId) > 0 ? node.paperId : "Foreword"}
             </h1>
+
+            <Link
+              className="text-blue-500 dark:text-blue-400 text-sm"
+              href={`${process.env.NEXT_PUBLIC_AUDIO_FILES_CDN}/${node.paperId}.mp3`}
+              target="_blank"
+              download
+              rel="noopener noreferrer"
+            >
+              Download Full Paper Audio
+            </Link>
 
             {/* Small - XL Screen TOC */}
             <div className="flex flex-col items-left text-left xl:hidden mt-8">
