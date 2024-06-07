@@ -939,7 +939,6 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
               className="text-blue-500 dark:text-blue-400 text-sm"
               href={`${process.env.NEXT_PUBLIC_AUDIO_FILES_CDN}/${node.paperId}.mp3`}
               target="_blank"
-              download
               rel="noopener noreferrer"
             >
               Download Full Paper Audio
