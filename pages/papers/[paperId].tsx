@@ -199,6 +199,27 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
     }
   };
 
+  const skipToNextParagraph = () => {
+    if (currentPlayingNode !== null && currentPlayingNode < nodes.length - 1) {
+      playAudio(currentPlayingNode + 1);
+    }
+  };
+
+  const skipToPreviousParagraph = () => {
+    const SKIP_THRESHOLD = 3; // Set the threshold time in seconds
+
+    if (currentPlayingNode !== null) {
+      if (audioRef.current && audioRef.current.currentTime > SKIP_THRESHOLD) {
+        // Restart the current node
+        resetAudio();
+        playAudio(currentPlayingNode);
+      } else if (currentPlayingNode > 2) {
+        // Play the previous node
+        playAudio(currentPlayingNode - 1);
+      }
+    }
+  };
+
   const findTopMostVisibleNode = (): HTMLElement | null => {
     const paragraphs = document.querySelectorAll(".paragraph");
     let topMostVisibleNode = null;
@@ -1269,6 +1290,8 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
         paperId={paperIdNumber}
         paperTitle={paperTitle}
         showAudio={AUDIO_ENABLED && AUDIO_ENABLED_PAPER_IDS.includes(paperId)}
+        skipToNextParagraph={skipToNextParagraph}
+        skipToPreviousParagraph={skipToPreviousParagraph}
       />
 
       {/* Conditional Sign-up Prompt */}

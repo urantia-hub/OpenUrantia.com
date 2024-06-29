@@ -172,28 +172,6 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
       });
   };
 
-  // Function to handle filter toggle.
-  const toggleFilter = (label: string) => {
-    setActiveFilters(
-      (currentFilters) =>
-        currentFilters.includes(label)
-          ? currentFilters.filter((filter) => filter !== label) // Remove filter if it's already active.
-          : [...currentFilters, label] // Add filter if it's not active.
-    );
-  };
-
-  // Function to determine if a paper should be shown based on active filters.
-  const shouldShowPaper = (labels: string[]) => {
-    // If no filters are active, all papers should be shown.
-    if (activeFilters.length === 0) return true;
-
-    // If a paper has no labels, it should not be shown.
-    if (!labels) return false;
-
-    // Otherwise, only show papers that match at least one active filter.
-    return labels.some((label) => activeFilters.includes(label));
-  };
-
   const highlightUserInterestLabels = (
     paperLabels: string[],
     userInterests: any[]
@@ -211,29 +189,6 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
     // Return the matching labels in bold and the non-matching labels as is.
     return [
       ...matchingLabels.map((label) => `<span class="">${label}</span>`),
-      ...nonMatchingLabels,
-    ];
-  };
-
-  const highlightActiveFilterLabels = (
-    paperLabels: string[],
-    activeFilters: string[]
-  ) => {
-    // Derive the labels that match user interests.
-    const matchingLabels = paperLabels.filter((label) =>
-      activeFilters.includes(label)
-    );
-
-    // Derive the labels that do not match user interests.
-    const nonMatchingLabels = paperLabels.filter(
-      (label) => !matchingLabels.includes(label)
-    );
-
-    // Return the matching labels in bold and the non-matching labels as is.
-    return [
-      ...matchingLabels.map(
-        (label) => `<span class="text-blue-400">${label}</span>`
-      ),
       ...nonMatchingLabels,
     ];
   };
@@ -279,6 +234,83 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
           <>
             <div className="mt-4 mb-4 text-center">
               <h1 className="text-5xl font-bold mb-8">Explore</h1>
+
+              {/* -- Papers You Might Like --- */}
+              {!fetchingUserInterests &&
+              papersYouMightLike.length === 0 ? null : (
+                <div className="mb-8">
+                  <h2 className="text-base mb-2 pb-2 text-center border-b text-gray-400 border-gray-200 dark:border-gray-600">
+                    Papers You Might Like
+                  </h2>
+
+                  <p className="text-xs text-gray-400 mb-6">
+                    (Suggestions based on{" "}
+                    <Link
+                      className="text-blue-400 hover:underline"
+                      href="/onboarding/interests"
+                    >
+                      your interests
+                    </Link>
+                    .)
+                  </p>
+
+                  {fetchingUserInterests ? (
+                    <div className="flex justify-center items-center papers-row">
+                      <Spinner />
+                    </div>
+                  ) : (
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 papers-row">
+                      {papersYouMightLike.map((paper) => {
+                        // Find the progress result for the current paper and derive its completion status.
+                        const progressResult = progressResults.find(
+                          (progressResult) =>
+                            progressResult?.paperId === paper.paperId
+                        );
+
+                        return (
+                          <Link
+                            key={paper.globalId}
+                            href={`/papers/${paper.paperId}`}
+                            className="relative flex flex-col items-start text-left justify-between px-4 py-2 mb-2 bg-white dark:bg-neutral-700 hover:dark:bg-neutral-600 rounded transition-colors hover:no-underline hover:shadow-lg hover:dark:shadow-none transition-shadow duration-300"
+                          >
+                            <div className="flex flex-col w-full">
+                              <div className="text-xs text-gray-400 flex items-center justify-between w-full">
+                                {paper.paperId === "0" ? (
+                                  "Foreword"
+                                ) : (
+                                  <>
+                                    <span>Paper {paper.paperId}</span>{" "}
+                                    <span>Part {paper.partId}</span>
+                                  </>
+                                )}
+                              </div>
+                              <h3 className="mt-1 text-lg font-bold leading-6 text-gray-600 dark:text-white">
+                                {paper.paperTitle}
+                              </h3>
+                            </div>
+                            <div className="flex flex-col w-full">
+                              <span
+                                className="mt-1 text-xs text-gray-400 truncate w-full"
+                                title={paper.labels.sort().join(" | ")}
+                                dangerouslySetInnerHTML={{
+                                  __html: highlightUserInterestLabels(
+                                    paper.labels,
+                                    userInterests
+                                  )
+                                    .sort()
+                                    .join(" | "),
+                                }}
+                              />
+
+                              {deriveProgressBadge(progressResult)}
+                            </div>
+                          </Link>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+              )}
 
               {/* -- Papers In Progress --- */}
               {!fetchingProgress && papersInProgress.length === 0 ? null : (
@@ -338,83 +370,6 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
 
                             <div className="flex flex-col w-full">
                               {/* Labels */}
-                              <span
-                                className="mt-1 text-xs text-gray-400 truncate w-full"
-                                title={paper.labels.sort().join(" | ")}
-                                dangerouslySetInnerHTML={{
-                                  __html: highlightUserInterestLabels(
-                                    paper.labels,
-                                    userInterests
-                                  )
-                                    .sort()
-                                    .join(" | "),
-                                }}
-                              />
-
-                              {deriveProgressBadge(progressResult)}
-                            </div>
-                          </Link>
-                        );
-                      })}
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {/* -- Papers You Might Like --- */}
-              {!fetchingUserInterests &&
-              papersYouMightLike.length === 0 ? null : (
-                <div className="mb-8">
-                  <h2 className="text-base mb-2 pb-2 text-center border-b text-gray-400 border-gray-200 dark:border-gray-600">
-                    Papers You Might Like
-                  </h2>
-
-                  <p className="text-xs text-gray-400 mb-6">
-                    (Suggestions based on{" "}
-                    <Link
-                      className="text-blue-400 hover:underline"
-                      href="/onboarding/interests"
-                    >
-                      your interests
-                    </Link>
-                    .)
-                  </p>
-
-                  {fetchingUserInterests ? (
-                    <div className="flex justify-center items-center papers-row">
-                      <Spinner />
-                    </div>
-                  ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 papers-row">
-                      {papersYouMightLike.map((paper) => {
-                        // Find the progress result for the current paper and derive its completion status.
-                        const progressResult = progressResults.find(
-                          (progressResult) =>
-                            progressResult?.paperId === paper.paperId
-                        );
-
-                        return (
-                          <Link
-                            key={paper.globalId}
-                            href={`/papers/${paper.paperId}`}
-                            className="relative flex flex-col items-start text-left justify-between px-4 py-2 mb-2 bg-white dark:bg-neutral-700 hover:dark:bg-neutral-600 rounded transition-colors hover:no-underline hover:shadow-lg hover:dark:shadow-none transition-shadow duration-300"
-                          >
-                            <div className="flex flex-col w-full">
-                              <div className="text-xs text-gray-400 flex items-center justify-between w-full">
-                                {paper.paperId === "0" ? (
-                                  "Foreword"
-                                ) : (
-                                  <>
-                                    <span>Paper {paper.paperId}</span>{" "}
-                                    <span>Part {paper.partId}</span>
-                                  </>
-                                )}
-                              </div>
-                              <h3 className="mt-1 text-lg font-bold leading-6 text-gray-600 dark:text-white">
-                                {paper.paperTitle}
-                              </h3>
-                            </div>
-                            <div className="flex flex-col w-full">
                               <span
                                 className="mt-1 text-xs text-gray-400 truncate w-full"
                                 title={paper.labels.sort().join(" | ")}

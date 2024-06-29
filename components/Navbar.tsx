@@ -12,6 +12,8 @@ type NavbarProps = {
   paperId?: number;
   paperTitle?: string;
   showAudio?: boolean;
+  skipToNextParagraph?: () => void;
+  skipToPreviousParagraph?: () => void;
 };
 
 const Navbar = ({
@@ -20,6 +22,8 @@ const Navbar = ({
   paperId,
   paperTitle,
   showAudio,
+  skipToNextParagraph,
+  skipToPreviousParagraph,
 }: NavbarProps) => {
   // Hooks.
   const router = useRouter();
@@ -37,6 +41,8 @@ const Navbar = ({
           paperId={paperId}
           paperTitle={paperTitle}
           showAudio={showAudio}
+          skipToNextParagraph={skipToNextParagraph}
+          skipToPreviousParagraph={skipToPreviousParagraph}
         />
 
         <div className="flex items-center justify-around w-full max-w-sm pt-1 pb-2">

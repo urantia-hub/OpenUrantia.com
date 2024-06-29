@@ -7,6 +7,8 @@ interface PaperNavbarProps {
   paperId?: number;
   paperTitle?: string;
   showAudio?: boolean;
+  skipToPreviousParagraph?: () => void;
+  skipToNextParagraph?: () => void;
 }
 
 const PaperNavbar = ({
@@ -15,6 +17,8 @@ const PaperNavbar = ({
   paperId,
   paperTitle,
   showAudio,
+  skipToPreviousParagraph,
+  skipToNextParagraph,
 }: PaperNavbarProps) => {
   if (paperId === undefined) return null;
   if (!paperTitle) return null;
@@ -23,7 +27,7 @@ const PaperNavbar = ({
     <div className="flex items-center justify-between w-full max-w-3xl mt-1 mb-6">
       <div
         className="flex-grow flex items-center justify-between bg-slate-100 dark:bg-neutral-700 rounded-full w-full"
-        style={showAudio ? { maxWidth: "calc(100% - 48px)" } : {}}
+        style={showAudio ? { maxWidth: "calc(100% - 144px)" } : {}}
       >
         <Link
           aria-label="Previous paper"
@@ -59,14 +63,44 @@ const PaperNavbar = ({
 
       {/* Play audio button */}
       {showAudio && (
-        <button
-          aria-label="Play audio"
-          className="flex-shrink-0 ml-2 bg-gray-200 text-gray-400 hover:text-gray-600 dark:text-white dark:bg-neutral-700 hover:dark:text-white border-0 rounded-full p-2 focus:outline-none transition duration-300 ease-in-out"
-          onClick={audioOnPlay}
-          type="button"
-        >
-          {audioContent}
-        </button>
+        <div className="flex items-center ml-2">
+          {/* Previous paragraph button */}
+          <button
+            aria-label="Previous paragraph"
+            className="flex-shrink-0 bg-slate-100 dark:bg-neutral-700 text-gray-400 hover:text-gray-600 dark:text-white hover:dark:text-white border-0 rounded-full p-2 focus:outline-none transition duration-300 ease-in-out"
+            onClick={skipToPreviousParagraph}
+            type="button"
+          >
+            <svg className="w-6 h-6" viewBox="0 0 24 24">
+              <path
+                fill="currentColor"
+                d="M11 19l-7-7 7-7v14zm10 0l-7-7 7-7v14z"
+              />
+            </svg>
+          </button>
+          <button
+            aria-label="Play audio"
+            className="flex-shrink-0 ml-2 bg-slate-100 dark:bg-neutral-700 text-gray-400 hover:text-gray-600 dark:text-white hover:dark:text-white border-0 rounded-full p-2 focus:outline-none transition duration-300 ease-in-out"
+            onClick={audioOnPlay}
+            type="button"
+          >
+            {audioContent}
+          </button>
+          {/* Next paragraph button */}
+          <button
+            aria-label="Next paragraph"
+            className="flex-shrink-0 bg-slate-100 dark:bg-neutral-700 text-gray-400 hover:text-gray-600 dark:text-white hover:dark:text-white border-0 rounded-full p-2 ml-2 focus:outline-none transition duration-300 ease-in-out"
+            onClick={skipToNextParagraph}
+            type="button"
+          >
+            <svg className="w-6 h-6" viewBox="0 0 24 24">
+              <path
+                fill="currentColor"
+                d="M13 19l7-7-7-7v14zm-10 0l7-7-7-7v14z"
+              />
+            </svg>
+          </button>
+        </div>
       )}
     </div>
   );
