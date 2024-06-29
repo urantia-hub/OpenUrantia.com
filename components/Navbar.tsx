@@ -5,25 +5,32 @@ import { useRouter } from "next/router";
 // Relative modules.
 import PaperNavbar from "@/components/PaperNavbar";
 import { deriveReadLink } from "@/utils/readPaperLink";
+import { useEffect, useState } from "react";
 
 type NavbarProps = {
   audioContent?: JSX.Element;
   audioOnPlay?: () => void;
+  audioIsPlaying?: boolean;
   paperId?: number;
   paperTitle?: string;
   showAudio?: boolean;
   skipToNextParagraph?: () => void;
   skipToPreviousParagraph?: () => void;
+  setPlaybackRate?: (rate: number) => void;
+  playbackRate?: number;
 };
 
 const Navbar = ({
   audioContent,
   audioOnPlay,
+  audioIsPlaying,
   paperId,
   paperTitle,
   showAudio,
   skipToNextParagraph,
   skipToPreviousParagraph,
+  setPlaybackRate,
+  playbackRate,
 }: NavbarProps) => {
   // Hooks.
   const router = useRouter();
@@ -32,17 +39,50 @@ const Navbar = ({
   // Derive the Read link based on the authentication status.
   const continueReadingLink = deriveReadLink(status);
 
+  // Hidden state.
+  const [hidden, setHidden] = useState<boolean>(false);
+
+  // Hide the Navbar on scroll down and show it on scroll up.
+  useEffect(() => {
+    let lastScrollTop = 0;
+    const handleScroll = () => {
+      const currentScrollTop =
+        window.scrollY || document.documentElement.scrollTop;
+
+      if (currentScrollTop > lastScrollTop) {
+        setHidden(true);
+      } else {
+        setHidden(false);
+      }
+
+      lastScrollTop = currentScrollTop <= 0 ? 0 : currentScrollTop;
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
   return (
     <>
-      <header className="flex flex-col items-center pt-2 pb-1 px-2 fixed bottom-0 left-0 right-0 z-10 bg-white dark:bg-neutral-800 dark:border-t dark:border-neutral-700 mx-auto dark:shadow-none shadow">
+      <header
+        className={`flex flex-col items-center pt-2 pb-1 px-2 fixed bottom-0 left-0 right-0 z-10 bg-white dark:bg-neutral-800 dark:border-t dark:border-neutral-700 mx-auto dark:shadow-none shadow ${
+          hidden ? "translate-y-16" : "translate-y-0"
+        } transition-transform duration-300 ease-in-out`}
+      >
         <PaperNavbar
           audioContent={audioContent}
           audioOnPlay={audioOnPlay}
+          audioIsPlaying={audioIsPlaying}
           paperId={paperId}
           paperTitle={paperTitle}
           showAudio={showAudio}
           skipToNextParagraph={skipToNextParagraph}
           skipToPreviousParagraph={skipToPreviousParagraph}
+          setPlaybackRate={setPlaybackRate}
+          playbackRate={playbackRate}
         />
 
         <div className="flex items-center justify-around w-full max-w-sm pt-1 pb-2">

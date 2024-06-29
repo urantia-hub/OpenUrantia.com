@@ -79,6 +79,7 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
   const [currentPlayingNode, setCurrentPlayingNode] = useState<number | null>(
     null
   );
+  const [playbackRate, setPlaybackRate] = useState<number>(1.0);
 
   // Modal states.
   const [selectedGlobalIdNote, setSelectedGlobalIdNote] = useState<string>("");
@@ -136,6 +137,9 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
     if (audioRef.current && currentPlayingNode === nodeIndex) {
       try {
         await audioRef.current.play();
+        setTimeout(() => {
+          if (audioRef.current) audioRef.current.playbackRate = playbackRate;
+        }, 100);
         setIsPlaying(true);
       } catch (error) {
         console.error("Error resuming audio:", error);
@@ -156,6 +160,9 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
 
         audioRef.current = audio;
         await audio.play();
+        setTimeout(() => {
+          audio.playbackRate = playbackRate;
+        }, 100);
 
         setCurrentPlayingNode(nodeIndex);
         audio.onended = () => {
@@ -437,6 +444,13 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
       resetAudio();
     };
   }, [router, nodes]);
+
+  // When playback rate is set, update the audio playback rate
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.playbackRate = playbackRate;
+    }
+  }, [playbackRate]);
 
   // Fetch the initial font size from localStorage when the component mounts
   useEffect(() => {
@@ -1287,11 +1301,14 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
             ? togglePlayPause()
             : playAudio(currentPlayingNode || 0)
         }
+        audioIsPlaying={isPlaying || isTransitioning}
         paperId={paperIdNumber}
         paperTitle={paperTitle}
         showAudio={AUDIO_ENABLED && AUDIO_ENABLED_PAPER_IDS.includes(paperId)}
         skipToNextParagraph={skipToNextParagraph}
         skipToPreviousParagraph={skipToPreviousParagraph}
+        setPlaybackRate={setPlaybackRate}
+        playbackRate={playbackRate}
       />
 
       {/* Conditional Sign-up Prompt */}
