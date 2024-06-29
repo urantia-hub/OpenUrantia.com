@@ -42,29 +42,11 @@ const Navbar = ({
         <div className="flex items-center justify-around w-full max-w-sm pt-1 pb-2">
           <Link
             className={`flex-1 flex flex-col items-center text-xs text-center ${
-              router.asPath === "/"
+              router.asPath === "/explore"
                 ? "text-gray-600 dark:text-white"
                 : "text-gray-400 dark:text-gray-400"
             } line-clamp-1 hover:text-gray-600 hover:dark:text-white hover:no-underline transition duration-300 ease-in-out`}
-            href="/"
-          >
-            <svg
-              className="w-6 h-6 fill-current mb-1"
-              viewBox="0 0 64 64"
-              xmlSpace="preserve"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path d="M56.4 62.3H43.3c-3.2 0-5.9-2.6-5.9-5.9V45.8c0-.8-.6-1.4-1.4-1.4h-8c-.8 0-1.4.6-1.4 1.4v10.6c0 3.3-2.6 5.9-5.9 5.9H7.6c-3.2 0-5.9-2.6-5.9-5.9V22.7c0-1.7.8-3.2 2.2-4.1L29.4 2.5c1.6-1 3.6-1 5.1 0L60 18.7c1.4.9 2.2 2.4 2.2 4.1v33.6c.1 3.2-2.6 5.9-5.8 5.9zM28 39.9h8c3.3 0 5.9 2.6 5.9 5.9v10.6c0 .8.6 1.4 1.4 1.4h13.1c.8 0 1.4-.6 1.4-1.4V22.7c0-.1-.1-.2-.1-.3L32.1 6.3c-.1-.1-.2-.1-.3 0L6.4 22.4c-.1.1-.2.2-.2.3v33.7c0 .8.6 1.4 1.4 1.4h13.1c.8 0 1.4-.6 1.4-1.4V45.8c0-3.2 2.6-5.9 5.9-5.9z" />
-            </svg>
-            Home
-          </Link>
-          <Link
-            className={`flex-1 flex flex-col items-center text-xs text-center ${
-              router.asPath === "/papers"
-                ? "text-gray-600 dark:text-white"
-                : "text-gray-400 dark:text-gray-400"
-            } line-clamp-1 hover:text-gray-600 hover:dark:text-white hover:no-underline transition duration-300 ease-in-out`}
-            href="/papers"
+            href="/explore"
           >
             <svg className="w-7 h-7 fill-current" viewBox="0 0 512 512">
               <path d="M127.923 267.983h.016a73.67 73.67 0 0 0-10.434-.743c-36.165.008-67.677 26.589-72.902 63.389a74.044 74.044 0 0 0-.736 10.41c0 36.164 26.589 67.677 63.381 72.918 3.498.488 6.974.735 10.419.735 36.164-.007 67.676-26.589 72.909-63.388l-7.849-1.115 7.849 1.107c.495-3.498.736-6.982.736-10.426 0-36.158-26.59-67.662-63.389-72.887zm46.955 81.091c-4.071 28.888-28.88 49.765-57.211 49.758a59.24 59.24 0 0 1-8.206-.573c-28.865-4.08-49.742-28.888-49.742-57.22 0-2.701.186-5.434.581-8.182 4.071-28.888 28.88-49.765 57.204-49.765 2.701 0 5.434.186 8.19.588h.007c28.889 4.072 49.758 28.873 49.758 57.188a58.243 58.243 0 0 1-.581 8.206z" />
@@ -108,6 +90,19 @@ const Navbar = ({
               <path d="M48.319 0C61.662 0 73.74 5.408 82.484 14.152s14.152 20.823 14.152 34.166c0 12.809-4.984 24.451-13.117 33.098.148.109.291.23.426.364l34.785 34.737a3.723 3.723 0 0 1-5.25 5.28L78.695 87.06a3.769 3.769 0 0 1-.563-.715 48.116 48.116 0 0 1-29.814 10.292c-13.343 0-25.423-5.408-34.167-14.152C5.408 73.741 0 61.661 0 48.318s5.408-25.422 14.152-34.166C22.896 5.409 34.976 0 48.319 0zm28.763 19.555c-7.361-7.361-17.53-11.914-28.763-11.914s-21.403 4.553-28.764 11.914c-7.361 7.361-11.914 17.53-11.914 28.763s4.553 21.403 11.914 28.764c7.36 7.361 17.53 11.914 28.764 11.914 11.233 0 21.402-4.553 28.763-11.914 7.361-7.36 11.914-17.53 11.914-28.764 0-11.233-4.553-21.402-11.914-28.763z" />
             </svg>
             Search
+          </Link>
+          <Link
+            className={`flex-1 flex flex-col items-center text-xs text-center ${
+              router.asPath === "/papers"
+                ? "text-gray-600 dark:text-white"
+                : "text-gray-400 dark:text-gray-400"
+            } line-clamp-1 hover:text-gray-600 hover:dark:text-white hover:no-underline transition duration-300 ease-in-out`}
+            href="/papers"
+          >
+            <svg className="w-7 h-7 fill-current" viewBox="0 0 24 24">
+              <path d="M7 3h2v18H7zM4 3h2v18H4zm6 0h2v18h-2zm9.062 17.792-6.223-16.89 1.877-.692 6.223 16.89z" />
+            </svg>
+            Papers
           </Link>
           {status === "unauthenticated" && (
             <button
