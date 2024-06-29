@@ -1,7 +1,7 @@
 {
   "name": "OpenUrantia",
   "short_name": "OpenUrantia",
-  "start_url": "/papers",
+  "start_url": "/read",
   "display": "browser",
   "background_color": "#e2e8f0",
   "theme_color": "#e2e8f0",
