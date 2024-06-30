@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 // Relative modules.
 import HeadTag from "@/components/HeadTag";
 
-const DEFAULT_CALLBACK_URL = "/read";
+const DEFAULT_CALLBACK_URL = "/api/redirect/user/read";
 
 const SignInPage = () => {
   // Get the router.

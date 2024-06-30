@@ -1,7 +1,7 @@
 // Node modules.
 import Link from "next/link";
 import { signOut, useSession } from "next-auth/react";
-import { useState, useEffect } from "react";
+import { useRouter } from "next/router";
 // Relative modules.
 import Footer from "@/components/Footer";
 import HeadTag from "@/components/HeadTag";
@@ -11,51 +11,12 @@ const More = () => {
   // Hooks.
   const { status } = useSession();
 
-  // State.
-  const [isUpdating, setIsUpdating] = useState<boolean>(false);
-  const [emailNotificationsEnabled, setEmailNotificationsEnabled] =
-    useState<boolean>(false);
+  const router = useRouter();
 
-  useEffect(() => {
-    // Fetch user data when the component mounts
-    if (status === "authenticated") {
-      fetch("/api/user")
-        .then((res) => res.json())
-        .then((data) => {
-          setEmailNotificationsEnabled(data.emailNotificationsEnabled);
-        });
-    }
-  }, [status]);
-
-  const handleToggleNotifications = async () => {
-    setIsUpdating(true);
-
-    const updatedStatus = !emailNotificationsEnabled;
-
-    // Update user settings in the backend
-    await fetch("/api/user", {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ emailNotificationsEnabled: updatedStatus }),
-    });
-
-    setEmailNotificationsEnabled(updatedStatus);
-    setIsUpdating(false);
-  };
-
-  const deriveNotificationStatus = () => {
-    if (isUpdating) {
-      return "...";
-    }
-
-    if (emailNotificationsEnabled) {
-      return "Enabled";
-    }
-
-    return "Disabled";
-  };
+  if (status === "unauthenticated") {
+    router.replace("/auth/sign-in");
+    return null;
+  }
 
   return (
     <div className="flex flex-col min-h-screen bg-slate-100 text-gray-700 dark:bg-neutral-800 dark:text-white">

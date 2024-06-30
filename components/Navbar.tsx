@@ -44,26 +44,28 @@ const Navbar = ({
 
   // Hide the Navbar on scroll down and show it on scroll up.
   useEffect(() => {
-    let lastScrollTop = 0;
-    const handleScroll = () => {
-      const currentScrollTop =
-        window.scrollY || document.documentElement.scrollTop;
+    if (router.pathname.startsWith("/papers/")) {
+      let lastScrollTop = 0;
+      const handleScroll = () => {
+        const currentScrollTop =
+          window.scrollY || document.documentElement.scrollTop;
 
-      if (currentScrollTop > lastScrollTop) {
-        setHidden(true);
-      } else {
-        setHidden(false);
-      }
+        if (currentScrollTop > lastScrollTop) {
+          setHidden(true);
+        } else {
+          setHidden(false);
+        }
 
-      lastScrollTop = currentScrollTop <= 0 ? 0 : currentScrollTop;
-    };
+        lastScrollTop = currentScrollTop <= 0 ? 0 : currentScrollTop;
+      };
 
-    window.addEventListener("scroll", handleScroll);
+      window.addEventListener("scroll", handleScroll);
 
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, []);
+      return () => {
+        window.removeEventListener("scroll", handleScroll);
+      };
+    }
+  }, [router.pathname]);
 
   return (
     <>

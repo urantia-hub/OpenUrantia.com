@@ -1376,7 +1376,7 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
 
         {/* XL Screen TOC */}
         {tocExpanded ? (
-          <div className="hidden rounded-lg xl:flex xl:flex-col fixed top-6 left-6 bg-white dark:bg-neutral-700/80 z-10 p-4 max-w-xs shadow-lg dark:shadow-none">
+          <div className="hidden rounded-lg xl:flex xl:flex-col fixed top-14 left-6 bg-white dark:bg-neutral-700/80 z-10 p-4 max-w-xs shadow-lg dark:shadow-none">
             <svg
               className={`w-6 h-6 ${
                 tocExpanded ? "-rotate-90" : "rotate-90"
@@ -1394,7 +1394,7 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
         ) : (
           <div
             aria-label="button"
-            className="hidden rounded-lg xl:flex xl:flex-col fixed top-6 left-6 bg-white dark:bg-neutral-700/80 z-10 p-2 max-w-xs shadow-lg dark:shadow-none"
+            className="hidden rounded-lg xl:flex xl:flex-col fixed top-14 left-6 bg-white dark:bg-neutral-700/80 z-10 p-2 max-w-xs shadow-lg dark:shadow-none"
             onClick={() => setTOCExpanded(!tocExpanded)}
           >
             <svg
