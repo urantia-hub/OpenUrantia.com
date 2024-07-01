@@ -56,7 +56,7 @@ const PaperNavbar = ({
           </Link>
           <Link
             className="flex-1 py-2 text-sm font-bold text-center whitespace-nowrap overflow-hidden text-ellipsis text-gray-600 hover:text-gray-600 dark:text-white hover:dark:text-white hover:no-underline transition duration-300 ease-in-out"
-            href="/papers"
+            href={`/papers#${paperId}`}
           >
             {paperId > 0 ? `Paper ${paperId} - ${paperTitle}` : "Foreword"}
           </Link>

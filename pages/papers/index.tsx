@@ -164,7 +164,10 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
                       <span className="text-xs text-gray-400">
                         Paper {paper.paperId}
                       </span>
-                      <h3 className="mt-1 text-lg font-bold leading-6 text-gray-600 dark:text-white">
+                      <h3
+                        className="mt-1 text-lg font-bold leading-6 text-gray-600 dark:text-white"
+                        id={paper.paperId}
+                      >
                         {paper.paperTitle}
                       </h3>
                     </div>
