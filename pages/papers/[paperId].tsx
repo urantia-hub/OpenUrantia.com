@@ -134,7 +134,18 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
   };
 
   const playAudio = async (nodeIndex: number = 0) => {
-    if (audioRef.current && currentPlayingNode === nodeIndex) {
+    // Extract the starting node from the URL fragment if present
+    const globalId = router.asPath.split("#")[1];
+    let startNodeIndex = nodeIndex;
+
+    if (globalId) {
+      const node = nodes.find((node) => node.globalId === globalId);
+      if (node) {
+        startNodeIndex = nodes.indexOf(node);
+      }
+    }
+
+    if (audioRef.current && currentPlayingNode === startNodeIndex) {
       try {
         await audioRef.current.play();
         setTimeout(() => {
@@ -147,7 +158,7 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
       return;
     }
 
-    const audio = new Audio(nodes[nodeIndex].mp3Url);
+    const audio = new Audio(nodes[startNodeIndex].mp3Url);
 
     if (audio) {
       try {
@@ -164,17 +175,17 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
           audio.playbackRate = playbackRate;
         }, 100);
 
-        setCurrentPlayingNode(nodeIndex);
+        setCurrentPlayingNode(startNodeIndex);
         audio.onended = () => {
           // Mark the paragraph as read after the audio finishes playing
-          if (nodes[nodeIndex].type === "paragraph") {
-            markParagraphAsRead(nodes[nodeIndex]);
+          if (nodes[startNodeIndex].type === "paragraph") {
+            markParagraphAsRead(nodes[startNodeIndex]);
           }
-          playNextAudio(nodeIndex + 1);
+          playNextAudio(startNodeIndex + 1);
         };
       } catch (error) {
         console.error("Error playing audio:", error);
-        playNextAudio(nodeIndex + 1);
+        playNextAudio(startNodeIndex + 1);
       }
     }
   };
@@ -727,7 +738,7 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
         const yOffset = -20;
         const y =
           element.getBoundingClientRect().top + window.scrollY + yOffset;
-        window.scrollTo({ top: y });
+        window.scrollTo({ top: y, behavior: "instant" });
 
         // Highlight the query text, it's done this way because we don't want to replace the
         // raw HTML since it will destroy event listeners.
