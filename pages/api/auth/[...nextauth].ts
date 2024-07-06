@@ -5,12 +5,13 @@ import NextAuth from "next-auth";
 import sgMail from "@sendgrid/mail";
 import type { Adapter } from "next-auth/adapters";
 import { PrismaAdapter } from "@auth/prisma-adapter";
-import { PrismaClient } from "@prisma/client";
+// Relative modules.
+import { getPrismaClient } from "@/libs/prisma/client";
 
 // Setting SendGrid API Key
 sgMail.setApiKey(process.env.SENDGRID_API_KEY as string);
 
-const prisma = new PrismaClient();
+const prisma = getPrismaClient();
 
 export const authOptions = {
   adapter: PrismaAdapter(prisma) as Adapter,

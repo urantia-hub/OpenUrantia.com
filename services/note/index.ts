@@ -3,7 +3,9 @@ import axios from "axios";
 import { Note, Prisma, PrismaClient } from "@prisma/client";
 // Relative modules.
 import BaseService from "@/services/base";
-import prisma from "@/prisma/client";
+import { getPrismaClient } from "@/libs/prisma/client";
+
+const prisma = getPrismaClient();
 
 type NoteServiceDependencies = {
   model: PrismaClient["note"];

@@ -5,7 +5,6 @@ import { User } from "@prisma/client";
 import AccountService from "@/services/account";
 import BookmarkService from "@/services/bookmark";
 import NoteService from "@/services/note";
-import ReadNodeService from "@/services/readNode";
 import SessionService from "@/services/session";
 import ShareService from "@/services/share";
 import UserService from "@/services/user";
@@ -15,7 +14,6 @@ import getSessionDetails from "@/utils/getSessionDetails";
 const accountService = new AccountService();
 const bookmarkService = new BookmarkService();
 const noteService = new NoteService();
-const readNodeService = new ReadNodeService();
 const sessionService = new SessionService();
 const shareService = new ShareService();
 const userService = new UserService();
@@ -71,14 +69,6 @@ const handleDelete = async (
   } catch (error) {
     console.error(
       `Error attempting to delete notes for userId ${user.id}`,
-      error
-    );
-  }
-  try {
-    await readNodeService.deleteMany({ where: { userId: user.id } });
-  } catch (error) {
-    console.error(
-      `Error attempting to delete readNodes for userId ${user.id}`,
       error
     );
   }

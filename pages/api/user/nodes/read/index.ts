@@ -42,10 +42,12 @@ async function handlePOST(
   // Create the read node.
   const readNode = await readNodeService.create({
     data: {
+      createdAt: new Date().toISOString(),
       globalId,
       paperId,
       paperSectionId,
       paperSectionParagraphId,
+      updatedAt: new Date().toISOString(),
       userId: user.id,
     },
   });

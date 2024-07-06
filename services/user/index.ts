@@ -2,7 +2,9 @@
 import { User, Prisma, PrismaClient } from "@prisma/client";
 // Relative modules.
 import BaseService from "@/services/base";
-import prisma from "@/prisma/client";
+import { getPrismaClient } from "@/libs/prisma/client";
+
+const prisma = getPrismaClient();
 
 type UserServiceDependencies = {
   model: PrismaClient["user"];

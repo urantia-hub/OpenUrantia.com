@@ -1,3 +1,14 @@
+interface ReadNode {
+  createdAt: string;
+  globalId: string;
+  id: string;
+  paperId: string;
+  paperSectionId: string;
+  paperSectionParagraphId: string;
+  updatedAt: string;
+  userId: string;
+}
+
 type UBNode = {
   globalId: string;
   htmlText?: string;
