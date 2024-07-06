@@ -102,8 +102,7 @@ const HomePage = () => {
                     ? "the Foreword"
                     : `Paper ${lastVisitedNode.paperId}`
                 }?`
-              : `Embark on an enlightening journey with a personalized, seamless
-            reading experience.`}
+              : `Embark on an enlightening journey with a personalized, seamless reading experience.`}
           </p>
 
           <div className="flex flex-col md:flex-row items-center md:items-end justify-center mt-10 mb-10 md:mb-20">

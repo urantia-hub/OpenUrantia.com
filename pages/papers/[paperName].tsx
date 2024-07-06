@@ -23,6 +23,11 @@ import {
   NEXT_AUDIO_DELAY,
   PAPER_ID_TO_MP3_URL,
 } from "@/utils/config";
+import {
+  getPaperIdFromPaperUrl,
+  getValidPaperUrls,
+  paperIdToUrl,
+} from "@/utils/paperFormatters";
 
 const notoSerifFont = Noto_Serif({
   subsets: ["latin"],
@@ -1419,7 +1424,38 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
 };
 
 export async function getStaticProps(context: any) {
-  const { paperId } = context.params;
+  const { paperName } = context.params as { paperName: string };
+
+  // Get valid paper URLs.
+  const validPaperUrls = getValidPaperUrls();
+
+  // Check if the paperName is a valid paper URL.
+  if (!validPaperUrls.includes(paperName)) {
+    // If the paperName is a paperId, redirect to the correct URL.
+    const paperId = Number(paperName);
+
+    if (!isNaN(paperId) && paperId >= 0 && paperId <= 196) {
+      const paperUrl = paperIdToUrl(String(paperId));
+      return {
+        redirect: {
+          destination: `/papers/${paperUrl}`,
+          permanent: true,
+        },
+      };
+    }
+
+    // If the paperName is not a valid paper URL, return a 404.
+    return {
+      notFound: true,
+    };
+  }
+
+  const paperId = getPaperIdFromPaperUrl(paperName);
+  if (Number.isNaN(paperId)) {
+    return {
+      notFound: true,
+    };
+  }
 
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_URANTIA_DEV_API_HOST}/api/v1/urantia-book/read?paperId=${paperId}`
@@ -1443,10 +1479,11 @@ export async function getStaticProps(context: any) {
 }
 
 export async function getStaticPaths() {
-  const paperIds = Array.from(Array(197).keys());
-  const paths = paperIds.map((paperId) => ({
-    params: { paperId: String(paperId) },
-  }));
+  const allPaperIds = Array.from(Array(197).keys());
+  const paths = allPaperIds.map((paperId) => {
+    const paperName = paperIdToUrl(String(paperId));
+    return { params: { paperName } };
+  });
 
   return {
     paths,
