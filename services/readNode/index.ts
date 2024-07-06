@@ -2,7 +2,6 @@
 import getDynamoDBClient from "@/libs/aws/index";
 import axios from "axios";
 import { createId } from "@paralleldrive/cuid2";
-import moment from "moment";
 
 const dynamoDB = getDynamoDBClient();
 
@@ -23,20 +22,19 @@ export class ReadNodeService {
   }
 
   async find(args: {
-    where: { userId: string; globalId?: string; createdAt?: { gte: Date } };
+    where: { userId: string; globalId?: string; createdAt?: { gte: string } };
     orderBy?: { createdAt: "asc" | "desc" };
   }): Promise<ReadNode | null> {
     const { userId, globalId, createdAt } = args.where;
     let keyConditionExpression = "userId = :userId";
     const expressionAttributeValues: any = { ":userId": userId };
 
-    if (globalId) {
-      keyConditionExpression += " AND globalId = :globalId";
-      expressionAttributeValues[":globalId"] = globalId;
-    }
     if (createdAt) {
       keyConditionExpression += " AND createdAt >= :gte";
-      expressionAttributeValues[":gte"] = createdAt.gte.toISOString();
+      expressionAttributeValues[":gte"] = createdAt.gte;
+    } else {
+      keyConditionExpression += " AND createdAt = :dummyCreatedAt";
+      expressionAttributeValues[":dummyCreatedAt"] = "1970-01-01T00:00:00.000Z"; // Default minimal value
     }
 
     const params = {
@@ -46,6 +44,13 @@ export class ReadNodeService {
       ExpressionAttributeValues: expressionAttributeValues,
       ScanIndexForward: args.orderBy?.createdAt === "asc" ? true : false, // Ascending or descending
       Limit: 1, // Get the most recent one
+      ...(globalId && {
+        FilterExpression: "globalId = :globalId",
+        ExpressionAttributeValues: {
+          ...expressionAttributeValues,
+          ":globalId": globalId,
+        },
+      }),
     };
 
     const data = await dynamoDB.query(params).promise();
@@ -65,18 +70,13 @@ export class ReadNodeService {
     const expressionAttributeValues: any = { ":userId": userId };
     let keyConditionExpression = "userId = :userId";
 
-    if (paperId) {
-      keyConditionExpression += " AND paperId = :paperId";
-      expressionAttributeValues[":paperId"] = paperId;
-    }
     if (createdAt) {
       keyConditionExpression += " AND createdAt BETWEEN :gte AND :lte";
-      expressionAttributeValues[":gte"] = moment
-        .utc(createdAt.gte)
-        .toISOString();
-      expressionAttributeValues[":lte"] = moment
-        .utc(createdAt.lte)
-        .toISOString();
+      expressionAttributeValues[":gte"] = createdAt.gte;
+      expressionAttributeValues[":lte"] = createdAt.lte;
+    } else {
+      keyConditionExpression += " AND createdAt >= :dummyCreatedAt";
+      expressionAttributeValues[":dummyCreatedAt"] = "1970-01-01T00:00:00.000Z"; // Default minimal value
     }
 
     const params = {
@@ -85,6 +85,13 @@ export class ReadNodeService {
       KeyConditionExpression: keyConditionExpression,
       ExpressionAttributeValues: expressionAttributeValues,
       ScanIndexForward: args.orderBy?.createdAt === "asc" ? true : false, // Ascending or descending
+      ...(paperId && {
+        FilterExpression: "paperId = :paperId",
+        ExpressionAttributeValues: {
+          ...expressionAttributeValues,
+          ":paperId": paperId,
+        },
+      }),
     };
 
     const data = await dynamoDB.query(params).promise();

@@ -31,7 +31,7 @@ async function handlePOST(
       globalId,
       userId: user.id,
       createdAt: {
-        gte: moment().subtract(5, "minutes").toDate(),
+        gte: moment.utc().subtract(5, "minutes").toISOString(),
       },
     },
   });
@@ -42,12 +42,12 @@ async function handlePOST(
   // Create the read node.
   const readNode = await readNodeService.create({
     data: {
-      createdAt: new Date().toISOString(),
+      createdAt: moment.utc().toISOString(),
       globalId,
       paperId,
       paperSectionId,
       paperSectionParagraphId,
-      updatedAt: new Date().toISOString(),
+      updatedAt: moment.utc().toISOString(),
       userId: user.id,
     },
   });
@@ -74,7 +74,7 @@ async function handleGET(
   const readNodes = await readNodeService.findMany({
     where: {
       userId: user.id,
-      paperId,
+      paperId: `${paperId}`,
     },
     orderBy: {
       createdAt: "desc",
