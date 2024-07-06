@@ -5,10 +5,13 @@ import Link from "next/link";
 import Modal from "@/components/Modal";
 import Spinner from "@/components/Spinner";
 import { renderLeadingText } from "@/utils/renderNode";
+import { paperIdToUrl } from "@/utils/paperFormatters";
 
 const constructShareUrl = (node: UBNode) => {
   // Replace this with actual URL construction logic
-  return `${process.env.NEXT_PUBLIC_OPEN_URANTIA_HOST}/papers/${node.paperId}#${node.globalId}`;
+  return `${process.env.NEXT_PUBLIC_OPEN_URANTIA_HOST}/papers/${paperIdToUrl(
+    node.paperId
+  )}#${node.globalId}`;
 };
 
 type ShareProps = {

@@ -4,6 +4,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 // Relative modules.
 import UserService from "@/services/user";
 import { paperLabels, paperLabelsLookup } from "@/utils/paperLabels";
+import { paperIdToUrl } from "@/utils/paperFormatters";
 
 const userService = new UserService();
 
@@ -86,7 +87,11 @@ const handleCron = async (req: NextApiRequest, res: NextApiResponse) => {
           ? "the Foreword"
           : `Paper ${user.lastVisitedPaperId} - ${user.lastVisitedPaperTitle}`
       }`,
-      continueReadingUrl: `${process.env.NEXT_PUBLIC_OPEN_URANTIA_HOST}/papers/${user.lastVisitedPaperId}#${user.lastVisitedGlobalId}`,
+      continueReadingUrl: `${
+        process.env.NEXT_PUBLIC_OPEN_URANTIA_HOST
+      }/papers/${paperIdToUrl(`${user.lastVisitedPaperId}`)}#${
+        user.lastVisitedGlobalId
+      }`,
     },
   }));
 

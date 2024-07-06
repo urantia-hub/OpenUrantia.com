@@ -7,6 +7,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import HeadTag from "@/components/HeadTag";
 import Spinner from "@/components/Spinner";
+import { paperIdToUrl } from "@/utils/paperFormatters";
 
 // Define the structure of the data you expect from the API
 type TOCNode = {
@@ -270,7 +271,7 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
                         return (
                           <Link
                             key={paper.globalId}
-                            href={`/papers/${paper.paperId}`}
+                            href={`/papers/${paperIdToUrl(`${paper.paperId}`)}`}
                             className="relative flex flex-col items-start text-left justify-between px-4 py-2 mb-2 bg-white dark:bg-neutral-700 hover:dark:bg-neutral-600 rounded transition-colors hover:no-underline hover:shadow-lg hover:dark:shadow-none transition-shadow duration-300"
                           >
                             <div className="flex flex-col w-full">
@@ -346,7 +347,7 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
                         return (
                           <Link
                             className="relative flex flex-col items-start text-left justify-between px-4 py-2 mb-2 bg-white dark:bg-neutral-700 hover:dark:bg-neutral-600 rounded transition-colors hover:no-underline hover:shadow-lg hover:dark:shadow-none transition-shadow duration-300"
-                            href={`/papers/${paper.paperId}`}
+                            href={`/papers/${paperIdToUrl(`${paper.paperId}`)}`}
                             key={paper.globalId}
                           >
                             <div className="flex flex-col w-full">

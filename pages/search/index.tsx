@@ -8,6 +8,7 @@ import HeadTag from "@/components/HeadTag";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Spinner from "@/components/Spinner";
+import { paperIdToUrl } from "@/utils/paperFormatters";
 
 const Search = () => {
   // Router.
@@ -182,7 +183,7 @@ const Search = () => {
               aria-label="View paragraph in context"
               className="mb-6 text-left hover:no-underline isolated-quote"
               key={result.globalId}
-              href={`/papers/${result.paperId}#${
+              href={`/papers/${paperIdToUrl(`${result.paperId}`)}#${
                 result.globalId
               }?q=${encodeURIComponent(query)}`}
             >

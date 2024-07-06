@@ -2,6 +2,7 @@
 import Link from "next/link";
 // Relative modules.
 import { paperLabelsLookup } from "@/utils/paperLabels";
+import { paperIdToUrl } from "@/utils/paperFormatters";
 
 const PaperCard = ({
   nextGlobalId,
@@ -28,7 +29,7 @@ const PaperCard = ({
     <Link
       aria-label="Read paper"
       className="flex flex-col justify-between px-4 py-2 bg-white dark:bg-neutral-700 hover:dark:bg-neutral-600 rounded transition-colors hover:no-underline hover:shadow-lg hover:dark:shadow-none transition-shadow duration-300"
-      href={`/papers/${paperId}${
+      href={`/papers/${paperIdToUrl(paperId)}${
         progress > 0 && progress < 100 && !nextGlobalId?.endsWith("0.1")
           ? `#${nextGlobalId}`
           : ""

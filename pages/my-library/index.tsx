@@ -11,6 +11,7 @@ import HeadTag from "@/components/HeadTag";
 import Navbar from "@/components/Navbar";
 import Spinner from "@/components/Spinner";
 import { renderLeadingText } from "@/utils/renderNode";
+import { paperIdToUrl } from "@/utils/paperFormatters";
 
 type Activity = UBNode &
   Bookmark &
@@ -93,7 +94,7 @@ const MyLibrary = () => {
           <Link
             aria-label="View note"
             className="mb-6 text-left hover:no-underline note bg-white dark:bg-zinc-900 p-4 rounded hover:shadow-lg transition duration-300 ease-in-out"
-            href={`/papers/${node.paperId}#${node.globalId}`}
+            href={`/papers/${paperIdToUrl(`${node.paperId}`)}#${node.globalId}`}
             id={node.createdAt}
             key={index}
           >
@@ -133,7 +134,7 @@ const MyLibrary = () => {
           <Link
             aria-label="View bookmark"
             className="mb-6 text-left hover:no-underline bookmark bg-white dark:bg-zinc-900 p-4 rounded hover:shadow-lg transition duration-300 ease-in-out"
-            href={`/papers/${node.paperId}#${node.globalId}`}
+            href={`/papers/${paperIdToUrl(`${node.paperId}`)}#${node.globalId}`}
             id={node.createdAt}
             key={index}
           >
@@ -293,7 +294,7 @@ const MyLibrary = () => {
               {filterType === "all" && paperFilter === "all" ? (
                 <p className="text-gray-400">
                   Start by adding a{" "}
-                  <Link className="text-blue-400" href="/papers/0">
+                  <Link className="text-blue-400" href="/papers/foreword">
                     note or bookmark to the Foreword
                   </Link>
                   .

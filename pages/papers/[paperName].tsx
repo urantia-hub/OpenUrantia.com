@@ -253,7 +253,7 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
     const topMostVisibleNode = findTopMostVisibleNode();
 
     // Set the callback URL.
-    let callbackUrl = `/papers/${paperId}`;
+    let callbackUrl = `/papers/${paperIdToUrl(`${paperId}`)}`;
     if (topMostVisibleNode) {
       callbackUrl += `#${topMostVisibleNode.id}`;
     }
@@ -1364,7 +1364,7 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
           {nextPaperId ? (
             <Link
               className="flex text-right text-gray-400 hover:text-gray-600 hover:dark:text-white transition duration-300 ease-in-out"
-              href={`/papers/${nextPaperId}`}
+              href={`/papers/${paperIdToUrl(`${nextPaperId}`)}`}
             >
               Next{" "}
               <svg className="w-6 h-6" viewBox="0 0 24 24">

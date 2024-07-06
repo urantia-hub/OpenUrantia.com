@@ -6,6 +6,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import SentQuoteService from "@/services/sentQuote";
 import UserService from "@/services/user";
 import CuratedQuoteService from "@/services/curatedQuote";
+import { paperIdToUrl } from "@/utils/paperFormatters";
 
 const curatedQuoteService = new CuratedQuoteService();
 const sentQuoteService = new SentQuoteService();
@@ -99,7 +100,9 @@ const handleCron = async (_: NextApiRequest, res: NextApiResponse) => {
           ? "Foreword"
           : `Paper ${paperId} - ${paragraph.paperTitle} - "(${standardReferenceId}) ${text}"`
       }`,
-      continueReadingUrl: `${process.env.NEXT_PUBLIC_OPEN_URANTIA_HOST}/papers/${paperId}#${globalId}`,
+      continueReadingUrl: `${
+        process.env.NEXT_PUBLIC_OPEN_URANTIA_HOST
+      }/papers/${paperIdToUrl(`${paperId}`)}#${globalId}`,
     },
   }));
 

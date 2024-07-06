@@ -3,6 +3,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { User } from "@prisma/client";
 // Relative modules.
 import getSessionDetails from "@/utils/getSessionDetails";
+import { paperIdToUrl } from "@/utils/paperFormatters";
 
 const TEMPORARY_REDIRECT = 307;
 
@@ -13,7 +14,7 @@ const redirectToPaper = (
 ) => {
   // Default to the first paper.
   if (!paperId && !globalId) {
-    return res.redirect(TEMPORARY_REDIRECT, "/papers/0");
+    return res.redirect(TEMPORARY_REDIRECT, "/papers/foreword");
   }
 
   // If only 1 of the 2 is provided, 400.
@@ -24,7 +25,10 @@ const redirectToPaper = (
   }
 
   // Redirect to the paper.
-  return res.redirect(TEMPORARY_REDIRECT, `/papers/${paperId}#${globalId}`);
+  return res.redirect(
+    TEMPORARY_REDIRECT,
+    `/papers/${paperIdToUrl(`${paperId}`)}#${globalId}`
+  );
 };
 
 // Handle GET method.

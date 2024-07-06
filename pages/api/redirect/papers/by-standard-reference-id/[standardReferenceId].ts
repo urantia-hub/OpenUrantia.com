@@ -1,5 +1,6 @@
 // Node modules.
 import { getGlobalIdFromStandardReferenceId } from "@/utils/node";
+import { paperIdToUrl } from "@/utils/paperFormatters";
 import type { NextApiRequest, NextApiResponse } from "next";
 
 const PERMANENT_REDIRECT = 301;
@@ -36,8 +37,11 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
 
   // Redirect to the paper page.
   if (globalId) {
-    res.redirect(PERMANENT_REDIRECT, `/papers/${paperId}#${globalId}`);
+    res.redirect(
+      PERMANENT_REDIRECT,
+      `/papers/${paperIdToUrl(`${paperId}`)}#${globalId}`
+    );
   } else {
-    res.redirect(PERMANENT_REDIRECT, `/papers/${paperId}`);
+    res.redirect(PERMANENT_REDIRECT, `/papers/${paperIdToUrl(`${paperId}`)}`);
   }
 }

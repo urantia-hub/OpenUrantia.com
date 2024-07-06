@@ -8,6 +8,7 @@ import Footer from "@/components/Footer";
 import HeadTag from "@/components/HeadTag";
 import { paperLabels } from "@/utils/paperLabels";
 import Spinner from "@/components/Spinner";
+import { paperIdToUrl } from "@/utils/paperFormatters";
 
 // Define the structure of the data you expect from the API
 type TOCNode = {
@@ -157,7 +158,7 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
                 return (
                   <Link
                     className="relative flex flex-col justify-between px-4 py-2 mb-2 bg-white dark:bg-neutral-700 hover:dark:bg-neutral-600 rounded transition-colors hover:no-underline hover:shadow-lg hover:dark:shadow-none transition-shadow duration-300"
-                    href={`/papers/${paper.paperId}`}
+                    href={`/papers/${paperIdToUrl(`${paper.paperId}`)}`}
                     key={paper.globalId}
                   >
                     <div className="flex flex-col">
@@ -210,7 +211,7 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pb-6">
               <Link
                 className="relative block px-4 py-2 bg-white dark:bg-neutral-700 hover:dark:bg-neutral-600 rounded transition-colors hover:no-underline hover:shadow-lg hover:dark:shadow-none transition-shadow duration-300"
-                href={`/papers/${currentNode.paperId}`}
+                href={`/papers/${paperIdToUrl(`${currentNode.paperId}`)}`}
               >
                 <span className="text-xs text-gray-400">Foreword</span>
                 <h3 className="text-lg font-bold text-gray-600 dark:text-white">
