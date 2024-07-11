@@ -90,41 +90,15 @@ const HomePage = () => {
 
       <main>
         {/* Hero Section */}
-        <section className="min-h-screen pt-8 md:pt-16 md:pt-15 px-6 md:px-12 text-center bg-cover bg-center bg-slate-100">
-          <h1 className="mt-0 md:mt-8 mb-2 text-4xl md:text-7xl font-bold text-gray-700">
-            Discover the Urantia Papers
+        <section className="hero-background min-h-screen pt-8 px-6 text-center bg-cover bg-center bg-slate-100 flex flex-col items-center justify-center">
+          <p className="text-white">Experience the</p>
+          <h1 className="mt-0 mb-12 text-5xl md:text-7xl font-bold text-white w-full">
+            Urantia Papers
           </h1>
-
-          <p className="text-lg mx-auto leading-relaxed max-w-2xl">
-            {lastVisitedNode?.paperId && status === "authenticated"
-              ? `Welcome back! Ready to continue your journey reading ${
-                  lastVisitedNode.paperId === "0"
-                    ? "the Foreword"
-                    : `Paper ${lastVisitedNode.paperId}`
-                }?`
-              : `Embark on an enlightening journey with a personalized, seamless reading experience.`}
-          </p>
-
-          <div className="flex flex-col md:flex-row items-center md:items-end justify-center mt-10 mb-10 md:mb-20">
-            <Image
-              alt="Urantia Papers on an iPhone 14 Pro"
-              className="md:mr-4 mb-4 md:mb-0"
-              height={350}
-              src="/paper-63-iphone-14-pro.png"
-              width={176}
-            />
-            <Image
-              alt="Urantia Papers on a MacBook Pro"
-              className="hidden md:block"
-              height={600}
-              src="/foreword-macbook-pro.png"
-              width={600}
-            />
-          </div>
 
           {status === "authenticated" && (
             <Link
-              className="fade-in bg-blue-400 text-white font-bold py-4 px-8 rounded shadow-xl hover:bg-blue-500 transition duration-300 ease-in-out hover:no-underline"
+              className="fade-in bg-white text-gray-600 font-bold py-4 px-8 rounded shadow-xl transition duration-300 ease-in-out hover:no-underline"
               href={deriveReadLink(status)}
             >
               Continue Reading
@@ -132,7 +106,7 @@ const HomePage = () => {
           )}
           {status === "unauthenticated" && (
             <Link
-              className="fade-in bg-blue-400 text-white font-bold py-4 px-8 rounded shadow-xl hover:bg-blue-500 transition duration-300 ease-in-out hover:no-underline"
+              className="fade-in bg-white text-gray-600 font-bold py-4 px-8 rounded shadow-xl transition duration-300 ease-in-out hover:no-underline"
               href="/auth/sign-in"
             >
               Sign in to get started
@@ -141,7 +115,7 @@ const HomePage = () => {
 
           {showDownButton && (
             <div
-              className="fade-in fixed bottom-0 left-0 right-0 mx-auto w-12 h-12 mb-8 bg-gray-200 rounded-full p-2 z-10 cursor-pointer hover:bg-gray-300 transition duration-300 ease-in-out"
+              className="fade-in fixed bottom-0 left-0 right-0 mx-auto w-12 h-12 mb-8 bg-white rounded-full p-2 z-10 cursor-pointer hover:bg-gray-300 transition duration-300 ease-in-out"
               onClick={() => {
                 const afterHero = document.getElementById("after-hero");
                 afterHero?.scrollIntoView({
@@ -152,7 +126,7 @@ const HomePage = () => {
             >
               <svg
                 aria-hidden="true"
-                className="w-full h-full text-white"
+                className="w-full h-full text-gray-600"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
