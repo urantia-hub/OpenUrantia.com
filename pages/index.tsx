@@ -109,7 +109,7 @@ const HomePage = () => {
               className="fade-in bg-white text-gray-600 font-bold py-4 px-8 rounded shadow-xl transition duration-300 ease-in-out hover:no-underline"
               href="/auth/sign-in"
             >
-              Sign in to get started
+              Sign Up
             </Link>
           )}
 
