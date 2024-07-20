@@ -22,6 +22,11 @@ const handlePOST = async (req: NextApiRequest, res: NextApiResponse) => {
       }
     );
 
+    const filteredResults = response.data.data.results.filter(
+      (item: any) => item.type === "paragraph"
+    );
+    response.data.data.results = filteredResults;
+
     // Return the data to the client
     res.status(200).json(response.data);
   } catch (error) {
