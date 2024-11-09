@@ -28,6 +28,8 @@ import {
   getValidPaperUrls,
   paperIdToUrl,
 } from "@/utils/paperFormatters";
+import AskAI from "@/components/AskAI";
+import { HelpCircle, MessageCircleQuestion, X } from "lucide-react";
 
 const notoSerifFont = Noto_Serif({
   subsets: ["latin"],
@@ -1077,6 +1079,20 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
                 </div>
                 <div className="flex items-center select-none">
                   <div className="flex items-center mr-2 fade-in">
+                    {/* Explain Button */}
+                    {expandedGlobalId === node.globalId && (
+                      <button
+                        aria-label="Explain"
+                        className="bg-transparent border-0 dark:border-0 p-0 dark:p-0 m-0 mr-3 focus:outline-0 focus:dark:outline-0 text-gray-400 dark:text-gray-400 text-sm hover:text-gray-600 hover:dark:text-white transition duration-300 ease-in-out"
+                        onClick={() =>
+                          setSelectedGlobalIdExplain(node.globalId)
+                        }
+                        type="button"
+                      >
+                        <HelpCircle className="w-6 h-6" />
+                      </button>
+                    )}
+
                     {/* Audio Button */}
                     {AUDIO_ENABLED &&
                       AUDIO_ENABLED_PAPER_IDS.includes(node.paperId) &&
@@ -1085,7 +1101,7 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
                         notesForNode.length > 0) && (
                         <button
                           aria-label="Play"
-                          className="flex-shrink-0 ml-2 text-gray-400 hover:text-gray-600 dark:text-white dark:bg-neutral-700 hover:dark:text-white border-0 rounded-full p-0.5 mr-3 focus:outline-none transition duration-300 ease-in-out relative"
+                          className="flex-shrink-0 text-gray-400 hover:text-gray-600 dark:text-white dark:bg-neutral-700 hover:dark:text-white border-0 rounded-full p-0.5 mr-3 focus:outline-none transition duration-300 ease-in-out relative"
                           onClick={() =>
                             currentPlayingNode === nodes.indexOf(node) &&
                             (isPlaying || isTransitioning)
@@ -1351,6 +1367,56 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
       {/* Share Modal */}
       {selectedGlobalIdShare && (
         <Share onClose={onShareClose} node={shareNode} />
+      )}
+
+      {/* Add Explain Modal */}
+      {selectedGlobalIdExplain && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4"
+          onClick={onExplainClose}
+        >
+          <div
+            className="bg-white dark:bg-neutral-800 rounded-lg w-full max-w-2xl max-h-[80vh] overflow-hidden shadow-xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Modal Header */}
+            <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-neutral-700">
+              <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
+                AI Explanation
+              </h2>
+              <button
+                onClick={onExplainClose}
+                className="text-gray-400 hover:text-gray-500 dark:hover:text-gray-300 transition duration-200"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Modal Body */}
+            <div className="p-4 overflow-y-auto max-h-[calc(80vh-120px)]">
+              {/* Original Text */}
+              <div className="p-4 bg-slate-100 dark:bg-neutral-900 rounded-lg mb-4">
+                <p className="text-sm font-medium text-slate-500 dark:text-slate-400 mb-2">
+                  Original Text:
+                </p>
+                <p
+                  className="text-sm text-gray-900 dark:text-white"
+                  dangerouslySetInnerHTML={{
+                    __html: explainNode?.htmlText as string,
+                  }}
+                />
+              </div>
+
+              <AskAI
+                selectedText={explainNode?.text}
+                isModalOpen={selectedGlobalIdExplain === explainNode?.globalId}
+                onClose={onExplainClose}
+                node={explainNode}
+                nodes={nodes}
+              />
+            </div>
+          </div>
+        </div>
       )}
 
       <main className="relative mt-16 flex-grow container mx-auto px-4 my-4 max-w-3xl paper-content">
