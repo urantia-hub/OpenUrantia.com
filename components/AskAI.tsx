@@ -30,7 +30,7 @@ const AskAI = ({
   const [response, setResponse] = useState<string>("");
   const [loading, setLoading] = useState(false);
   const [loadingMessage, setLoadingMessage] = useState(loadingMessages[0]);
-  const [messageOpacity, setMessageOpacity] = useState(0);
+  const [messageOpacity, setMessageOpacity] = useState(1);
   const [error, setError] = useState<string | null>(null);
 
   const getPrecedingContext = (currentNode: UBNode, allNodes: UBNode[]) => {
@@ -147,6 +147,23 @@ ${precedingParagraphs.map((p, i) => `[${i + 1}] ${p}`).join("\n\n")}`;
     };
   }, [loading]);
 
+  // Add escape key handler
+  useEffect(() => {
+    const handleEscapeKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape" && onClose) {
+        onClose();
+      }
+    };
+
+    if (isModalOpen) {
+      document.addEventListener("keydown", handleEscapeKey);
+    }
+
+    return () => {
+      document.removeEventListener("keydown", handleEscapeKey);
+    };
+  }, [isModalOpen, onClose]);
+
   const handleBackdropClick = (e: React.MouseEvent) => {
     if (e.target === e.currentTarget && onClose) {
       onClose();
@@ -200,7 +217,7 @@ ${precedingParagraphs.map((p, i) => `[${i + 1}] ${p}`).join("\n\n")}`;
         </div>
 
         {/* Modal Body */}
-        <div className="p-4 overflow-y-auto max-h-[calc(100vh-180px)]">
+        <div className="p-4 overflow-y-auto max-h-[calc(100vh-110px)] md:max-h-[calc(100vh-180px)]">
           {/* Selected Text */}
           <div className="p-4 bg-slate-100 dark:bg-neutral-900 rounded-lg mb-4">
             <p className="text-xs font-medium text-slate-500 dark:text-slate-400 mb-2">

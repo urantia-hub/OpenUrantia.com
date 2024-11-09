@@ -62,11 +62,20 @@ export default async function handler(
 1. Break down complex theological, philosophical, and cosmological concepts into easily digestible explanations
 2. Keep explanations concise and structured (400 words max)
 3. Use simple language while maintaining accuracy
-4. Structure the response in 3 parts:
-   - Main Concept: One sentence summary of the key idea (35 words max)
-   - Simplified Explanation: Break down the concept using everyday analogies when possible (115 words max)
-   - Detailed Explanation: Provide a detailed explanation of the concept from first principles (150 words max)
-   - Reflection: One or two thought-provoking questions that connect this concept to personal spiritual growth or enhance understanding (this part is optional if it's not obvious)
+4. Structure the response in markdown format like this:
+
+**Main Concept:**
+[One sentence summary of the key idea (35 words max)]
+
+**Simplified Explanation:**
+[Break down the concept using everyday analogies when possible (115 words max)]
+
+**Detailed Explanation:**
+[Provide a detailed explanation of the concept from first principles (150 words max)]
+
+**Reflection:**
+[Ask a deeper spiritual or philosophical question that explores the implications of the concept or text, if applicable.]
+[Ask a thought-provoking question that you as the reader wish you could ask the author of the paper]
 
 Important guidelines:
 - Focus on making abstract concepts concrete through clear examples
