@@ -22,8 +22,13 @@ const handlePOST = async (req: NextApiRequest, res: NextApiResponse) => {
       }
     );
 
+    // Ensure results are unique by globalId.
     const filteredResults = response.data.data.results.filter(
-      (item: any) => item.type === "paragraph"
+      (result: { globalId: string }, index: number, self: any) =>
+        index ===
+        self.findIndex(
+          (node: { globalId: string }) => node.globalId === result.globalId
+        )
     );
     response.data.data.results = filteredResults;
 

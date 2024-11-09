@@ -638,3 +638,21 @@ export const paperIdToUrl = (paperId: string): string => {
   // If it's a valid paper ID, return the kebab case title.
   return `paper-${paperId}-${paperIdToKebabPaperTitle(paperId)}`;
 };
+
+export const PAPERS_LOOKUP = {
+  foreword: {
+    title: "Foreword",
+    paperId: "0",
+    link: "/papers/foreword",
+  },
+  "0": {
+    title: "Foreword",
+    paperId: "0",
+    link: "/papers/foreword",
+  },
+  "1": {
+    title: "Paper 1: The Universal Father",
+    paperId: "1",
+    link: "/papers/paper-1-the-universal-father",
+  },
+};

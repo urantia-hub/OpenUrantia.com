@@ -3,6 +3,9 @@
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
 
+/* Import vertical timeline CSS */
+@import 'react-vertical-timeline-component/style.min.css';
+
 html,
 body {
   background-color: #f1f5f9;
@@ -419,4 +422,23 @@ select.select-selected {
   background-image: url('/background.png');
   background-size: cover;
   background-position: center;
+}
+
+.tag {
+  /* background-color: #e5e7eb;
+  border-radius: 9999px;
+  color: #1f2937;
+  display: inline-block;
+  font-size: 0.75rem;
+  margin-right: 0.5rem;
+  padding: 0.25rem 0.75rem; */
+}
+
+.dark .tag {
+  background-color: #374151;
+  color: #f9fafb;
+}
+
+.vertical-timeline-element-date {
+  padding: 0 2rem;
 }

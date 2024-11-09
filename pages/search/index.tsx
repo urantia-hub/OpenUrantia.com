@@ -178,6 +178,14 @@ const Search = () => {
 
         {/* Results */}
         <div className="flex flex-col">
+          {PAPERS_LOOKUP.includes(query.toLowerCase()) && (
+            <div className="text-center text-gray-400 dark:text-gray-600 text-sm mb-4">
+              <p>
+                It looks like you are searching for a specific paper. Click on
+                the paper below to view it in its entirety.
+              </p>
+            </div>
+          )}
           {results?.map((result) => (
             <Link
               aria-label="View paragraph in context"
