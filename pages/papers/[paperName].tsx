@@ -1083,14 +1083,19 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
                     {expandedGlobalId === node.globalId && (
                       <button
                         aria-label="Explain"
-                        className="bg-transparent border-0 dark:border-0 p-0 dark:p-0 m-0 mr-3 focus:outline-0 focus:dark:outline-0 text-gray-400 dark:text-gray-400 text-sm hover:text-gray-600 hover:dark:text-white transition duration-300 ease-in-out"
+                        className="flex items-center bg-transparent border-0 dark:border-0 p-0 dark:p-0 m-0 mr-3 focus:outline-0 focus:dark:outline-0 text-gray-400 dark:text-gray-400 text-sm hover:text-gray-600 hover:dark:text-white transition duration-300 ease-in-out"
                         onClick={() =>
                           setSelectedGlobalIdExplain(node.globalId)
                         }
                         type="button"
                       >
-                        <HelpCircle className="w-6 h-6" />
+                        <HelpCircle className="w-5 h-5" />{" "}
+                        <span className="ml-2 text-base">Explain</span>
                       </button>
+                    )}
+
+                    {expandedGlobalId === node.globalId && (
+                      <span className="mr-2">|</span>
                     )}
 
                     {/* Audio Button */}

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
-import { useCompletion } from "ai/react";
 import { X } from "lucide-react";
+import ReactMarkdown from "react-markdown";
+
 import Spinner from "./Spinner";
 
 interface AskAIProps {
@@ -11,6 +12,14 @@ interface AskAIProps {
   nodes: UBNode[];
 }
 
+const loadingMessages = [
+  "Reviewing the text...",
+  "Making comparisons...",
+  "Getting more context...",
+  "Analyzing patterns...",
+  "Considering interpretations...",
+];
+
 const AskAI = ({
   selectedText,
   isModalOpen,
@@ -20,13 +29,18 @@ const AskAI = ({
 }: AskAIProps) => {
   const [response, setResponse] = useState<string>("");
   const [loading, setLoading] = useState(false);
+  const [loadingMessage, setLoadingMessage] = useState(loadingMessages[0]);
+  const [messageOpacity, setMessageOpacity] = useState(0);
+  const [error, setError] = useState<string | null>(null);
 
   const getPrecedingContext = (currentNode: UBNode, allNodes: UBNode[]) => {
+    // Find the index of the current node
     const currentIndex = allNodes.findIndex(
       (n) => n.globalId === currentNode.globalId
     );
     if (currentIndex === -1) return [];
 
+    // Walk backwards until we hit a section or paper node
     let sectionStartIndex = currentIndex;
     while (
       sectionStartIndex > 0 &&
@@ -36,6 +50,7 @@ const AskAI = ({
       sectionStartIndex--;
     }
 
+    // Return all paragraphs between the section start and current node
     return allNodes
       .slice(sectionStartIndex, currentIndex)
       .filter((n) => n.type === "paragraph")
@@ -58,6 +73,7 @@ const AskAI = ({
       if (isModalOpen && selectedText && node) {
         setLoading(true);
         setResponse("");
+        setError(null);
 
         const precedingParagraphs = getPrecedingContext(node, nodes);
         const { paperTitle, paperId, sections } = getStructuralContext(nodes);
@@ -83,6 +99,8 @@ ${precedingParagraphs.map((p, i) => `[${i + 1}] ${p}`).join("\n\n")}`;
             },
             body: JSON.stringify({
               messages: [{ role: "user", content: prompt }],
+              globalId: node.globalId,
+              paperId: node.paperId,
             }),
           });
 
@@ -90,10 +108,13 @@ ${precedingParagraphs.map((p, i) => `[${i + 1}] ${p}`).join("\n\n")}`;
           if (data.text) {
             setResponse(data.text);
           } else {
-            console.error("No text in response:", data);
+            throw new Error("No text in response");
           }
         } catch (error) {
           console.error("Error fetching explanation:", error);
+          setError(
+            "We're having trouble reaching our servers. Please try again later."
+          );
         } finally {
           setLoading(false);
         }
@@ -102,6 +123,29 @@ ${precedingParagraphs.map((p, i) => `[${i + 1}] ${p}`).join("\n\n")}`;
 
     fetchExplanation();
   }, [isModalOpen, selectedText, node, nodes]);
+
+  useEffect(() => {
+    let messageIndex = 0;
+    let intervalId: NodeJS.Timeout;
+    let fadeTimeoutId: NodeJS.Timeout;
+
+    if (loading) {
+      intervalId = setInterval(() => {
+        setMessageOpacity(0);
+
+        fadeTimeoutId = setTimeout(() => {
+          messageIndex = (messageIndex + 1) % loadingMessages.length;
+          setLoadingMessage(loadingMessages[messageIndex]);
+          setMessageOpacity(1);
+        }, 300);
+      }, 4000);
+    }
+
+    return () => {
+      if (intervalId) clearInterval(intervalId);
+      if (fadeTimeoutId) clearTimeout(fadeTimeoutId);
+    };
+  }, [loading]);
 
   const handleBackdropClick = (e: React.MouseEvent) => {
     if (e.target === e.currentTarget && onClose) {
@@ -156,10 +200,10 @@ ${precedingParagraphs.map((p, i) => `[${i + 1}] ${p}`).join("\n\n")}`;
         </div>
 
         {/* Modal Body */}
-        <div className="p-4 overflow-y-auto max-h-[calc(80vh-120px)]">
+        <div className="p-4 overflow-y-auto max-h-[calc(100vh-180px)]">
           {/* Selected Text */}
           <div className="p-4 bg-slate-100 dark:bg-neutral-900 rounded-lg mb-4">
-            <p className="text-sm font-medium text-slate-500 dark:text-slate-400 mb-2">
+            <p className="text-xs font-medium text-slate-500 dark:text-slate-400 mb-2">
               Text to Explain:
             </p>
             <p className="text-sm text-gray-900 dark:text-white">
@@ -170,11 +214,23 @@ ${precedingParagraphs.map((p, i) => `[${i + 1}] ${p}`).join("\n\n")}`;
           {/* AI Response */}
           <div className="space-y-4 pb-4 px-2">
             {loading ? (
-              <Spinner />
-            ) : response ? (
-              <p className="whitespace-pre-wrap text-gray-900 dark:text-white">
-                {response}
+              <div className="flex flex-col items-center justify-center">
+                <Spinner className="m-0" />
+                <p
+                  className="m-0 text-gray-600 dark:text-gray-400 transition-opacity duration-300"
+                  style={{ opacity: messageOpacity }}
+                >
+                  {loadingMessage}
+                </p>
+              </div>
+            ) : error ? (
+              <p className="text-sm mt-6 text-red-600 dark:text-red-400 text-center">
+                {error}
               </p>
+            ) : response ? (
+              <ReactMarkdown className="text-sm whitespace-pre-wrap text-gray-900 dark:text-white">
+                {response}
+              </ReactMarkdown>
             ) : null}
           </div>
         </div>

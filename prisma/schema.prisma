@@ -30,6 +30,19 @@ model Account {
   @@map("accounts")
 }
 
+model AIExplanation {
+  createdAt DateTime @default(now())
+  globalId  String   @unique
+  id        String   @id @default(cuid())
+  paperId   String
+  prompt    String   @db.Text
+  text      String   @db.Text
+  updatedAt DateTime @updatedAt
+
+  @@map("ai_explanations")
+  @@index([paperId])
+}
+
 model Bookmark {
   createdAt               DateTime @default(now())
   globalId                String
