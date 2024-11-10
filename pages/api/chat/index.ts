@@ -137,7 +137,7 @@ ${paperContext}`;
     try {
       await aiExplanationService.create({
         data: {
-          aiModel: AI_MODEL,
+          aiModel: AI_MODEL || "unknown",
           globalId,
           paperId,
           text,
