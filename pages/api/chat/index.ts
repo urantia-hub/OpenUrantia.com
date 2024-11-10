@@ -6,7 +6,8 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import AIExplanationService from "@/services/aiExplanation";
 import PaperService from "@/services/paper";
 
-const AI_MODEL = "o1-mini";
+const AI_MODEL = process.env.AI_MODEL || "o1-mini";
+const SUPPORTED_XAI_MODELS = ["grok-beta"];
 
 const aiExplanationService = new AIExplanationService();
 const paperService = new PaperService();
@@ -86,18 +87,47 @@ Important guidelines:
 Context - You are explaining a passage from:
 ${paperContext}`;
 
-    let response;
+    // Combine system prompt and user message
+    const combinedPrompt = `Instructions:\n${systemPrompt}\n\nUser Message:\n${messages[0].content}`;
+
+    let text;
     try {
       console.log(
-        `Generating explanation for ${globalId} with system prompt:\n\n${systemPrompt}\n\nAnd with messages:\n\n${JSON.stringify(
+        `Generating explanation for ${globalId} with model ${AI_MODEL} and with system prompt:\n\n${systemPrompt}\n\nAnd with messages:\n\n${JSON.stringify(
           messages
         )}`
       );
-      const combinedPrompt = `Instructions:\n${systemPrompt}\n\nUser Message:\n${messages[0].content}`;
-      response = await generateText({
-        model: openai(AI_MODEL),
-        prompt: combinedPrompt,
-      });
+      if (SUPPORTED_XAI_MODELS.includes(AI_MODEL)) {
+        // Make a request to xAI
+        const rawResponse = await fetch(
+          "https://api.x.ai/v1/chat/completions",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${process.env.XAI_API_KEY}`,
+            },
+            body: JSON.stringify({
+              messages: [
+                { role: "system", content: systemPrompt },
+                { role: "user", content: messages[0].content },
+              ],
+              model: AI_MODEL,
+              stream: false,
+              temperature: 0,
+            }),
+          }
+        );
+        const jsonResponse = await rawResponse.json();
+        console.log("xAI response:", jsonResponse.choices[0].message);
+        text = jsonResponse.choices[0].message.content;
+      } else {
+        const response = await generateText({
+          model: openai(AI_MODEL),
+          prompt: combinedPrompt,
+        });
+        text = response.text;
+      }
     } catch (error) {
       console.error("Error generating text:", error);
       return res.status(500).json({ error: "Unable to generate explanation" });
@@ -107,9 +137,10 @@ ${paperContext}`;
     try {
       await aiExplanationService.create({
         data: {
+          aiModel: AI_MODEL,
           globalId,
           paperId,
-          text: response.text,
+          text,
           prompt: messages[0].content,
         },
       });
@@ -117,7 +148,7 @@ ${paperContext}`;
       console.error("Error caching explanation:", error);
     }
 
-    return res.status(200).json({ text: response.text });
+    return res.status(200).json({ text });
   } catch (error) {
     console.error("Chat API error:", error);
     return res.status(500).json({ error: "Internal server error" });

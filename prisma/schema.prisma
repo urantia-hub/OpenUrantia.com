@@ -31,6 +31,7 @@ model Account {
 }
 
 model AIExplanation {
+  aiModel   String
   createdAt DateTime @default(now())
   globalId  String   @unique
   id        String   @id @default(cuid())
