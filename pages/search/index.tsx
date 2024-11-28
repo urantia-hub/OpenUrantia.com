@@ -128,7 +128,7 @@ const Search = () => {
   return (
     <div className="flex flex-col min-h-screen bg-slate-100 text-gray-700 dark:bg-neutral-800 dark:text-white">
       <HeadTag
-        metaDescription="Utilize OpenUrantia's search feature to find specific teachings, papers, or topics within The Urantia Papers, aiding your study and exploration."
+        metaDescription="Utilize UrantiaHub's search feature to find specific teachings, papers, or topics within The Urantia Papers, aiding your study and exploration."
         titlePrefix="Search"
       />
 

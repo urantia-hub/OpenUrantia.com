@@ -251,8 +251,7 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
   return (
     <div className="flex flex-col min-h-screen bg-slate-100 text-gray-700 dark:bg-neutral-800 dark:text-white">
       <HeadTag
-        // metaDescription="Explore the rich tapestry of wisdom within The Urantia Papers on OpenUrantia, discovering insights and teachings that resonate with you."
-        metaDescription="Find the Urantia Papers that resonate with you on OpenUrantia. With over 197 papers, there is a wealth of wisdom to explore."
+        metaDescription="Find the Urantia Papers that resonate with you on UrantiaHub. With 197 papers, there is a wealth of wisdom to explore."
         titlePrefix="Papers"
       />
 

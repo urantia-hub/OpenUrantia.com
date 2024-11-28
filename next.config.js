@@ -33,7 +33,7 @@ module.exports = withSentryConfig(
   nextConfig,
   {
     silent: true,
-    org: "openurantia",
+    org: "urantia-hub",
     project: "javascript-nextjs",
   },
   {

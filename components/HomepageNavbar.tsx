@@ -82,8 +82,8 @@ const HomepageNavbar = () => {
             href="/"
           >
             <h1 className="flex items-center font-bold tracking-wide text-xl md:text-2xl text-gray-600">
-              <span className="flex items-center font-light">Open</span>
-              Urantia
+              <span className="flex items-center font-light">Urantia</span>
+              Hub
             </h1>
           </Link>
           <LogoSymbol className="flex-1 fill-gray-200 h-6 w-6 md:h-8 md:w-8" />

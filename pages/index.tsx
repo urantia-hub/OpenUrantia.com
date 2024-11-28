@@ -84,7 +84,7 @@ const HomePage = () => {
 
   return (
     <div className="flex flex-col min-h-screen bg-slate-100 text-gray-600">
-      <HeadTag metaDescription="Explore the OpenUrantia platform: your digital gateway to the profound teachings and insights of The Urantia Papers, accessible to all." />
+      <HeadTag metaDescription="Explore the UrantiaHub platform: your digital gateway to the profound teachings and insights of The Urantia Papers, accessible to all." />
 
       <HomepageNavbar />
 
@@ -320,7 +320,7 @@ const visionAndMission = [
   {
     title: "Spirit of the Urantia Papers",
     description:
-      "At the heart of OpenUrantia is a vision to expand the accessibility and understanding of the Urantia Papers' profound teachings.",
+      "At the heart of UrantiaHub is a vision to expand the accessibility and understanding of the Urantia Papers' profound teachings.",
   },
   {
     title: "Technology with Purpose",

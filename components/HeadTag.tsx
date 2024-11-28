@@ -12,7 +12,7 @@ const HeadTag = ({ metaDescription, titlePrefix }: HeadTagProps) => {
   return (
     <Head>
       <title>
-        {titlePrefix ? `${titlePrefix} | OpenUrantia` : "OpenUrantia"}
+        {titlePrefix ? `${titlePrefix} | UrantiaHub` : "UrantiaHub"}
       </title>
 
       {/* Favicon */}
@@ -22,10 +22,10 @@ const HeadTag = ({ metaDescription, titlePrefix }: HeadTagProps) => {
       <link rel="manifest" href="/manifest.json" />
 
       {/* Meta Tags */}
-      <meta name="application-name" content="OpenUrantia" />
+      <meta name="application-name" content="UrantiaHub" />
       <meta name="apple-mobile-web-app-capable" content="yes" />
       <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-      <meta name="apple-mobile-web-app-title" content="OpenUrantia" />
+      <meta name="apple-mobile-web-app-title" content="UrantiaHub" />
       <meta
         name="description"
         content={metaDescription || DEFAULT_META_DESCRIPTION}
@@ -39,28 +39,28 @@ const HeadTag = ({ metaDescription, titlePrefix }: HeadTagProps) => {
 
       {/* Social Media Meta Tags */}
       <meta name="twitter:card" content="summary" />
-      <meta name="twitter:url" content="https://www.openurantia.com" />
-      <meta name="twitter:title" content="OpenUrantia" />
+      <meta name="twitter:url" content="https://www.urantiahub.com" />
+      <meta name="twitter:title" content="UrantiaHub" />
       <meta
         name="twitter:description"
         content={metaDescription || DEFAULT_META_DESCRIPTION}
       />
       <meta
         name="twitter:image"
-        content="https://www.openurantia.com/background_small.png"
+        content="https://www.urantiahub.com/background_small.png"
       />
-      <meta name="twitter:creator" content="@OpenUrantia" />
+      <meta name="twitter:creator" content="@urantiahub" />
       <meta property="og:type" content="website" />
-      <meta property="og:title" content="OpenUrantia" />
+      <meta property="og:title" content="UrantiaHub" />
       <meta
         property="og:description"
         content={metaDescription || DEFAULT_META_DESCRIPTION}
       />
-      <meta property="og:site_name" content="OpenUrantia" />
-      <meta property="og:url" content="https://www.openurantia.com" />
+      <meta property="og:site_name" content="UrantiaHub" />
+      <meta property="og:url" content="https://www.urantiahub.com" />
       <meta
         property="og:image"
-        content="https://www.openurantia.com/background_small.png"
+        content="https://www.urantiahub.com/background_small.png"
       />
 
       {/* Viewport Meta Tag */}

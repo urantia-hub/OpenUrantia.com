@@ -82,7 +82,7 @@ const Settings = () => {
   return (
     <div className="flex flex-col min-h-screen bg-slate-100 text-gray-700 dark:bg-neutral-800 dark:text-white">
       <HeadTag
-        metaDescription="Customize your OpenUrantia experience in Settings, tailoring the platform to suit your reading preferences and accessibility needs."
+        metaDescription="Customize your UrantiaHub experience in Settings, tailoring the platform to suit your reading preferences and accessibility needs."
         titlePrefix="Settings"
       />
 

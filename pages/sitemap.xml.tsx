@@ -6,8 +6,7 @@ const Sitemap = () => {
 };
 
 export const getServerSideProps = async ({ res }: any) => {
-  const baseUrl =
-    process.env.NEXT_PUBLIC_BASE_URL || "https://www.openurantia.com";
+  const baseUrl = process.env.NEXT_PUBLIC_HOST || "https://www.urantiahub.com";
 
   const staticPages = [
     { url: `${baseUrl}/`, priority: "1.0" },

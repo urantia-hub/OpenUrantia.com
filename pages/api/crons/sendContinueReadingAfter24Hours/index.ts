@@ -88,7 +88,7 @@ const handleCron = async (req: NextApiRequest, res: NextApiResponse) => {
           : `Paper ${user.lastVisitedPaperId} - ${user.lastVisitedPaperTitle}`
       }`,
       continueReadingUrl: `${
-        process.env.NEXT_PUBLIC_OPEN_URANTIA_HOST
+        process.env.NEXT_PUBLIC_HOST
       }/papers/${paperIdToUrl(`${user.lastVisitedPaperId}`)}#${
         user.lastVisitedGlobalId
       }`,

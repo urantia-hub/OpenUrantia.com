@@ -17,7 +17,7 @@ const Footer = ({ marginBottom }: FooterProps) => {
       <div className="flex flex-col md:flex-row justify-between items-center container mx-auto px-4">
         <div>
           <span className="text-gray-400">
-            &copy; {new Date().getFullYear()} OpenUrantia
+            &copy; {new Date().getFullYear()} UrantiaHub
           </span>
         </div>
         <div className="flex items-center my-2 md:my-0">

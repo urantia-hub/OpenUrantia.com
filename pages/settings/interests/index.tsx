@@ -100,7 +100,7 @@ const SettingsInterests = () => {
   return (
     <div className="flex flex-col min-h-screen bg-slate-100 text-gray-700 dark:bg-neutral-800 dark:text-white">
       <HeadTag
-        metaDescription="Personalize your journey through The Urantia Papers on OpenUrantia by setting your interests, guiding your exploration and discovery."
+        metaDescription="Personalize your journey through The Urantia Papers on UrantiaHub by setting your interests, guiding your exploration and discovery."
         titlePrefix="My Interests"
       />
 

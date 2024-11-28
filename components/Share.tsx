@@ -9,7 +9,7 @@ import { paperIdToUrl } from "@/utils/paperFormatters";
 
 const constructShareUrl = (node: UBNode) => {
   // Replace this with actual URL construction logic
-  return `${process.env.NEXT_PUBLIC_OPEN_URANTIA_HOST}/papers/${paperIdToUrl(
+  return `${process.env.NEXT_PUBLIC_HOST}/papers/${paperIdToUrl(
     node.paperId
   )}#${node.globalId}`;
 };

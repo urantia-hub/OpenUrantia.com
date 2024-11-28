@@ -101,7 +101,7 @@ const handleCron = async (_: NextApiRequest, res: NextApiResponse) => {
           : `Paper ${paperId} - ${paragraph.paperTitle} - "(${standardReferenceId}) ${text}"`
       }`,
       continueReadingUrl: `${
-        process.env.NEXT_PUBLIC_OPEN_URANTIA_HOST
+        process.env.NEXT_PUBLIC_HOST
       }/papers/${paperIdToUrl(`${paperId}`)}#${globalId}`,
     },
   }));

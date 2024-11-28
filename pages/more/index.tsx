@@ -21,7 +21,7 @@ const More = () => {
   return (
     <div className="flex flex-col min-h-screen bg-slate-100 text-gray-700 dark:bg-neutral-800 dark:text-white">
       <HeadTag
-        metaDescription="Discover additional resources and information on OpenUrantia, expanding your understanding of The Urantia Papers and our community."
+        metaDescription="Discover additional resources and information on UrantiaHub, expanding your understanding of The Urantia Papers and our community."
         titlePrefix="More"
       />
 

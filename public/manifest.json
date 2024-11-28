@@ -1,11 +1,11 @@
 {
-  "name": "OpenUrantia",
-  "short_name": "OpenUrantia",
+  "name": "UrantiaHub",
+  "short_name": "UrantiaHub",
   "start_url": "/api/redirect/user/read",
   "display": "browser",
   "background_color": "#e2e8f0",
   "theme_color": "#e2e8f0",
-  "description": "An open source version of The Urantia Papers for generations to come.",
+  "description": "An open-source version of The Urantia Papers for generations to come.",
   "icons": [
     {
       "src": "/logo-symbol.png",

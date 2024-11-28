@@ -36,23 +36,23 @@ const SignInPage = () => {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-slate-100 text-gray-600 dark:text-white">
       <HeadTag
-        metaDescription="Sign in to your OpenUrantia account to access your profile, create bookmarks, create notes, track your progress, and more."
+        metaDescription="Sign in to your UrantiaHub account to access your profile, create bookmarks, create notes, track your progress, and more."
         titlePrefix="Sign In"
       />
 
       <header className="fixed top-0 left-0 right-0 md:top-4 md:left-6 md:right-unset hidden md:block z-10 mx-auto p-2">
         <Link className="text-2xl text-left hover:no-underline" href="/">
           <span className="flex items-center font-bold tracking-wide text-2xl text-gray-600">
-            <span className="flex items-center font-light">Open</span>
-            Urantia
+            <span className="flex items-center font-light">Urantia</span>
+            Hub
           </span>
         </Link>
       </header>
 
       <main className="flex flex-col items-center justify-center min-h-screen md:min-h-0 w-full md:w-auto p-6 rounded bg-white shadow-lg">
         <h1 className="font-bold tracking-wide text-3xl m-0 mb-6 text-center">
-          <span className="font-light">Open</span>
-          Urantia
+          <span className="font-light">Urantia</span>
+          Hub
         </h1>
 
         {/* Email */}

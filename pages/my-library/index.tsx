@@ -173,7 +173,7 @@ const MyLibrary = () => {
   return (
     <div className="flex flex-col min-h-screen bg-slate-100 text-gray-700 dark:bg-neutral-800 dark:text-white">
       <HeadTag
-        metaDescription="Access your personal library on OpenUrantia, where you can view your bookmarks and comments from The Urantia Papers."
+        metaDescription="Access your personal library on UrantiaHub, where you can view your bookmarks and comments from The Urantia Papers."
         titlePrefix="My Library"
       />
 
