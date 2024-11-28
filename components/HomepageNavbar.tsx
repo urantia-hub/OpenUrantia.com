@@ -75,7 +75,7 @@ const HomepageNavbar = () => {
 
   return (
     <>
-      <header className="flex flex-col items-center pt-2 pb-1 px-2 bg-white shadow-lg">
+      <header className="flex flex-col items-center pt-2 pb-1 px-2 bg-white text-gray-400 shadow-lg">
         <div className="flex items-center justify-between w-full max-w-5xl pt-1 pb-2 px-2">
           <Link
             className="flex-1 text-2xl text-left hover:no-underline"

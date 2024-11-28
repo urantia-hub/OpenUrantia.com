@@ -6,67 +6,67 @@ type FooterProps = {
   marginBottom?: string;
 };
 
-const Footer = ({ marginBottom }: FooterProps) => {
-  const router = useRouter();
-
+const Footer = () => {
   return (
-    <footer
-      className="py-4 text-xs"
-      style={{ marginBottom: marginBottom || "4.3rem" }}
-    >
-      <div className="flex flex-col md:flex-row justify-between items-center container mx-auto px-4">
-        <div>
-          <span className="text-gray-400">
-            &copy; {new Date().getFullYear()} UrantiaHub
-          </span>
-        </div>
-        <div className="flex items-center my-2 md:my-0">
-          <div className="flex gap-4">
-            <Link
-              href="/privacy-policy"
-              className="text-gray-400 hover:text-gray-500"
-            >
-              Privacy
-            </Link>
-            <Link
-              href="/terms-of-service"
-              className="text-gray-400 hover:text-gray-500"
-            >
-              Terms
-            </Link>
-            <Link
-              href="/cookie-policy"
-              className="text-gray-400 hover:text-gray-500"
-            >
-              Cookies
-            </Link>
-            {router.asPath === "/cookie-policy" && (
-              <Link
-                href="/cookie-policy"
-                id="termly-consent-preferences"
-                onClick={() => {
-                  // @ts-ignore
-                  window?.displayPreferenceModal();
-                  return false;
-                }}
-              >
-                Consent Preferences
-              </Link>
-            )}
+    <footer className="bg-gray-900 text-gray-400">
+      <div className="container mx-auto px-4 py-12">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+          <div>
+            <h3 className="text-white text-lg font-bold tracking-wide mb-4 flex items-center">
+              <span className="flex items-center font-light">Urantia</span>
+              Hub
+            </h3>
           </div>
-          <Link
-            aria-label="Uptime Robot status page"
-            className="flex items-center text-green-400 text-xs hover:text-green-500 ml-4"
-            href="https://stats.uptimerobot.com/6qzJEHV7rN"
-            rel="noopener noreferrer"
-            target="_blank"
-          >
-            <span className="flex relative h-2 w-2 mr-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
-            </span>{" "}
-            All systems normal.
-          </Link>
+          <div>
+            <h4 className="text-white text-sm font-semibold mb-4">Platform</h4>
+            <ul className="space-y-2">
+              <li>
+                <Link href="/features">Features</Link>
+              </li>
+              <li>
+                <Link href="/about">About</Link>
+              </li>
+              <li>
+                <Link href="/community">Community</Link>
+              </li>
+            </ul>
+          </div>
+          <div>
+            <h4 className="text-white text-sm font-semibold mb-4">Resources</h4>
+            <ul className="space-y-2">
+              <li>
+                <Link href="/blog">Blog</Link>
+              </li>
+              <li>
+                <Link href="/help">Help Center</Link>
+              </li>
+              <li>
+                <Link href="/contact">Contact</Link>
+              </li>
+            </ul>
+          </div>
+          <div>
+            <h4 className="text-white text-sm font-semibold mb-4">Legal</h4>
+            <ul className="space-y-2">
+              <li>
+                <Link href="/privacy-policy">Privacy</Link>
+              </li>
+              <li>
+                <Link href="/terms-of-service">Terms</Link>
+              </li>
+              <li>
+                <Link href="/cookie-policy">Cookies</Link>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div className="text-sm border-t border-gray-800 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
+          <p>
+            &copy; {new Date().getFullYear()} UrantiaHub. All rights reserved.
+          </p>
+          <div className="flex space-x-6 mt-4 md:mt-0">
+            {/* Add social media links */}
+          </div>
         </div>
       </div>
     </footer>
