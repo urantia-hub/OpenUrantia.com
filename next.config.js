@@ -17,6 +17,12 @@ const nextConfig = {
           "https://3ujo66t434cz5na2kozifk52b3mvweqts2k5ievkggxdcjkoqpja.arweave.net/3RLvenzfBZ60GlOygqu6DtlbEhOWldQSqjGuMSVOg9I",
         permanent: true,
       },
+      {
+        source: "/blockchain-archive/urantia-papers/txt",
+        destination:
+          "https://2gebhm3ergmisaq7dixbj52n7kkylit5dgpbrwccta5roygw55fa.arweave.net/0YgTs2SJmIkCHxouFPdN-pWFon0ZnhjYQpg7F2DW70o",
+        permanent: true,
+      },
     ];
   },
 };
