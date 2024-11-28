@@ -8,6 +8,7 @@ import Footer from "@/components/Footer";
 import HeadTag from "@/components/HeadTag";
 import HomepageNavbar from "@/components/HomepageNavbar";
 import { deriveReadLink } from "@/utils/readPaperLink";
+import ParticleBackground from "@/components/ParticleBackground";
 
 const HomePage = () => {
   // Hooks.
@@ -90,12 +91,19 @@ const HomePage = () => {
 
       <main>
         {/* Hero Section */}
-        <section className="hero-background min-h-screen pt-8 px-6 text-center bg-cover bg-center bg-slate-100 flex flex-col items-center justify-center">
-          <div className="max-w-7xl mx-auto w-full">
-            <h1 className="mt-0 mb-6 text-5xl md:text-7xl font-bold text-white max-w-4xl mx-auto">
+        <section className="hero-background relative min-h-screen pt-8 px-6 text-center bg-cover bg-center bg-slate-100 flex flex-col items-center justify-center overflow-hidden">
+          {/* Background gradient */}
+          <div className="absolute inset-0 bg-gradient-to-b from-blue-900/60 to-blue-800/40 mix-blend-multiply" />
+
+          {/* Particle effect */}
+          <ParticleBackground />
+
+          {/* Content */}
+          <div className="relative z-10 max-w-7xl mx-auto w-full mt-[-5vh]">
+            <h1 className="mt-0 mb-8 text-5xl md:text-7xl font-bold text-white max-w-4xl mx-auto leading-tight drop-shadow-lg">
               Revolutionary Ideas for Life&apos;s Biggest Questions
             </h1>
-            <p className="text-xl text-white mb-12 max-w-2xl mx-auto">
+            <p className="text-xl md:text-2xl text-white mb-14 max-w-2xl mx-auto leading-relaxed drop-shadow">
               Discover the Urantia Papers - a unique revelation that bridges
               lost history with modern science, offering unprecedented insights
               into our origin, purpose, and destiny.
@@ -121,7 +129,7 @@ const HomePage = () => {
 
           {showDownButton && (
             <div
-              className="fade-in fixed bottom-0 left-0 right-0 mx-auto w-12 h-12 mb-8 bg-white rounded-full p-2 z-10 cursor-pointer hover:bg-gray-300 transition duration-300 ease-in-out"
+              className="fade-in fixed bottom-0 left-0 right-0 mx-auto w-12 h-12 mb-8 backdrop-blur-md bg-white/10 rounded-full p-2 z-10 cursor-pointer hover:bg-white/40 transition duration-300 ease-in-out"
               onClick={() => {
                 const afterHero = document.getElementById("after-hero");
                 afterHero?.scrollIntoView({
@@ -132,7 +140,7 @@ const HomePage = () => {
             >
               <svg
                 aria-hidden="true"
-                className="w-full h-full text-gray-600"
+                className="w-full h-full text-white"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -368,46 +376,9 @@ const HomePage = () => {
               insights, and explore together.
             </p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-              <div className="bg-white rounded-xl p-8">
-                <h3 className="text-2xl font-semibold mb-4">Coming Soon</h3>
-                <ul className="space-y-4">
-                  <li className="flex items-center gap-3">
-                    <span>📚</span>
-                    <p>Share your insights and derivative works</p>
-                  </li>
-                  <li className="flex items-center gap-3">
-                    <span>💭</span>
-                    <p>Connect with other readers</p>
-                  </li>
-                  <li className="flex items-center gap-3">
-                    <span>🤝</span>
-                    <p>Join study groups and discussions</p>
-                  </li>
-                </ul>
-              </div>
-              <div className="bg-white rounded-xl p-8">
-                <h3 className="text-2xl font-semibold mb-4">
-                  External Communities
-                </h3>
-                <p className="text-gray-600 mb-4">
-                  While we build our community features, connect with other
-                  readers on existing platforms:
-                </p>
-                <ul className="space-y-4">
-                  <li className="flex items-center gap-3">
-                    <span>📱</span>
-                    <a href="#" className="text-blue-500 hover:text-blue-600">
-                      Facebook Groups
-                    </a>
-                  </li>
-                  <li className="flex items-center gap-3">
-                    <span>🌐</span>
-                    <a href="#" className="text-blue-500 hover:text-blue-600">
-                      Urantia Foundation
-                    </a>
-                  </li>
-                </ul>
-              </div>
+              {communityFeatures.map((feature, index) => (
+                <CommunityCard key={index} {...feature} />
+              ))}
             </div>
           </div>
         </section>

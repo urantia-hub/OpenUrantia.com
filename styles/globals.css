@@ -230,6 +230,13 @@ select.select-selected {
   animation-fill-mode: both;
 }
 
+.fade-in-smooth {
+  animation-name: fadeIn;
+  animation-duration: 2s;
+  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  animation-fill-mode: both;
+}
+
 .hero-image {
   background: #262626;
   background-image: url('/background.png');
@@ -419,4 +426,5 @@ select.select-selected {
   background-image: url('/background.png');
   background-size: cover;
   background-position: center;
+  margin-top: -56px;
 }
