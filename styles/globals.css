@@ -428,3 +428,64 @@ select.select-selected {
   background-position: center;
   margin-top: -56px;
 }
+
+/* Add this with your other keyframe animations */
+@keyframes tiltIn {
+  from {
+    opacity: 0;
+    transform: perspective(1000px) rotateX(10deg) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: perspective(1000px) rotateX(0) scale(1);
+  }
+}
+
+/* Add this with your other utility classes */
+.tilt-button {
+  transform-style: preserve-3d;
+  transition: all 0.2s ease-out;
+  will-change: transform;
+}
+
+.tilt-button:hover {
+  transform: perspective(1000px) translateZ(20px);
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 0.2; }
+  50% { opacity: 0.8; }
+}
+
+.twinkle {
+  animation: twinkle 2s infinite;
+}
+
+@keyframes border-laser {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.border-laser {
+  animation: border-laser 1s infinite;
+}
+
+@keyframes planet-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.planet-spin {
+  animation: planet-spin 7s linear infinite;
+}

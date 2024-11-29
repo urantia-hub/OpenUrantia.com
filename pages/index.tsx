@@ -7,8 +7,10 @@ import { useSession } from "next-auth/react";
 import Footer from "@/components/Footer";
 import HeadTag from "@/components/HeadTag";
 import HomepageNavbar from "@/components/HomepageNavbar";
-import { deriveReadLink } from "@/utils/readPaperLink";
 import ParticleBackground from "@/components/ParticleBackground";
+import TiltButton from "@/components/TiltButton";
+import { deriveReadLink } from "@/utils/readPaperLink";
+import { Atom, Dna, Sparkles } from "lucide-react"; // Import the icons we need
 
 const HomePage = () => {
   // Hooks.
@@ -110,26 +112,18 @@ const HomePage = () => {
             </p>
 
             {status === "authenticated" && (
-              <Link
-                className="fade-in bg-white text-gray-600 font-bold py-4 px-8 rounded shadow-xl transition duration-300 ease-in-out hover:no-underline"
-                href={deriveReadLink(status)}
-              >
+              <TiltButton href={deriveReadLink(status)}>
                 Continue Reading
-              </Link>
+              </TiltButton>
             )}
             {status === "unauthenticated" && (
-              <Link
-                className="fade-in bg-white text-gray-600 font-bold py-4 px-8 rounded shadow-xl transition duration-300 ease-in-out hover:no-underline"
-                href="/auth/sign-in"
-              >
-                Start Reading
-              </Link>
+              <TiltButton href="/auth/sign-in">Start Reading</TiltButton>
             )}
           </div>
 
           {showDownButton && (
             <div
-              className="fade-in fixed bottom-0 left-0 right-0 mx-auto w-12 h-12 mb-8 backdrop-blur-md bg-white/10 rounded-full p-2 z-10 cursor-pointer hover:bg-white/40 transition duration-300 ease-in-out"
+              className="fade-in fixed bottom-0 left-0 right-0 mx-auto w-12 h-12 mb-8 backdrop-blur-md bg-white/10 rounded-full p-2 z-10 cursor-pointer hover:bg-white/20 transition duration-300 ease-in-out"
               onClick={() => {
                 const afterHero = document.getElementById("after-hero");
                 afterHero?.scrollIntoView({
@@ -157,99 +151,115 @@ const HomePage = () => {
           )}
         </section>
 
-        {/* Unique Ideas Section - NEW */}
-        <section className="py-24 bg-white">
+        {/* Unique Ideas Section */}
+        <section className="py-36 bg-white">
           <div className="max-w-7xl mx-auto px-6">
-            <h2 className="text-4xl md:text-5xl font-semibold mb-16 text-center">
+            <h2 className="text-4xl md:text-5xl font-semibold pb-1 mb-14 text-center bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-600">
               Ideas That Challenge Our Understanding
             </h2>
-            <p className="text-xl text-center mb-16 max-w-3xl mx-auto">
+
+            <p className="text-xl text-center mb-16 max-w-3xl mx-auto text-gray-600 leading-relaxed">
               The Urantia Papers present groundbreaking concepts about our
               universe, human history, and spiritual reality that had never been
               articulated before their publication in 1955.
             </p>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              <div className="p-8 rounded-xl bg-slate-50 hover:shadow-lg transition-shadow duration-300">
-                <h3 className="text-2xl font-semibold mb-4">
-                  Beyond Modern Science
-                </h3>
-                <p className="text-gray-600 leading-relaxed">
-                  Detailed descriptions of universe mechanics and cosmic
-                  organization that transcend contemporary scientific
-                  understanding.
-                </p>
-              </div>
-              <div className="p-8 rounded-xl bg-slate-50 hover:shadow-lg transition-shadow duration-300">
-                <h3 className="text-2xl font-semibold mb-4">
-                  Human Origins Revealed
-                </h3>
-                <p className="text-gray-600 leading-relaxed">
-                  A comprehensive account of human civilization&apos;s
-                  beginnings that bridges anthropological findings with
-                  spiritual purpose.
-                </p>
-              </div>
-              <div className="p-8 rounded-xl bg-slate-50 hover:shadow-lg transition-shadow duration-300">
-                <h3 className="text-2xl font-semibold mb-4">
-                  Spiritual Reality Unified
-                </h3>
-                <p className="text-gray-600 leading-relaxed">
-                  A unique synthesis of science, philosophy, and religion that
-                  provides new perspectives on life&apos;s deepest questions.
-                </p>
-              </div>
-            </div>
-          </div>
-        </section>
 
-        {/* Life&apos;s Biggest Questions */}
-        <section className="py-24 bg-white">
-          <div className="max-w-7xl mx-auto px-6">
-            <h2 className="text-4xl md:text-5xl font-semibold mb-16 text-center">
-              Life&apos;s Biggest Questions
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <div className="p-8 rounded-xl bg-slate-50 hover:shadow-lg transition-shadow duration-300">
-                <h3 className="text-2xl font-semibold mb-4">Are We Alone?</h3>
-                <p className="text-gray-600 leading-relaxed">
-                  Explore a detailed revelation of the universe&apos;s structure
-                  and the countless celestial beings dedicated to helping
-                  humanity grow and progress.
-                </p>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 pb-8">
+              {/* Beyond Modern Science */}
+              <div className="group relative">
+                <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-600 via-indigo-500 to-blue-600 rounded-xl opacity-0 group-hover:opacity-100 transition duration-300 blur-sm bg-[length:200%_100%] border-laser" />
+
+                <div className="relative h-full bg-gradient-to-br from-indigo-50 to-blue-100 p-8 rounded-xl">
+                  <div className="flex items-center gap-4 mb-6">
+                    <div className="inline-flex items-center justify-center w-14 h-14 rounded-xl bg-blue-600/10 backdrop-blur-sm">
+                      <Atom
+                        className="w-8 h-8 text-blue-600"
+                        strokeWidth={1.5}
+                      />
+                    </div>
+                    <h3 className="text-xl font-semibold text-blue-900">
+                      Beyond Modern Science
+                    </h3>
+                  </div>
+                  <div className="relative">
+                    {/* Decorative elements */}
+                    <div className="absolute -right-4 top-0 w-20 h-20 bg-blue-600/5 rounded-full blur-2xl" />
+                    <div className="absolute -left-4 bottom-0 w-16 h-16 bg-indigo-600/5 rounded-full blur-xl" />
+
+                    <p className="relative text-blue-900/80 leading-relaxed">
+                      Detailed descriptions of universe mechanics and cosmic
+                      organization that transcend contemporary scientific
+                      understanding.
+                    </p>
+                  </div>
+                </div>
               </div>
-              <div className="p-8 rounded-xl bg-slate-50 hover:shadow-lg transition-shadow duration-300">
-                <h3 className="text-2xl font-semibold mb-4">
-                  How is Our Universe Organized?
-                </h3>
-                <p className="text-gray-600 leading-relaxed">
-                  Explore the intricate structure of our local universe and its
-                  relationship to the greater cosmos.
-                </p>
+
+              {/* Human Origins Revealed */}
+              <div className="group relative">
+                <div className="absolute -inset-0.5 bg-gradient-to-r from-emerald-600 via-green-500 to-emerald-600 rounded-xl opacity-0 group-hover:opacity-100 transition duration-300 blur-sm bg-[length:200%_100%] border-laser" />
+
+                <div className="relative h-full bg-gradient-to-br from-emerald-50 to-green-50 p-8 rounded-xl">
+                  <div className="flex items-center gap-4 mb-6">
+                    <div className="inline-flex items-center justify-center w-14 h-14 rounded-xl bg-emerald-600/10 backdrop-blur-sm">
+                      <Dna
+                        className="w-8 h-8 text-emerald-600"
+                        strokeWidth={1.5}
+                      />
+                    </div>
+                    <h3 className="text-xl font-semibold text-emerald-900">
+                      Human Origins Revealed
+                    </h3>
+                  </div>
+                  <div className="relative">
+                    {/* Decorative elements */}
+                    <div className="absolute -right-4 top-0 w-20 h-20 bg-emerald-600/5 rounded-full blur-2xl" />
+                    <div className="absolute -left-4 bottom-0 w-16 h-16 bg-green-600/5 rounded-full blur-xl" />
+
+                    <p className="relative text-emerald-900/80 leading-relaxed">
+                      A comprehensive account of human civilization&apos;s
+                      beginnings that bridges anthropological findings with
+                      spiritual purpose.
+                    </p>
+                  </div>
+                </div>
               </div>
-              <div className="p-8 rounded-xl bg-slate-50 hover:shadow-lg transition-shadow duration-300">
-                <h3 className="text-2xl font-semibold mb-4">
-                  What is Humanity&apos;s Story?
-                </h3>
-                <p className="text-gray-600 leading-relaxed">
-                  Uncover the fascinating history of our world, from the origins
-                  of human civilization to our modern global society.
-                </p>
-              </div>
-              <div className="p-8 rounded-xl bg-slate-50 hover:shadow-lg transition-shadow duration-300">
-                <h3 className="text-2xl font-semibold mb-4">
-                  Who Was Jesus as a Person?
-                </h3>
-                <p className="text-gray-600 leading-relaxed">
-                  Experience a unique perspective on the life and teachings of
-                  Jesus, revealing the human story behind the historical figure.
-                </p>
+
+              {/* Spiritual Reality Unified */}
+              <div className="group relative">
+                <div className="absolute -inset-0.5 bg-gradient-to-r from-violet-600 via-purple-500 to-violet-600 rounded-xl opacity-0 group-hover:opacity-100 transition duration-300 blur-sm bg-[length:200%_100%] border-laser" />
+
+                <div className="relative h-full bg-gradient-to-br from-violet-100 to-purple-50 p-8 rounded-xl">
+                  <div className="flex items-center gap-4 mb-6">
+                    <div className="inline-flex items-center justify-center w-14 h-14 rounded-xl bg-violet-600/10 backdrop-blur-sm">
+                      <Sparkles
+                        className="w-8 h-8 text-violet-600"
+                        strokeWidth={1.5}
+                      />
+                    </div>
+                    <h3 className="text-xl font-semibold text-violet-900">
+                      Spiritual Reality Unified
+                    </h3>
+                  </div>
+                  <div className="relative">
+                    {/* Decorative elements */}
+                    <div className="absolute -right-4 top-0 w-20 h-20 bg-violet-600/5 rounded-full blur-2xl" />
+                    <div className="absolute -left-4 bottom-0 w-16 h-16 bg-purple-600/5 rounded-full blur-xl" />
+
+                    <p className="relative text-violet-900/80 leading-relaxed">
+                      A unique synthesis of science, philosophy, and religion
+                      that provides new perspectives on life&apos;s deepest
+                      questions.
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </section>
 
         {/* Introduction to Urantia Papers */}
-        <section className="py-24 bg-white">
+        <section className="pb-48 bg-white">
           <div className="max-w-7xl mx-auto px-6">
             <h2 className="text-4xl md:text-5xl font-semibold mb-12 text-center">
               What are the Urantia Papers?
@@ -257,32 +267,145 @@ const HomePage = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
               <div>
                 <p className="text-xl leading-relaxed mb-6">
-                  The Urantia Papers are a unique collection of 196 papers that
-                  bridge science, philosophy, and religion, offering profound
-                  insights into human history, cosmology, and spiritual truth.
+                  The Urantia Papers are a unique collection of 196 papers
+                  authored by numerous celestial beings in 1934-1935, offering
+                  profound insights into human history, cosmology, and spiritual
+                  truth that bridge science, philosophy, and religion.
                 </p>
                 <p className="text-xl leading-relaxed">
-                  First published in 1955 by{" "}
                   <Link
                     className="text-blue-400 hover:text-blue-600 hover:no-underline transition-colors duration-200"
                     href="https://urantia.org"
                   >
                     The Urantia Book Foundation
-                  </Link>
-                  , these teachings have inspired millions worldwide, offering a
-                  comprehensive view of our relationship with the universe and
-                  divine purpose.
+                  </Link>{" "}
+                  compiled and published these papers as a book in 1955,
+                  inspiring millions worldwide with their groundbreaking
+                  insights into our relationship with the universe and divine
+                  purpose.
                 </p>
               </div>
               <div className="relative h-96">
                 <Image
-                  src="/urantia-papers-history.jpg"
-                  alt="Historical context of the Urantia Papers"
-                  fill
+                  alt="Celestial host writing the Urantia Papers"
                   className="object-cover rounded-lg"
+                  fill
+                  src="/homepage1.jpg"
                 />
               </div>
             </div>
+          </div>
+        </section>
+
+        {/* Cosmic Perspective Divider */}
+        <div className="relative">
+          {/* Purple gradient transition at top */}
+          <div className="absolute inset-x-0 -top-10 h-36 bg-gradient-to-b from-white via-purple-300 to-transparent" />
+
+          {/* Background atmosphere effect */}
+          <div className="absolute inset-0 bg-black" />
+
+          <div className="relative flex items-center justify-center h-64">
+            {/* Stars in background */}
+            <div className="absolute inset-0 overflow-hidden">
+              {[...Array(100)].map((_, i) => (
+                <div
+                  key={i}
+                  className="twinkle absolute w-0.5 h-0.5 bg-white rounded-full"
+                  style={{
+                    top: `${Math.random() * 100}%`,
+                    left: `${Math.random() * 100}%`,
+                    opacity: Math.random() * 0.8 + 0.2,
+                    animationDelay: `${Math.random() * 4 + 2}s`,
+                  }}
+                />
+              ))}
+            </div>
+
+            {/* Main planet */}
+            <div
+              className="w-32 h-32 rounded-full relative overflow-hidden z-10
+                bg-gradient-to-br from-blue-950 via-blue-800 to-blue-800
+                shadow-[inset_-12px_-12px_24px_rgba(0,0,0,0.6)]"
+            >
+              {/* Atmosphere glow (static) */}
+              <div className="absolute -inset-1 bg-blue-400/10 blur-sm" />
+
+              {/* Rotating surface details */}
+              <div className="absolute inset-0 planet-spin">
+                {/* Dark patches / continents */}
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,transparent_30%,rgba(0,0,0,0.3)_70%)]" />
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_60%,transparent_20%,rgba(0,0,0,0.2)_50%)]" />
+              </div>
+
+              {/* Light reflections (static) */}
+              <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-transparent to-white/60" />
+              <div className="absolute top-2 left-4 w-3 h-3 bg-white/20 rounded-full blur-sm" />
+
+              {/* Orbital rings (static) */}
+              <div className="absolute -inset-6 border-2 border-blue-200/10 rounded-full transform -rotate-45 scale-[1.2]" />
+              <div className="absolute -inset-5 border border-blue-100/5 rounded-full transform -rotate-45 scale-[1.3]" />
+
+              {/* Outer glow (static) */}
+              <div className="absolute -inset-2 bg-blue-500/5 blur-xl rounded-full" />
+            </div>
+          </div>
+        </div>
+
+        {/* Revolutionary Insights Section */}
+        <section className="pt-10 pb-36 bg-black text-white">
+          <div className="max-w-7xl mx-auto px-6">
+            <h2 className="text-4xl md:text-5xl font-semibold pb-1 mb-16 text-center bg-clip-text text-transparent bg-gradient-to-r from-blue-100 to-white">
+              Revolutionary Insights
+            </h2>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="group p-8 rounded-xl bg-slate-900/50 backdrop-blur-sm border border-white/5 hover:border-white/10 hover:bg-slate-900/70 transition-all duration-300">
+                <h3 className="text-2xl font-semibold mb-4 text-blue-100 group-hover:text-white transition-colors duration-300">
+                  Who Created Us?
+                </h3>
+                <p className="text-slate-300/80 leading-relaxed group-hover:text-slate-200 transition-colors duration-300">
+                  Discover our Creator who set in motion a vast family of
+                  celestial beings dedicated to helping humanity grow and
+                  progress.
+                </p>
+              </div>
+
+              <div className="group p-8 rounded-xl bg-slate-900/50 backdrop-blur-sm border border-white/5 hover:border-white/10 hover:bg-slate-900/70 transition-all duration-300">
+                <h3 className="text-2xl font-semibold mb-4 text-white group-hover:text-white transition-colors duration-300">
+                  How is Our Universe Organized?
+                </h3>
+                <p className="text-slate-300/80 leading-relaxed group-hover:text-slate-200 transition-colors duration-300">
+                  Explore the intricate structure of our local universe and its
+                  relationship to the greater cosmos.
+                </p>
+              </div>
+
+              <div className="group p-8 rounded-xl bg-slate-900/50 backdrop-blur-sm border border-white/5 hover:border-white/10 hover:bg-slate-900/70 transition-all duration-300">
+                <h3 className="text-2xl font-semibold mb-4 text-white group-hover:text-white transition-colors duration-300">
+                  What is Humanity&apos;s Story?
+                </h3>
+                <p className="text-slate-300/80 leading-relaxed group-hover:text-slate-200 transition-colors duration-300">
+                  Uncover the fascinating history of our world, from the origins
+                  of human civilization to our modern global society.
+                </p>
+              </div>
+
+              <div className="group p-8 rounded-xl bg-slate-900/50 backdrop-blur-sm border border-white/5 hover:border-white/10 hover:bg-slate-900/70 transition-all duration-300">
+                <h3 className="text-2xl font-semibold mb-4 text-white group-hover:text-white transition-colors duration-300">
+                  Who Was Jesus?
+                </h3>
+                <p className="text-slate-300/80 leading-relaxed group-hover:text-slate-200 transition-colors duration-300">
+                  Experience a unique perspective on the life and teachings of
+                  Jesus, revealing the human story behind the historical figure.
+                </p>
+              </div>
+            </div>
+
+            {/* Attribution note */}
+            <p className="text-center mt-16 text-lg md:text-xl text-slate-300 max-w-3xl mx-auto leading-relaxed">
+              These topics represent the four major parts of the Urantia Papers.
+            </p>
           </div>
         </section>
 
@@ -398,20 +521,14 @@ const HomePage = () => {
               Free access • No credit card required • Start reading instantly
             </p>
             {status === "authenticated" && (
-              <Link
-                className="fade-in bg-blue-400 text-white font-bold py-4 px-8 rounded shadow-xl hover:bg-blue-500 transition duration-300 ease-in-out hover:no-underline"
-                href={deriveReadLink(status)}
-              >
+              <TiltButton href={deriveReadLink(status)}>
                 Continue Reading
-              </Link>
+              </TiltButton>
             )}
             {status === "unauthenticated" && (
-              <Link
-                className="fade-in bg-blue-400 text-white font-bold py-4 px-8 rounded shadow-xl hover:bg-blue-500 transition duration-300 ease-in-out hover:no-underline"
-                href="/auth/sign-in"
-              >
+              <TiltButton href="/auth/sign-in">
                 Sign in to get started
-              </Link>
+              </TiltButton>
             )}
           </div>
         </section>
@@ -464,7 +581,7 @@ const modernFeatures = [
       "Continue reading exactly where you stopped last time, with automatic progress tracking across devices.",
   },
   {
-    icon: "🔍",
+    icon: "",
     title: "Enhanced Search",
     description:
       "Easily find specific papers or passages with our powerful search functionality.",
