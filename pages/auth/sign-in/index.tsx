@@ -34,7 +34,7 @@ const SignInPage = () => {
   }, [router, status]);
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-slate-100 text-gray-600 dark:text-white">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-blue-100 via-white to-purple-100 text-gray-600 dark:text-white relative">
       <HeadTag
         metaDescription="Sign in to your UrantiaHub account to access your profile, create bookmarks, create notes, track your progress, and more."
         titlePrefix="Sign In"

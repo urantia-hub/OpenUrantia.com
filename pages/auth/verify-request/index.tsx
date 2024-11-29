@@ -4,7 +4,7 @@ import HeadTag from "@/components/HeadTag";
 
 const VerifyRequestPage = () => {
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-slate-100 text-gray-600 dark:text-white">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-blue-100 via-white to-purple-100 text-gray-600 dark:text-white relative">
       <HeadTag titlePrefix="Verify Email" />
 
       <header className="fixed top-0 left-0 right-0 md:top-4 md:left-6 md:right-unset hidden md:block z-10 mx-auto p-2">
