@@ -1,4 +1,4 @@
-import { getValidPaperUrls, paperIdToUrl } from "@/utils/paperFormatters";
+import { getValidPaperUrls } from "@/utils/paperFormatters";
 
 const Sitemap = () => {
   // This page will not be rendered directly, so return null
@@ -10,6 +10,14 @@ export const getServerSideProps = async ({ res }: any) => {
 
   const staticPages = [
     { url: `${baseUrl}/`, priority: "1.0" },
+    {
+      url: `${baseUrl}/blockchain-archive/urantia-papers/json`,
+      priority: "0.9",
+    },
+    {
+      url: `${baseUrl}/blockchain-archive/urantia-papers/txt`,
+      priority: "0.9",
+    },
     { url: `${baseUrl}/explore`, priority: "0.9" },
     { url: `${baseUrl}/papers`, priority: "0.9" },
     { url: `${baseUrl}/search`, priority: "0.7" },
@@ -26,12 +34,12 @@ export const getServerSideProps = async ({ res }: any) => {
   const validPaperUrls = getValidPaperUrls();
   const papers = validPaperUrls.map((url) => ({
     url: `${baseUrl}/papers/${url}`,
-    priority: "0.8",
+    priority: "1.0",
   }));
 
   // Combine all URLs and sort by priority.
   const urls = [...staticPages, ...papers].sort((a, b) =>
-    a.priority > b.priority ? -1 : 1
+    parseFloat(a.priority) > parseFloat(b.priority) ? -1 : 1
   );
 
   const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
