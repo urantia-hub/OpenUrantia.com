@@ -426,7 +426,7 @@ select.select-selected {
   background-image: url('/background.png');
   background-size: cover;
   background-position: center;
-  margin-top: -56px;
+  margin-top: -64px;
 }
 
 /* Add this with your other keyframe animations */
@@ -545,4 +545,166 @@ select.select-selected {
   transform-origin: 0 50%;
   width: 4px;
   z-index: 1;
+}
+
+/* Geometric animations */
+.geometric-symbol {
+  width: 60px;
+  height: 60px;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  animation: rotate 20s linear infinite;
+}
+
+.concentric-circles {
+  position: relative;
+}
+
+.concentric-circles::before,
+.concentric-circles::after,
+.concentric-circles span {
+  content: '';
+  position: absolute;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  animation: pulse 8s ease-in-out infinite;
+}
+
+.concentric-circles::before {
+  width: 60px;
+  height: 60px;
+}
+
+.concentric-circles::after {
+  width: 90px;
+  height: 90px;
+  animation-delay: -2s;
+}
+
+.concentric-circles span {
+  width: 120px;
+  height: 120px;
+  display: block;
+  animation-delay: -1s;
+}
+
+@keyframes rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-20px) rotate(180deg); }
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); opacity: 0.1; }
+  50% { transform: scale(1.2); opacity: 0.2; }
+}
+
+/* Geometric shape animations */
+.geometric-shape {
+  position: absolute;
+  border: 2px solid rgba(99, 102, 241, 0.2);
+  transition: all 0.3s ease;
+  animation: floatAndRotate 15s infinite ease-in-out;
+}
+
+.geometric-shape.circle {
+  border-radius: 50%;
+}
+
+.geometric-shape.triangle {
+  clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+}
+
+.geometric-shape.square {
+  transform: rotate(45deg);
+}
+
+.geometric-shape.hexagon {
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+}
+
+@keyframes floatAndRotate {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 0.1;
+  }
+  25% {
+    transform: translateY(-15px) rotate(90deg);
+    opacity: 0.3;
+  }
+  50% {
+    transform: translateY(0) rotate(180deg);
+    opacity: 0.1;
+  }
+  75% {
+    transform: translateY(15px) rotate(270deg);
+    opacity: 0.3;
+  }
+}
+
+/* Add a subtle glow effect on hover */
+.geometric-shape:hover {
+  border-color: rgba(99, 102, 241, 0.4);
+  box-shadow: 0 0 15px rgba(99, 102, 241, 0.2);
+  transform: scale(1.1);
+}
+
+/* Optional: Add a subtle parallax effect */
+.geometric-animations {
+  transform-style: preserve-3d;
+  perspective: 1000px;
+}
+
+/* Sacred Geometry Patterns */
+.sacred-circle {
+  width: 60px;
+  height: 60px;
+  border: 1px solid rgba(99, 102, 241, 0.15);
+  border-radius: 50%;
+  transform-origin: center;
+  animation: pulseAndRotate 4s infinite ease-in-out;
+}
+
+.sacred-hexagon {
+  width: 80px;
+  height: 80px;
+  border: 1px solid rgba(99, 102, 241, 0.15);
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  animation: pulse 6s infinite ease-in-out;
+  transform: translate(-50%, -50%);
+}
+
+@keyframes pulseAndRotate {
+  0%, 100% {
+    transform: translate(-50%, -50%) scale(1) rotate(0deg);
+    opacity: 0.3;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.2) rotate(180deg);
+    opacity: 0.1;
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0.3;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.1);
+    opacity: 0.1;
+  }
+}
+@keyframes floatAndFade {
+  0%, 100% {
+    transform: translate(-50%, -60%) scale(1);
+    opacity: 0.3;
+  }
+  50% {
+    transform: translate(-50%, -40%) scale(0.9);
+    opacity: 0.1;
+  }
 }

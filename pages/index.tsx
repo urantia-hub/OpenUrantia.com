@@ -11,14 +11,27 @@ import ParticleBackground from "@/components/ParticleBackground";
 import TiltButton from "@/components/TiltButton";
 import { deriveReadLink } from "@/utils/readPaperLink";
 import {
-  Atom,
-  Dna,
-  Sparkles,
-  BookX,
-  SearchX,
-  Notebook,
   AlertCircle,
-} from "lucide-react"; // Import the icons we need
+  Atom,
+  BarChart2,
+  BookX,
+  Bookmark,
+  Brain,
+  Dna,
+  Globe,
+  Headphones,
+  Notebook,
+  Palette,
+  PenTool,
+  Search,
+  SearchX,
+  Share2,
+  Smartphone,
+  Sparkles,
+  Target,
+  MessageSquare,
+  Store,
+} from "lucide-react";
 
 const HomePage = () => {
   // Hooks.
@@ -162,7 +175,7 @@ const HomePage = () => {
         {/* Unique Ideas Section */}
         <section className="py-36 bg-white">
           <div className="max-w-7xl mx-auto px-6">
-            <h2 className="text-4xl md:text-5xl font-semibold pb-1 mb-14 text-center bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-600">
+            <h2 className="text-4xl md:text-5xl font-semibold pb-1 mb-14 text-center bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-slate-400">
               Ideas That Challenge Our Understanding
             </h2>
 
@@ -269,7 +282,8 @@ const HomePage = () => {
         {/* Introduction to Urantia Papers */}
         <section className="pb-48 bg-white">
           <div className="max-w-7xl mx-auto px-6">
-            <h2 className="text-4xl md:text-5xl font-semibold mb-12 text-center">
+            {/* <h2 className="text-4xl md:text-5xl font-semibold mb-12 text-center"> */}
+            <h2 className="text-4xl md:text-5xl font-semibold pb-1 mb-14 text-center bg-clip-text text-transparent bg-gradient-to-r from-slate-400 to-gray-900">
               What are the Urantia Papers?
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
@@ -600,8 +614,8 @@ const HomePage = () => {
         </div>
 
         {/* Modern Reading Experience */}
-        <section className="pt-24 pb-36 bg-gradient-to-b from-emerald-500 to-emerald-600 relative">
-          {/* Subtle diagonal texture overlay */}
+        <section className="pt-24 pb-56 bg-gradient-to-b from-emerald-500 to-emerald-600 relative">
+          {/* Subtle pattern overlay */}
           <div
             className="absolute inset-0 opacity-5"
             style={{
@@ -618,56 +632,159 @@ const HomePage = () => {
               and studied in the digital age, addressing traditional challenges
               with innovative solutions:
             </p>
+
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {modernFeatures.map((feature, index) => (
-                <FeatureCard key={index} {...feature} />
+              {modernFeatures.map((feature) => (
+                <FeatureCard key={feature.title} {...feature} />
               ))}
             </div>
           </div>
         </section>
 
-        {/* Community and Engagement */}
-        <section className="py-24 bg-blue-50">
+        {/* Community Hub Section */}
+        <section className="py-36 bg-slate-50 relative">
+          {/* Transition to Community Hub */}
+          <div className="absolute top-16 w-full">
+            {/* Textured border transition */}
+            <div className="absolute w-full h-16 -top-32">
+              <div className="w-full h-full bg-gradient-to-b from-emerald-600 to-emerald-400 relative">
+                {/* Organic noise texture */}
+                <div
+                  className="absolute inset-0 opacity-30 mix-blend-overlay"
+                  style={{
+                    backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
+                    backgroundSize: "150px 150px",
+                  }}
+                />
+                {/* Subtle shadow at bottom */}
+                <div className="absolute bottom-0 w-full h-8 bg-gradient-to-b from-transparent to-black/10" />
+              </div>
+            </div>
+          </div>
+
           <div className="max-w-7xl mx-auto px-6">
-            <h2 className="text-4xl md:text-5xl font-semibold mb-8 text-center">
+            <h2 className="text-4xl md:text-5xl font-semibold mb-6 text-center bg-clip-text text-transparent bg-gradient-to-r from-slate-400 to-gray-900">
               Community Hub
             </h2>
-            <p className="text-xl text-center mb-16 max-w-3xl mx-auto">
-              We&apos;re building a space for truth-seekers to connect, share
-              insights, and explore together.
+            <p className="text-xl text-center mb-16 max-w-3xl mx-auto text-slate-600">
+              Discover insights from fellow readers and share your own
+              contributions to this growing community of truth-seekers.
             </p>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-              {communityFeatures.map((feature, index) => (
-                <CommunityCard key={index} {...feature} />
-              ))}
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <CommunityFeature
+                icon={Share2}
+                title="Easy Sharing"
+                description="Share inspiring passages on social media or copy direct links to your favorite sections to discuss with friends."
+              />
+              <CommunityFeature
+                comingSoon
+                icon={Bookmark}
+                title="Popular Passages"
+                description="See which passages resonate most with other readers. Discover how many others found specific teachings meaningful and impactful."
+              />
+              <CommunityFeature
+                comingSoon
+                icon={MessageSquare}
+                title="Public Notes"
+                description="Share your insights on specific passages and engage in meaningful discussions with other readers about their interpretations."
+              />
+              <CommunityFeature
+                comingSoon
+                icon={Store}
+                title="Community Marketplace"
+                description="Discover books, art, and other creative works inspired by these teachings. Share your own derivative works with the community."
+              />
             </div>
           </div>
         </section>
 
-        {/* Final CTA */}
-        <section className="py-24 bg-gradient-to-b from-blue-600 to-blue-800 text-white">
-          <div className="max-w-7xl mx-auto px-6 text-center">
-            <h2 className="text-4xl md:text-5xl font-semibold mb-8">
-              Begin Your Journey Today
+        {/* Enhanced CTA */}
+        <section className="relative py-36 bg-indigo-900 text-white overflow-hidden">
+          {/* Decorative transition to CTA */}
+          <div className="absolute inset-0 h-32">
+            <div className="absolute inset-0 overflow-hidden">
+              {/* Sacred geometry patterns */}
+              <div className="relative w-full h-full">
+                {/* Flower of Life pattern */}
+                {[...Array(6)].map((_, i) => (
+                  <div
+                    key={i}
+                    className="absolute left-1/2 top-1/2 sacred-circle"
+                    style={{
+                      transform: `rotate(${i * 60}deg) translateX(30px)`,
+                      animationDelay: `${i * 0.5}s`,
+                    }}
+                  />
+                ))}
+
+                {/* Metatron's Cube elements */}
+                <div className="absolute left-1/2 top-1/2 sacred-hexagon" />
+
+                {/* Trinity symbols */}
+                {[...Array(3)].map((_, i) => (
+                  <div
+                    key={i}
+                    className="absolute left-1/2 top-1/2 trinity-symbol"
+                    style={{
+                      transform: `rotate(${i * 120}deg) translateY(-20px)`,
+                      animationDelay: `${i * 1}s`,
+                    }}
+                  />
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Animated background patterns */}
+          <div className="absolute inset-0">
+            {/* Concentric circles */}
+            {[...Array(8)].map((_, i) => (
+              <div
+                key={`circle-${i}`}
+                className="absolute concentric-circles"
+                style={{
+                  top: `${Math.random() * 100}%`,
+                  left: `${Math.random() * 100}%`,
+                  animationDuration: `${Math.random() * 30}s`,
+                  animationDelay: `${Math.random() * 3}s`,
+                }}
+              >
+                <span />
+              </div>
+            ))}
+          </div>
+
+          {/* Content */}
+          <div className="relative z-10 max-w-7xl mx-auto px-6 text-center">
+            <h2 className="text-5xl md:text-7xl pb-2 font-bold mb-8 bg-clip-text text-transparent bg-gradient-to-r from-blue-200 via-indigo-200 to-purple-200">
+              Let&apos;s Learn Together
             </h2>
-            <p className="text-xl mb-12 max-w-2xl mx-auto">
-              Join our growing community of truth-seekers discovering answers to
-              life&apos;s deepest questions through these revolutionary
-              teachings.
+            <p className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto leading-relaxed text-indigo-200">
+              Join a vibrant community of curious minds exploring life&apos;s
+              deepest mysteries. Share insights, connect ideas, and discover new
+              perspectives as we piece together this fascinating cosmic puzzle.
             </p>
-            <p className="text-blue-200 mt-4">
-              Free access • No credit card required • Start reading instantly
+            <p className="text-lg mb-12 max-w-2xl mx-auto leading-relaxed text-indigo-300/80">
+              Whether you&apos;re a first-time reader or a long-time student,
+              there&apos;s always something new to discover when we learn
+              together.
             </p>
-            {status === "authenticated" && (
-              <TiltButton href={deriveReadLink(status)}>
-                Continue Reading
-              </TiltButton>
-            )}
-            {status === "unauthenticated" && (
-              <TiltButton href="/auth/sign-in">
-                Sign in to get started
-              </TiltButton>
-            )}
+            <div className="inline-block p-[2px] bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 rounded-lg">
+              <p className="text-indigo-200 px-4 sm:px-6 py-3 bg-indigo-900/50 backdrop-blur-sm rounded-lg text-sm sm:text-base whitespace-nowrap">
+                Free access • Start your journey today
+              </p>
+            </div>
+            <div className="mt-12">
+              {status === "authenticated" && (
+                <TiltButton href={deriveReadLink(status)}>
+                  Continue Reading
+                </TiltButton>
+              )}
+              {status === "unauthenticated" && (
+                <TiltButton href="/auth/sign-in">Join the Community</TiltButton>
+              )}
+            </div>
           </div>
         </section>
       </main>
@@ -678,105 +795,99 @@ const HomePage = () => {
 };
 
 // New component for modern features
-const FeatureCard = ({ icon, title, description }: any) => (
-  <div className="group relative bg-white p-8 rounded-xl transition-all duration-300 hover:shadow-lg border border-gray-100">
-    {/* Gradient hover effect */}
-    <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-blue-50 to-indigo-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-
-    {/* Content */}
-    <div className="relative z-10">
-      {/* Icon and Title container */}
-      <div className="flex items-center gap-4 mb-4">
-        {/* Icon with gradient background */}
-        <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-r from-blue-50 to-indigo-50">
-          <span className="text-2xl">{icon}</span>
+const FeatureCard = ({
+  icon: Icon,
+  title,
+  description,
+  iconColor,
+}: {
+  icon: typeof Smartphone;
+  title: string;
+  description: string;
+  iconColor: string;
+}) => (
+  <div className="group relative">
+    <div
+      className="relative h-full bg-slate-800 backdrop-blur-sm p-8 rounded-xl transition-all duration-300
+      hover:shadow-xl hover:scale-105 hover:-translate-y-1 transform"
+    >
+      <div className="flex items-center gap-4 mb-6">
+        <div
+          className={`inline-flex items-center justify-center w-14 h-14 rounded-xl bg-slate-700 backdrop-blur-sm flex-shrink-0`}
+        >
+          <Icon className={`w-8 h-8 text-${iconColor}`} strokeWidth={1.5} />
         </div>
-
-        {/* Title with hover effect */}
-        <h3 className="text-xl font-semibold text-gray-900 group-hover:text-blue-600 transition-colors duration-300">
-          {title}
-        </h3>
+        <h3 className="text-xl font-semibold text-slate-200">{title}</h3>
       </div>
-
-      {/* Description */}
-      <p className="text-gray-600 leading-relaxed">{description}</p>
+      <p className="relative text-slate-400 leading-relaxed">{description}</p>
     </div>
   </div>
 );
 
-// New data structures
+// Update the modernFeatures array with gradient colors
 const modernFeatures = [
   {
-    icon: "📱",
+    icon: Smartphone,
     title: "Read Anywhere",
     description:
       "Access the papers on any device with our responsive platform and offline capabilities.",
+    iconColor: "blue-500",
   },
   {
-    icon: "🎯",
+    icon: Target,
     title: "Pick Up Where You Left Off",
     description:
       "Continue reading exactly where you stopped last time, with automatic progress tracking across devices.",
+    iconColor: "red-500",
   },
   {
-    icon: "",
+    icon: Search,
     title: "Enhanced Search",
     description:
       "Easily find specific papers or passages with our powerful search functionality.",
+    iconColor: "yellow-500",
   },
   {
-    icon: "📊",
+    icon: BarChart2,
     title: "Progress Tracking",
     description:
       "Track your reading journey with completion percentages for each paper, making learning engaging and motivating.",
+    iconColor: "orange-500",
   },
   {
-    icon: "🔖",
+    icon: Bookmark,
     title: "Smart Bookmarking",
     description:
       "Save your favorite passages for quick reference and see how many others found them meaningful.",
+    iconColor: "green-500",
   },
   {
-    icon: "📝",
+    icon: PenTool,
     title: "Personal Notes",
     description:
       "Create private notes on any passage to capture your thoughts and insights.",
+    iconColor: "cyan-500",
   },
   {
-    icon: "🎧",
+    icon: Headphones,
     title: "Audio Experience",
     description:
       "Listen to high-quality audio narration with text highlighting, or enjoy the full papers on Spotify.",
+    iconColor: "indigo-500",
   },
   {
-    icon: "🤖",
+    icon: Brain,
     title: "AI-Powered Insights",
     description:
       "Get instant explanations and reflection questions for complex passages through our AI companion.",
+    iconColor: "purple-500",
   },
   {
-    icon: "🎨",
+    icon: Palette,
     title: "Customizable Reading",
     description:
       "Personalize your reading experience with adjustable font sizes and light/dark mode themes.",
-  },
-  {
-    icon: "🔗",
-    title: "Easy Sharing",
-    description:
-      "Share inspiring passages on social media or copy direct links to your favorite sections.",
-  },
-  {
-    icon: "🌐",
-    title: "Free Access",
-    description:
-      "Read the papers without signing in, or unlock enhanced features with a free account.",
-  },
-  {
-    icon: "✨",
-    title: "More Features Coming Soon",
-    description:
-      "We're constantly evolving with new features like public notes, community bookmarks, additional reading themes, and more on the horizon.",
+    iconColor: "amber-500",
   },
 ];
 
@@ -788,81 +899,36 @@ type CommunityFeature = {
   linkUrl?: string;
 };
 
-const CommunityCard = ({
+const CommunityFeature = ({
+  comingSoon,
+  icon: Icon,
   title,
   description,
-  icon,
-  imageUrl,
-  linkUrl,
-}: CommunityFeature) => (
-  <div className="bg-white rounded-xl overflow-hidden transition-all duration-300 hover:shadow-lg group">
-    {imageUrl && (
-      <div className="relative h-48 overflow-hidden">
-        <Image
-          src={imageUrl}
-          alt={title}
-          fill
-          className="object-cover transform group-hover:scale-105 transition-transform duration-300"
-        />
+}: any) => (
+  <div
+    className="group relative bg-white p-8 rounded-2xl transition-all duration-300
+    hover:shadow-xl hover:-translate-y-1 border border-slate-200"
+  >
+    {comingSoon && (
+      <div
+        className="absolute top-2 md:top-3 -right-5 md:right-3 px-3 py-1 bg-orange-500 text-white text-sm font-medium rounded-full
+      shadow-lg shadow-emerald-500/20 rotate-12 md:rotate-0"
+      >
+        COMING SOON
       </div>
     )}
-    <div className="p-8">
-      <div className="flex items-center gap-4 mb-4">
-        {icon && <div className="text-blue-500 text-2xl">{icon}</div>}
-        <h3 className="text-2xl font-semibold text-gray-800">{title}</h3>
+
+    <div className="space-y-4">
+      <div className="flex items-center gap-4">
+        <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-emerald-100 text-emerald-600">
+          <Icon className="w-6 h-6" strokeWidth={1.5} />
+        </div>
+        <h3 className="text-xl font-semibold text-slate-900">{title}</h3>
       </div>
-      <p className="text-gray-600 leading-relaxed mb-6">{description}</p>
-      {linkUrl && (
-        <Link
-          href={linkUrl}
-          className="inline-flex items-center text-blue-500 font-medium hover:text-blue-600 transition-colors duration-200"
-        >
-          Learn more
-          <svg
-            className="w-4 h-4 ml-2"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M9 5l7 7-7 7"
-            />
-          </svg>
-        </Link>
-      )}
+
+      <p className="text-slate-600 leading-relaxed">{description}</p>
     </div>
   </div>
 );
-
-// Updated community features data
-const communityFeatures = [
-  {
-    title: "Study Groups",
-    description:
-      "Join virtual study groups to explore the papers together. Share insights, ask questions, and deepen your understanding through meaningful discussions.",
-    icon: "👥",
-    imageUrl: "/images/study-groups.jpg",
-    linkUrl: "/community/study-groups",
-  },
-  {
-    title: "Discussion Forums",
-    description:
-      "Engage with readers worldwide in our vibrant forums. Explore topics, share interpretations, and participate in thoughtful conversations.",
-    icon: "💭",
-    imageUrl: "/images/forums.jpg",
-    linkUrl: "/community/forums",
-  },
-  {
-    title: "Events & Meetups",
-    description:
-      "Connect with fellow readers in person through local meetups and online events. Build lasting friendships with like-minded individuals.",
-    icon: "🎯",
-    imageUrl: "/images/events.jpg",
-    linkUrl: "/community/events",
-  },
-];
 
 export default HomePage;
