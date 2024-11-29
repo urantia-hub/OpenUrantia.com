@@ -10,7 +10,15 @@ import HomepageNavbar from "@/components/HomepageNavbar";
 import ParticleBackground from "@/components/ParticleBackground";
 import TiltButton from "@/components/TiltButton";
 import { deriveReadLink } from "@/utils/readPaperLink";
-import { Atom, Dna, Sparkles } from "lucide-react"; // Import the icons we need
+import {
+  Atom,
+  Dna,
+  Sparkles,
+  BookX,
+  SearchX,
+  Notebook,
+  AlertCircle,
+} from "lucide-react"; // Import the icons we need
 
 const HomePage = () => {
   // Hooks.
@@ -380,7 +388,7 @@ const HomePage = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 relative">
               {/* Glowing node */}
-              <div className="border-node" />
+              <div className="border-node hidden md:block" />
 
               <div className="group relative border border-transparent hover:border-blue-500 transition-all duration-300 rounded-xl">
                 {/* Card content */}
@@ -462,16 +470,16 @@ const HomePage = () => {
         </div>
 
         {/* Traditional Reading Challenges */}
-        <section className="py-24 bg-gradient-to-b from-slate-900 to-slate-800">
+        <section className="pt-24 pb-48 bg-gradient-to-b from-slate-900 to-slate-800">
           <div className="max-w-7xl mx-auto px-6">
-            <h2 className="text-4xl md:text-5xl font-semibold mb-12 text-center text-white">
+            <h2 className="text-4xl md:text-5xl font-semibold mb-16 text-center text-white">
               The Challenge of Studying the Papers
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
               <div className="order-2 md:order-1">
                 <div className="relative h-96">
                   <Image
-                    src="/traditional-reading.jpg"
+                    src="/homepage2.jpg"
                     alt="Traditional book reading experience"
                     fill
                     className="object-cover rounded-lg opacity-80"
@@ -481,37 +489,44 @@ const HomePage = () => {
               <div className="order-1 md:order-2">
                 <div className="space-y-6">
                   <p className="text-xl leading-relaxed text-slate-300">
-                    Traditionally, readers have accessed these teachings through
-                    physical books or basic online reading experiences, which
-                    presents several challenges:
+                    Traditional study methods present several key challenges:
                   </p>
                   <ul className="space-y-4">
                     <li className="flex items-start gap-3">
-                      <span className="text-red-400 mt-1">⚠️</span>
+                      <BookX
+                        className="w-6 h-6 mt-1 text-red-400"
+                        strokeWidth={1.5}
+                      />
                       <p className="text-lg text-slate-300">
-                        Complex cosmic concepts and detailed historical accounts
-                        across 2,000+ pages can be challenging to piece together
+                        2,000+ pages of complex concepts make comprehension
+                        difficult
                       </p>
                     </li>
                     <li className="flex items-start gap-3">
-                      <span className="text-red-400 mt-1">⚠️</span>
+                      <SearchX
+                        className="w-6 h-6 mt-1 text-red-400"
+                        strokeWidth={1.5}
+                      />
                       <p className="text-lg text-slate-300">
-                        Difficulty tracking progress and finding specific
-                        passages across multiple reading sessions
+                        Hard to track progress and locate specific passages
                       </p>
                     </li>
                     <li className="flex items-start gap-3">
-                      <span className="text-red-400 mt-1">⚠️</span>
+                      <Notebook
+                        className="w-6 h-6 mt-1 text-red-400"
+                        strokeWidth={1.5}
+                      />
                       <p className="text-lg text-slate-300">
-                        Limited ability to take notes, bookmark passages, or
-                        share insights with others
+                        Limited note-taking and sharing capabilities
                       </p>
                     </li>
                     <li className="flex items-start gap-3">
-                      <span className="text-red-400 mt-1">⚠️</span>
+                      <AlertCircle
+                        className="w-6 h-6 mt-1 text-red-400"
+                        strokeWidth={1.5}
+                      />
                       <p className="text-lg text-slate-300">
-                        No built-in study aids or tools to help understand
-                        complex concepts
+                        No integrated study aids for complex topics
                       </p>
                     </li>
                   </ul>
