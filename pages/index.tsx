@@ -322,83 +322,115 @@ const HomePage = () => {
               ))}
             </div>
 
-            {/* Main planet */}
-            <div
-              className="w-32 h-32 rounded-full relative overflow-hidden z-10
-                bg-gradient-to-br from-blue-950 via-blue-800 to-blue-800
-                shadow-[inset_-12px_-12px_24px_rgba(0,0,0,0.6)]"
-            >
-              {/* Atmosphere glow (static) */}
-              <div className="absolute -inset-1 bg-blue-400/10 blur-sm" />
-
-              {/* Rotating surface details */}
-              <div className="absolute inset-0 planet-spin">
-                {/* Dark patches / continents */}
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,transparent_30%,rgba(0,0,0,0.3)_70%)]" />
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_60%,transparent_20%,rgba(0,0,0,0.2)_50%)]" />
+            {/* Planet container with comets */}
+            <div className="relative">
+              {/* Comet 1 */}
+              <div className="absolute left-1/2 top-1/2 comet-path-1">
+                <div className="relative w-2 h-2">
+                  <div className="absolute w-2 h-2 bg-blue-200 rounded-full" />
+                  <div className="absolute w-8 h-1 -right-8 top-0.5 bg-gradient-to-r from-blue-200 to-transparent rounded-full blur-[2px]" />
+                </div>
               </div>
 
-              {/* Light reflections (static) */}
-              <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-transparent to-white/60" />
-              <div className="absolute top-2 left-4 w-3 h-3 bg-white/20 rounded-full blur-sm" />
+              {/* Comet 2 */}
+              <div className="absolute left-1/2 top-1/2 comet-path-2">
+                <div className="relative w-2 h-2">
+                  <div className="absolute w-3 h-3 bg-blue-200 rounded-full" />
+                  <div className="absolute w-8 h-1 -left-8 bottom-0.5 transform rotate-180 bg-gradient-to-r from-blue-200 to-transparent rounded-full blur-[2px]" />
+                </div>
+              </div>
 
-              {/* Orbital rings (static) */}
-              <div className="absolute -inset-6 border-2 border-blue-200/10 rounded-full transform -rotate-45 scale-[1.2]" />
-              <div className="absolute -inset-5 border border-blue-100/5 rounded-full transform -rotate-45 scale-[1.3]" />
+              {/* Main planet */}
+              <div
+                className="w-32 h-32 rounded-full relative overflow-hidden z-10
+                  bg-gradient-to-br from-blue-950 via-blue-800 to-blue-800
+                  shadow-[inset_-12px_-12px_24px_rgba(0,0,0,0.6)]"
+              >
+                {/* Atmosphere glow (static) */}
+                <div className="absolute -inset-1 bg-blue-400/10 blur-sm" />
 
-              {/* Outer glow (static) */}
-              <div className="absolute -inset-2 bg-blue-500/5 blur-xl rounded-full" />
+                {/* Rotating surface details */}
+                <div className="absolute inset-0 planet-spin">
+                  {/* Dark patches / continents */}
+                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,transparent_30%,rgba(0,0,0,0.3)_70%)]" />
+                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_60%,transparent_20%,rgba(0,0,0,0.2)_50%)]" />
+                </div>
+
+                {/* Light reflections (static) */}
+                <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-transparent to-white/60" />
+                <div className="absolute top-2 left-4 w-3 h-3 bg-white/20 rounded-full blur-sm" />
+
+                {/* Orbital rings (static) */}
+                <div className="absolute -inset-6 border-2 border-blue-200/10 rounded-full transform -rotate-45 scale-[1.2]" />
+                <div className="absolute -inset-5 border border-blue-100/5 rounded-full transform -rotate-45 scale-[1.3]" />
+
+                {/* Outer glow (static) */}
+                <div className="absolute -inset-2 bg-blue-500/5 blur-xl rounded-full" />
+              </div>
             </div>
           </div>
         </div>
 
         {/* Revolutionary Insights Section */}
-        <section className="pt-10 pb-36 bg-black text-white">
+        <section className="pt-10 pb-56 bg-black text-white relative">
           <div className="max-w-7xl mx-auto px-6">
             <h2 className="text-4xl md:text-5xl font-semibold pb-1 mb-16 text-center bg-clip-text text-transparent bg-gradient-to-r from-blue-100 to-white">
               Revolutionary Insights
             </h2>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <div className="group p-8 rounded-xl bg-slate-900/50 backdrop-blur-sm border border-white/5 hover:border-white/10 hover:bg-slate-900/70 transition-all duration-300">
-                <h3 className="text-2xl font-semibold mb-4 text-blue-100 group-hover:text-white transition-colors duration-300">
-                  Who Created Us?
-                </h3>
-                <p className="text-slate-300/80 leading-relaxed group-hover:text-slate-200 transition-colors duration-300">
-                  Discover our Creator who set in motion a vast family of
-                  celestial beings dedicated to helping humanity grow and
-                  progress.
-                </p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 relative">
+              {/* Glowing node */}
+              <div className="border-node" />
+
+              <div className="group relative border border-transparent hover:border-blue-500 transition-all duration-300 rounded-xl">
+                {/* Card content */}
+                <div className="relative p-8 rounded-xl bg-slate-900/50 backdrop-blur-sm group-hover:bg-slate-900 transition-all duration-300">
+                  <h3 className="text-2xl font-semibold mb-4 text-blue-100 group-hover:text-white transition-colors duration-300">
+                    Who Created Us?
+                  </h3>
+                  <p className="text-slate-300/80 leading-relaxed group-hover:text-slate-200 transition-colors duration-300">
+                    Discover our Creator who set in motion a vast family of
+                    celestial beings dedicated to helping humanity grow and
+                    progress.
+                  </p>
+                </div>
               </div>
 
-              <div className="group p-8 rounded-xl bg-slate-900/50 backdrop-blur-sm border border-white/5 hover:border-white/10 hover:bg-slate-900/70 transition-all duration-300">
-                <h3 className="text-2xl font-semibold mb-4 text-white group-hover:text-white transition-colors duration-300">
-                  How is Our Universe Organized?
-                </h3>
-                <p className="text-slate-300/80 leading-relaxed group-hover:text-slate-200 transition-colors duration-300">
-                  Explore the intricate structure of our local universe and its
-                  relationship to the greater cosmos.
-                </p>
+              <div className="group relative border border-transparent hover:border-blue-500 transition-all duration-300 rounded-xl">
+                <div className="relative p-8 rounded-xl bg-slate-900/50 backdrop-blur-sm group-hover:bg-slate-900 transition-all duration-300">
+                  <h3 className="text-2xl font-semibold mb-4 text-white group-hover:text-white transition-colors duration-300">
+                    How is Our Universe Organized?
+                  </h3>
+                  <p className="text-slate-300/80 leading-relaxed group-hover:text-slate-200 transition-colors duration-300">
+                    Explore the intricate structure of our local universe and
+                    its relationship to the greater cosmos.
+                  </p>
+                </div>
               </div>
 
-              <div className="group p-8 rounded-xl bg-slate-900/50 backdrop-blur-sm border border-white/5 hover:border-white/10 hover:bg-slate-900/70 transition-all duration-300">
-                <h3 className="text-2xl font-semibold mb-4 text-white group-hover:text-white transition-colors duration-300">
-                  What is Humanity&apos;s Story?
-                </h3>
-                <p className="text-slate-300/80 leading-relaxed group-hover:text-slate-200 transition-colors duration-300">
-                  Uncover the fascinating history of our world, from the origins
-                  of human civilization to our modern global society.
-                </p>
+              <div className="group relative border border-transparent hover:border-blue-500 transition-all duration-300 rounded-xl">
+                <div className="relative p-8 rounded-xl bg-slate-900/50 backdrop-blur-sm group-hover:bg-slate-900 transition-all duration-300">
+                  <h3 className="text-2xl font-semibold mb-4 text-white group-hover:text-white transition-colors duration-300">
+                    What is Humanity&apos;s Story?
+                  </h3>
+                  <p className="text-slate-300/80 leading-relaxed group-hover:text-slate-200 transition-colors duration-300">
+                    Uncover the fascinating history of our world, from the
+                    origins of human civilization to our modern global society.
+                  </p>
+                </div>
               </div>
 
-              <div className="group p-8 rounded-xl bg-slate-900/50 backdrop-blur-sm border border-white/5 hover:border-white/10 hover:bg-slate-900/70 transition-all duration-300">
-                <h3 className="text-2xl font-semibold mb-4 text-white group-hover:text-white transition-colors duration-300">
-                  Who Was Jesus?
-                </h3>
-                <p className="text-slate-300/80 leading-relaxed group-hover:text-slate-200 transition-colors duration-300">
-                  Experience a unique perspective on the life and teachings of
-                  Jesus, revealing the human story behind the historical figure.
-                </p>
+              <div className="group relative border border-transparent hover:border-blue-500 transition-all duration-300 rounded-xl">
+                <div className="relative p-8 rounded-xl bg-slate-900/50 backdrop-blur-sm group-hover:bg-slate-900 transition-all duration-300">
+                  <h3 className="text-2xl font-semibold mb-4 text-white group-hover:text-white transition-colors duration-300">
+                    Who Was Jesus?
+                  </h3>
+                  <p className="text-slate-300/80 leading-relaxed group-hover:text-slate-200 transition-colors duration-300">
+                    Experience a unique perspective on the life and teachings of
+                    Jesus, revealing the human story behind the historical
+                    figure.
+                  </p>
+                </div>
               </div>
             </div>
 
@@ -409,10 +441,30 @@ const HomePage = () => {
           </div>
         </section>
 
+        {/* Double Wave SVG overlay */}
+        <div className="relative">
+          <div className="absolute w-full overflow-hidden h-48 -top-48">
+            <svg
+              className="absolute w-full h-full"
+              viewBox="0 0 1440 120"
+              preserveAspectRatio="none"
+              fill="#0f172a" // slate-800
+            >
+              <path
+                d="M0,0
+                   C480,120 960,120 1440,0
+                   L1440,120
+                   L0,120
+                   Z"
+              />
+            </svg>
+          </div>
+        </div>
+
         {/* Traditional Reading Challenges */}
-        <section className="py-24 bg-gradient-to-b from-white to-slate-50">
+        <section className="py-24 bg-gradient-to-b from-slate-900 to-slate-800">
           <div className="max-w-7xl mx-auto px-6">
-            <h2 className="text-4xl md:text-5xl font-semibold mb-12 text-center">
+            <h2 className="text-4xl md:text-5xl font-semibold mb-12 text-center text-white">
               The Challenge of Studying the Papers
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
@@ -422,13 +474,13 @@ const HomePage = () => {
                     src="/traditional-reading.jpg"
                     alt="Traditional book reading experience"
                     fill
-                    className="object-cover rounded-lg"
+                    className="object-cover rounded-lg opacity-80"
                   />
                 </div>
               </div>
               <div className="order-1 md:order-2">
                 <div className="space-y-6">
-                  <p className="text-xl leading-relaxed">
+                  <p className="text-xl leading-relaxed text-slate-300">
                     Traditionally, readers have accessed these teachings through
                     physical books or basic online reading experiences, which
                     presents several challenges:
@@ -436,28 +488,28 @@ const HomePage = () => {
                   <ul className="space-y-4">
                     <li className="flex items-start gap-3">
                       <span className="text-red-400 mt-1">⚠️</span>
-                      <p className="text-lg">
+                      <p className="text-lg text-slate-300">
                         Complex cosmic concepts and detailed historical accounts
                         across 2,000+ pages can be challenging to piece together
                       </p>
                     </li>
                     <li className="flex items-start gap-3">
                       <span className="text-red-400 mt-1">⚠️</span>
-                      <p className="text-lg">
+                      <p className="text-lg text-slate-300">
                         Difficulty tracking progress and finding specific
                         passages across multiple reading sessions
                       </p>
                     </li>
                     <li className="flex items-start gap-3">
                       <span className="text-red-400 mt-1">⚠️</span>
-                      <p className="text-lg">
+                      <p className="text-lg text-slate-300">
                         Limited ability to take notes, bookmark passages, or
                         share insights with others
                       </p>
                     </li>
                     <li className="flex items-start gap-3">
                       <span className="text-red-400 mt-1">⚠️</span>
-                      <p className="text-lg">
+                      <p className="text-lg text-slate-300">
                         No built-in study aids or tools to help understand
                         complex concepts
                       </p>

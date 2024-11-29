@@ -461,22 +461,6 @@ select.select-selected {
   animation: twinkle 2s infinite;
 }
 
-@keyframes border-laser {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
-}
-
-.border-laser {
-  animation: border-laser 1s infinite;
-}
-
 @keyframes planet-spin {
   from {
     transform: rotate(0deg);
@@ -488,4 +472,77 @@ select.select-selected {
 
 .planet-spin {
   animation: planet-spin 7s linear infinite;
+}
+
+@keyframes comet-path-1 {
+  0% {
+    transform: translate(200px, -100px) rotate(-45deg) scale(0.3);
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 1;
+  }
+  70% {
+    opacity: 0;
+  }
+  100% {
+    transform: translate(-20px, 20px) rotate(-45deg) scale(1);
+    opacity: 0;
+  }
+}
+
+.comet-path-1 {
+  animation: comet-path-1 10s linear infinite;
+  animation-delay: 2s;
+}
+
+@keyframes comet-path-2 {
+  0% {
+    transform: translate(-200px, -150px) rotate(45deg) scale(0.3);
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 1;
+  }
+  70% {
+    opacity: 0;
+  }
+  100% {
+    transform: translate(20px, 20px) rotate(45deg) scale(1);
+    opacity: 0;
+  }
+}
+
+.comet-path-2 {
+  animation: comet-path-2 8s linear infinite;
+}
+
+@keyframes border-travel {
+  0% {
+    transform: rotate(0deg) translateX(calc(100% + 1rem));
+  }
+  100% {
+    transform: rotate(360deg) translateX(calc(100% + 1rem));
+  }
+}
+
+.border-node {
+  animation: border-travel 6s linear infinite;
+  background: #60A5FA;
+  border-radius: 50%;
+  box-shadow: 0 0 8px 2px #60A5FA;
+  height: 4px;
+  left: 50%;
+  opacity: 1;
+  position: absolute;
+  top: 50%;
+  transform-origin: 0 50%;
+  width: 4px;
+  z-index: 1;
 }
