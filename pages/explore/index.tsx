@@ -283,7 +283,7 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
                 </h2>
 
                 <p className="text-xs text-gray-400 mb-6">
-                  Discover the context behind some of our most inspiring
+                  Discover the context behind some of the most inspiring
                   passages.
                 </p>
 
