@@ -310,6 +310,34 @@ const HomePage = () => {
           {/* Purple gradient transition at top */}
           <div className="absolute inset-x-0 -top-10 h-36 bg-gradient-to-b from-white via-purple-300 to-transparent" />
 
+          {/* Wave SVG */}
+          <svg
+            className="absolute -top-24 w-full h-24 transform translate-y-1"
+            viewBox="0 0 1440 100"
+            preserveAspectRatio="none"
+          >
+            <path
+              fill="black"
+              fillOpacity="1"
+              d="M0,0
+         C360,20 720,80 1080,80
+         C1260,80 1350,60 1440,30
+         L1440,100
+         L0,100
+         Z"
+            >
+              <animate
+                attributeName="d"
+                dur="20s"
+                repeatCount="indefinite"
+                values="
+          M0,0 C360,20 720,80 1080,80 C1260,80 1350,60 1440,30 L1440,100 L0,100 Z;
+          M0,0 C360,40 720,60 1080,60 C1260,60 1350,40 1440,20 L1440,100 L0,100 Z;
+          M0,0 C360,20 720,80 1080,80 C1260,80 1350,60 1440,30 L1440,100 L0,100 Z"
+              />
+            </path>
+          </svg>
+
           {/* Background atmosphere effect */}
           <div className="absolute inset-0 bg-black" />
 
@@ -388,7 +416,7 @@ const HomePage = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 relative">
               {/* Glowing node */}
-              <div className="border-node hidden md:block" />
+              <div className="border-node md:hidden" />
 
               <div className="group relative border border-transparent hover:border-blue-500 transition-all duration-300 rounded-xl">
                 {/* Card content */}
@@ -470,7 +498,7 @@ const HomePage = () => {
         </div>
 
         {/* Traditional Reading Challenges */}
-        <section className="pt-24 pb-48 bg-gradient-to-b from-slate-900 to-slate-800">
+        <section className="pt-24 pb-56 bg-gradient-to-b from-slate-900 to-slate-800">
           <div className="max-w-7xl mx-auto px-6">
             <h2 className="text-4xl md:text-5xl font-semibold mb-16 text-center text-white">
               The Challenge of Studying the Papers
@@ -536,13 +564,56 @@ const HomePage = () => {
           </div>
         </section>
 
+        {/* Textured border transition */}
+        <div className="relative">
+          {/* Additional textured rectangle for softer transition */}
+          <div className="absolute w-full h-32 -top-32">
+            <div className="w-full h-full bg-gradient-to-b from-slate-800 via-emerald-800/90 to-emerald-600/95 relative">
+              {/* Organic noise texture */}
+              <div
+                className="absolute inset-0 opacity-30 mix-blend-overlay"
+                style={{
+                  backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
+                  backgroundSize: "150px 150px",
+                }}
+              />
+              {/* Subtle shadow at bottom */}
+              <div className="absolute bottom-0 w-full h-8 bg-gradient-to-b from-transparent to-black/10" />
+            </div>
+          </div>
+
+          {/* Original embossed border effect */}
+          <div className="absolute w-full h-16 -top-16">
+            <div className="w-full h-full bg-gradient-to-b from-emerald-600/95 to-emerald-500 relative">
+              {/* Noise texture overlay */}
+              <div
+                className="absolute inset-0 opacity-20"
+                style={{
+                  backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
+                }}
+              />
+              {/* Embossed line effect */}
+              <div className="absolute bottom-0 w-full h-[2px] bg-gradient-to-r from-transparent via-emerald-300/30 to-transparent" />
+              <div className="absolute bottom-[1px] w-full h-[1px] bg-gradient-to-r from-transparent via-emerald-100/10 to-transparent" />
+            </div>
+          </div>
+        </div>
+
         {/* Modern Reading Experience */}
-        <section className="py-24 bg-gradient-to-b from-slate-50 to-white">
-          <div className="max-w-7xl mx-auto px-6">
-            <h2 className="text-4xl md:text-5xl font-semibold mb-6 text-center bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-600">
+        <section className="pt-24 pb-36 bg-gradient-to-b from-emerald-500 to-emerald-600 relative">
+          {/* Subtle diagonal texture overlay */}
+          <div
+            className="absolute inset-0 opacity-5"
+            style={{
+              backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23000000' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2V6h4V4H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+            }}
+          />
+
+          <div className="max-w-7xl mx-auto px-6 relative">
+            <h2 className="text-4xl md:text-5xl font-semibold mb-6 text-center text-white">
               A Modern Reading Experience
             </h2>
-            <p className="text-xl text-center mb-16 max-w-3xl mx-auto">
+            <p className="text-xl text-center mb-16 max-w-3xl mx-auto text-emerald-50">
               We&apos;ve reimagined how these timeless teachings can be accessed
               and studied in the digital age, addressing traditional challenges
               with innovative solutions:
