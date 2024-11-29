@@ -26,7 +26,10 @@ const handleCron = async (_: NextApiRequest, res: NextApiResponse) => {
 
   // Get a curated quote
   console.log("[sendDailyQuote] Fetching curated quote");
-  const curatedQuote = await curatedQuoteService.getRandomUnsent();
+  const curatedQuotes = await curatedQuoteService.getRandom({
+    sent: false,
+  });
+  const curatedQuote = curatedQuotes?.[0];
 
   if (!curatedQuote?.globalId) {
     console.log(

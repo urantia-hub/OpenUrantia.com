@@ -11,40 +11,79 @@ import {
   getGlobalIdFromStandardReferenceId,
   getPaperIdFromGlobalId,
 } from "@/utils/node";
+import { CuratedQuote } from "@prisma/client";
 
 const curatedQuoteService = new CuratedQuoteService();
 
 // GET handler
 async function handleGET(req: NextApiRequest, res: NextApiResponse) {
-  const { sent } = req.query;
+  const { sent, randomAmount: randomAmountString } = req.query;
+
+  // Validate sent parameter
   if (sent && sent !== "true" && sent !== "false") {
     return res
       .status(400)
       .json({ error: `Expected sent to be "true" or "false", got ${sent}` });
   }
 
-  const where: any = {};
-  if (sent === "true") {
-    where.sentAt = { not: null };
-  } else if (sent === "false") {
-    where.sentAt = null;
+  // Validate randomAmount if provided
+  const randomAmount = randomAmountString
+    ? parseInt(randomAmountString as string, 10)
+    : undefined;
+  if (randomAmount && (isNaN(randomAmount) || randomAmount < 1)) {
+    return res
+      .status(400)
+      .json({ error: "randomAmount must be a positive integer" });
   }
 
-  const curatedQuotes = await curatedQuoteService.findMany({
-    where,
-    orderBy: {
-      createdAt: "desc",
-    },
-  });
+  // Build where clause
+  const where: any = {};
+  const metadata: any = {};
+  if (sent === "true") {
+    where.sentAt = { not: null };
+    metadata.sent = true;
+  } else if (sent === "false") {
+    where.sentAt = null;
+    metadata.sent = false;
+  }
+
+  let curatedQuotes: CuratedQuote[] = [];
+
+  // If randomAmount is specified, randomly sample the quotes
+  if (randomAmount) {
+    const unsortedQuotes = (await curatedQuoteService.getRandom({
+      amount: randomAmount,
+      enriched: true,
+      sent: where.sentAt ? true : false,
+    })) as CuratedQuote[];
+    curatedQuotes = unsortedQuotes.sort((a, b) => {
+      return a.globalId.localeCompare(b.globalId);
+    });
+    metadata.randomAmount = randomAmount;
+  } else {
+    curatedQuotes = await curatedQuoteService.findMany({
+      where,
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+  }
 
   res.status(200).json({
     count: curatedQuotes.length,
     data: curatedQuotes,
+    metadata,
   });
 }
 
 // POST handler
 async function handlePOST(req: NextApiRequest, res: NextApiResponse) {
+  // Get the X-ADMIN-SECRET header.
+  const adminSecret = req.headers["x-admin-secret"];
+  if (adminSecret !== process.env.ADMIN_SECRET) {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
+
   let { globalId, standardReferenceId } = req.body;
 
   if (globalId) {
@@ -116,12 +155,6 @@ export default async function handle(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  // Get the X-ADMIN-SECRET header.
-  const adminSecret = req.headers["x-admin-secret"];
-  if (adminSecret !== process.env.ADMIN_SECRET) {
-    return res.status(401).json({ error: "Unauthorized" });
-  }
-
   const { method } = req;
   switch (method) {
     case "GET":

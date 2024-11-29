@@ -3,6 +3,7 @@ import { CuratedQuote, Prisma, PrismaClient } from "@prisma/client";
 // Relative modules.
 import BaseService from "@/services/base";
 import { getPrismaClient } from "@/libs/prisma/client";
+import axios from "axios";
 
 const prisma = getPrismaClient();
 
@@ -68,20 +69,75 @@ export class CuratedQuoteService implements BaseService<CuratedQuote> {
     return await this.model.upsert(args);
   }
 
-  async getRandomUnsent(): Promise<CuratedQuote | null> {
-    const unsentCuratedQuotes = await this.model.findMany({
+  async getRandom(options?: {
+    amount?: number;
+    enriched?: boolean;
+    sent?: boolean;
+  }): Promise<CuratedQuote[] | null> {
+    // Get distinct quotes by globalId using Prisma's distinct feature
+    const sentCuratedQuotes = await this.model.findMany({
       where: {
-        sentAt: null,
+        sentAt: options?.sent ? { not: null } : undefined,
+      },
+      distinct: ["globalId"],
+      orderBy: {
+        createdAt: "desc",
       },
     });
 
-    if (!unsentCuratedQuotes.length) {
+    // If there are no sent curated quotes, return null
+    if (!sentCuratedQuotes.length) {
       return null;
     }
 
-    const randomIndex = Math.floor(Math.random() * unsentCuratedQuotes.length);
+    // Generate unique random indexes
+    const amount = options?.amount || 1;
+    const indexes = new Set<number>();
+    while (indexes.size < Math.min(amount, sentCuratedQuotes.length)) {
+      indexes.add(Math.floor(Math.random() * sentCuratedQuotes.length));
+    }
 
-    return unsentCuratedQuotes[randomIndex];
+    // Get the quotes at the random indexes
+    const unenrichedQuotes = Array.from(indexes).map(
+      (index) => sentCuratedQuotes[index]
+    );
+
+    // If the quotes are not enriched, return them
+    if (!options?.enriched) {
+      return unenrichedQuotes;
+    }
+
+    // Get the paragraph nodes for the quotes
+    const paragraphNodes = await Promise.all(
+      unenrichedQuotes.map((quote) => this.getNodeByGlobalId(quote.globalId))
+    );
+
+    // Add the paragraph nodes to the quotes
+    const enrichedQuotes = unenrichedQuotes.map((quote) => {
+      const paragraphNode = paragraphNodes.find(
+        (node: any) => node.globalId === quote.globalId
+      );
+
+      return {
+        ...quote,
+        paragraphNode,
+      };
+    });
+
+    // Return the enriched quotes
+    return enrichedQuotes;
+  }
+
+  async getNodeByGlobalId(globalId: string): Promise<any> {
+    try {
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_URANTIA_DEV_API_HOST}/api/v1/urantia-book/paragraphs/${globalId}`
+      );
+      return response.data?.data;
+    } catch (error) {
+      console.error("Unable to fetch nodes by globalIds", error);
+      return [];
+    }
   }
 }
 

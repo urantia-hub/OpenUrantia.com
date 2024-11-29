@@ -21,6 +21,25 @@ type TOCNode = {
   type: string;
 };
 
+type CuratedQuote = {
+  createdAt: string;
+  globalId: string;
+  paperId: string;
+  sentAt: string;
+  paper: {
+    title: string;
+  };
+  paragraphNode: {
+    htmlText: string;
+    labels: string[];
+    paperTitle: string;
+    partId: string;
+    sectionTitle: string;
+    standardReferenceId: string;
+    text: string;
+  };
+};
+
 type TOCPageProps = {
   nodes: TOCNode[];
 };
@@ -43,6 +62,10 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
   const [fetchingUserInterests, setFetchingUserInterests] =
     useState<boolean>(false);
 
+  // Add new state
+  const [featuredQuotes, setFeaturedQuotes] = useState<CuratedQuote[]>([]);
+  const [fetchingFeaturedQuotes, setFetchingFeaturedQuotes] = useState(false);
+
   useEffect(() => {
     if (userInterests.length > 0) {
       setPapersYouMightLike([...getRandomPapersForUser(nodes, userInterests)]);
@@ -51,6 +74,24 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
       ]);
     }
   }, [userInterests, nodes, progressResults]);
+
+  const fetchProgress = async () => {
+    try {
+      setFetchingProgress(true);
+      const response = await fetch("/api/user/nodes/progress", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const data = await response.json();
+      setProgressResults(data.data);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setFetchingProgress(false);
+    }
+  };
 
   const fetchUserInterests = async () => {
     try {
@@ -76,27 +117,27 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
     }
   };
 
-  const fetchProgress = async () => {
+  const fetchFeaturedQuotes = async () => {
     try {
-      setFetchingProgress(true);
-      const response = await fetch("/api/user/nodes/progress", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      setFetchingFeaturedQuotes(true);
+      const response = await fetch(
+        "/api/curated-quotes?sent=true&randomAmount=2"
+      );
       const data = await response.json();
-      setProgressResults(data.data);
+      setFeaturedQuotes(data.data);
     } catch (error) {
       console.error(error);
     } finally {
-      setFetchingProgress(false);
+      setFetchingFeaturedQuotes(false);
     }
   };
 
   const onAuthenticated = async () => {
-    await fetchProgress();
-    await fetchUserInterests();
+    await Promise.all([
+      fetchProgress(),
+      fetchUserInterests(),
+      fetchFeaturedQuotes(),
+    ]);
   };
 
   useEffect(() => {
@@ -235,6 +276,80 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
           <>
             <div className="mt-4 mb-4 text-center">
               <h1 className="text-5xl font-bold mb-8">Explore</h1>
+
+              <div className="mb-8">
+                <h2 className="text-base mb-2 pb-2 text-center border-b text-gray-400 border-gray-200 dark:border-gray-600">
+                  Quotes
+                </h2>
+
+                <p className="text-xs text-gray-400 mb-6">
+                  Discover the context behind some of our most inspiring
+                  passages.
+                </p>
+
+                {fetchingFeaturedQuotes ? (
+                  <div className="flex justify-center items-center">
+                    <Spinner />
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {featuredQuotes?.map((quote) => {
+                      const cleanHtml = quote.paragraphNode.htmlText.replace(
+                        /\sclass="[^"]*"/g,
+                        ""
+                      );
+
+                      return (
+                        <Link
+                          key={quote.globalId}
+                          href={`/papers/${paperIdToUrl(`${quote.paperId}`)}#${
+                            quote.globalId
+                          }`}
+                          className="relative flex flex-col items-start text-left px-6 pt-5 pb-10 bg-white dark:bg-neutral-700 hover:dark:bg-neutral-600 rounded transition-colors hover:no-underline hover:shadow-lg hover:dark:shadow-none transition-shadow duration-300"
+                        >
+                          {/* Paper Info */}
+                          <div className="flex flex-col w-full mb-2">
+                            <div className="text-xs text-gray-400 flex items-center justify-between w-full">
+                              {quote.paperId === "0" ? (
+                                "Foreword"
+                              ) : (
+                                <>
+                                  <span>Paper {quote.paperId}</span>
+                                  <span>Part {quote.paragraphNode.partId}</span>
+                                </>
+                              )}
+                            </div>
+                            <h3 className="mt-1 text-sm font-bold leading-5 text-gray-600 dark:text-white">
+                              {quote.paragraphNode.paperTitle}{" "}
+                              <span className="text-xs text-gray-400 font-normal">
+                                ({quote.paragraphNode.standardReferenceId})
+                              </span>
+                            </h3>
+                            {quote.paragraphNode.sectionTitle && (
+                              <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                                {quote.paragraphNode.sectionTitle}
+                              </p>
+                            )}
+                          </div>
+
+                          {/* Quote Text */}
+                          <div className="flex-grow w-full overflow-hidden">
+                            <div className="text-sm text-gray-600 dark:text-gray-300">
+                              <div
+                                className="line-clamp-5"
+                                dangerouslySetInnerHTML={{ __html: cleanHtml }}
+                              />
+                              <span className="text-sm text-blue-400 absolute bottom-3 right-3">
+                                Read more
+                              </span>
+                            </div>
+                          </div>
+                        </Link>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
 
               {/* -- Papers You Might Like --- */}
               {!fetchingUserInterests &&
