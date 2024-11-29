@@ -3,12 +3,15 @@ import Link from "next/link";
 import { deriveReadLink } from "@/utils/readPaperLink";
 import { useSession } from "next-auth/react";
 
-const Footer = () => {
+const Footer = ({ marginBottom }: { marginBottom?: string }) => {
   // Hooks.
   const { status } = useSession();
 
   return (
-    <footer className="bg-slate-100 text-gray-400">
+    <footer
+      className="bg-slate-100 text-gray-400"
+      style={{ marginBottom: marginBottom || "4.3rem" }}
+    >
       <div className="container mx-auto px-4 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div>
