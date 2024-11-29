@@ -56,7 +56,7 @@ const SignInPage = () => {
         </h1>
 
         {/* Email */}
-        <form
+        {/* <form
           className="flex flex-col w-full"
           onSubmit={handleEmailSignIn}
           noValidate
@@ -90,11 +90,11 @@ const SignInPage = () => {
           <hr className="w-full border-gray-200" />
           <span className="text-gray-400 text-xs mx-4">or</span>
           <hr className="w-full border-gray-200" />
-        </div>
+        </div> */}
 
         {/* Google oAuth */}
         <button
-          className="flex items-center justify-center border-1 border-gray-200 bg-white text-gray-600 rounded px-6 py-2 hover:bg-slate-200 transition-all duration-300 mt-6 w-full"
+          className="flex items-center justify-center border-1 border-gray-200 bg-white text-gray-600 rounded px-6 py-2 hover:bg-slate-200 transition-all duration-300 w-full"
           onClick={() => {
             signIn("google", {
               callbackUrl:
