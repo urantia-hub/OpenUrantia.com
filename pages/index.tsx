@@ -13,22 +13,13 @@ import { deriveReadLink } from "@/utils/readPaperLink";
 import {
   AlertCircle,
   Atom,
-  BarChart2,
   BookX,
   Bookmark,
-  Brain,
   Dna,
-  Globe,
-  Headphones,
   Notebook,
-  Palette,
-  PenTool,
-  Search,
   SearchX,
   Share2,
-  Smartphone,
   Sparkles,
-  Target,
   MessageSquare,
   Store,
 } from "lucide-react";
@@ -110,7 +101,7 @@ const HomePage = () => {
 
   return (
     <div className="flex flex-col min-h-screen bg-slate-100 text-gray-600">
-      <HeadTag metaDescription="Discover the Urantia Papers - a unique collection of spiritual and philosophical teachings that bridge science, religion, and human history. Experience it through UrantiaHub's modern digital platform." />
+      <HeadTag />
 
       <HomepageNavbar />
 

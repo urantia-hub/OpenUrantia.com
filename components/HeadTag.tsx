@@ -1,7 +1,7 @@
 import Head from "next/head";
 
 const DEFAULT_META_DESCRIPTION =
-  "An open source version of The Urantia Papers for generations to come.";
+  "Explore the Urantia Papers through a modern digital platform. Discover profound insights about science, spirituality, and human history. Join our community of truth-seekers for an enhanced reading experience with study tools and collaborative features.";
 
 type HeadTagProps = {
   metaDescription?: string;
@@ -47,7 +47,7 @@ const HeadTag = ({ metaDescription, titlePrefix }: HeadTagProps) => {
       />
       <meta
         name="twitter:image"
-        content="https://www.urantiahub.com/background_small.png"
+        content="https://www.urantiahub.com/sharing.png"
       />
       <meta name="twitter:creator" content="@urantiahub" />
       <meta property="og:type" content="website" />
@@ -60,7 +60,7 @@ const HeadTag = ({ metaDescription, titlePrefix }: HeadTagProps) => {
       <meta property="og:url" content="https://www.urantiahub.com" />
       <meta
         property="og:image"
-        content="https://www.urantiahub.com/background_small.png"
+        content="https://www.urantiahub.com/sharing.png"
       />
 
       {/* Viewport Meta Tag */}
