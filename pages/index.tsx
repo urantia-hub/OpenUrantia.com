@@ -168,7 +168,10 @@ const HomePage = () => {
         {/* Unique Ideas Section */}
         <section className="py-36 bg-white">
           <div className="max-w-7xl mx-auto px-6">
-            <h2 className="text-4xl md:text-5xl font-semibold pb-1 mb-14 text-center bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-slate-400">
+            <h2
+              id="after-hero"
+              className="text-4xl md:text-5xl font-semibold pb-1 mb-14 text-center bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-slate-400"
+            >
               Ideas That Challenge Our Understanding
             </h2>
 
