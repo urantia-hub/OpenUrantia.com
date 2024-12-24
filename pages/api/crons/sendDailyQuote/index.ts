@@ -1,6 +1,6 @@
 // Node modules.
 import axios from "axios";
-import sgMail from "@sendgrid/mail";
+import { Resend } from "resend";
 import type { NextApiRequest, NextApiResponse } from "next";
 // Relative modules.
 import SentQuoteService from "@/services/sentQuote";
@@ -12,8 +12,7 @@ const curatedQuoteService = new CuratedQuoteService();
 const sentQuoteService = new SentQuoteService();
 const userService = new UserService();
 
-// Setting SendGrid API Key
-sgMail.setApiKey(process.env.SENDGRID_API_KEY as string);
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 const handleCron = async (_: NextApiRequest, res: NextApiResponse) => {
   // Get users who have email notifications enabled.
@@ -89,30 +88,23 @@ const handleCron = async (_: NextApiRequest, res: NextApiResponse) => {
   // Prepare emails
   console.log("[sendDailyQuote] Preparing emails");
   const messages = usersToSend.map((user) => ({
+    from: process.env.EMAIL_FROM as string,
     to: user.email as string,
-    from: process.env.SENDGRID_FROM as string,
-    templateId: process.env.SENDGRID_SEND_DAILY_QUOTE_TEMPLATE_ID as string,
-    dynamicTemplateData: {
-      paper:
-        paperId === "0"
-          ? "Foreword"
-          : `Paper ${paperId} - ${paragraph.paperTitle}`,
-      paragraph: `"(${standardReferenceId}) ${text}"`,
-      preHeader: `${
-        paperId === "0"
-          ? "Foreword"
-          : `Paper ${paperId} - ${paragraph.paperTitle} - "(${standardReferenceId}) ${text}"`
-      }`,
-      continueReadingUrl: `${
-        process.env.NEXT_PUBLIC_HOST
-      }/papers/${paperIdToUrl(`${paperId}`)}#${globalId}`,
-    },
+    subject: "Your Daily Quote",
+    html: `<p>${
+      paperId === "0"
+        ? "Foreword"
+        : `Paper ${paperId} - ${paragraph.paperTitle}`
+    }</p>
+    <p>"(${standardReferenceId}) ${text}"</p>
+    <p><a href="${process.env.NEXT_PUBLIC_HOST}/papers/${paperIdToUrl(
+      `${paperId}`
+    )}#${globalId}">Continue Reading</a></p>`,
   }));
 
   try {
-    // Send the emails.
-    console.log("[sendDailyQuote] Sending emails");
-    await sgMail.send(messages);
+    // Send the emails
+    await Promise.all(messages.map((message) => resend.emails.send(message)));
 
     // Create sent quotes for each user.
     console.log("[sendDailyQuote] Creating sent quotes");

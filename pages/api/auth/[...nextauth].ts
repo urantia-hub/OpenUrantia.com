@@ -2,14 +2,14 @@
 import EmailProvider from "next-auth/providers/email";
 import GoogleProvider from "next-auth/providers/google";
 import NextAuth from "next-auth";
-import sgMail from "@sendgrid/mail";
+import { Resend } from "resend";
 import type { Adapter } from "next-auth/adapters";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 // Relative modules.
 import { getPrismaClient } from "@/libs/prisma/client";
+import { getMagicLinkEmailHTML } from "@/utils/email-templates/magicLink";
 
-// Setting SendGrid API Key
-sgMail.setApiKey(process.env.SENDGRID_API_KEY as string);
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 const prisma = getPrismaClient();
 
@@ -17,27 +17,19 @@ export const authOptions = {
   adapter: PrismaAdapter(prisma) as Adapter,
   providers: [
     EmailProvider({
-      server: process.env.EMAIL_SERVER,
       from: process.env.EMAIL_FROM,
       sendVerificationRequest: async ({ identifier: email, url }) => {
-        const mail = {
-          to: email,
-          from: process.env.SENDGRID_FROM as string,
-          templateId: process.env.SENDGRID_SIGN_IN_TEMPLATE_ID as string,
-          dynamicTemplateData: {
-            signInUrl: url,
-          },
-        };
-
         try {
-          console.log("Sending magic link email.", mail);
-          await sgMail.send(mail);
+          console.log("Sending magic link email to", email);
+          await resend.emails.send({
+            from: process.env.EMAIL_FROM as string,
+            to: email,
+            subject: "Sign in to Urantia Hub",
+            html: getMagicLinkEmailHTML(url),
+          });
           console.log("Magic link sent successfully.");
         } catch (error: any) {
           console.error("Error sending magic link email", error);
-          if (error.response) {
-            console.error(error.response.body);
-          }
           throw new Error("Error sending magic link email");
         }
       },

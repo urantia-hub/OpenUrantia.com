@@ -55,8 +55,8 @@ const SignInPage = () => {
           Hub
         </h1>
 
-        {/* Email */}
-        {/* <form
+        {/* Uncomment the Email form */}
+        <form
           className="flex flex-col w-full"
           onSubmit={handleEmailSignIn}
           noValidate
@@ -90,7 +90,7 @@ const SignInPage = () => {
           <hr className="w-full border-gray-200" />
           <span className="text-gray-400 text-xs mx-4">or</span>
           <hr className="w-full border-gray-200" />
-        </div> */}
+        </div>
 
         {/* Google oAuth */}
         <button

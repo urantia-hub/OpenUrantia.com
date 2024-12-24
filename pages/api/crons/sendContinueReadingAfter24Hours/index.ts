@@ -1,5 +1,5 @@
 // Node modules.
-import sgMail from "@sendgrid/mail";
+import { Resend } from "resend";
 import type { NextApiRequest, NextApiResponse } from "next";
 // Relative modules.
 import UserService from "@/services/user";
@@ -8,8 +8,7 @@ import { paperIdToUrl } from "@/utils/paperFormatters";
 
 const userService = new UserService();
 
-// Setting SendGrid API Key
-sgMail.setApiKey(process.env.SENDGRID_API_KEY as string);
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 const deriveOtherPaperLabels = (paperId: string): string => {
   const excludedLabels =
@@ -65,39 +64,22 @@ const handleCron = async (req: NextApiRequest, res: NextApiResponse) => {
 
   // Prepare emails
   const messages = users.map((user) => ({
+    from: process.env.EMAIL_FROM as string,
     to: user.email as string,
-    from: process.env.SENDGRID_FROM as string,
-    templateId: process.env
-      .SENDGRID_SEND_CONTINUE_READING_TEMPLATE_ID as string,
-    dynamicTemplateData: {
-      paperTitle:
-        user.lastVisitedPaperId === "0"
-          ? "Foreword"
-          : `Paper ${user.lastVisitedPaperId} - ${user.lastVisitedPaperTitle}`,
-      paperNumber:
-        user.lastVisitedPaperId === "0"
-          ? "the Foreword"
-          : `Paper ${user.lastVisitedPaperId}`,
-      paperLabels: derivePaperLabels(user.lastVisitedPaperId as string),
-      otherPaperLabels: deriveOtherPaperLabels(
-        user.lastVisitedPaperId as string
-      ),
-      preHeader: `Continue reading ${
-        user.lastVisitedPaperId === "0"
-          ? "the Foreword"
-          : `Paper ${user.lastVisitedPaperId} - ${user.lastVisitedPaperTitle}`
-      }`,
-      continueReadingUrl: `${
-        process.env.NEXT_PUBLIC_HOST
-      }/papers/${paperIdToUrl(`${user.lastVisitedPaperId}`)}#${
-        user.lastVisitedGlobalId
-      }`,
-    },
+    subject: "Continue Reading Your Paper",
+    html: `<p>Continue reading ${
+      user.lastVisitedPaperId === "0"
+        ? "the Foreword"
+        : `Paper ${user.lastVisitedPaperId} - ${user.lastVisitedPaperTitle}`
+    }</p>
+    <p><a href="${process.env.NEXT_PUBLIC_HOST}/papers/${paperIdToUrl(
+      `${user.lastVisitedPaperId}`
+    )}#${user.lastVisitedGlobalId}">Continue Reading</a></p>`,
   }));
 
   try {
     // Send the emails
-    await sgMail.send(messages);
+    await Promise.all(messages.map((message) => resend.emails.send(message)));
 
     // Update the lastAskedNotificationsAt field for each user
     await userService.updateMany({
