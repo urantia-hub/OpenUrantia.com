@@ -1,33 +1,15 @@
 // Node modules.
+import axios from "axios";
 import { Resend } from "resend";
 import type { NextApiRequest, NextApiResponse } from "next";
 // Relative modules.
 import UserService from "@/services/user";
-import { paperLabels, paperLabelsLookup } from "@/utils/paperLabels";
 import { paperIdToUrl } from "@/utils/paperFormatters";
+import { getContinueReadingEmailHTML } from "@/utils/email-templates/continueReading24Hours";
 
 const userService = new UserService();
 
 const resend = new Resend(process.env.RESEND_API_KEY);
-
-const deriveOtherPaperLabels = (paperId: string): string => {
-  const excludedLabels =
-    paperLabelsLookup[paperId as keyof typeof paperLabelsLookup];
-  const labels = paperLabels.filter((label) => !excludedLabels.includes(label));
-
-  // Grab 3 random ones.
-  const randomLabels = labels
-    .sort(() => Math.random() - Math.random())
-    .slice(0, 3);
-
-  return formatLabels(randomLabels);
-};
-
-const derivePaperLabels = (paperId: string): string => {
-  const labels = paperLabelsLookup[paperId as keyof typeof paperLabelsLookup];
-
-  return formatLabels(labels?.slice(0, 3) || []);
-};
 
 const formatLabels = (labels: string[]): string => {
   switch (labels.length) {
@@ -44,7 +26,7 @@ const formatLabels = (labels: string[]): string => {
   }
 };
 
-const handleCron = async (req: NextApiRequest, res: NextApiResponse) => {
+const handleCron = async (_: NextApiRequest, res: NextApiResponse) => {
   const users = await userService.findMany({
     where: {
       emailNotificationsEnabled: true,
@@ -55,31 +37,58 @@ const handleCron = async (req: NextApiRequest, res: NextApiResponse) => {
         not: null,
       },
       lastVisitedAt: {
-        // Last visited between 24 and 48 hours ago.
+        // Last visited between 0 and 48 hours ago.
         gte: new Date(Date.now() - 48 * 60 * 60 * 1000),
-        lt: new Date(Date.now() - 24 * 60 * 60 * 1000),
+        lt: new Date(Date.now()),
       },
     },
   });
 
   // Prepare emails
-  const messages = users.map((user) => ({
-    from: process.env.EMAIL_FROM as string,
-    to: user.email as string,
-    subject: "Continue Reading Your Paper",
-    html: `<p>Continue reading ${
-      user.lastVisitedPaperId === "0"
-        ? "the Foreword"
-        : `Paper ${user.lastVisitedPaperId} - ${user.lastVisitedPaperTitle}`
-    }</p>
-    <p><a href="${process.env.NEXT_PUBLIC_HOST}/papers/${paperIdToUrl(
-      `${user.lastVisitedPaperId}`
-    )}#${user.lastVisitedGlobalId}">Continue Reading</a></p>`,
-  }));
+  const messages = await Promise.all(
+    users.map(async (user) => {
+      // Fetch the paragraph details
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_URANTIA_DEV_API_HOST}/api/v1/urantia-book/paragraphs/${user.lastVisitedGlobalId}`
+      );
+      const paragraph = response?.data?.data;
+
+      if (!paragraph) {
+        console.error(
+          `Failed to fetch paragraph ${user.lastVisitedGlobalId} for user ${user.id}`
+        );
+        return null;
+      }
+
+      return {
+        from: process.env.EMAIL_FROM as string,
+        to: user.email as string,
+        subject: "Continue right where you left off",
+        html: getContinueReadingEmailHTML({
+          paperTitle: user.lastVisitedPaperTitle as string,
+          paperId: user.lastVisitedPaperId as string,
+          text: paragraph.text,
+          standardReferenceId: paragraph.standardReferenceId,
+          continueReadingUrl: `${
+            process.env.NEXT_PUBLIC_HOST
+          }/papers/${paperIdToUrl(`${user.lastVisitedPaperId}`)}#${
+            user.lastVisitedGlobalId
+          }`,
+        }),
+      };
+    })
+  );
+
+  // Filter out any null messages from failed paragraph fetches
+  const validMessages = messages.filter(
+    (message): message is NonNullable<typeof message> => message !== null
+  );
 
   try {
     // Send the emails
-    await Promise.all(messages.map((message) => resend.emails.send(message)));
+    await Promise.all(
+      validMessages.map((message) => resend.emails.send(message))
+    );
 
     // Update the lastAskedNotificationsAt field for each user
     await userService.updateMany({

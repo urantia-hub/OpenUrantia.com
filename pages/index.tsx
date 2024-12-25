@@ -3,6 +3,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
+import { useSearchParams } from "next/navigation";
+import { toast, Toaster } from "sonner";
 // Relative modules.
 import Footer from "@/components/Footer";
 import HeadTag from "@/components/HeadTag";
@@ -29,6 +31,7 @@ import CommunityFeature from "@/components/HomepageCommunityFeature";
 const HomePage = () => {
   // Hooks.
   const { status } = useSession();
+  const searchParams = useSearchParams();
 
   // State.
   const [lastVisitedNode, setLastVisitedNode] =
@@ -99,9 +102,26 @@ const HomePage = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  useEffect(() => {
+    const unsubscribed = searchParams.get("unsubscribed");
+    if (unsubscribed === "true") {
+      toast.success("You've been successfully unsubscribed from emails", {
+        description:
+          "You can re-enable notifications anytime from your settings",
+      });
+    } else if (unsubscribed === "false") {
+      toast.error("Unable to unsubscribe from emails", {
+        description:
+          "Please log in and visit your settings page to manage email notifications",
+      });
+    }
+  }, [searchParams]);
+
   return (
     <div className="flex flex-col min-h-screen bg-slate-100 text-gray-600">
       <HeadTag />
+
+      <Toaster />
 
       <HomepageNavbar />
 
