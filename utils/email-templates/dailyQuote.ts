@@ -51,3 +51,18 @@ export const getDailyQuoteEmailHTML = (props: DailyQuoteEmailProps) => {
     content,
   });
 };
+
+export const getDailyQuoteEmailText = (props: DailyQuoteEmailProps) => {
+  return `
+  ${
+    props.paperId === "0"
+      ? "Foreword"
+      : `Paper ${props.paperId} - ${props.paperTitle}`
+  }
+  "(${props.standardReferenceId}) ${props.text}"
+  Read more... ${props.continueReadingUrl}
+  Want to continue where you left off instead? Pick up where you left off: ${
+    props.lastVisitedUrl
+  }
+  `;
+};

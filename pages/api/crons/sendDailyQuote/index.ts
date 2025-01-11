@@ -7,7 +7,10 @@ import SentQuoteService from "@/services/sentQuote";
 import UserService from "@/services/user";
 import CuratedQuoteService from "@/services/curatedQuote";
 import { paperIdToUrl } from "@/utils/paperFormatters";
-import { getDailyQuoteEmailHTML } from "@/utils/email-templates/dailyQuote";
+import {
+  getDailyQuoteEmailHTML,
+  getDailyQuoteEmailText,
+} from "@/utils/email-templates/dailyQuote";
 
 const curatedQuoteService = new CuratedQuoteService();
 const sentQuoteService = new SentQuoteService();
@@ -93,6 +96,16 @@ const handleCron = async (_: NextApiRequest, res: NextApiResponse) => {
     to: user.email as string,
     subject: "Your Daily Quote",
     html: getDailyQuoteEmailHTML({
+      paperTitle: paragraph.paperTitle,
+      paperId,
+      text,
+      standardReferenceId,
+      continueReadingUrl: `${
+        process.env.NEXT_PUBLIC_HOST
+      }/papers/${paperIdToUrl(`${paperId}`)}#${globalId}`,
+      lastVisitedUrl: `${process.env.NEXT_PUBLIC_HOST}/api/redirect/user/read`,
+    }),
+    text: getDailyQuoteEmailText({
       paperTitle: paragraph.paperTitle,
       paperId,
       text,

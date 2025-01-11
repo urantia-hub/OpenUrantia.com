@@ -25,3 +25,11 @@ export function getMagicLinkEmailHTML(url: string) {
     content,
   });
 }
+
+export function getMagicLinkEmailText(url: string) {
+  return `
+    Welcome back!
+    Click the button below to securely sign in to your account. This link will expire in 24 hours.
+    ${url}
+  `;
+}

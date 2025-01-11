@@ -39,3 +39,18 @@ export const getContinueReadingEmailHTML = (
     content,
   });
 };
+
+export const getContinueReadingEmailText = (
+  props: ContinueReadingEmailProps
+) => {
+  return `
+    Ready to continue?
+    You were reading "${
+      props.paperId === "0"
+        ? "the Foreword"
+        : `Paper ${props.paperId} - ${props.paperTitle}`
+    }":
+    "(${props.standardReferenceId}) ${props.text}"
+    ${props.continueReadingUrl}
+  `;
+};

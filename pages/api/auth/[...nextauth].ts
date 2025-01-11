@@ -7,7 +7,10 @@ import type { Adapter } from "next-auth/adapters";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 // Relative modules.
 import { getPrismaClient } from "@/libs/prisma/client";
-import { getMagicLinkEmailHTML } from "@/utils/email-templates/magicLink";
+import {
+  getMagicLinkEmailHTML,
+  getMagicLinkEmailText,
+} from "@/utils/email-templates/magicLink";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -26,6 +29,7 @@ export const authOptions = {
             to: email,
             subject: "Sign in to Urantia Hub",
             html: getMagicLinkEmailHTML(url),
+            text: getMagicLinkEmailText(url),
           });
           console.log("Magic link sent successfully.");
         } catch (error: any) {

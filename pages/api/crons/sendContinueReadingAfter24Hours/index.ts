@@ -5,7 +5,10 @@ import type { NextApiRequest, NextApiResponse } from "next";
 // Relative modules.
 import UserService from "@/services/user";
 import { paperIdToUrl } from "@/utils/paperFormatters";
-import { getContinueReadingEmailHTML } from "@/utils/email-templates/continueReading24Hours";
+import {
+  getContinueReadingEmailHTML,
+  getContinueReadingEmailText,
+} from "@/utils/email-templates/continueReading24Hours";
 
 const userService = new UserService();
 
@@ -65,6 +68,17 @@ const handleCron = async (_: NextApiRequest, res: NextApiResponse) => {
         to: user.email as string,
         subject: "Continue right where you left off",
         html: getContinueReadingEmailHTML({
+          paperTitle: user.lastVisitedPaperTitle as string,
+          paperId: user.lastVisitedPaperId as string,
+          text: paragraph.text,
+          standardReferenceId: paragraph.standardReferenceId,
+          continueReadingUrl: `${
+            process.env.NEXT_PUBLIC_HOST
+          }/papers/${paperIdToUrl(`${user.lastVisitedPaperId}`)}#${
+            user.lastVisitedGlobalId
+          }`,
+        }),
+        text: getContinueReadingEmailText({
           paperTitle: user.lastVisitedPaperTitle as string,
           paperId: user.lastVisitedPaperId as string,
           text: paragraph.text,
