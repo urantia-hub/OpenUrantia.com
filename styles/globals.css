@@ -120,6 +120,13 @@ select.select-selected {
   width: 40px;
 }
 
+.button-spinner {
+  height: 20px;
+  margin: 0;
+  position: relative;
+  width: 20px;
+}
+
 .dot1, .dot2 {
   -webkit-animation: bounce 2.0s infinite ease-in-out;
   animation: bounce 2.0s infinite ease-in-out;
@@ -136,6 +143,10 @@ select.select-selected {
 .dot2 {
   -webkit-animation-delay: -1.0s;
   animation-delay: -1.0s;
+}
+
+.button-spinner .dot1, .button-spinner .dot2 {
+  background-color: #fff;
 }
 
 @-webkit-keyframes bounce {

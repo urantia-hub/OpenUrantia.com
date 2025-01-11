@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 // Relative modules.
 import HeadTag from "@/components/HeadTag";
+import Spinner from "@/components/Spinner";
 
 const DEFAULT_CALLBACK_URL = "/api/redirect/user/read";
 
@@ -18,10 +19,22 @@ const SignInPage = () => {
   // Add a state to hold the email address
   const [email, setEmail] = useState("");
 
+  // Add loading state
+  const [isLoading, setIsLoading] = useState(false);
+
   // Function to handle email sign-in
   const handleEmailSignIn = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    await signIn("email", { email, callbackUrl: DEFAULT_CALLBACK_URL });
+
+    setIsLoading(true);
+
+    try {
+      await signIn("email", { email, callbackUrl: DEFAULT_CALLBACK_URL });
+    } catch (error) {
+      console.error("Error signing in with email", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   // If user is already authenticated, redirect to the /papers page.
@@ -79,14 +92,21 @@ const SignInPage = () => {
             />
           </label>
           <button
-            className="py-2 px-3 border-0 text-center rounded bg-blue-400 hover:bg-blue-500 hover:no-underline transition-colors duration-300 ease-in-out"
+            className="py-2 px-3 border-0 text-center rounded bg-blue-400 hover:bg-blue-500 hover:no-underline transition-colors duration-300 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
             type="submit"
+            disabled={isLoading}
           >
-            Send magic link
+            {isLoading ? (
+              <>
+                <Spinner className="button-spinner" />
+              </>
+            ) : (
+              "Send magic link"
+            )}
           </button>
         </form>
 
-        <div className="flex items-center justify-center w-full mt-6">
+        <div className="flex items-center justify-center w-full my-6">
           <hr className="w-full border-gray-200" />
           <span className="text-gray-400 text-xs mx-4">or</span>
           <hr className="w-full border-gray-200" />
