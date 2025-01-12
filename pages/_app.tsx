@@ -1,27 +1,51 @@
 // Node modules.
 import { Analytics } from "@vercel/analytics/react";
-import { SessionProvider } from "next-auth/react";
+import { SessionProvider, useSession } from "next-auth/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Lato } from "next/font/google";
-import { useRouter } from "next/router";
+import { useEffect } from "react";
+import * as Sentry from "@sentry/nextjs";
+import { User as SentryUser } from "@sentry/types";
 // Relative modules.
 import { ThemeProvider } from "@/context/theme";
 import "@/styles/globals.css";
+import SentryErrorBoundary from "@/components/SentryErrorBoundary";
 
 const googleFont = Lato({
   subsets: ["latin"],
   weight: ["300", "400", "700"],
 });
 
+// Wrap the actual app content with session tracking
+function AppContent({ Component, pageProps }: any) {
+  const { data: session, status } = useSession();
+
+  useEffect(() => {
+    if (process.env.NODE_ENV === "production") {
+      if (status === "authenticated" && session?.user) {
+        Sentry.setUser(session.user as SentryUser);
+      } else {
+        Sentry.setUser(null);
+      }
+    }
+  }, [session, status]);
+
+  return (
+    <SentryErrorBoundary>
+      <Component {...pageProps} />
+    </SentryErrorBoundary>
+  );
+}
+
 export default function App({
   Component,
   pageProps: { session, ...pageProps },
-}) {
+}: any) {
   return (
     <div className={googleFont.className}>
       <ThemeProvider>
         <SessionProvider session={session}>
-          <Component {...pageProps} />
+          <AppContent Component={Component} pageProps={pageProps} />
         </SessionProvider>
       </ThemeProvider>
       {process.env.NODE_ENV === "production" && <SpeedInsights />}

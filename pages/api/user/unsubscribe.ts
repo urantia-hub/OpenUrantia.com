@@ -3,27 +3,24 @@ import type { NextApiRequest, NextApiResponse } from "next";
 // Relative modules.
 import UserService from "@/services/user";
 import getSessionDetails from "@/utils/getSessionDetails";
+import { withSentry } from "@/middleware/sentry";
 
 const userService = new UserService();
 
-export default async function handle(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
+async function handle(req: NextApiRequest, res: NextApiResponse) {
   const sessionDetails = await getSessionDetails(req, res, {
     skipUnauthorized: true,
   });
   if (!sessionDetails) {
-    return res.redirect(
-      302,
-      `${process.env.NEXT_PUBLIC_HOST}?unsubscribed=false`
-    );
+    res.redirect(302, `${process.env.NEXT_PUBLIC_HOST}?unsubscribed=false`);
+    return;
   }
 
   // Only allow GET requests
   if (req.method !== "GET") {
     res.setHeader("Allow", ["GET"]);
-    return res.status(405).end(`Method ${req.method} Not Allowed`);
+    res.status(405).end(`Method ${req.method} Not Allowed`);
+    return;
   }
 
   try {
@@ -39,3 +36,5 @@ export default async function handle(
     res.redirect(302, `${process.env.NEXT_PUBLIC_HOST}?unsubscribed=false`);
   }
 }
+
+export default withSentry(handle);

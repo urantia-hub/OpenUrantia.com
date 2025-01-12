@@ -1,6 +1,8 @@
 // Node modules.
 import type { NextApiRequest, NextApiResponse } from "next";
 import { User } from "@prisma/client";
+import * as Sentry from "@sentry/nextjs";
+import type { User as SentryUser } from "@sentry/types";
 // Relative modules.
 import AccountService from "@/services/account";
 import BookmarkService from "@/services/bookmark";
@@ -9,6 +11,7 @@ import SessionService from "@/services/session";
 import ShareService from "@/services/share";
 import UserService from "@/services/user";
 import getSessionDetails from "@/utils/getSessionDetails";
+import { withSentry } from "@/middleware/sentry";
 
 // Services.
 const accountService = new AccountService();
@@ -96,10 +99,7 @@ const handleDelete = async (
 };
 
 // Handler for the API endpoints.
-export default async function handle(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
+async function handle(req: NextApiRequest, res: NextApiResponse) {
   const sessionDetails = await getSessionDetails(req, res);
   if (!sessionDetails) return;
 
@@ -116,3 +116,5 @@ export default async function handle(
       res.status(405).end(`Method ${method} Not Allowed`);
   }
 }
+
+export default withSentry(handle);

@@ -4,6 +4,7 @@ import { User } from "@prisma/client";
 // Relative modules.
 import getSessionDetails from "@/utils/getSessionDetails";
 import { paperIdToUrl } from "@/utils/paperFormatters";
+import { withSentry } from "@/middleware/sentry";
 
 const TEMPORARY_REDIRECT = 307;
 
@@ -14,18 +15,20 @@ const redirectToPaper = (
 ) => {
   // Default to the first paper.
   if (!paperId && !globalId) {
-    return res.redirect(TEMPORARY_REDIRECT, "/papers/foreword");
+    res.redirect(TEMPORARY_REDIRECT, "/papers/foreword");
+    return;
   }
 
   // If only 1 of the 2 is provided, 400.
   if ((paperId && !globalId) || (!paperId && globalId)) {
-    return res
+    res
       .status(400)
       .end(`Invalid query parameters, must provide both paperId and globalId`);
+    return;
   }
 
   // Redirect to the paper.
-  return res.redirect(
+  res.redirect(
     TEMPORARY_REDIRECT,
     `/papers/${paperIdToUrl(`${paperId}`)}#${globalId}`
   );
@@ -54,10 +57,7 @@ const handleGet = async (
   );
 };
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
+async function handler(req: NextApiRequest, res: NextApiResponse) {
   const sessionDetails = await getSessionDetails(req, res, {
     skipUnauthorized: true,
   });
@@ -71,3 +71,5 @@ export default async function handler(
       res.status(405).end(`Method ${method} Not Allowed`);
   }
 }
+
+export default withSentry(handler);

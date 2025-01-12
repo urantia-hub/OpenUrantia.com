@@ -6,6 +6,7 @@ import { User } from "@prisma/client";
 import ReadNodeService from "@/services/readNode";
 import UserService from "@/services/user";
 import getSessionDetails from "@/utils/getSessionDetails";
+import { withSentry } from "@/middleware/sentry";
 
 const readNodeService = new ReadNodeService();
 const userService = new UserService();
@@ -83,10 +84,7 @@ async function handleDELETE(
 }
 
 // Handler for the API endpoints.
-export default async function handle(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
+async function handle(req: NextApiRequest, res: NextApiResponse) {
   const sessionDetails = await getSessionDetails(req, res);
   if (!sessionDetails) return;
 
@@ -101,3 +99,5 @@ export default async function handle(
       res.status(405).end(`Method ${method} Not Allowed`);
   }
 }
+
+export default withSentry(handle);
