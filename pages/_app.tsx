@@ -5,7 +5,6 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Lato } from "next/font/google";
 import { useEffect } from "react";
 import * as Sentry from "@sentry/nextjs";
-import { User as SentryUser } from "@sentry/types";
 // Relative modules.
 import { ThemeProvider } from "@/context/theme";
 import "@/styles/globals.css";
@@ -23,7 +22,7 @@ function AppContent({ Component, pageProps }: any) {
   useEffect(() => {
     if (process.env.NODE_ENV === "production") {
       if (status === "authenticated" && session?.user) {
-        Sentry.setUser(session.user as SentryUser);
+        Sentry.setUser(session.user as Sentry.User);
       } else {
         Sentry.setUser(null);
       }

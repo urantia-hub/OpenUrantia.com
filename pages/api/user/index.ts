@@ -1,8 +1,6 @@
 // Node modules.
 import type { NextApiRequest, NextApiResponse } from "next";
 import { User } from "@prisma/client";
-import * as Sentry from "@sentry/nextjs";
-import type { User as SentryUser } from "@sentry/types";
 // Relative modules.
 import AccountService from "@/services/account";
 import BookmarkService from "@/services/bookmark";

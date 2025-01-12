@@ -1,7 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth/next";
 import * as Sentry from "@sentry/nextjs";
-import type { User as SentryUser } from "@sentry/types";
 
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
 
@@ -15,7 +14,7 @@ export function withSentry(
 
       // Set the user in Sentry if the session is authenticated and in production
       if (session?.user && process.env.NODE_ENV === "production") {
-        Sentry.setUser(session.user as SentryUser);
+        Sentry.setUser(session.user as Sentry.User);
       }
 
       // Call the handler

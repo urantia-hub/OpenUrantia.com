@@ -4,35 +4,12 @@
 
 import * as Sentry from "@sentry/nextjs";
 
-if (process.env.NODE_ENV === "production") {
-  Sentry.init({
-    dsn: "https://3e482dce99f521fbb29aeda8001efd2a@o4506857923739648.ingest.us.sentry.io/4506857924984832",
+Sentry.init({
+  dsn: "https://3e482dce99f521fbb29aeda8001efd2a@o4506857923739648.ingest.us.sentry.io/4506857924984832",
 
-    debug: false,
+  // Define how likely traces are sampled. Adjust this value in production, or use tracesSampler for greater control.
+  tracesSampleRate: 1,
 
-    // Add environment tag
-    environment: process.env.NODE_ENV,
-
-    // Increase sample rate for better debugging
-    tracesSampleRate: 1.0,
-
-    // Enable request data capturing
-    integrations: [
-      new Sentry.Integrations.Http({ tracing: true }),
-      new Sentry.Integrations.Express(),
-      new Sentry.Integrations.Prisma(),
-    ],
-
-    // Configure beforeSend to add more context
-    beforeSend(event) {
-      // Add additional context to the event
-      if (event.request) {
-        event.tags = {
-          ...event.tags,
-          route: event.request.url,
-        };
-      }
-      return event;
-    },
-  });
-}
+  // Setting this option to true will print useful information to the console while you're setting up Sentry.
+  debug: false,
+});
