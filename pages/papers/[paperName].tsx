@@ -421,7 +421,7 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
   };
 
   useEffect(() => {
-    if (currentPlayingNode !== null) {
+    if (currentPlayingNode !== null && nodes?.[currentPlayingNode]?.globalId) {
       const element = document.getElementById(
         nodes[currentPlayingNode].globalId
       );
