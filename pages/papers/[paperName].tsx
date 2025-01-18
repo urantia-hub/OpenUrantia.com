@@ -774,6 +774,37 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
     }
   }, [router.asPath, router.query, router.pathname]);
 
+  // Add copy event listener
+  useEffect(() => {
+    const handleCopy = (event: ClipboardEvent) => {
+      const selection = window.getSelection();
+      if (!selection || !selection.toString()) return;
+
+      // Get selected text
+      let text = selection.toString();
+
+      // Remove "Explain |" and other UI elements from the selection
+      text = text.replace(/Explain\n\|/g, "");
+      text = text.replace(/Download Full Paper Audio\n*/g, "");
+
+      // Format the text:
+      text = text
+        .replace(/\n+/g, "\n") // First consolidate all newlines
+        .replace(/\((\d+:\d+(?:\.\d+)?)\)[\n\s]+/g, "($1) ") // Put reference IDs on same line as text
+        .replace(/\n{3,}/g, "\n\n") // Ensure max 2 newlines between paragraphs
+        .replace(/([IVX]+\. [^\n]+)\n+/g, "\n$1\n"); // Handle Roman numeral section headers
+
+      // Prevent default copy behavior
+      event.preventDefault();
+
+      // Put formatted text on clipboard
+      event.clipboardData?.setData("text/plain", text);
+    };
+
+    document.addEventListener("copy", handleCopy);
+    return () => document.removeEventListener("copy", handleCopy);
+  }, []);
+
   // Show a spinner until the content has loaded.
   if (!paperData) {
     return <Spinner />;
