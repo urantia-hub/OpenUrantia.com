@@ -241,41 +241,50 @@ const Search = () => {
               </h2>
               <div className="grid md:grid-cols-2 gap-4 text-sm">
                 <div className="flex items-start gap-3">
-                  <p>- Use quotes for exact phrases: &quot;divine love&quot;</p>
-                </div>
-
-                <div className="flex items-start gap-3">
+                  <span className="w-1.5 h-1.5 mt-[8px] bg-sky-500 rounded-full flex-shrink-0" />
                   <p>
-                    - Use complete words: &quot;divine&quot; not
-                    &quot;divin&quot;
+                    Use quotes for exact phrases: <i>&quot;divine love&quot;</i>
                   </p>
                 </div>
 
                 <div className="flex items-start gap-3">
+                  <span className="w-1.5 h-1.5 mt-[8px] bg-sky-500 rounded-full flex-shrink-0" />
                   <p>
-                    - Search passages: &quot;1:2.3&quot; shows Paper 1, Section
-                    2, Paragraph 3
+                    Use complete words: <i>&quot;divine&quot;</i> not{" "}
+                    <i>&quot;divin&quot;</i>
                   </p>
                 </div>
 
                 <div className="flex items-start gap-3">
+                  <span className="w-1.5 h-1.5 mt-[8px] bg-sky-500 rounded-full flex-shrink-0" />
                   <p>
-                    - Multiple words find paragraphs containing all terms:
-                    &quot;faith spirit truth&quot;
+                    Search passages: <i>&quot;1:2.3&quot;</i> shows Paper 1,
+                    Section 2, Paragraph 3
                   </p>
                 </div>
 
                 <div className="flex items-start gap-3">
+                  <span className="w-1.5 h-1.5 mt-[8px] bg-sky-500 rounded-full flex-shrink-0" />
                   <p>
-                    - Case insensitive: &quot;God&quot; and &quot;god&quot; give
-                    the same results
+                    Multiple words find paragraphs containing all terms:
+                    <i>&quot;faith spirit truth&quot;</i>
                   </p>
                 </div>
 
                 <div className="flex items-start gap-3">
+                  <span className="w-1.5 h-1.5 mt-[8px] bg-sky-500 rounded-full flex-shrink-0" />
                   <p>
-                    - Try searching for concepts: &quot;personality
-                    survival&quot; or &quot;supreme being&quot;
+                    Case insensitive: <i>&quot;God&quot;</i> and{" "}
+                    <i>&quot;god&quot;</i> give the same results
+                  </p>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <span className="w-1.5 h-1.5 mt-[8px] bg-sky-500 rounded-full flex-shrink-0" />
+                  <p>
+                    Try searching for concepts:{" "}
+                    <i>&quot;personality survival&quot;</i> or{" "}
+                    <i>&quot;supreme being&quot;</i>
                   </p>
                 </div>
               </div>
