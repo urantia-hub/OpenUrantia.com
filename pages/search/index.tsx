@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
+import { useSession } from "next-auth/react";
 // Relative modules.
 import { renderLeadingText } from "@/utils/renderNode";
 import HeadTag from "@/components/HeadTag";
@@ -12,6 +13,7 @@ import { paperIdToUrl } from "@/utils/paperFormatters";
 
 const Search = () => {
   // Router.
+  const { data: session } = useSession();
   const router = useRouter();
 
   // State.
@@ -20,6 +22,13 @@ const Search = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [hasSearched, setHasSearched] = useState<boolean>(false);
   const [isWaiting, setIsWaiting] = useState<boolean>(false);
+  const [popularSearches, setPopularSearches] = useState<
+    Array<{ searchQuery: string; count: number }>
+  >([]);
+  const [recentSearches, setRecentSearches] = useState<
+    Array<{ searchQuery: string }>
+  >([]);
+  const [isLoadingSearches, setIsLoadingSearches] = useState(true);
 
   // On mount, set the query and search if there is a query.
   useEffect(() => {
@@ -53,6 +62,49 @@ const Search = () => {
     return () => clearTimeout(delayDebounceFn);
   }, [query]);
 
+  // Fetch popular and recent searches on mount
+  useEffect(() => {
+    const fetchSearchData = async () => {
+      setIsLoadingSearches(true);
+      try {
+        // Fetch popular searches
+        const popularRes = await fetch("/api/searches/popular");
+        const popularData = await popularRes.json();
+        setPopularSearches(popularData);
+
+        // Fetch recent searches if user is logged in
+        if (session?.user) {
+          const recentRes = await fetch("/api/searches/recent");
+          const recentData = await recentRes.json();
+          setRecentSearches(recentData);
+        }
+      } catch (error) {
+        console.error("Failed to fetch searches:", error);
+      } finally {
+        setIsLoadingSearches(false);
+      }
+    };
+
+    fetchSearchData();
+  }, [session?.user]);
+
+  const trackSearch = async (searchQuery: string, resultCount: number) => {
+    try {
+      await fetch("/api/searches", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          searchQuery,
+          resultCount,
+        }),
+      });
+    } catch (error) {
+      console.error("Failed to track search:", error);
+    }
+  };
+
   const search = async (searchQuery: string) => {
     setIsLoading(true);
 
@@ -68,11 +120,14 @@ const Search = () => {
       });
       const data = await response.json();
 
-      // Update the results.
+      // Update the results
       setResults(data.data.results);
       setHasSearched(true);
 
-      // Update the query param in the URL.
+      // Track the search
+      await trackSearch(searchQuery, data.data.results.length);
+
+      // Update the query param in the URL
       if (router.query.q !== searchQuery) {
         router.push(`/search?q=${encodeURIComponent(searchQuery)}`, undefined, {
           shallow: true,
@@ -138,7 +193,7 @@ const Search = () => {
         <h1 className="text-2xl md:text-4xl dark:text-white font-bold mb-8 text-center">
           Search the Urantia Papers
         </h1>
-        <div className="relative flex items-center w-full mb-8 pb-2">
+        <div className="relative flex items-center w-full mb-6 pb-2">
           <input
             autoFocus
             className="w-full bg-white dark:bg-zinc-900 border-0 dark:border-0 text-gray-600 dark:text-white rounded focus:outline-none px-4 focus:shadow-lg transition duration-300 ease-in-out"
@@ -173,6 +228,107 @@ const Search = () => {
         {isLoading && !results.length && (
           <div className="flex justify-center">
             <Spinner />
+          </div>
+        )}
+
+        {/* Show suggestions when no search is active */}
+        {!results.length && !query && (
+          <div className="mt-6 space-y-8">
+            {/* Search Tips */}
+            <div className="bg-white dark:bg-neutral-700 rounded-lg p-6 shadow-sm fade-in">
+              <h2 className="text-xl font-semibold mb-4 text-gray-700 dark:text-gray-200">
+                Search Tips 💡
+              </h2>
+              <div className="grid md:grid-cols-2 gap-4 text-sm">
+                <div className="flex items-start gap-3">
+                  <p>- Use quotes for exact phrases: &quot;divine love&quot;</p>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <p>
+                    - Use complete words: &quot;divine&quot; not
+                    &quot;divin&quot;
+                  </p>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <p>
+                    - Search passages: &quot;1:2.3&quot; shows Paper 1, Section
+                    2, Paragraph 3
+                  </p>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <p>
+                    - Multiple words find paragraphs containing all terms:
+                    &quot;faith spirit truth&quot;
+                  </p>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <p>
+                    - Case insensitive: &quot;God&quot; and &quot;god&quot; give
+                    the same results
+                  </p>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <p>
+                    - Try searching for concepts: &quot;personality
+                    survival&quot; or &quot;supreme being&quot;
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Popular Searches - Only show if there are popular searches */}
+            {!isLoadingSearches && popularSearches.length > 0 && (
+              <div className="bg-white dark:bg-neutral-700 rounded-lg p-6 shadow-sm fade-in">
+                <h2 className="text-xl font-semibold mb-4 text-gray-700 dark:text-gray-200">
+                  Popular Searches
+                </h2>
+                <div className="flex flex-wrap gap-2">
+                  {popularSearches.map(({ searchQuery, count }) => (
+                    <button
+                      key={searchQuery}
+                      onClick={() => {
+                        setQuery(searchQuery);
+                        search(searchQuery);
+                      }}
+                      className="p-1 px-2 m-0 text-gray-600 dark:text-white bg-slate-100 dark:bg-zinc-700 border-0 rounded shadow-sm hover:bg-slate-200 dark:hover:bg-zinc-600 transition-colors duration-300 ease-in-out"
+                    >
+                      {searchQuery}
+                      <span className="ml-1.5 text-xs text-gray-400 dark:text-gray-500 group-hover:text-gray-500">
+                        ({count})
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Recent Searches - Only show if user has recent searches */}
+            {!isLoadingSearches && recentSearches.length > 0 && (
+              <div className="bg-white dark:bg-neutral-700 rounded-lg p-6 shadow-sm fade-in">
+                <h2 className="text-xl font-semibold mb-4 text-gray-700 dark:text-gray-200">
+                  {session?.user ? "Your Recent Searches" : "Recent Searches"}
+                </h2>
+                <div className="flex flex-wrap gap-2">
+                  {recentSearches.map(({ searchQuery }) => (
+                    <button
+                      key={searchQuery}
+                      onClick={() => {
+                        setQuery(searchQuery);
+                        search(searchQuery);
+                      }}
+                      className="p-1 px-2 m-0 text-gray-600 dark:text-white bg-slate-100 dark:bg-zinc-700 border-0 rounded shadow-sm hover:bg-slate-200 dark:hover:bg-zinc-600 transition-colors duration-300 ease-in-out"
+                    >
+                      {searchQuery}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         )}
 

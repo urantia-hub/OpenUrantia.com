@@ -14,9 +14,10 @@ const changelog: ChangelogEntry[] = [
     date: "2025-01-18",
     version: "1.0.1",
     changes: [
-      "Updated copy-paste formatting for text selection",
-      "Added Blockchain Archive page: /blockchain-archive",
-      "Added Latest Updates page: /changelog",
+      "Updated copy-paste formatting for text selection on paper pages",
+      "Added Blockchain Archive page: <strong>/blockchain-archive</strong>",
+      "Added Latest Updates page: <strong>/changelog</strong>",
+      "Enhanced <strong>/search</strong> page with search tips, recent searches, and popular searches",
     ],
   },
   {
@@ -66,7 +67,7 @@ const Changelog: NextPage = () => {
                     className="flex items-center gap-2 text-gray-600 dark:text-gray-300"
                   >
                     <span className="w-1.5 h-1.5 bg-sky-500 rounded-full flex-shrink-0" />
-                    {change}
+                    <span dangerouslySetInnerHTML={{ __html: change }} />
                   </li>
                 ))}
               </ul>

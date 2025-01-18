@@ -1,3 +1,11 @@
+interface UserSearch {
+  createdAt: string;
+  id: string;
+  resultCount: number;
+  searchQuery: string;
+  userId?: string;
+}
+
 interface ReadNode {
   createdAt: string;
   globalId: string;
