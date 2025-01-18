@@ -50,7 +50,7 @@ export class UserSearchService {
 
     // Only return queries that appear more than once
     return Object.entries(searchCounts)
-      .filter(([_, count]) => count > 1) // Only include searches done multiple times
+      .filter(([_, count]) => count > 5) // Only include searches done over 5 times
       .map(([searchQuery, count]) => ({ searchQuery, count }))
       .sort((a, b) => b.count - a.count)
       .slice(0, args.limit || 10);
