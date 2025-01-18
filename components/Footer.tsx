@@ -69,11 +69,17 @@ const Footer = ({ marginBottom }: { marginBottom?: string }) => {
               <li>
                 <Link
                   className="text-gray-400 hover:text-blue-400 transition-colors duration-300 hover:no-underline"
-                  href="/blockchain-archive/urantia-papers/txt"
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  href="/blockchain-archive"
                 >
                   Blockchain Archive
+                </Link>
+              </li>
+              <li>
+                <Link
+                  className="text-gray-400 hover:text-blue-400 transition-colors duration-300 hover:no-underline"
+                  href="/changelog"
+                >
+                  Latest Updates
                 </Link>
               </li>
               <li>

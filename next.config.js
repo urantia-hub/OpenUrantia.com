@@ -27,14 +27,7 @@ const nextConfig = {
   },
 };
 
-// Apply PWA configuration
-// const withPWAConfig = withPWA({
-//   dest: "public",
-//   register: true,
-//   skipWaiting: true,
-// })(nextConfig);
-
-module.exports = withSentryConfig(module.exports, {
+module.exports = withSentryConfig(nextConfig, {
   // For all available options, see:
   // https://github.com/getsentry/sentry-webpack-plugin#options
 
