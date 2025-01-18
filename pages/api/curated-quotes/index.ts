@@ -56,9 +56,10 @@ async function handleGET(req: NextApiRequest, res: NextApiResponse) {
       enriched: true,
       sent: where.sentAt ? true : false,
     })) as CuratedQuote[];
-    curatedQuotes = unsortedQuotes.sort((a, b) => {
-      return a.globalId.localeCompare(b.globalId);
-    });
+    curatedQuotes =
+      unsortedQuotes?.sort((a, b) => {
+        return a.globalId.localeCompare(b.globalId);
+      }) || [];
     metadata.randomAmount = randomAmount;
   } else {
     curatedQuotes = await curatedQuoteService.findMany({
