@@ -266,7 +266,7 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
 
       <Navbar />
 
-      <main className="mt-8 flex-grow container mx-auto px-4 my-4 max-w-4xl">
+      <main className="mt-8 flex-grow container mx-auto px-4 my-4 max-w-4xl min-h-screen">
         {status === "loading" ? (
           <div className="mt-4 mb-4 text-center">
             <h1 className="text-5xl font-bold mb-8">Explore</h1>

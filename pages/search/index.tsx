@@ -134,7 +134,7 @@ const Search = () => {
 
       <Navbar />
 
-      <main className="mt-8 flex-grow container mx-auto px-4 my-4 max-w-3xl paper-content">
+      <main className="mt-8 flex-grow container mx-auto px-4 my-4 max-w-3xl paper-content min-h-screen">
         <h1 className="text-2xl md:text-4xl dark:text-white font-bold mb-8 text-center">
           Search the Urantia Papers
         </h1>

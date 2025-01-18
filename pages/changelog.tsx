@@ -13,7 +13,11 @@ const changelog: ChangelogEntry[] = [
   {
     date: "2025-01-18",
     version: "1.0.1",
-    changes: ["Updated copy-paste formatting for text selection"],
+    changes: [
+      "Updated copy-paste formatting for text selection",
+      "Added Blockchain Archive page: /blockchain-archive",
+      "Added Latest Updates page: /changelog",
+    ],
   },
   {
     date: "2025-01-18",

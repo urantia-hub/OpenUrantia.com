@@ -129,7 +129,7 @@ const OnboardingInterests = () => {
         </aside>
       )}
 
-      <main className="mt-8 flex-grow container mx-auto px-4 my-4 max-w-4xl paper-content">
+      <main className="mt-8 flex-grow container mx-auto px-4 my-4 max-w-4xl paper-content min-h-screen">
         <h1 className="text-2xl md:text-4xl dark:text-white font-bold mb-6 text-center">
           What topics are you most interested in?
         </h1>
