@@ -13,8 +13,13 @@ export default async function handle(
     return res.status(405).end(`Method ${req.method} Not Allowed`);
   }
 
-  const session = await getSessionDetails(req, res);
-  const userId = session?.user?.id;
+  let userId: string | undefined;
+  try {
+    const session = await getSessionDetails(req, res);
+    userId = session?.user?.id;
+  } catch (error) {
+    // User is not logged in, but we still want to track the search.
+  }
 
   try {
     const { searchQuery, resultCount } = req.body;
