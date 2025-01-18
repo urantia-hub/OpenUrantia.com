@@ -10,6 +10,11 @@ export const getServerSideProps = async ({ res }: any) => {
 
   const staticPages = [
     { url: `${baseUrl}/`, priority: "1.0" },
+    { url: `${baseUrl}/changelog`, priority: "1.0" },
+    { url: `${baseUrl}/blockchain-archive`, priority: "1.0" },
+    { url: `${baseUrl}/explore`, priority: "1.0" },
+    { url: `${baseUrl}/papers`, priority: "1.0" },
+    { url: `${baseUrl}/search`, priority: "1.0" },
     {
       url: `${baseUrl}/blockchain-archive/urantia-papers/json`,
       priority: "1.0",
@@ -18,9 +23,6 @@ export const getServerSideProps = async ({ res }: any) => {
       url: `${baseUrl}/blockchain-archive/urantia-papers/txt`,
       priority: "1.0",
     },
-    { url: `${baseUrl}/explore`, priority: "1.0" },
-    { url: `${baseUrl}/papers`, priority: "1.0" },
-    { url: `${baseUrl}/search`, priority: "1.0" },
     { url: `${baseUrl}/auth/sign-in`, priority: "0.1" },
     { url: `${baseUrl}/auth/error`, priority: "0.1" },
     { url: `${baseUrl}/auth/sign-out`, priority: "0.1" },
