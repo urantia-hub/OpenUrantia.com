@@ -11,7 +11,18 @@ import {
 const userService = new UserService();
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-const handleCron = async (req: NextApiRequest, res: NextApiResponse) => {
+const handleSendChangelogUpdate = async (
+  req: NextApiRequest,
+  res: NextApiResponse
+) => {
+  // Get the X-ADMIN-SECRET header.
+  const adminSecret = req.headers["x-admin-secret"];
+  if (adminSecret !== process.env.ADMIN_SECRET) {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
+
+  console.log("Sending changelog update emails");
+
   // Get the changelog data from the request body
   const { version, changes, images } = req.body;
 
@@ -26,6 +37,7 @@ const handleCron = async (req: NextApiRequest, res: NextApiResponse) => {
   // Get all users with email notifications enabled
   const users = await userService.findMany({
     where: {
+      email: "kgadams93@gmail.com",
       emailNotificationsEnabled: true,
     },
   });
@@ -73,14 +85,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     return res.status(405).json({ message: "Method not allowed" });
   }
 
-  // Check if the secret key matches
-  if (req.headers.authorization !== `Bearer ${process.env.CRON_SECRET}`) {
-    return res.status(401).json({ message: "Unauthorized" });
-  }
-
-  console.log("Sending changelog update emails");
-
-  await handleCron(req, res);
+  await handleSendChangelogUpdate(req, res);
 };
 
 export default handler;
