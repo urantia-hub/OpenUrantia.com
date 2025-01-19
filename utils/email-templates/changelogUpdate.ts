@@ -44,9 +44,9 @@ export const getChangelogUpdateEmailHTML = (
     <!-- Content -->
     <tr>
       <td style="padding: 0 50px 32px;">
-        <h2 style="color: #111827; font-size: 20px; font-weight: 600; margin: 0 0 12px;">New Updates to UrantiaHub v${
+        <h2 style="color: #111827; font-size: 20px; font-weight: 600; margin: 0 0 12px;">New Updates to UrantiaHub (v${
           props.version
-        }</h2>
+        })</h2>
         <p style="color: #4b5563; font-size: 15px; line-height: 24px; margin: 0 0 24px;">
           We've just released some exciting new features and improvements:
         </p>

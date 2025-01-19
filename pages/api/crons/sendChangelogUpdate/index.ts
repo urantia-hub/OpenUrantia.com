@@ -36,7 +36,7 @@ const handleCron = async (req: NextApiRequest, res: NextApiResponse) => {
   const messages = users.map((user) => ({
     from: process.env.EMAIL_FROM as string,
     to: user.email as string,
-    subject: `New Updates to UrantiaHub v${version}`,
+    subject: `New Updates to UrantiaHub (v${version})`,
     html: getChangelogUpdateEmailHTML({
       version,
       changes,
