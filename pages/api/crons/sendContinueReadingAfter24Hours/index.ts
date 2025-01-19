@@ -14,21 +14,6 @@ const userService = new UserService();
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-const formatLabels = (labels: string[]): string => {
-  switch (labels.length) {
-    case 0:
-      return "";
-    case 1:
-      return labels[0];
-    case 2:
-      return labels.join(" and ");
-    default:
-      return `${labels.slice(0, -1).join(", ")}, and ${
-        labels[labels.length - 1]
-      }`;
-  }
-};
-
 const handleCron = async (_: NextApiRequest, res: NextApiResponse) => {
   const users = await userService.findMany({
     where: {
@@ -133,6 +118,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.headers.authorization !== `Bearer ${process.env.CRON_SECRET}`) {
     return res.status(401).json({ message: "Unauthorized" });
   }
+
+  console.log("Sending continue reading emails");
 
   await handleCron(req, res);
 };

@@ -1,4 +1,5 @@
 import { NextPage } from "next";
+import moment from "moment";
 import HeadTag from "@/components/HeadTag";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -38,17 +39,20 @@ const Changelog: NextPage = () => {
     <div className="flex flex-col min-h-screen bg-slate-100 text-gray-700 dark:bg-neutral-800 dark:text-white">
       <HeadTag
         titlePrefix="Latest Updates"
-        metaDescription="Track the latest features and improvements to Urantia Hub"
+        metaDescription="Track the latest features and improvements to UrantiaHub"
       />
 
       <Navbar />
 
       <main className="mt-8 flex-grow container mx-auto px-4 my-4 max-w-3xl min-h-screen">
-        <div className="mt-4 mb-4 text-center">
+        <div className="mt-4 mb-12 text-center">
           <h1 className="text-5xl font-bold mb-8">Latest Updates</h1>
+          <p className="text-lg text-gray-600 dark:text-gray-300">
+            Track the latest features and improvements to UrantiaHub
+          </p>
         </div>
 
-        <div className="space-y-6">
+        <div className="space-y-8">
           {changelog.map((entry) => (
             <div
               key={entry.version}
@@ -58,7 +62,9 @@ const Changelog: NextPage = () => {
                 <h2 className="text-xl font-bold text-gray-600 dark:text-white">
                   v{entry.version}
                 </h2>
-                <span className="text-sm text-gray-400">{entry.date}</span>
+                <span className="text-sm text-gray-400">
+                  {moment(entry.date).format("MMMM Do, YYYY")}
+                </span>
               </div>
               <ul className="space-y-2">
                 {entry.changes.map((change, index) => (

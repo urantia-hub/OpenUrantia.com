@@ -160,6 +160,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     return res.status(401).json({ message: "Unauthorized" });
   }
 
+  console.log("Sending daily quote emails");
+
   await handleCron(req, res);
 };
 

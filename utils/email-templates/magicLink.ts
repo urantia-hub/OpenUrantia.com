@@ -21,7 +21,7 @@ export function getMagicLinkEmailHTML(url: string) {
   `;
 
   return baseEmailTemplate({
-    title: "Sign in to Urantia Hub",
+    title: "Sign in to UrantiaHub",
     content,
   });
 }

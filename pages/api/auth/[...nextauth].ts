@@ -27,7 +27,7 @@ export const authOptions = {
           await resend.emails.send({
             from: process.env.EMAIL_FROM as string,
             to: email,
-            subject: "Sign in to Urantia Hub",
+            subject: "Sign in to UrantiaHub",
             html: getMagicLinkEmailHTML(url),
             text: getMagicLinkEmailText(url),
           });
