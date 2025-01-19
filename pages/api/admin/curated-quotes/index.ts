@@ -79,12 +79,6 @@ async function handleGET(req: NextApiRequest, res: NextApiResponse) {
 
 // POST handler
 async function handlePOST(req: NextApiRequest, res: NextApiResponse) {
-  // Get the X-ADMIN-SECRET header.
-  const adminSecret = req.headers["x-admin-secret"];
-  if (adminSecret !== process.env.ADMIN_SECRET) {
-    return res.status(401).json({ error: "Unauthorized" });
-  }
-
   let { globalId, standardReferenceId } = req.body;
 
   if (globalId) {
@@ -156,13 +150,18 @@ export default async function handle(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+  // Get the X-ADMIN-SECRET header.
+  const adminSecret = req.headers["x-admin-secret"];
+  if (adminSecret !== process.env.ADMIN_SECRET) {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
+
   const { method } = req;
   switch (method) {
     case "GET":
       return handleGET(req, res);
     case "POST":
       return handlePOST(req, res);
-      break;
     default:
       res.setHeader("Allow", ["GET", "POST"]);
       res.status(405).end(`Method ${method} Not Allowed`);

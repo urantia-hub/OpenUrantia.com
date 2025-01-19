@@ -37,9 +37,12 @@ const handleSendChangelogUpdate = async (
   // Get all users with email notifications enabled
   const users = await userService.findMany({
     where: {
-      email: "kgadams93@gmail.com",
       emailNotificationsEnabled: true,
     },
+  });
+
+  console.log(`Sending changelog update emails to ${users?.length} users`, {
+    userEmails: users?.map((user) => user.email) || [],
   });
 
   const changelogUrl = `${process.env.NEXT_PUBLIC_HOST}/changelog`;
