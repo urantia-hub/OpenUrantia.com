@@ -24,7 +24,7 @@ const handleSendChangelogUpdate = async (
   console.log("Sending changelog update emails");
 
   // Get the changelog data from the request body
-  const { version, changes, images } = req.body;
+  const { excludedUserEmails, version, changes, images } = req.body;
 
   if (!version || !changes || !Array.isArray(changes)) {
     return res.status(400).json({
@@ -37,12 +37,17 @@ const handleSendChangelogUpdate = async (
   // Get all users with email notifications enabled
   const users = await userService.findMany({
     where: {
+      email: {
+        notIn: excludedUserEmails || [],
+      },
       emailNotificationsEnabled: true,
     },
   });
 
-  console.log(`Sending changelog update emails to ${users?.length} users`, {
-    userEmails: users?.map((user) => user.email) || [],
+  const userEmails = users?.map((user) => user.email) || [];
+
+  console.log(`Sending changelog update emails to ${userEmails.length} users`, {
+    userEmails,
   });
 
   const changelogUrl = `${process.env.NEXT_PUBLIC_HOST}/changelog`;
@@ -67,10 +72,10 @@ const handleSendChangelogUpdate = async (
 
   try {
     // Send the emails
-    await Promise.all(messages.map((message) => resend.emails.send(message)));
+    await resend.batch.send(messages);
 
     res.status(200).json({
-      users: users.map((user) => user.email),
+      userEmails,
       success: true,
     });
   } catch (error: any) {
