@@ -1,5 +1,6 @@
 // Node modules.
 import type { NextApiRequest, NextApiResponse } from "next";
+import moment from "moment";
 // Relative modules.
 import CuratedQuoteService from "@/services/curatedQuote";
 import {
@@ -83,10 +84,25 @@ async function handleGET(req: NextApiRequest, res: NextApiResponse) {
   const nodes = await Promise.all(nodePromises);
 
   // Combine quotes with their node information
-  const quotesWithNodes = curatedQuotes.map((quote, index) => ({
-    ...quote,
-    paragraphNode: nodes[index],
-  }));
+  const quotesWithNodes = curatedQuotes
+    .map((quote, index) => ({
+      ...quote,
+      paragraphNode: nodes[index],
+    }))
+    .sort((a, b) => {
+      // Put quotes without sentAt first
+      if (!a.sentAt !== !b.sentAt) {
+        return a.sentAt ? 1 : -1;
+      }
+
+      // If neither has sentAt, sort by createdAt desc (newest first)
+      if (!a.sentAt) {
+        return moment(b.createdAt).diff(moment(a.createdAt));
+      }
+
+      // If both have sentAt, sort by sentAt asc (soonest first)
+      return moment(a.sentAt).diff(moment(b.sentAt));
+    });
 
   res.status(200).json({
     count: quotesWithNodes.length,
