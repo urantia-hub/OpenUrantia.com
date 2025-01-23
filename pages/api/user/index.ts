@@ -21,7 +21,7 @@ const userService = new UserService();
 
 // GET handler
 const handleGet = async (
-  req: NextApiRequest,
+  _: NextApiRequest,
   res: NextApiResponse,
   user: User
 ) => {

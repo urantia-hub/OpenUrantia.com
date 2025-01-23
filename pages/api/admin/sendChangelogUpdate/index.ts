@@ -7,6 +7,7 @@ import {
   getChangelogUpdateEmailHTML,
   getChangelogUpdateEmailText,
 } from "@/utils/email-templates/changelogUpdate";
+import getSessionDetails from "@/utils/getSessionDetails";
 
 const userService = new UserService();
 const resend = new Resend(process.env.RESEND_API_KEY);
@@ -15,11 +16,8 @@ const handleSendChangelogUpdate = async (
   req: NextApiRequest,
   res: NextApiResponse
 ) => {
-  // Get the X-ADMIN-SECRET header.
-  const adminSecret = req.headers["x-admin-secret"];
-  if (adminSecret !== process.env.ADMIN_SECRET) {
-    return res.status(401).json({ error: "Unauthorized" });
-  }
+  const sessionDetails = await getSessionDetails(req, res, { isAdmin: true });
+  if (!sessionDetails) return;
 
   console.log("Sending changelog update emails");
 

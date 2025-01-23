@@ -9,6 +9,7 @@ import * as Sentry from "@sentry/nextjs";
 import { ThemeProvider } from "@/context/theme";
 import "@/styles/globals.css";
 import SentryErrorBoundary from "@/components/SentryErrorBoundary";
+import { Toaster } from "sonner";
 
 const googleFont = Lato({
   subsets: ["latin"],
@@ -31,6 +32,7 @@ function AppContent({ Component, pageProps }: any) {
 
   return (
     <SentryErrorBoundary>
+      <Toaster />
       <Component {...pageProps} />
     </SentryErrorBoundary>
   );

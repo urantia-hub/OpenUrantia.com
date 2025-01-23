@@ -198,16 +198,17 @@ model Share {
 model User {
   createdAt                 DateTime  @default(now())
   email                     String?   @unique
+  emailNotificationsEnabled Boolean?  @default(true)
   emailVerified             DateTime?
   id                        String    @id @default(cuid())
   image                     String?
+  isAdmin                   Boolean   @default(false)
   lastAskedNotificationsAt  DateTime?
   lastVisitedAt             DateTime?
   lastVisitedGlobalId       String?
   lastVisitedPaperId        String?
   lastVisitedPaperTitle     String?
   name                      String?
-  emailNotificationsEnabled Boolean?  @default(true)
   updatedAt                 DateTime  @updatedAt
 
   accounts      Account[]

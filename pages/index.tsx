@@ -115,13 +115,18 @@ const HomePage = () => {
           "Please log in and visit your settings page to manage email notifications",
       });
     }
+
+    const genericError = searchParams.get("genericError");
+    if (genericError) {
+      toast.error(
+        "There was an error, our team has been notified and are looking into it"
+      );
+    }
   }, [searchParams]);
 
   return (
     <div className="flex flex-col min-h-screen bg-slate-100 text-gray-600">
       <HeadTag />
-
-      <Toaster />
 
       <HomepageNavbar />
 

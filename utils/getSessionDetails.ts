@@ -11,7 +11,7 @@ const userService = new UserService();
 const getSessionDetails = async (
   req: NextApiRequest,
   res: NextApiResponse,
-  options?: { skipUnauthorized?: boolean }
+  options?: { isAdmin?: boolean; skipUnauthorized?: boolean }
 ): Promise<{ session: any; user: User } | undefined> => {
   const session = await getServerSession(req, res, authOptions);
   if (!session?.user?.email) {
@@ -42,6 +42,11 @@ const getSessionDetails = async (
   });
   if (!user) {
     res.status(404).json({ message: "User not found" });
+    return;
+  }
+
+  if (options?.isAdmin && !user.isAdmin) {
+    res.status(403).json({ message: "Forbidden" });
     return;
   }
 

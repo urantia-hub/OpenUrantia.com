@@ -12,6 +12,7 @@ import {
   getPaperIdFromGlobalId,
 } from "@/utils/node";
 import { CuratedQuote } from "@prisma/client";
+import getSessionDetails from "@/utils/getSessionDetails";
 
 const curatedQuoteService = new CuratedQuoteService();
 
@@ -70,9 +71,26 @@ async function handleGET(req: NextApiRequest, res: NextApiResponse) {
     });
   }
 
+  // Fetch node information for each quote
+  const nodePromises = curatedQuotes.map(async (quote) => {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_URANTIA_DEV_API_HOST}/api/v1/urantia-book/paragraphs/${quote.globalId}`
+    );
+    const data = await res.json();
+    return data?.data || null;
+  });
+
+  const nodes = await Promise.all(nodePromises);
+
+  // Combine quotes with their node information
+  const quotesWithNodes = curatedQuotes.map((quote, index) => ({
+    ...quote,
+    paragraphNode: nodes[index],
+  }));
+
   res.status(200).json({
-    count: curatedQuotes.length,
-    data: curatedQuotes,
+    count: quotesWithNodes.length,
+    data: quotesWithNodes,
     metadata,
   });
 }
@@ -118,6 +136,7 @@ async function handlePOST(req: NextApiRequest, res: NextApiResponse) {
         });
       }
     } catch (error: any) {
+      console.error("Error getting globalId from standardReferenceId:", error);
       return res.status(400).json({ error: error.message });
     }
   }
@@ -127,11 +146,18 @@ async function handlePOST(req: NextApiRequest, res: NextApiResponse) {
   try {
     enforcePaperId("paperId", paperId);
   } catch (error: any) {
+    console.error("Error enforcing paperId:", error);
     return res.status(500).json({ error: error.message });
   }
 
   let curatedQuote;
   try {
+    console.log(
+      "Creating curated quote with globalId:",
+      globalId,
+      "and paperId:",
+      paperId
+    );
     curatedQuote = await curatedQuoteService.create({
       data: {
         globalId,
@@ -139,6 +165,7 @@ async function handlePOST(req: NextApiRequest, res: NextApiResponse) {
       },
     });
   } catch (error: any) {
+    console.error("Error creating curated quote:", error);
     return res.status(500).json({ error: error.message });
   }
 
@@ -150,11 +177,8 @@ export default async function handle(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  // Get the X-ADMIN-SECRET header.
-  const adminSecret = req.headers["x-admin-secret"];
-  if (adminSecret !== process.env.ADMIN_SECRET) {
-    return res.status(401).json({ error: "Unauthorized" });
-  }
+  const sessionDetails = await getSessionDetails(req, res, { isAdmin: true });
+  if (!sessionDetails) return;
 
   const { method } = req;
   switch (method) {

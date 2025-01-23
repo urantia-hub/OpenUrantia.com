@@ -28,7 +28,7 @@ class SentryErrorBoundary extends Component<Props, State> {
     if (this.state.hasError && !prevState.hasError) {
       // Redirect after a short delay to allow Sentry to capture the error
       setTimeout(() => {
-        window.location.href = "https://urantiahub.com";
+        window.location.href = `${process.env.NEXT_PUBLIC_HOST}?genericError=true`;
       }, 1000);
     }
   }
