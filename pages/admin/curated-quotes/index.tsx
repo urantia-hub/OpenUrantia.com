@@ -118,7 +118,7 @@ const CuratedQuotesAdmin = () => {
       <main className="mt-8 flex-grow container mx-auto px-4 my-4 max-w-3xl paper-content">
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-2xl md:text-4xl dark:text-white font-bold">
-            Manage Passages to be Sent
+            Admin - Daily Quote Emails
           </h1>
         </div>
 

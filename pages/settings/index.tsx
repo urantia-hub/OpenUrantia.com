@@ -248,11 +248,10 @@ const Settings = () => {
                   <div className="flex flex-col md:flex-row justify-end border border-gray-300 dark:border-zinc-700 rounded-lg p-4 mb-4">
                     <div className="flex flex-col w-full justify-center text-base flex-1 mb-4 md:mb-0">
                       <h3 className="dark:text-white font-bold mb-1 mt-0">
-                        Curated Quotes
+                        Daily Quote Emails
                       </h3>
                       <p className="text-gray-500 dark:text-gray-300 text-sm">
-                        Manage curated quotes for social media and email
-                        campaigns.
+                        Manage curated quotes for daily email campaigns.
                       </p>
                     </div>
                     <div className="flex flex-col justify-center flex-1">
@@ -260,7 +259,7 @@ const Settings = () => {
                         className="border-0 dark:border-0 text-center rounded bg-white hover:bg-white text-gray-400 dark:text-white dark:bg-zinc-700 hover:dark:bg-zinc-700 hover:no-underline transition-colors duration-300 ease-in-out py-2 px-4"
                         href="/admin/curated-quotes"
                       >
-                        Manage Quotes
+                        Manage
                       </Link>
                     </div>
                   </div>
