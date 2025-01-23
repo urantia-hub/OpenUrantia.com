@@ -222,7 +222,7 @@ const CuratedQuotesAdmin = () => {
 
                 {/* Metadata */}
                 <div className="absolute bottom-3 left-6 text-xs text-gray-400">
-                  Created {moment(quote.createdAt).fromNow()}
+                  Queued {moment(quote.createdAt).fromNow()}
                 </div>
               </div>
             );
