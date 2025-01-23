@@ -14,8 +14,12 @@ import {
 } from "@/utils/node";
 import { CuratedQuote } from "@prisma/client";
 import getSessionDetails from "@/utils/getSessionDetails";
+import UserService from "@/services/user";
+import SentQuoteService from "@/services/sentQuote";
 
 const curatedQuoteService = new CuratedQuoteService();
+const userService = new UserService();
+const sentQuoteService = new SentQuoteService();
 
 // GET handler
 async function handleGET(req: NextApiRequest, res: NextApiResponse) {
@@ -83,11 +87,35 @@ async function handleGET(req: NextApiRequest, res: NextApiResponse) {
 
   const nodes = await Promise.all(nodePromises);
 
-  // Combine quotes with their node information
+  // Get total number of users with notifications enabled using count
+  const totalUsersWithNotifications = await userService.count({
+    where: {
+      emailNotificationsEnabled: true,
+    },
+  });
+
+  // Get sent quote counts more efficiently using count
+  const sentQuoteCounts = await Promise.all(
+    curatedQuotes.map(async (quote) => {
+      const count = await sentQuoteService.count({
+        where: {
+          globalId: quote.globalId,
+        },
+      });
+      return { globalId: quote.globalId, count };
+    })
+  );
+
+  // Combine quotes with their node information and sent counts
   const quotesWithNodes = curatedQuotes
     .map((quote, index) => ({
       ...quote,
       paragraphNode: nodes[index],
+      sentCount:
+        sentQuoteCounts.find(
+          (sentQuote) => sentQuote.globalId === quote.globalId
+        )?.count || 0,
+      totalUsers: totalUsersWithNotifications,
     }))
     .sort((a, b) => {
       // Put quotes without sentAt first

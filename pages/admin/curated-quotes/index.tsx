@@ -26,6 +26,8 @@ interface CuratedQuote {
     sectionTitle: string | null;
     text: string;
   };
+  sentCount: number;
+  totalUsers: number;
 }
 
 const CuratedQuotesAdmin = () => {
@@ -156,7 +158,7 @@ const CuratedQuotesAdmin = () => {
                 className="relative flex flex-col items-start text-left px-6 pt-5 pb-10 bg-white dark:bg-neutral-700 rounded fade-in"
               >
                 {/* Status Badge */}
-                <div className="absolute top-4 right-4">
+                <div className="absolute top-4 right-4 flex flex-col items-end gap-1">
                   <span
                     className={`px-2 py-1 text-xs rounded ${
                       quote.sentAt
@@ -165,7 +167,9 @@ const CuratedQuotesAdmin = () => {
                     }`}
                   >
                     {quote.sentAt
-                      ? `Sent ${moment(quote.sentAt).fromNow()}`
+                      ? `Sent ${moment(quote.sentAt).fromNow()} to ${
+                          quote.sentCount
+                        } / ${quote.totalUsers} users`
                       : "Not sent"}
                   </span>
                 </div>

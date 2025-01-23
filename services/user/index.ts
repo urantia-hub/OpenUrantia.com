@@ -66,6 +66,10 @@ export class UserService implements BaseService<User> {
   ): Promise<Prisma.BatchPayload> {
     return await this.model.updateMany(args);
   }
+
+  async count(args: Prisma.UserCountArgs): Promise<number> {
+    return await this.model.count(args);
+  }
 }
 
 export default UserService;

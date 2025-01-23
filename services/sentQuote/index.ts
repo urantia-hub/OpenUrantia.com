@@ -63,6 +63,10 @@ export class SentQuoteService implements BaseService<SentQuote> {
   async upsert(args: Prisma.SentQuoteUpsertArgs): Promise<SentQuote> {
     return await this.model.upsert(args);
   }
+
+  async count(args: Prisma.SentQuoteCountArgs): Promise<number> {
+    return await this.model.count(args);
+  }
 }
 
 export default SentQuoteService;
