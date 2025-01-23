@@ -167,10 +167,11 @@ const CuratedQuotesAdmin = () => {
                     }`}
                   >
                     {quote.sentAt
-                      ? `Sent ${moment(quote.sentAt).fromNow()} to ${
-                          quote.sentCount
-                        } / ${quote.totalUsers} users`
+                      ? `Last sent ${moment(quote.sentAt).fromNow()}`
                       : "Not sent"}
+                  </span>
+                  <span className="text-xs text-gray-400">
+                    ({quote.sentCount} / {quote.totalUsers} users)
                   </span>
                 </div>
 
