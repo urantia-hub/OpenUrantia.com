@@ -95,13 +95,13 @@ async function handleGET(req: NextApiRequest, res: NextApiResponse) {
         return a.sentAt ? 1 : -1;
       }
 
-      // If neither has sentAt, sort by createdAt desc (newest first)
+      // If neither has sentAt, sort by createdAt asc (soonest first)
       if (!a.sentAt) {
-        return moment(b.createdAt).diff(moment(a.createdAt));
+        return moment(a.createdAt).diff(moment(b.createdAt));
       }
 
-      // If both have sentAt, sort by sentAt asc (soonest first)
-      return moment(a.sentAt).diff(moment(b.sentAt));
+      // If both have sentAt, sort by sentAt desc (most recent first)
+      return moment(b.sentAt).diff(moment(a.sentAt));
     });
 
   res.status(200).json({
