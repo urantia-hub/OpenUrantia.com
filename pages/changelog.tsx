@@ -19,6 +19,7 @@ const changelog: ChangelogEntry[] = [
       "Added email notification toggle for changelog updates",
       "Added email notification toggle for continue reading updates",
       "Added email notification toggle for daily quote updates",
+      'Added "Listen on Spotify" button and "Copy Text" buttons to paper pages',
     ],
   },
   {
