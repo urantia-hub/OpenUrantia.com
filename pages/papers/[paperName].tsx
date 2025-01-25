@@ -31,6 +31,7 @@ import {
 } from "@/utils/paperFormatters";
 import AskAI from "@/components/AskAI";
 import { HelpCircle, MessageCircleQuestion, X } from "lucide-react";
+import { toast } from "sonner";
 
 const notoSerifFont = Noto_Serif({
   subsets: ["latin"],
@@ -991,6 +992,37 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
     }
   };
 
+  const onCopyPaper = () => {
+    // Collect all the text from the nodes.
+    const paperTextWithNodes = nodes
+      .map((node) => {
+        switch (node.type) {
+          case "paper": {
+            return `${
+              parseInt(paperId) > 0
+                ? `Paper ${paperId}: ${paperTitle}`
+                : "Foreword"
+            }\n`;
+          }
+          case "section": {
+            return node.sectionTitle
+              ? `\n${node.sectionTitle}\n\n`
+              : `\nIntroduction\n\n`;
+          }
+          case "paragraph": {
+            return `(${node.standardReferenceId}) ${node.text}\n`;
+          }
+        }
+      })
+      .join("");
+
+    // Copy to clipboard.
+    navigator.clipboard.writeText(paperTextWithNodes);
+
+    // Show success toast.
+    toast.success("Paper copied to clipboard");
+  };
+
   const renderNode = (node: UBNode) => {
     switch (node.type) {
       case "paper": {
@@ -999,43 +1031,52 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
             key={node.globalId}
             className={`${notoSerifFont.className} tracking-tight font-serif antialiased leading-relaxed mt-4 mb-4 text-center`}
           >
+            {/* Paper Title */}
             {parseInt(node.paperId) > 0 && (
               <p className="mb-2 text-gray-600 dark:text-gray-400">
                 {node.paperTitle}
               </p>
             )}
 
+            {/* Paper Number */}
             <h1 className="text-5xl font-bold mb-4" id={node.globalId}>
               {parseInt(node.paperId) > 0 ? node.paperId : "Foreword"}
             </h1>
 
             <div className="flex flex-col items-center justify-center gap-4">
-              {parseInt(node.paperId) >= 0 &&
-                SPOTIFY_EPISODE_IDS[
-                  node.paperId as keyof typeof SPOTIFY_EPISODE_IDS
-                ] && (
-                  <iframe
-                    allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-                    allowFullScreen
-                    height="152"
-                    loading="lazy"
-                    src={`https://open.spotify.com/embed/episode/${
-                      SPOTIFY_EPISODE_IDS[
-                        node.paperId as keyof typeof SPOTIFY_EPISODE_IDS
-                      ]
-                    }?utm_source=generator&t=0`}
-                    width="100%"
-                  ></iframe>
-                )}
+              <div className="flex flex-col md:flex-row gap-2">
+                {/* Spotify Link */}
+                <Link
+                  className="text-sm text-gray-400 dark:text-white bg-white dark:bg-zinc-700 focus:outline-0 focus:dark:outline-0 hover:text-gray-600 hover:dark:text-gray-600 hover:bg-white hover:dark:bg-zinc-700 outline-0 py-1 px-3 border-0 dark:py-1 dark:px-3 dark:border-0 text-center rounded hover:no-underline transition-colors duration-300 ease-in-out"
+                  href={`https://open.spotify.com/episode/${
+                    SPOTIFY_EPISODE_IDS[
+                      node.paperId as keyof typeof SPOTIFY_EPISODE_IDS
+                    ]
+                  }`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Listen on Spotify
+                </Link>
 
-              <Link
-                className="text-blue-500 dark:text-blue-400 text-sm hover:underline"
-                href={`${process.env.NEXT_PUBLIC_AUDIO_FILES_CDN}/${node.paperId}.mp3`}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Download Full Paper Audio
-              </Link>
+                {/* Copy Text */}
+                <button
+                  onClick={onCopyPaper}
+                  className="text-sm text-gray-400 dark:text-white bg-white dark:bg-zinc-700 focus:outline-0 focus:dark:outline-0 hover:text-gray-600 hover:dark:text-gray-600 hover:bg-white hover:dark:bg-zinc-700 outline-0 py-1 px-3 border-0 dark:py-1 dark:px-3 dark:border-0 text-center rounded hover:no-underline transition-colors duration-300 ease-in-out"
+                >
+                  Copy Text
+                </button>
+
+                {/* Download Audio */}
+                <Link
+                  className="text-sm text-gray-400 dark:text-white bg-white dark:bg-zinc-700 focus:outline-0 focus:dark:outline-0 hover:text-gray-600 hover:dark:text-gray-600 hover:bg-white hover:dark:bg-zinc-700 outline-0 py-1 px-3 border-0 dark:py-1 dark:px-3 dark:border-0 text-center rounded hover:no-underline transition-colors duration-300 ease-in-out"
+                  href={`${process.env.NEXT_PUBLIC_AUDIO_FILES_CDN}/${node.paperId}.mp3`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Download Audio
+                </Link>
+              </div>
             </div>
 
             {/* Small - XL Screen TOC */}

@@ -18,10 +18,12 @@ class SentryErrorBoundary extends Component<Props, State> {
   }
 
   componentDidCatch(error: Error, errorInfo: any) {
-    Sentry.withScope((scope) => {
-      scope.setExtras(errorInfo);
-      Sentry.captureException(error);
-    });
+    if (process.env.NODE_ENV !== "development") {
+      Sentry.withScope((scope) => {
+        scope.setExtras(errorInfo);
+        Sentry.captureException(error);
+      });
+    }
   }
 
   componentDidUpdate(prevProps: Props, prevState: State) {

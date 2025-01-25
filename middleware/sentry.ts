@@ -13,7 +13,7 @@ export function withSentry(
       const session = await getServerSession(req, res, authOptions);
 
       // Set the user in Sentry if the session is authenticated and in production
-      if (session?.user && process.env.NODE_ENV === "production") {
+      if (session?.user && process.env.NODE_ENV !== "development") {
         Sentry.setUser(session.user as Sentry.User);
       }
 
@@ -21,11 +21,13 @@ export function withSentry(
       return await handler(req, res);
     } catch (error) {
       // Capture any errors and throw them
-      Sentry.captureException(error, {
-        extra: {
-          where: `Server-side error captured with withSentry middleware: ${req.url}`,
-        },
-      });
+      if (process.env.NODE_ENV !== "development") {
+        Sentry.captureException(error, {
+          extra: {
+            where: `Server-side error captured with withSentry middleware: ${req.url}`,
+          },
+        });
+      }
       throw error;
     }
   };

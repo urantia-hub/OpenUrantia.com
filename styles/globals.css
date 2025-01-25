@@ -719,3 +719,7 @@ select.select-selected {
     opacity: 0.1;
   }
 }
+
+.toaster li {
+  border: none;
+}

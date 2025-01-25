@@ -21,7 +21,7 @@ function AppContent({ Component, pageProps }: any) {
   const { data: session, status } = useSession();
 
   useEffect(() => {
-    if (process.env.NODE_ENV === "production") {
+    if (process.env.NODE_ENV !== "development") {
       if (status === "authenticated" && session?.user) {
         Sentry.setUser(session.user as Sentry.User);
       } else {
@@ -32,7 +32,7 @@ function AppContent({ Component, pageProps }: any) {
 
   return (
     <SentryErrorBoundary>
-      <Toaster />
+      <Toaster className="toaster" richColors />
       <Component {...pageProps} />
     </SentryErrorBoundary>
   );
@@ -49,8 +49,8 @@ export default function App({
           <AppContent Component={Component} pageProps={pageProps} />
         </SessionProvider>
       </ThemeProvider>
-      {process.env.NODE_ENV === "production" && <SpeedInsights />}
-      {process.env.NODE_ENV === "production" && <Analytics />}
+      {process.env.NODE_ENV !== "development" && <SpeedInsights />}
+      {process.env.NODE_ENV !== "development" && <Analytics />}
     </div>
   );
 }
