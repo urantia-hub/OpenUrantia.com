@@ -51,11 +51,6 @@ export default function App({
       </ThemeProvider>
       {process.env.NODE_ENV === "production" && <SpeedInsights />}
       {process.env.NODE_ENV === "production" && <Analytics />}
-      <script
-        async
-        src="https://app.termly.io/resource-blocker/2d5a2b8c-1d75-49a7-b386-2dd80780e256?autoBlock=on"
-        type="text/javascript"
-      />
     </div>
   );
 }
