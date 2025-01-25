@@ -10,27 +10,7 @@ import Navbar from "@/components/Navbar";
 import ResetProgress from "@/components/ResetProgress";
 import Spinner from "@/components/Spinner";
 import ThemeSwitcher from "@/components/ThemeSwitcher";
-
-const ToggleSwitch = ({ enabled, loading, onClick, disabled = false }: any) => (
-  <button
-    onClick={onClick}
-    disabled={disabled || loading}
-    className={`
-      relative inline-flex h-7 w-12 items-center rounded-full border-none
-      transition-colors duration-200 ease-in-out focus:outline-none
-      ${enabled ? "bg-blue-400" : "bg-gray-200 dark:bg-zinc-600"}
-      ${disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}
-    `}
-  >
-    <span
-      className={`
-        ${enabled ? "translate-x-4" : "-translate-x-1"}
-        inline-block h-5 w-5 transform rounded-full bg-white shadow-md
-        transition duration-200 ease-in-out
-      `}
-    />
-  </button>
-);
+import ToggleSwitch from "@/components/ToggleSwitch";
 
 const Settings = () => {
   // Hooks.
@@ -227,63 +207,60 @@ const Settings = () => {
                     />
                   </div>
 
-                  {/* Individual notification settings */}
-                  <div className="space-y-4">
-                    {/* Daily Quotes */}
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-base text-gray-900 dark:text-white">
-                          Daily Quotes
-                        </p>
-                        <p className="text-sm text-gray-500 dark:text-gray-400">
-                          Receive daily inspirational quotes
-                        </p>
-                      </div>
-                      <ToggleSwitch
-                        enabled={emailDailyQuoteEnabled}
-                        loading={isUpdating}
-                        onClick={() => handleToggleNotifications("dailyQuote")}
-                        disabled={!emailNotificationsEnabled}
-                      />
+                  {/* Daily Quotes */}
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-base text-gray-900 dark:text-white">
+                        Daily Quotes
+                      </p>
+                      <p className="text-sm text-gray-500 dark:text-gray-400">
+                        Receive daily inspirational quotes
+                      </p>
                     </div>
+                    <ToggleSwitch
+                      enabled={emailDailyQuoteEnabled}
+                      loading={isUpdating}
+                      onClick={() => handleToggleNotifications("dailyQuote")}
+                      disabled={!emailNotificationsEnabled}
+                    />
+                  </div>
 
-                    {/* Continue Reading */}
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-base text-gray-900 dark:text-white">
-                          Continue Reading
-                        </p>
-                        <p className="text-sm text-gray-500 dark:text-gray-400">
-                          Get reminders to continue your reading
-                        </p>
-                      </div>
-                      <ToggleSwitch
-                        enabled={emailContinueReadingEnabled}
-                        loading={isUpdating}
-                        onClick={() =>
-                          handleToggleNotifications("continueReading")
-                        }
-                        disabled={!emailNotificationsEnabled}
-                      />
+                  {/* Continue Reading */}
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-base text-gray-900 dark:text-white">
+                        Continue Reading
+                      </p>
+                      <p className="text-sm text-gray-500 dark:text-gray-400">
+                        Get reminders to continue your reading
+                      </p>
                     </div>
+                    <ToggleSwitch
+                      enabled={emailContinueReadingEnabled}
+                      loading={isUpdating}
+                      onClick={() =>
+                        handleToggleNotifications("continueReading")
+                      }
+                      disabled={!emailNotificationsEnabled}
+                    />
+                  </div>
 
-                    {/* Feature Updates */}
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-base text-gray-900 dark:text-white">
-                          Feature Updates
-                        </p>
-                        <p className="text-sm text-gray-500 dark:text-gray-400">
-                          Stay informed about new features
-                        </p>
-                      </div>
-                      <ToggleSwitch
-                        enabled={emailChangelogEnabled}
-                        loading={isUpdating}
-                        onClick={() => handleToggleNotifications("changelog")}
-                        disabled={!emailNotificationsEnabled}
-                      />
+                  {/* Feature Updates */}
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-base text-gray-900 dark:text-white">
+                        Feature Updates
+                      </p>
+                      <p className="text-sm text-gray-500 dark:text-gray-400">
+                        Stay informed about new features
+                      </p>
                     </div>
+                    <ToggleSwitch
+                      enabled={emailChangelogEnabled}
+                      loading={isUpdating}
+                      onClick={() => handleToggleNotifications("changelog")}
+                      disabled={!emailNotificationsEnabled}
+                    />
                   </div>
                 </div>
               </div>
