@@ -401,6 +401,12 @@ export const PAPER_ID_TO_MP3_URL = {
 };
 export const NEXT_AUDIO_DELAY = 300; // Milliseconds
 
+// Spotify
+// ===========================
+export const SPOTIFY_EPISODE_IDS = {
+  "196": "27KiS1E9YWIM1xpBUWssu5",
+};
+
 // Reading
 // ===========================
 export const AVERAGE_READING_SPEED = 400; // Words per minute

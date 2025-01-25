@@ -22,6 +22,7 @@ import {
   AVERAGE_READING_SPEED,
   NEXT_AUDIO_DELAY,
   PAPER_ID_TO_MP3_URL,
+  SPOTIFY_EPISODE_IDS,
 } from "@/utils/config";
 import {
   getPaperIdFromPaperUrl,
@@ -996,7 +997,7 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
         return (
           <div
             key={node.globalId}
-            className={`${notoSerifFont.className} tracking-tight font-serif antialiased leading-relaxed mt-4 mb-8 text-center`}
+            className={`${notoSerifFont.className} tracking-tight font-serif antialiased leading-relaxed mt-4 mb-4 text-center`}
           >
             {parseInt(node.paperId) > 0 && (
               <p className="mb-2 text-gray-600 dark:text-gray-400">
@@ -1004,18 +1005,38 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
               </p>
             )}
 
-            <h1 className="text-5xl font-bold mb-2" id={node.globalId}>
+            <h1 className="text-5xl font-bold mb-4" id={node.globalId}>
               {parseInt(node.paperId) > 0 ? node.paperId : "Foreword"}
             </h1>
 
-            <Link
-              className="text-blue-500 dark:text-blue-400 text-sm"
-              href={`${process.env.NEXT_PUBLIC_AUDIO_FILES_CDN}/${node.paperId}.mp3`}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Download Full Paper Audio
-            </Link>
+            <div className="flex flex-col items-center justify-center gap-4">
+              {parseInt(node.paperId) >= 0 &&
+                SPOTIFY_EPISODE_IDS[
+                  node.paperId as keyof typeof SPOTIFY_EPISODE_IDS
+                ] && (
+                  <iframe
+                    allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+                    allowFullScreen
+                    height="152"
+                    loading="lazy"
+                    src={`https://open.spotify.com/embed/episode/${
+                      SPOTIFY_EPISODE_IDS[
+                        node.paperId as keyof typeof SPOTIFY_EPISODE_IDS
+                      ]
+                    }?utm_source=generator&t=0`}
+                    width="100%"
+                  ></iframe>
+                )}
+
+              <Link
+                className="text-blue-500 dark:text-blue-400 text-sm hover:underline"
+                href={`${process.env.NEXT_PUBLIC_AUDIO_FILES_CDN}/${node.paperId}.mp3`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Download Full Paper Audio
+              </Link>
+            </div>
 
             {/* Small - XL Screen TOC */}
             <div className="flex flex-col items-left text-left xl:hidden mt-8">
