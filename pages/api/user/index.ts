@@ -1,6 +1,6 @@
 // Node modules.
 import type { NextApiRequest, NextApiResponse } from "next";
-import { User } from "@prisma/client";
+import { Prisma, User } from "@prisma/client";
 // Relative modules.
 import AccountService from "@/services/account";
 import BookmarkService from "@/services/bookmark";
@@ -33,12 +33,29 @@ const handlePut = async (
   res: NextApiResponse,
   user: User
 ) => {
-  const { emailNotificationsEnabled } = req.body;
+  const {
+    emailNotificationsEnabled,
+    emailDailyQuoteEnabled,
+    emailContinueReadingEnabled,
+    emailChangelogEnabled,
+  } = req.body;
+
+  const updateData: Prisma.UserUpdateInput = {};
+  if (emailNotificationsEnabled !== undefined) {
+    updateData.emailNotificationsEnabled = emailNotificationsEnabled;
+  }
+  if (emailDailyQuoteEnabled !== undefined) {
+    updateData.emailDailyQuoteEnabled = emailDailyQuoteEnabled;
+  }
+  if (emailContinueReadingEnabled !== undefined) {
+    updateData.emailContinueReadingEnabled = emailContinueReadingEnabled;
+  }
+  if (emailChangelogEnabled !== undefined) {
+    updateData.emailChangelogEnabled = emailChangelogEnabled;
+  }
 
   // Update the user's notification settings
-  const updatedUser = await userService.update(user.id, {
-    emailNotificationsEnabled,
-  });
+  const updatedUser = await userService.update(user.id, updateData);
 
   res.status(200).json(updatedUser);
 };

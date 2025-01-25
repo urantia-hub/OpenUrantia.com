@@ -32,13 +32,14 @@ const handleSendChangelogUpdate = async (
     });
   }
 
-  // Get all users with email notifications enabled
+  // Get all users with both general and changelog notifications enabled
   const users = await userService.findMany({
     where: {
       email: {
         notIn: excludedUserEmails || [],
       },
       emailNotificationsEnabled: true,
+      emailChangelogEnabled: true,
     },
   });
 

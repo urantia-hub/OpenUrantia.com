@@ -18,6 +18,7 @@ const handleCron = async (_: NextApiRequest, res: NextApiResponse) => {
   const users = await userService.findMany({
     where: {
       emailNotificationsEnabled: true,
+      emailContinueReadingEnabled: true,
       lastVisitedGlobalId: {
         not: null,
       },

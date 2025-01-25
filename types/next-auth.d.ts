@@ -5,6 +5,9 @@ import { User as NextAuthUser } from "next-auth";
 declare module "next-auth" {
   interface User {
     emailNotificationsEnabled?: boolean;
+    emailDailyQuoteEnabled?: boolean;
+    emailContinueReadingEnabled?: boolean;
+    emailChangelogEnabled?: boolean;
     lastNotificationAt?: Date;
     lastVisitedAt?: Date;
     lastVisitedGlobalId?: string;

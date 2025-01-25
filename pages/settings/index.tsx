@@ -11,6 +11,27 @@ import ResetProgress from "@/components/ResetProgress";
 import Spinner from "@/components/Spinner";
 import ThemeSwitcher from "@/components/ThemeSwitcher";
 
+const ToggleSwitch = ({ enabled, loading, onClick, disabled = false }: any) => (
+  <button
+    onClick={onClick}
+    disabled={disabled || loading}
+    className={`
+      relative inline-flex h-7 w-12 items-center rounded-full border-none
+      transition-colors duration-200 ease-in-out focus:outline-none
+      ${enabled ? "bg-blue-400" : "bg-gray-200 dark:bg-zinc-600"}
+      ${disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}
+    `}
+  >
+    <span
+      className={`
+        ${enabled ? "translate-x-4" : "-translate-x-1"}
+        inline-block h-5 w-5 transform rounded-full bg-white shadow-md
+        transition duration-200 ease-in-out
+      `}
+    />
+  </button>
+);
+
 const Settings = () => {
   // Hooks.
   const session = useSession();
@@ -23,9 +44,15 @@ const Settings = () => {
   const [isResetProgressModalOpen, setIsResetProgressModalOpen] =
     useState<boolean>(false);
 
-  // Email notification state.
+  // Email notification states
   const [isUpdating, setIsUpdating] = useState<boolean>(false);
   const [emailNotificationsEnabled, setEmailNotificationsEnabled] =
+    useState<boolean>(false);
+  const [emailDailyQuoteEnabled, setEmailDailyQuoteEnabled] =
+    useState<boolean>(false);
+  const [emailContinueReadingEnabled, setEmailContinueReadingEnabled] =
+    useState<boolean>(false);
+  const [emailChangelogEnabled, setEmailChangelogEnabled] =
     useState<boolean>(false);
 
   // Theme state.
@@ -38,6 +65,9 @@ const Settings = () => {
         .then((res) => res.json())
         .then((data) => {
           setEmailNotificationsEnabled(data.emailNotificationsEnabled);
+          setEmailDailyQuoteEnabled(data.emailDailyQuoteEnabled);
+          setEmailContinueReadingEnabled(data.emailContinueReadingEnabled);
+          setEmailChangelogEnabled(data.emailChangelogEnabled);
           setTheme(data.theme);
           setIsAdmin(data.isAdmin || false);
         });
@@ -47,10 +77,28 @@ const Settings = () => {
     }
   }, [session.status]);
 
-  const handleToggleNotifications = async () => {
+  const handleToggleNotifications = async (field: string) => {
     setIsUpdating(true);
 
-    const updatedStatus = !emailNotificationsEnabled;
+    const updates: any = {};
+    switch (field) {
+      case "all":
+        const newStatus = !emailNotificationsEnabled;
+        updates.emailNotificationsEnabled = newStatus;
+        updates.emailDailyQuoteEnabled = newStatus;
+        updates.emailContinueReadingEnabled = newStatus;
+        updates.emailChangelogEnabled = newStatus;
+        break;
+      case "dailyQuote":
+        updates.emailDailyQuoteEnabled = !emailDailyQuoteEnabled;
+        break;
+      case "continueReading":
+        updates.emailContinueReadingEnabled = !emailContinueReadingEnabled;
+        break;
+      case "changelog":
+        updates.emailChangelogEnabled = !emailChangelogEnabled;
+        break;
+    }
 
     // Update user settings in the backend
     await fetch("/api/user", {
@@ -58,10 +106,19 @@ const Settings = () => {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ emailNotificationsEnabled: updatedStatus }),
+      body: JSON.stringify(updates),
     });
 
-    setEmailNotificationsEnabled(updatedStatus);
+    // Update local state
+    if (updates.emailNotificationsEnabled !== undefined)
+      setEmailNotificationsEnabled(updates.emailNotificationsEnabled);
+    if (updates.emailDailyQuoteEnabled !== undefined)
+      setEmailDailyQuoteEnabled(updates.emailDailyQuoteEnabled);
+    if (updates.emailContinueReadingEnabled !== undefined)
+      setEmailContinueReadingEnabled(updates.emailContinueReadingEnabled);
+    if (updates.emailChangelogEnabled !== undefined)
+      setEmailChangelogEnabled(updates.emailChangelogEnabled);
+
     setIsUpdating(false);
   };
 
@@ -140,30 +197,94 @@ const Settings = () => {
                 </div>
               </div>
 
-              {/* Notifications */}
-              <div className="flex flex-col md:flex-row justify-end border border-gray-300 dark:border-zinc-700 rounded-lg p-4 mb-4">
-                <div className="flex flex-col w-full justify-center text-base flex-1 mb-4 md:mb-0">
-                  <h3 className="dark:text-white font-bold mb-1 mt-0">
-                    Email Notifications
-                  </h3>
-                  <p className="text-gray-500 dark:text-gray-300 text-sm">
-                    {emailNotificationsEnabled
-                      ? "You will receive email notifications currently."
-                      : "You will not receive email notifications currently."}
-                  </p>
-                </div>
-                <div className="flex flex-col justify-center flex-1">
-                  <button
-                    className={`${
-                      emailNotificationsEnabled
-                        ? "text-white bg-blue-400 hover:bg-blue-500"
-                        : "text-gray-400 bg-white hover:bg-white"
-                    } border-0 dark:border-0 text-center rounded dark:bg-zinc-700 hover:dark:bg-zinc-700 hover:no-underline transition-colors duration-300 ease-in-out`}
-                    onClick={handleToggleNotifications}
-                    type="button"
-                  >
-                    {deriveNotificationStatus()}
-                  </button>
+              {/* Email Notifications */}
+              <div className="flex flex-col border border-gray-300 dark:border-zinc-700 rounded-lg p-6 mb-4">
+                <div className="flex flex-col space-y-6">
+                  {/* Main heading */}
+                  <div>
+                    <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
+                      Email Notifications
+                    </h3>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                      Manage your email preferences
+                    </p>
+                  </div>
+
+                  {/* All notifications */}
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-base text-gray-900 dark:text-white">
+                        All notifications
+                      </p>
+                      <p className="text-sm text-gray-500 dark:text-gray-400">
+                        Control all email notifications
+                      </p>
+                    </div>
+                    <ToggleSwitch
+                      enabled={emailNotificationsEnabled}
+                      loading={isUpdating}
+                      onClick={() => handleToggleNotifications("all")}
+                    />
+                  </div>
+
+                  {/* Individual notification settings */}
+                  <div className="space-y-4">
+                    {/* Daily Quotes */}
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-base text-gray-900 dark:text-white">
+                          Daily Quotes
+                        </p>
+                        <p className="text-sm text-gray-500 dark:text-gray-400">
+                          Receive daily inspirational quotes
+                        </p>
+                      </div>
+                      <ToggleSwitch
+                        enabled={emailDailyQuoteEnabled}
+                        loading={isUpdating}
+                        onClick={() => handleToggleNotifications("dailyQuote")}
+                        disabled={!emailNotificationsEnabled}
+                      />
+                    </div>
+
+                    {/* Continue Reading */}
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-base text-gray-900 dark:text-white">
+                          Continue Reading
+                        </p>
+                        <p className="text-sm text-gray-500 dark:text-gray-400">
+                          Get reminders to continue your reading
+                        </p>
+                      </div>
+                      <ToggleSwitch
+                        enabled={emailContinueReadingEnabled}
+                        loading={isUpdating}
+                        onClick={() =>
+                          handleToggleNotifications("continueReading")
+                        }
+                        disabled={!emailNotificationsEnabled}
+                      />
+                    </div>
+
+                    {/* Feature Updates */}
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-base text-gray-900 dark:text-white">
+                          Feature Updates
+                        </p>
+                        <p className="text-sm text-gray-500 dark:text-gray-400">
+                          Stay informed about new features
+                        </p>
+                      </div>
+                      <ToggleSwitch
+                        enabled={emailChangelogEnabled}
+                        loading={isUpdating}
+                        onClick={() => handleToggleNotifications("changelog")}
+                        disabled={!emailNotificationsEnabled}
+                      />
+                    </div>
+                  </div>
                 </div>
               </div>
 

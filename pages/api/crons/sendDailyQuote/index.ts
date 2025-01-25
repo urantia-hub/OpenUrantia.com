@@ -19,11 +19,12 @@ const userService = new UserService();
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 const handleCron = async (_: NextApiRequest, res: NextApiResponse) => {
-  // Get users who have email notifications enabled.
+  // Get users who have both general and daily quote notifications enabled
   console.log("[sendDailyQuote] Fetching users");
   const users = await userService.findMany({
     where: {
       emailNotificationsEnabled: true,
+      emailDailyQuoteEnabled: true,
     },
   });
 
