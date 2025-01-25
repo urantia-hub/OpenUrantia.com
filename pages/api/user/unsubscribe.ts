@@ -27,6 +27,9 @@ async function handle(req: NextApiRequest, res: NextApiResponse) {
     // Update the user's notification settings
     await userService.update(sessionDetails.user.id, {
       emailNotificationsEnabled: false,
+      emailDailyQuoteEnabled: false,
+      emailContinueReadingEnabled: false,
+      emailChangelogEnabled: false,
     });
 
     // Redirect to the homepage with a success message
