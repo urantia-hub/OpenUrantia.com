@@ -12,6 +12,16 @@ interface ChangelogEntry {
 
 const changelog: ChangelogEntry[] = [
   {
+    date: "2025-01-25",
+    version: "1.0.2",
+    changes: [
+      "Added admin page to manage Daily Quote emails",
+      "Added email notification toggle for changelog updates",
+      "Added email notification toggle for continue reading updates",
+      "Added email notification toggle for daily quote updates",
+    ],
+  },
+  {
     date: "2025-01-18",
     version: "1.0.1",
     changes: [
