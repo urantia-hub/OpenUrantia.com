@@ -1039,45 +1039,9 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
             )}
 
             {/* Paper Number */}
-            <h1 className="text-5xl font-bold mb-4" id={node.globalId}>
+            <h1 className="text-5xl font-bold mb-6" id={node.globalId}>
               {parseInt(node.paperId) > 0 ? node.paperId : "Foreword"}
             </h1>
-
-            <div className="flex flex-col items-center justify-center gap-4">
-              <div className="flex flex-col md:flex-row gap-2">
-                {/* Spotify Link */}
-                <Link
-                  className="text-sm text-gray-400 dark:text-white bg-white dark:bg-zinc-700 focus:outline-0 focus:dark:outline-0 hover:text-gray-600 hover:dark:text-blue-200 hover:bg-white hover:dark:bg-zinc-700 outline-0 py-1 px-3 border-0 dark:py-1 dark:px-3 dark:border-0 text-center rounded hover:no-underline transition-colors duration-300 ease-in-out"
-                  href={`https://open.spotify.com/episode/${
-                    SPOTIFY_EPISODE_IDS[
-                      node.paperId as keyof typeof SPOTIFY_EPISODE_IDS
-                    ]
-                  }`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Listen on Spotify
-                </Link>
-
-                {/* Copy Text */}
-                <button
-                  onClick={onCopyPaper}
-                  className="text-sm text-gray-400 dark:text-white bg-white dark:bg-zinc-700 focus:outline-0 focus:dark:outline-0 hover:text-gray-600 hover:dark:text-blue-200 hover:bg-white hover:dark:bg-zinc-700 outline-0 py-1 px-3 border-0 dark:py-1 dark:px-3 dark:border-0 text-center rounded hover:no-underline transition-colors duration-300 ease-in-out"
-                >
-                  Copy Text
-                </button>
-
-                {/* Download Audio */}
-                <Link
-                  className="text-sm text-gray-400 dark:text-white bg-white dark:bg-zinc-700 focus:outline-0 focus:dark:outline-0 hover:text-gray-600 hover:dark:text-blue-200 hover:bg-white hover:dark:bg-zinc-700 outline-0 py-1 px-3 border-0 dark:py-1 dark:px-3 dark:border-0 text-center rounded hover:no-underline transition-colors duration-300 ease-in-out"
-                  href={`${process.env.NEXT_PUBLIC_AUDIO_FILES_CDN}/${node.paperId}.mp3`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Download Audio
-                </Link>
-              </div>
-            </div>
 
             {/* Small - XL Screen TOC */}
             <div className="flex flex-col items-left text-left xl:hidden mt-8">
@@ -1411,7 +1375,19 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
         }
       />
 
-      <TopReadingNavbar fontSize={fontSize} setFontSize={updateFontSize} />
+      <TopReadingNavbar
+        fontSize={fontSize}
+        setFontSize={updateFontSize}
+        onCopyPaper={onCopyPaper}
+        spotifyUrl={
+          SPOTIFY_EPISODE_IDS[paperId as keyof typeof SPOTIFY_EPISODE_IDS]
+            ? `https://open.spotify.com/episode/${
+                SPOTIFY_EPISODE_IDS[paperId as keyof typeof SPOTIFY_EPISODE_IDS]
+              }`
+            : undefined
+        }
+        audioDownloadUrl={`${process.env.NEXT_PUBLIC_AUDIO_FILES_CDN}/${paperId}.mp3`}
+      />
 
       <Navbar
         audioContent={deriveAudioContent()}
