@@ -21,6 +21,7 @@ const changelog: ChangelogEntry[] = [
       "Added email notification toggle for daily quote updates",
       'Added "Listen on Spotify" button and "Copy Text" buttons to paper pages',
       "Resolved dark theme persistence issue across browser sessions",
+      "Updated Explore page to show Papers by Topic + Most Read papers",
     ],
   },
   {
