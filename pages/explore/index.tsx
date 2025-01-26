@@ -461,7 +461,7 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
               {/* Science Papers */}
               <div className="mb-8">
                 <h2 className="text-base mb-2 pb-2 text-center border-b text-gray-400 border-gray-200 dark:border-gray-600">
-                  Universe Science & Cosmology
+                  Science & Cosmology
                 </h2>
 
                 <p className="text-xs text-gray-400 mb-6">
@@ -581,8 +581,8 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
                 </h2>
 
                 <p className="text-xs text-gray-400 mb-6">
-                  Discover perspectives on soul growth, spiritual progression,
-                  and the adventure after mortal life.
+                  Discover the adventure after mortal life and learn about the
+                  beings that help us through our journey.
                 </p>
 
                 {fetchingAfterLife ? (
@@ -652,18 +652,11 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
                   return (
                     <div key={part.globalId} className="mb-8">
                       <h2 className="text-base mb-2 pb-2 text-center border-b text-gray-400 border-gray-200 dark:border-gray-600">
-                        Part {part.partId}: {part.partTitle}
+                        Part {part.partId} Papers
                       </h2>
 
                       <p className="text-xs text-gray-400 mb-6">
-                        View{" "}
-                        <Link
-                          href="/papers"
-                          className="text-blue-400 hover:underline"
-                        >
-                          all papers
-                        </Link>
-                        .
+                        {part.partTitle}
                       </p>
 
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
