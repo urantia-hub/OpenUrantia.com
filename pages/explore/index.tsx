@@ -8,6 +8,7 @@ import Footer from "@/components/Footer";
 import HeadTag from "@/components/HeadTag";
 import Spinner from "@/components/Spinner";
 import { paperIdToUrl } from "@/utils/paperFormatters";
+import { getPaperIdFromGlobalId } from "@/utils/node";
 
 // Define the structure of the data you expect from the API
 type TOCNode = {
@@ -48,27 +49,36 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
   // Hooks.
   const { status } = useSession();
 
-  // State.
-  const [activeFilters, setActiveFilters] = useState<string[]>([]);
+  // Papers in progress.
   const [papersInProgress, setPapersInProgress] = useState<TOCNode[]>([]);
-  const [papersYouMightLike, setPapersYouMightLike] = useState<TOCNode[]>([]);
-
-  // Progress state.
   const [progressResults, setProgressResults] = useState<ProgressResult[]>([]);
-  const [fetchingProgress, setFetchingProgress] = useState<boolean>(false);
 
   // User interests state.
   const [userInterests, setUserInterests] = useState<any[]>([]);
-  const [fetchingUserInterests, setFetchingUserInterests] =
-    useState<boolean>(false);
 
-  // Add new state
+  // Featured quotes.
   const [featuredQuotes, setFeaturedQuotes] = useState<CuratedQuote[]>([]);
-  const [fetchingFeaturedQuotes, setFetchingFeaturedQuotes] = useState(false);
+
+  // Most read papers.
+  const [mostReadPapers, setMostReadPapers] = useState<TOCNode[]>([]);
+
+  // Papers by topic.
+  const [sciencePapers, setSciencePapers] = useState<TOCNode[]>([]);
+  const [anthropologyPapers, setAnthropologyPapers] = useState<TOCNode[]>([]);
+  const [afterLifePapers, setAfterLifePapers] = useState<TOCNode[]>([]);
+
+  // Loading states.
+  const [fetchingAfterLife, setFetchingAfterLife] = useState<boolean>(false);
+  const [fetchingAnthropology, setFetchingAnthropology] =
+    useState<boolean>(false);
+  const [fetchingFeaturedQuotes, setFetchingFeaturedQuotes] =
+    useState<boolean>(false);
+  const [fetchingMostRead, setFetchingMostRead] = useState<boolean>(false);
+  const [fetchingProgress, setFetchingProgress] = useState<boolean>(false);
+  const [fetchingScience, setFetchingScience] = useState<boolean>(false);
 
   useEffect(() => {
     if (userInterests.length > 0) {
-      setPapersYouMightLike([...getRandomPapersForUser(nodes, userInterests)]);
       setPapersInProgress([
         ...getInProgressPapersForUser(nodes, progressResults),
       ]);
@@ -93,35 +103,11 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
     }
   };
 
-  const fetchUserInterests = async () => {
-    try {
-      setFetchingUserInterests(true);
-      const response = await fetch(`/api/user/interests`);
-      const data = await response.json();
-
-      // Check if the user has interests, if they have been redirected before, or if they skipped the selection
-      if (
-        data.userInterests?.length === 0 &&
-        !sessionStorage.getItem("redirectedToInterests") &&
-        !sessionStorage.getItem("skippedInterestsSelection")
-      ) {
-        sessionStorage.setItem("redirectedToInterests", "true");
-        window.location.href = "/onboarding/interests"; // Redirect to the onboarding interests selection page
-      } else {
-        setUserInterests(data.userInterests);
-      }
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setFetchingUserInterests(false);
-    }
-  };
-
   const fetchFeaturedQuotes = async () => {
     try {
       setFetchingFeaturedQuotes(true);
       const response = await fetch(
-        "/api/curated-quotes?sent=true&randomAmount=2"
+        "/api/explore/curated-quotes?sent=true&randomAmount=2"
       );
       const data = await response.json();
       setFeaturedQuotes(data.data);
@@ -132,11 +118,93 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
     }
   };
 
+  const fetchMostReadPapers = async () => {
+    try {
+      setFetchingMostRead(true);
+      const response = await fetch("/api/explore/most-read");
+      const data = await response.json();
+      const readPapers = nodes.filter((node) =>
+        data?.data?.includes(node.paperId)
+      );
+      setMostReadPapers(readPapers);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setFetchingMostRead(false);
+    }
+  };
+
+  const fetchSciencePapers = async () => {
+    try {
+      setFetchingScience(true);
+      const response = await fetch(
+        "/api/explore/papers-by-topic?topic=Science"
+      );
+      const data = await response.json();
+      const papers = nodes.filter((node) =>
+        data.data.some(
+          (readNode: any) =>
+            getPaperIdFromGlobalId(readNode.globalId) === node.paperId
+        )
+      );
+      setSciencePapers(papers);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setFetchingScience(false);
+    }
+  };
+
+  const fetchAnthropologyPapers = async () => {
+    try {
+      setFetchingAnthropology(true);
+      const response = await fetch(
+        "/api/explore/papers-by-topic?topic=Anthropology"
+      );
+      const data = await response.json();
+      const papers = nodes.filter((node) =>
+        data.data.some(
+          (readNode: any) =>
+            getPaperIdFromGlobalId(readNode.globalId) === node.paperId
+        )
+      );
+      setAnthropologyPapers(papers);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setFetchingAnthropology(false);
+    }
+  };
+
+  const fetchAfterLifePapers = async () => {
+    try {
+      setFetchingAfterLife(true);
+      const response = await fetch(
+        "/api/explore/papers-by-topic?topic=After Life"
+      );
+      const data = await response.json();
+      const papers = nodes.filter((node) =>
+        data.data.some(
+          (readNode: any) =>
+            getPaperIdFromGlobalId(readNode.globalId) === node.paperId
+        )
+      );
+      setAfterLifePapers(papers);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setFetchingAfterLife(false);
+    }
+  };
+
   const onAuthenticated = async () => {
     await Promise.all([
       fetchProgress(),
-      fetchUserInterests(),
       fetchFeaturedQuotes(),
+      fetchMostReadPapers(),
+      fetchSciencePapers(),
+      fetchAnthropologyPapers(),
+      fetchAfterLifePapers(),
     ]);
   };
 
@@ -168,42 +236,6 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
     );
 
     return papersInProgress
-      .sort(() => 0.5 - Math.random())
-      .slice(0, maxPapers)
-      .sort((a, b) => {
-        if (a.paperId && b.paperId) {
-          return parseInt(a.paperId) - parseInt(b.paperId);
-        }
-        return 0;
-      });
-  };
-
-  // Function to get a random set of papers that match user interests
-  const getRandomPapersForUser = (
-    allPapers: TOCNode[],
-    userInterests: any[],
-    maxPapers: number = 3
-  ) => {
-    // Filter papers that match at least one user interest
-    let papersMatchingInterests = allPapers.filter((paper) =>
-      paper.labels.some((label) =>
-        userInterests.some((interest) => interest.label.name === label)
-      )
-    );
-
-    // Filter out papers that are already in progress.
-    const paperIdsInProgress = progressResults
-      .filter(
-        (progressResult) =>
-          progressResult?.progress < 100 && progressResult?.progress > 0
-      )
-      .map((progressResult) => progressResult?.paperId);
-    papersMatchingInterests = papersMatchingInterests.filter(
-      (paper) => !paperIdsInProgress.includes(paper.paperId as string)
-    );
-
-    // Shuffle the array and take the first 'maxPapers' elements, then sort them by paperId (if there is a paperId).
-    return papersMatchingInterests
       .sort(() => 0.5 - Math.random())
       .slice(0, maxPapers)
       .sort((a, b) => {
@@ -279,7 +311,7 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
 
               <div className="mb-8">
                 <h2 className="text-base mb-2 pb-2 text-center border-b text-gray-400 border-gray-200 dark:border-gray-600">
-                  Quotes
+                  Featured Passages
                 </h2>
 
                 <p className="text-xs text-gray-400 mb-6">
@@ -351,99 +383,16 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
                 )}
               </div>
 
-              {/* -- Papers You Might Like --- */}
-              {!fetchingUserInterests &&
-              papersYouMightLike.length === 0 ? null : (
-                <div className="mb-8">
-                  <h2 className="text-base mb-2 pb-2 text-center border-b text-gray-400 border-gray-200 dark:border-gray-600">
-                    Papers You Might Like
-                  </h2>
-
-                  <p className="text-xs text-gray-400 mb-6">
-                    (Suggestions based on{" "}
-                    <Link
-                      className="text-blue-400 hover:underline"
-                      href="/onboarding/interests"
-                    >
-                      your interests
-                    </Link>
-                    .)
-                  </p>
-
-                  {fetchingUserInterests ? (
-                    <div className="flex justify-center items-center papers-row">
-                      <Spinner />
-                    </div>
-                  ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 papers-row">
-                      {papersYouMightLike.map((paper) => {
-                        // Find the progress result for the current paper and derive its completion status.
-                        const progressResult = progressResults.find(
-                          (progressResult) =>
-                            progressResult?.paperId === paper.paperId
-                        );
-
-                        return (
-                          <Link
-                            key={paper.globalId}
-                            href={`/papers/${paperIdToUrl(`${paper.paperId}`)}`}
-                            className="relative flex flex-col items-start text-left justify-between px-4 py-2 mb-2 bg-white dark:bg-neutral-700 hover:dark:bg-neutral-600 rounded transition-colors hover:no-underline hover:shadow-lg hover:dark:shadow-none transition-shadow duration-300"
-                          >
-                            <div className="flex flex-col w-full">
-                              <div className="text-xs text-gray-400 flex items-center justify-between w-full">
-                                {paper.paperId === "0" ? (
-                                  "Foreword"
-                                ) : (
-                                  <>
-                                    <span>Paper {paper.paperId}</span>{" "}
-                                    <span>Part {paper.partId}</span>
-                                  </>
-                                )}
-                              </div>
-                              <h3 className="mt-1 text-lg font-bold leading-6 text-gray-600 dark:text-white">
-                                {paper.paperTitle}
-                              </h3>
-                            </div>
-                            <div className="flex flex-col w-full">
-                              <span
-                                className="mt-1 text-xs text-gray-400 truncate w-full"
-                                title={paper.labels.sort().join(" | ")}
-                                dangerouslySetInnerHTML={{
-                                  __html: highlightUserInterestLabels(
-                                    paper.labels,
-                                    userInterests
-                                  )
-                                    .sort()
-                                    .join(" | "),
-                                }}
-                              />
-
-                              {deriveProgressBadge(progressResult)}
-                            </div>
-                          </Link>
-                        );
-                      })}
-                    </div>
-                  )}
-                </div>
-              )}
-
               {/* -- Papers In Progress --- */}
               {!fetchingProgress && papersInProgress.length === 0 ? null : (
                 <div className="mb-8">
                   <h2 className="text-base mb-2 pb-2 text-center border-b text-gray-400 border-gray-200 dark:border-gray-600">
-                    Papers You&apos;re Reading
+                    Continue Your Journey
                   </h2>
 
                   <p className="text-xs text-gray-400 mb-6">
-                    (View all{" "}
-                    <Link
-                      className="text-blue-400 hover:underline"
-                      href="/progress"
-                    >
-                      papers you&apos;re reading
-                    </Link>
-                    . )
+                    Pick up where you left off in your exploration of the
+                    papers.
                   </p>
 
                   {fetchingProgress ? (
@@ -508,6 +457,261 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
                   )}
                 </div>
               )}
+
+              {/* Science Papers */}
+              <div className="mb-8">
+                <h2 className="text-base mb-2 pb-2 text-center border-b text-gray-400 border-gray-200 dark:border-gray-600">
+                  Universe Science & Cosmology
+                </h2>
+
+                <p className="text-xs text-gray-400 mb-6">
+                  Explore fascinating perspectives on physics, astronomy, and
+                  the architecture of reality.
+                </p>
+
+                {fetchingScience ? (
+                  <div className="flex justify-center items-center">
+                    <Spinner />
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    {sciencePapers.map((paper) => {
+                      const progressResult = progressResults.find(
+                        (result) => result?.paperId === paper.paperId
+                      );
+                      return (
+                        <Link
+                          key={paper.globalId}
+                          href={`/papers/${paperIdToUrl(`${paper.paperId}`)}`}
+                          className="relative flex flex-col items-start text-left justify-between px-4 py-2 mb-2 bg-white dark:bg-neutral-700 hover:dark:bg-neutral-600 rounded transition-colors hover:no-underline hover:shadow-lg hover:dark:shadow-none transition-shadow duration-300"
+                        >
+                          <div className="flex flex-col w-full">
+                            <div className="text-xs text-gray-400 flex items-center justify-between w-full">
+                              <span>Paper {paper.paperId}</span>
+                              <span>Part {paper.partId}</span>
+                            </div>
+                            <h3 className="mt-1 text-lg font-bold leading-6 text-gray-600 dark:text-white">
+                              {paper.paperTitle}
+                            </h3>
+                          </div>
+                          <div className="flex flex-col w-full">
+                            <span
+                              className="mt-1 text-xs text-gray-400 truncate w-full"
+                              title={paper.labels.sort().join(" | ")}
+                              dangerouslySetInnerHTML={{
+                                __html: highlightUserInterestLabels(
+                                  paper.labels,
+                                  userInterests
+                                )
+                                  .sort()
+                                  .join(" | "),
+                              }}
+                            />
+                            {deriveProgressBadge(progressResult)}
+                          </div>
+                        </Link>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+
+              {/* Anthropology Papers */}
+              <div className="mb-8">
+                <h2 className="text-base mb-2 pb-2 text-center border-b text-gray-400 border-gray-200 dark:border-gray-600">
+                  Human Origins & Development
+                </h2>
+
+                <p className="text-xs text-gray-400 mb-6">
+                  Uncover the story of humanity&apos;s biological and cultural
+                  evolution through the ages.
+                </p>
+
+                {fetchingAnthropology ? (
+                  <div className="flex justify-center items-center">
+                    <Spinner />
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    {anthropologyPapers.map((paper) => {
+                      const progressResult = progressResults.find(
+                        (result) => result?.paperId === paper.paperId
+                      );
+                      return (
+                        <Link
+                          key={paper.globalId}
+                          href={`/papers/${paperIdToUrl(`${paper.paperId}`)}`}
+                          className="relative flex flex-col items-start text-left justify-between px-4 py-2 mb-2 bg-white dark:bg-neutral-700 hover:dark:bg-neutral-600 rounded transition-colors hover:no-underline hover:shadow-lg hover:dark:shadow-none transition-shadow duration-300"
+                        >
+                          <div className="flex flex-col w-full">
+                            <div className="text-xs text-gray-400 flex items-center justify-between w-full">
+                              <span>Paper {paper.paperId}</span>
+                              <span>Part {paper.partId}</span>
+                            </div>
+                            <h3 className="mt-1 text-lg font-bold leading-6 text-gray-600 dark:text-white">
+                              {paper.paperTitle}
+                            </h3>
+                          </div>
+                          <div className="flex flex-col w-full">
+                            <span
+                              className="mt-1 text-xs text-gray-400 truncate w-full"
+                              title={paper.labels.sort().join(" | ")}
+                              dangerouslySetInnerHTML={{
+                                __html: highlightUserInterestLabels(
+                                  paper.labels,
+                                  userInterests
+                                )
+                                  .sort()
+                                  .join(" | "),
+                              }}
+                            />
+                            {deriveProgressBadge(progressResult)}
+                          </div>
+                        </Link>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+
+              {/* After Life Papers */}
+              <div className="mb-8">
+                <h2 className="text-base mb-2 pb-2 text-center border-b text-gray-400 border-gray-200 dark:border-gray-600">
+                  Life Beyond Earth
+                </h2>
+
+                <p className="text-xs text-gray-400 mb-6">
+                  Discover perspectives on soul growth, spiritual progression,
+                  and the adventure after mortal life.
+                </p>
+
+                {fetchingAfterLife ? (
+                  <div className="flex justify-center items-center">
+                    <Spinner />
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    {afterLifePapers.map((paper) => {
+                      const progressResult = progressResults.find(
+                        (result) => result?.paperId === paper.paperId
+                      );
+                      return (
+                        <Link
+                          key={paper.globalId}
+                          href={`/papers/${paperIdToUrl(`${paper.paperId}`)}`}
+                          className="relative flex flex-col items-start text-left justify-between px-4 py-2 mb-2 bg-white dark:bg-neutral-700 hover:dark:bg-neutral-600 rounded transition-colors hover:no-underline hover:shadow-lg hover:dark:shadow-none transition-shadow duration-300"
+                        >
+                          <div className="flex flex-col w-full">
+                            <div className="text-xs text-gray-400 flex items-center justify-between w-full">
+                              <span>Paper {paper.paperId}</span>
+                              <span>Part {paper.partId}</span>
+                            </div>
+                            <h3 className="mt-1 text-lg font-bold leading-6 text-gray-600 dark:text-white">
+                              {paper.paperTitle}
+                            </h3>
+                          </div>
+                          <div className="flex flex-col w-full">
+                            <span
+                              className="mt-1 text-xs text-gray-400 truncate w-full"
+                              title={paper.labels.sort().join(" | ")}
+                              dangerouslySetInnerHTML={{
+                                __html: highlightUserInterestLabels(
+                                  paper.labels,
+                                  userInterests
+                                )
+                                  .sort()
+                                  .join(" | "),
+                              }}
+                            />
+                            {deriveProgressBadge(progressResult)}
+                          </div>
+                        </Link>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+
+              {/* Parts Preview */}
+              {nodes
+                .filter((node) => node.type === "part")
+                .sort((a, b) => parseInt(a.partId) - parseInt(b.partId))
+                .map((part) => {
+                  // Get first 3 papers of this part
+                  const papers = nodes
+                    .filter(
+                      (node) =>
+                        node.partId === part.partId &&
+                        node.type === "paper" &&
+                        node.paperId !== "0" // Exclude foreword
+                    )
+                    .slice(0, 3);
+
+                  if (!papers.length) return null;
+
+                  return (
+                    <div key={part.globalId} className="mb-8">
+                      <h2 className="text-base mb-2 pb-2 text-center border-b text-gray-400 border-gray-200 dark:border-gray-600">
+                        Part {part.partId}: {part.partTitle}
+                      </h2>
+
+                      <p className="text-xs text-gray-400 mb-6">
+                        View{" "}
+                        <Link
+                          href="/papers"
+                          className="text-blue-400 hover:underline"
+                        >
+                          all papers
+                        </Link>
+                        .
+                      </p>
+
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        {papers.map((paper) => {
+                          // Find the progress result for the current paper
+                          const progressResult = progressResults.find(
+                            (result) => result?.paperId === paper.paperId
+                          );
+
+                          return (
+                            <Link
+                              key={paper.globalId}
+                              href={`/papers/${paperIdToUrl(
+                                `${paper.paperId}`
+                              )}`}
+                              className="relative flex flex-col items-start text-left justify-between px-4 py-2 mb-2 bg-white dark:bg-neutral-700 hover:dark:bg-neutral-600 rounded transition-colors hover:no-underline hover:shadow-lg hover:dark:shadow-none transition-shadow duration-300"
+                            >
+                              <div className="flex flex-col w-full">
+                                <div className="text-xs text-gray-400 flex items-center justify-between w-full">
+                                  <span>Paper {paper.paperId}</span>
+                                  <span>Part {paper.partId}</span>
+                                </div>
+                                <h3 className="mt-1 text-lg font-bold leading-6 text-gray-600 dark:text-white">
+                                  {paper.paperTitle}
+                                </h3>
+                              </div>
+                              <div className="flex flex-col w-full">
+                                <span
+                                  className="mt-1 text-xs text-gray-400 truncate w-full"
+                                  title={paper.labels.sort().join(" | ")}
+                                  dangerouslySetInnerHTML={{
+                                    __html: highlightUserInterestLabels(
+                                      paper.labels,
+                                      userInterests
+                                    )
+                                      .sort()
+                                      .join(" | "),
+                                  }}
+                                />
+                                {deriveProgressBadge(progressResult)}
+                              </div>
+                            </Link>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  );
+                })}
             </div>
           </>
         )}

@@ -13,9 +13,9 @@ const redirectToPaper = (
   paperId?: string | null,
   globalId?: string | null
 ) => {
-  // Default to the first paper.
+  // Default to the explore page.
   if (!paperId && !globalId) {
-    res.redirect(TEMPORARY_REDIRECT, "/papers/foreword");
+    res.redirect(TEMPORARY_REDIRECT, "/explore");
     return;
   }
 

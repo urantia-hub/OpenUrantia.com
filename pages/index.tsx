@@ -65,18 +65,6 @@ const HomePage = () => {
 
   const onAuthenticated = async () => {
     await fetchLastVisitedNode();
-    const response = await fetch(`/api/user/interests`);
-    const data = await response.json();
-
-    // Redirect to interests selection if user has no interests.
-    if (
-      data?.userInterests?.length === 0 &&
-      !sessionStorage.getItem("redirectedToInterests") &&
-      !sessionStorage.getItem("skippedInterestsSelection")
-    ) {
-      sessionStorage.setItem("redirectedToInterests", "true");
-      window.location.href = "/onboarding/interests";
-    }
   };
 
   useEffect(() => {

@@ -2,6 +2,7 @@
 import getDynamoDBClient from "@/libs/aws/index";
 import axios from "axios";
 import { createId } from "@paralleldrive/cuid2";
+import moment from "moment";
 
 const dynamoDB = getDynamoDBClient();
 
@@ -128,6 +129,25 @@ export class ReadNodeService {
       console.error("Unable to fetch nodes by paperSectionParagraphIds", error);
       return [];
     }
+  }
+
+  async findReadsForPopularPapers(
+    startDate: Date,
+    endDate: Date
+  ): Promise<ReadNode[]> {
+    const params = {
+      TableName: TABLE_NAME,
+      IndexName: "createdAt-index",
+      KeyConditionExpression: "createdAt BETWEEN :startDate AND :endDate",
+      ExpressionAttributeValues: {
+        ":startDate": startDate.toISOString(),
+        ":endDate": endDate.toISOString(),
+      },
+      ProjectionExpression: "paperId",
+    };
+
+    const data = await dynamoDB.query(params).promise();
+    return data.Items as ReadNode[];
   }
 }
 
