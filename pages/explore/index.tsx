@@ -88,12 +88,7 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
   const fetchProgress = async () => {
     try {
       setFetchingProgress(true);
-      const response = await fetch("/api/user/nodes/progress", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await fetch("/api/user/nodes/progress");
       const data = await response.json();
       setProgressResults(data.data);
     } catch (error) {
@@ -540,7 +535,7 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
                 ) : (
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     {sciencePapers.map((paper) => {
-                      const progressResult = progressResults.find(
+                      const progressResult = progressResults?.find(
                         (result) => result?.paperId === paper.paperId
                       );
                       return (

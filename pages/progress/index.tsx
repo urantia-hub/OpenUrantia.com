@@ -28,12 +28,7 @@ const Progress = () => {
   useEffect(() => {
     const fetchProgress = async () => {
       try {
-        const response = await fetch("/api/user/nodes/progress", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
+        const response = await fetch("/api/user/nodes/progress");
         const data = await response.json();
         setProgressResults(data.data);
       } catch (error) {

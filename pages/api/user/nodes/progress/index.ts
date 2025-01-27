@@ -11,13 +11,13 @@ import { withSentry } from "@/middleware/sentry";
 const readNodeService = new ReadNodeService();
 const userService = new UserService();
 
-// POST handler
-async function handlePOST(
+// GET handler
+async function handleGET(
   req: NextApiRequest,
   res: NextApiResponse,
   user: User
 ) {
-  const { paperId } = req.body;
+  const { paperId } = req.query;
 
   if (paperId && typeof paperId !== "string") {
     return res.status(400).json({
@@ -90,12 +90,12 @@ async function handle(req: NextApiRequest, res: NextApiResponse) {
 
   const { method } = req;
   switch (method) {
-    case "POST":
-      return handlePOST(req, res, sessionDetails.user);
+    case "GET":
+      return handleGET(req, res, sessionDetails.user);
     case "DELETE":
       return handleDELETE(req, res, sessionDetails.user);
     default:
-      res.setHeader("Allow", ["POST", "DELETE"]);
+      res.setHeader("Allow", ["GET", "DELETE"]);
       res.status(405).end(`Method ${method} Not Allowed`);
   }
 }
