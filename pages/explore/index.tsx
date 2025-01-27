@@ -305,83 +305,89 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
               <h1 className="text-5xl font-bold mb-8">Explore</h1>
 
               {/* Featured Passages */}
-              <div className="mb-8">
-                <h2 className="text-base mb-2 pb-2 text-center border-b text-gray-400 border-gray-200 dark:border-gray-600">
-                  Featured Passages
-                </h2>
+              {featuredQuotes?.length ? (
+                <div className="mb-8 fade-in">
+                  <h2 className="text-base mb-2 pb-2 text-center border-b text-gray-400 border-gray-200 dark:border-gray-600">
+                    Featured Passages
+                  </h2>
 
-                <p className="text-xs text-gray-400 mb-6">
-                  Discover the context behind some of the most inspiring
-                  passages.
-                </p>
+                  <p className="text-xs text-gray-400 mb-6">
+                    Discover the context behind some of the most inspiring
+                    passages.
+                  </p>
 
-                {fetchingFeaturedQuotes ? (
-                  <div className="flex justify-center items-center">
-                    <Spinner />
-                  </div>
-                ) : (
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {featuredQuotes?.map((quote) => {
-                      const cleanHtml = quote.paragraphNode.htmlText.replace(
-                        /\sclass="[^"]*"/g,
-                        ""
-                      );
+                  {fetchingFeaturedQuotes ? (
+                    <div className="flex justify-center items-center">
+                      <Spinner />
+                    </div>
+                  ) : (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {featuredQuotes?.map((quote) => {
+                        const cleanHtml = quote.paragraphNode.htmlText.replace(
+                          /\sclass="[^"]*"/g,
+                          ""
+                        );
 
-                      return (
-                        <Link
-                          key={quote.globalId}
-                          href={`/papers/${paperIdToUrl(`${quote.paperId}`)}#${
-                            quote.globalId
-                          }`}
-                          className="relative flex flex-col items-start text-left px-6 pt-5 pb-10 bg-white dark:bg-neutral-700 hover:dark:bg-neutral-600 rounded transition-colors hover:no-underline hover:shadow-lg hover:dark:shadow-none transition-shadow duration-300"
-                        >
-                          {/* Paper Info */}
-                          <div className="flex flex-col w-full mb-2">
-                            <div className="text-xs text-gray-400 flex items-center justify-between w-full">
-                              {quote.paperId === "0" ? (
-                                "Foreword"
-                              ) : (
-                                <>
-                                  <span>Paper {quote.paperId}</span>
-                                  <span>Part {quote.paragraphNode.partId}</span>
-                                </>
+                        return (
+                          <Link
+                            key={quote.globalId}
+                            href={`/papers/${paperIdToUrl(
+                              `${quote.paperId}`
+                            )}#${quote.globalId}`}
+                            className="relative flex flex-col items-start text-left px-6 pt-5 pb-10 bg-white dark:bg-neutral-700 hover:dark:bg-neutral-600 rounded transition-colors hover:no-underline hover:shadow-lg hover:dark:shadow-none transition-shadow duration-300"
+                          >
+                            {/* Paper Info */}
+                            <div className="flex flex-col w-full mb-2">
+                              <div className="text-xs text-gray-400 flex items-center justify-between w-full">
+                                {quote.paperId === "0" ? (
+                                  "Foreword"
+                                ) : (
+                                  <>
+                                    <span>Paper {quote.paperId}</span>
+                                    <span>
+                                      Part {quote.paragraphNode.partId}
+                                    </span>
+                                  </>
+                                )}
+                              </div>
+                              <h3 className="mt-1 text-sm font-bold leading-5 text-gray-600 dark:text-white">
+                                {quote.paragraphNode.paperTitle}{" "}
+                                <span className="text-xs text-gray-400 font-normal">
+                                  ({quote.paragraphNode.standardReferenceId})
+                                </span>
+                              </h3>
+                              {quote.paragraphNode.sectionTitle && (
+                                <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                                  {quote.paragraphNode.sectionTitle}
+                                </p>
                               )}
                             </div>
-                            <h3 className="mt-1 text-sm font-bold leading-5 text-gray-600 dark:text-white">
-                              {quote.paragraphNode.paperTitle}{" "}
-                              <span className="text-xs text-gray-400 font-normal">
-                                ({quote.paragraphNode.standardReferenceId})
-                              </span>
-                            </h3>
-                            {quote.paragraphNode.sectionTitle && (
-                              <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                                {quote.paragraphNode.sectionTitle}
-                              </p>
-                            )}
-                          </div>
 
-                          {/* Quote Text */}
-                          <div className="flex-grow w-full overflow-hidden">
-                            <div className="text-sm text-gray-600 dark:text-gray-300">
-                              <div
-                                className="line-clamp-5"
-                                dangerouslySetInnerHTML={{ __html: cleanHtml }}
-                              />
-                              <span className="text-sm text-blue-400 absolute bottom-3 right-3">
-                                Read more
-                              </span>
+                            {/* Quote Text */}
+                            <div className="flex-grow w-full overflow-hidden">
+                              <div className="text-sm text-gray-600 dark:text-gray-300">
+                                <div
+                                  className="line-clamp-5"
+                                  dangerouslySetInnerHTML={{
+                                    __html: cleanHtml,
+                                  }}
+                                />
+                                <span className="text-sm text-blue-400 absolute bottom-3 right-3">
+                                  Read more
+                                </span>
+                              </div>
                             </div>
-                          </div>
-                        </Link>
-                      );
-                    })}
-                  </div>
-                )}
-              </div>
+                          </Link>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+              ) : null}
 
               {/* -- Papers In Progress --- */}
-              {!fetchingProgress && papersInProgress.length === 0 ? null : (
-                <div className="mb-8">
+              {papersInProgress?.length ? (
+                <div className="mb-8 fade-in">
                   <h2 className="text-base mb-2 pb-2 text-center border-b text-gray-400 border-gray-200 dark:border-gray-600">
                     Continue Your Journey
                   </h2>
@@ -452,245 +458,252 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
                     </div>
                   )}
                 </div>
-              )}
+              ) : null}
 
               {/* Most Read Papers */}
-              <div className="mb-8">
-                <h2 className="text-base mb-2 pb-2 text-center border-b text-gray-400 border-gray-200 dark:border-gray-600">
-                  Most Read Papers
-                </h2>
+              {mostReadPapers?.length ? (
+                <div className="mb-8 fade-in">
+                  <h2 className="text-base mb-2 pb-2 text-center border-b text-gray-400 border-gray-200 dark:border-gray-600">
+                    Most Read Papers
+                  </h2>
 
-                <p className="text-xs text-gray-400 mb-6">
-                  Discover the papers that readers frequently return to.
-                </p>
+                  <p className="text-xs text-gray-400 mb-6">
+                    Discover the papers that readers frequently return to.
+                  </p>
 
-                {fetchingMostRead ? (
-                  <div className="flex justify-center items-center">
-                    <Spinner />
-                  </div>
-                ) : (
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    {mostReadPapers.map((paper) => {
-                      const progressResult = progressResults.find(
-                        (result) => result?.paperId === paper.paperId
-                      );
-                      return (
-                        <Link
-                          key={paper.globalId}
-                          href={`/papers/${paperIdToUrl(`${paper.paperId}`)}`}
-                          className="relative flex flex-col items-start text-left justify-between px-4 py-2 mb-2 bg-white dark:bg-neutral-700 hover:dark:bg-neutral-600 rounded transition-colors hover:no-underline hover:shadow-lg hover:dark:shadow-none transition-shadow duration-300"
-                        >
-                          <div className="flex flex-col w-full">
-                            <div className="text-xs text-gray-400 flex items-center justify-between w-full">
-                              {paper.paperId === "0" ? (
-                                "Foreword"
-                              ) : (
-                                <>
-                                  <span>Paper {paper.paperId}</span>
-                                  <span>Part {paper.partId}</span>
-                                </>
-                              )}
+                  {fetchingMostRead ? (
+                    <div className="flex justify-center items-center">
+                      <Spinner />
+                    </div>
+                  ) : (
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      {mostReadPapers.map((paper) => {
+                        const progressResult = progressResults.find(
+                          (result) => result?.paperId === paper.paperId
+                        );
+                        return (
+                          <Link
+                            key={paper.globalId}
+                            href={`/papers/${paperIdToUrl(`${paper.paperId}`)}`}
+                            className="relative flex flex-col items-start text-left justify-between px-4 py-2 mb-2 bg-white dark:bg-neutral-700 hover:dark:bg-neutral-600 rounded transition-colors hover:no-underline hover:shadow-lg hover:dark:shadow-none transition-shadow duration-300"
+                          >
+                            <div className="flex flex-col w-full">
+                              <div className="text-xs text-gray-400 flex items-center justify-between w-full">
+                                {paper.paperId === "0" ? (
+                                  "Foreword"
+                                ) : (
+                                  <>
+                                    <span>Paper {paper.paperId}</span>
+                                    <span>Part {paper.partId}</span>
+                                  </>
+                                )}
+                              </div>
+                              <h3 className="mt-1 text-lg font-bold leading-6 text-gray-600 dark:text-white">
+                                {paper.paperTitle}
+                              </h3>
                             </div>
-                            <h3 className="mt-1 text-lg font-bold leading-6 text-gray-600 dark:text-white">
-                              {paper.paperTitle}
-                            </h3>
-                          </div>
-                          <div className="flex flex-col w-full">
-                            <span
-                              className="mt-1 text-xs text-gray-400 truncate w-full"
-                              title={paper.labels.sort().join(" | ")}
-                              dangerouslySetInnerHTML={{
-                                __html: highlightUserInterestLabels(
-                                  paper.labels,
-                                  userInterests
-                                )
-                                  .sort()
-                                  .join(" | "),
-                              }}
-                            />
-                            {deriveProgressBadge(progressResult)}
-                          </div>
-                        </Link>
-                      );
-                    })}
-                  </div>
-                )}
-              </div>
+                            <div className="flex flex-col w-full">
+                              <span
+                                className="mt-1 text-xs text-gray-400 truncate w-full"
+                                title={paper.labels.sort().join(" | ")}
+                                dangerouslySetInnerHTML={{
+                                  __html: highlightUserInterestLabels(
+                                    paper.labels,
+                                    userInterests
+                                  )
+                                    .sort()
+                                    .join(" | "),
+                                }}
+                              />
+                              {deriveProgressBadge(progressResult)}
+                            </div>
+                          </Link>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+              ) : null}
 
               {/* Science Papers */}
-              <div className="mb-8">
-                <h2 className="text-base mb-2 pb-2 text-center border-b text-gray-400 border-gray-200 dark:border-gray-600">
-                  Science & Cosmology
-                </h2>
+              {sciencePapers?.length ? (
+                <div className="mb-8 fade-in">
+                  <h2 className="text-base mb-2 pb-2 text-center border-b text-gray-400 border-gray-200 dark:border-gray-600">
+                    Science & Cosmology
+                  </h2>
 
-                <p className="text-xs text-gray-400 mb-6">
-                  Explore fascinating perspectives on physics, astronomy, and
-                  the architecture of reality.
-                </p>
+                  <p className="text-xs text-gray-400 mb-6">
+                    Explore fascinating perspectives on physics, astronomy, and
+                    the architecture of reality.
+                  </p>
 
-                {fetchingScience ? (
-                  <div className="flex justify-center items-center">
-                    <Spinner />
-                  </div>
-                ) : (
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    {sciencePapers.map((paper) => {
-                      const progressResult = progressResults?.find(
-                        (result) => result?.paperId === paper.paperId
-                      );
-                      return (
-                        <Link
-                          key={paper.globalId}
-                          href={`/papers/${paperIdToUrl(`${paper.paperId}`)}`}
-                          className="relative flex flex-col items-start text-left justify-between px-4 py-2 mb-2 bg-white dark:bg-neutral-700 hover:dark:bg-neutral-600 rounded transition-colors hover:no-underline hover:shadow-lg hover:dark:shadow-none transition-shadow duration-300"
-                        >
-                          <div className="flex flex-col w-full">
-                            <div className="text-xs text-gray-400 flex items-center justify-between w-full">
-                              <span>Paper {paper.paperId}</span>
-                              <span>Part {paper.partId}</span>
+                  {fetchingScience ? (
+                    <div className="flex justify-center items-center">
+                      <Spinner />
+                    </div>
+                  ) : (
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      {sciencePapers.map((paper) => {
+                        const progressResult = progressResults?.find(
+                          (result) => result?.paperId === paper.paperId
+                        );
+                        return (
+                          <Link
+                            key={paper.globalId}
+                            href={`/papers/${paperIdToUrl(`${paper.paperId}`)}`}
+                            className="relative flex flex-col items-start text-left justify-between px-4 py-2 mb-2 bg-white dark:bg-neutral-700 hover:dark:bg-neutral-600 rounded transition-colors hover:no-underline hover:shadow-lg hover:dark:shadow-none transition-shadow duration-300"
+                          >
+                            <div className="flex flex-col w-full">
+                              <div className="text-xs text-gray-400 flex items-center justify-between w-full">
+                                <span>Paper {paper.paperId}</span>
+                                <span>Part {paper.partId}</span>
+                              </div>
+                              <h3 className="mt-1 text-lg font-bold leading-6 text-gray-600 dark:text-white">
+                                {paper.paperTitle}
+                              </h3>
                             </div>
-                            <h3 className="mt-1 text-lg font-bold leading-6 text-gray-600 dark:text-white">
-                              {paper.paperTitle}
-                            </h3>
-                          </div>
-                          <div className="flex flex-col w-full">
-                            <span
-                              className="mt-1 text-xs text-gray-400 truncate w-full"
-                              title={paper.labels.sort().join(" | ")}
-                              dangerouslySetInnerHTML={{
-                                __html: highlightUserInterestLabels(
-                                  paper.labels,
-                                  userInterests
-                                )
-                                  .sort()
-                                  .join(" | "),
-                              }}
-                            />
-                            {deriveProgressBadge(progressResult)}
-                          </div>
-                        </Link>
-                      );
-                    })}
-                  </div>
-                )}
-              </div>
+                            <div className="flex flex-col w-full">
+                              <span
+                                className="mt-1 text-xs text-gray-400 truncate w-full"
+                                title={paper.labels.sort().join(" | ")}
+                                dangerouslySetInnerHTML={{
+                                  __html: highlightUserInterestLabels(
+                                    paper.labels,
+                                    userInterests
+                                  )
+                                    .sort()
+                                    .join(" | "),
+                                }}
+                              />
+                              {deriveProgressBadge(progressResult)}
+                            </div>
+                          </Link>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+              ) : null}
 
               {/* Anthropology Papers */}
-              <div className="mb-8">
-                <h2 className="text-base mb-2 pb-2 text-center border-b text-gray-400 border-gray-200 dark:border-gray-600">
-                  Human Origins & Development
-                </h2>
+              {anthropologyPapers?.length ? (
+                <div className="mb-8 fade-in">
+                  <h2 className="text-base mb-2 pb-2 text-center border-b text-gray-400 border-gray-200 dark:border-gray-600">
+                    Human Origins & Development
+                  </h2>
 
-                <p className="text-xs text-gray-400 mb-6">
-                  Uncover the story of humanity&apos;s biological and cultural
-                  evolution through the ages.
-                </p>
+                  <p className="text-xs text-gray-400 mb-6">
+                    Uncover the story of humanity&apos;s biological and cultural
+                    evolution through the ages.
+                  </p>
 
-                {fetchingAnthropology ? (
-                  <div className="flex justify-center items-center">
-                    <Spinner />
-                  </div>
-                ) : (
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    {anthropologyPapers.map((paper) => {
-                      const progressResult = progressResults.find(
-                        (result) => result?.paperId === paper.paperId
-                      );
-                      return (
-                        <Link
-                          key={paper.globalId}
-                          href={`/papers/${paperIdToUrl(`${paper.paperId}`)}`}
-                          className="relative flex flex-col items-start text-left justify-between px-4 py-2 mb-2 bg-white dark:bg-neutral-700 hover:dark:bg-neutral-600 rounded transition-colors hover:no-underline hover:shadow-lg hover:dark:shadow-none transition-shadow duration-300"
-                        >
-                          <div className="flex flex-col w-full">
-                            <div className="text-xs text-gray-400 flex items-center justify-between w-full">
-                              <span>Paper {paper.paperId}</span>
-                              <span>Part {paper.partId}</span>
+                  {fetchingAnthropology ? (
+                    <div className="flex justify-center items-center">
+                      <Spinner />
+                    </div>
+                  ) : (
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      {anthropologyPapers.map((paper) => {
+                        const progressResult = progressResults.find(
+                          (result) => result?.paperId === paper.paperId
+                        );
+                        return (
+                          <Link
+                            key={paper.globalId}
+                            href={`/papers/${paperIdToUrl(`${paper.paperId}`)}`}
+                            className="relative flex flex-col items-start text-left justify-between px-4 py-2 mb-2 bg-white dark:bg-neutral-700 hover:dark:bg-neutral-600 rounded transition-colors hover:no-underline hover:shadow-lg hover:dark:shadow-none transition-shadow duration-300"
+                          >
+                            <div className="flex flex-col w-full">
+                              <div className="text-xs text-gray-400 flex items-center justify-between w-full">
+                                <span>Paper {paper.paperId}</span>
+                                <span>Part {paper.partId}</span>
+                              </div>
+                              <h3 className="mt-1 text-lg font-bold leading-6 text-gray-600 dark:text-white">
+                                {paper.paperTitle}
+                              </h3>
                             </div>
-                            <h3 className="mt-1 text-lg font-bold leading-6 text-gray-600 dark:text-white">
-                              {paper.paperTitle}
-                            </h3>
-                          </div>
-                          <div className="flex flex-col w-full">
-                            <span
-                              className="mt-1 text-xs text-gray-400 truncate w-full"
-                              title={paper.labels.sort().join(" | ")}
-                              dangerouslySetInnerHTML={{
-                                __html: highlightUserInterestLabels(
-                                  paper.labels,
-                                  userInterests
-                                )
-                                  .sort()
-                                  .join(" | "),
-                              }}
-                            />
-                            {deriveProgressBadge(progressResult)}
-                          </div>
-                        </Link>
-                      );
-                    })}
-                  </div>
-                )}
-              </div>
+                            <div className="flex flex-col w-full">
+                              <span
+                                className="mt-1 text-xs text-gray-400 truncate w-full"
+                                title={paper.labels.sort().join(" | ")}
+                                dangerouslySetInnerHTML={{
+                                  __html: highlightUserInterestLabels(
+                                    paper.labels,
+                                    userInterests
+                                  )
+                                    .sort()
+                                    .join(" | "),
+                                }}
+                              />
+                              {deriveProgressBadge(progressResult)}
+                            </div>
+                          </Link>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+              ) : null}
 
               {/* After Life Papers */}
-              <div className="mb-8">
-                <h2 className="text-base mb-2 pb-2 text-center border-b text-gray-400 border-gray-200 dark:border-gray-600">
-                  Life Beyond Earth
-                </h2>
+              {afterLifePapers?.length ? (
+                <div className="mb-8 fade-in">
+                  <h2 className="text-base mb-2 pb-2 text-center border-b text-gray-400 border-gray-200 dark:border-gray-600">
+                    Life Beyond Earth
+                  </h2>
 
-                <p className="text-xs text-gray-400 mb-6">
-                  Discover the adventure after mortal life and learn about the
-                  beings that help us through our journey.
-                </p>
+                  <p className="text-xs text-gray-400 mb-6">
+                    Discover the adventure after mortal life and learn about the
+                    beings that help us through our journey.
+                  </p>
 
-                {fetchingAfterLife ? (
-                  <div className="flex justify-center items-center">
-                    <Spinner />
-                  </div>
-                ) : (
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    {afterLifePapers.map((paper) => {
-                      const progressResult = progressResults.find(
-                        (result) => result?.paperId === paper.paperId
-                      );
-                      return (
-                        <Link
-                          key={paper.globalId}
-                          href={`/papers/${paperIdToUrl(`${paper.paperId}`)}`}
-                          className="relative flex flex-col items-start text-left justify-between px-4 py-2 mb-2 bg-white dark:bg-neutral-700 hover:dark:bg-neutral-600 rounded transition-colors hover:no-underline hover:shadow-lg hover:dark:shadow-none transition-shadow duration-300"
-                        >
-                          <div className="flex flex-col w-full">
-                            <div className="text-xs text-gray-400 flex items-center justify-between w-full">
-                              <span>Paper {paper.paperId}</span>
-                              <span>Part {paper.partId}</span>
+                  {fetchingAfterLife ? (
+                    <div className="flex justify-center items-center">
+                      <Spinner />
+                    </div>
+                  ) : (
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      {afterLifePapers.map((paper) => {
+                        const progressResult = progressResults.find(
+                          (result) => result?.paperId === paper.paperId
+                        );
+                        return (
+                          <Link
+                            key={paper.globalId}
+                            href={`/papers/${paperIdToUrl(`${paper.paperId}`)}`}
+                            className="relative flex flex-col items-start text-left justify-between px-4 py-2 mb-2 bg-white dark:bg-neutral-700 hover:dark:bg-neutral-600 rounded transition-colors hover:no-underline hover:shadow-lg hover:dark:shadow-none transition-shadow duration-300"
+                          >
+                            <div className="flex flex-col w-full">
+                              <div className="text-xs text-gray-400 flex items-center justify-between w-full">
+                                <span>Paper {paper.paperId}</span>
+                                <span>Part {paper.partId}</span>
+                              </div>
+                              <h3 className="mt-1 text-lg font-bold leading-6 text-gray-600 dark:text-white">
+                                {paper.paperTitle}
+                              </h3>
                             </div>
-                            <h3 className="mt-1 text-lg font-bold leading-6 text-gray-600 dark:text-white">
-                              {paper.paperTitle}
-                            </h3>
-                          </div>
-                          <div className="flex flex-col w-full">
-                            <span
-                              className="mt-1 text-xs text-gray-400 truncate w-full"
-                              title={paper.labels.sort().join(" | ")}
-                              dangerouslySetInnerHTML={{
-                                __html: highlightUserInterestLabels(
-                                  paper.labels,
-                                  userInterests
-                                )
-                                  .sort()
-                                  .join(" | "),
-                              }}
-                            />
-                            {deriveProgressBadge(progressResult)}
-                          </div>
-                        </Link>
-                      );
-                    })}
-                  </div>
-                )}
-              </div>
-
+                            <div className="flex flex-col w-full">
+                              <span
+                                className="mt-1 text-xs text-gray-400 truncate w-full"
+                                title={paper.labels.sort().join(" | ")}
+                                dangerouslySetInnerHTML={{
+                                  __html: highlightUserInterestLabels(
+                                    paper.labels,
+                                    userInterests
+                                  )
+                                    .sort()
+                                    .join(" | "),
+                                }}
+                              />
+                              {deriveProgressBadge(progressResult)}
+                            </div>
+                          </Link>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+              ) : null}
               {/* Parts Preview */}
               {nodes
                 .filter((node) => node.type === "part")
