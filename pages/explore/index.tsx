@@ -305,7 +305,7 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
               <h1 className="text-5xl font-bold mb-8">Explore</h1>
 
               {/* Featured Passages */}
-              {featuredQuotes?.length ? (
+              {!fetchingFeaturedQuotes && featuredQuotes?.length ? (
                 <div className="mb-8 fade-in">
                   <h2 className="text-base mb-2 pb-2 text-center border-b text-gray-400 border-gray-200 dark:border-gray-600">
                     Featured Passages
@@ -317,11 +317,11 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
                   </p>
 
                   {fetchingFeaturedQuotes ? (
-                    <div className="flex justify-center items-center">
+                    <div className="flex justify-center items-center fade-in">
                       <Spinner />
                     </div>
                   ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 fade-in">
                       {featuredQuotes?.map((quote) => {
                         const cleanHtml = quote.paragraphNode.htmlText.replace(
                           /\sclass="[^"]*"/g,
@@ -386,7 +386,7 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
               ) : null}
 
               {/* -- Papers In Progress --- */}
-              {papersInProgress?.length ? (
+              {!fetchingProgress && papersInProgress?.length ? (
                 <div className="mb-8 fade-in">
                   <h2 className="text-base mb-2 pb-2 text-center border-b text-gray-400 border-gray-200 dark:border-gray-600">
                     Continue Your Journey
@@ -398,11 +398,11 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
                   </p>
 
                   {fetchingProgress ? (
-                    <div className="flex justify-center items-center papers-row">
+                    <div className="flex justify-center items-center papers-row fade-in">
                       <Spinner />
                     </div>
                   ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 papers-row">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 papers-row fade-in">
                       {papersInProgress.map((paper) => {
                         // Find the progress result for the current paper and derive its completion status.
                         const progressResult = progressResults.find(
@@ -461,7 +461,7 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
               ) : null}
 
               {/* Most Read Papers */}
-              {mostReadPapers?.length ? (
+              {!fetchingMostRead && mostReadPapers?.length ? (
                 <div className="mb-8 fade-in">
                   <h2 className="text-base mb-2 pb-2 text-center border-b text-gray-400 border-gray-200 dark:border-gray-600">
                     Most Read Papers
@@ -472,11 +472,11 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
                   </p>
 
                   {fetchingMostRead ? (
-                    <div className="flex justify-center items-center">
+                    <div className="flex justify-center items-center fade-in">
                       <Spinner />
                     </div>
                   ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 fade-in">
                       {mostReadPapers.map((paper) => {
                         const progressResult = progressResults.find(
                           (result) => result?.paperId === paper.paperId
@@ -526,7 +526,7 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
               ) : null}
 
               {/* Science Papers */}
-              {sciencePapers?.length ? (
+              {!fetchingScience && sciencePapers?.length ? (
                 <div className="mb-8 fade-in">
                   <h2 className="text-base mb-2 pb-2 text-center border-b text-gray-400 border-gray-200 dark:border-gray-600">
                     Science & Cosmology
@@ -538,11 +538,11 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
                   </p>
 
                   {fetchingScience ? (
-                    <div className="flex justify-center items-center">
+                    <div className="flex justify-center items-center fade-in">
                       <Spinner />
                     </div>
                   ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 fade-in">
                       {sciencePapers.map((paper) => {
                         const progressResult = progressResults?.find(
                           (result) => result?.paperId === paper.paperId
@@ -586,7 +586,7 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
               ) : null}
 
               {/* Anthropology Papers */}
-              {anthropologyPapers?.length ? (
+              {!fetchingAnthropology && anthropologyPapers?.length ? (
                 <div className="mb-8 fade-in">
                   <h2 className="text-base mb-2 pb-2 text-center border-b text-gray-400 border-gray-200 dark:border-gray-600">
                     Human Origins & Development
@@ -598,11 +598,11 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
                   </p>
 
                   {fetchingAnthropology ? (
-                    <div className="flex justify-center items-center">
+                    <div className="flex justify-center items-center fade-in">
                       <Spinner />
                     </div>
                   ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 fade-in">
                       {anthropologyPapers.map((paper) => {
                         const progressResult = progressResults.find(
                           (result) => result?.paperId === paper.paperId
@@ -646,7 +646,7 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
               ) : null}
 
               {/* After Life Papers */}
-              {afterLifePapers?.length ? (
+              {!fetchingAfterLife && afterLifePapers?.length ? (
                 <div className="mb-8 fade-in">
                   <h2 className="text-base mb-2 pb-2 text-center border-b text-gray-400 border-gray-200 dark:border-gray-600">
                     Life Beyond Earth
@@ -658,11 +658,11 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
                   </p>
 
                   {fetchingAfterLife ? (
-                    <div className="flex justify-center items-center">
+                    <div className="flex justify-center items-center fade-in">
                       <Spinner />
                     </div>
                   ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 fade-in">
                       {afterLifePapers.map((paper) => {
                         const progressResult = progressResults.find(
                           (result) => result?.paperId === paper.paperId
@@ -704,6 +704,7 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
                   )}
                 </div>
               ) : null}
+
               {/* Parts Preview */}
               {nodes
                 .filter((node) => node.type === "part")
@@ -722,7 +723,7 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
                   if (!papers.length) return null;
 
                   return (
-                    <div key={part.globalId} className="mb-8">
+                    <div key={part.globalId} className="mb-8 fade-in">
                       <h2 className="text-base mb-2 pb-2 text-center border-b text-gray-400 border-gray-200 dark:border-gray-600">
                         Part {part.partId} Papers
                       </h2>
