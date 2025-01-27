@@ -49,10 +49,16 @@ const handleCron = async (_: NextApiRequest, res: NextApiResponse) => {
         return null;
       }
 
-      return {
-        from: process.env.EMAIL_FROM as string,
+      const message = {
+        from: `"UrantiaHub" <${process.env.EMAIL_FROM}>`,
         to: user.email as string,
-        subject: "Continue right where you left off",
+        subject: `Continue reading: ${user.lastVisitedPaperTitle}`,
+        headers: {
+          "List-Unsubscribe": `<${process.env.NEXT_PUBLIC_HOST}/api/user/unsubscribe>`,
+          Precedence: "Bulk",
+          "X-Auto-Response-Suppress": "OOF",
+        },
+        clickTracking: false,
         html: getContinueReadingEmailHTML({
           paperTitle: user.lastVisitedPaperTitle as string,
           paperId: user.lastVisitedPaperId as string,
@@ -76,6 +82,8 @@ const handleCron = async (_: NextApiRequest, res: NextApiResponse) => {
           }`,
         }),
       };
+
+      return message;
     })
   );
 

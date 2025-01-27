@@ -53,9 +53,15 @@ const handleSendChangelogUpdate = async (
 
   // Prepare emails
   const messages = users.map((user) => ({
-    from: process.env.EMAIL_FROM as string,
+    from: `"UrantiaHub" <${process.env.EMAIL_FROM}>`,
     to: user.email as string,
     subject: `New Updates to UrantiaHub (v${version})`,
+    headers: {
+      "List-Unsubscribe": `<${process.env.NEXT_PUBLIC_HOST}/api/user/unsubscribe>`,
+      Precedence: "Bulk",
+      "X-Auto-Response-Suppress": "OOF",
+    },
+    clickTracking: false,
     html: getChangelogUpdateEmailHTML({
       version,
       changes,

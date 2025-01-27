@@ -93,9 +93,15 @@ const handleCron = async (_: NextApiRequest, res: NextApiResponse) => {
   // Prepare emails
   console.log("[sendDailyQuote] Preparing emails");
   const messages = usersToSend.map((user) => ({
-    from: process.env.EMAIL_FROM as string,
+    from: `"UrantiaHub" <${process.env.EMAIL_FROM}>`,
     to: user.email as string,
     subject: "Your Daily Quote",
+    headers: {
+      "List-Unsubscribe": `<${process.env.NEXT_PUBLIC_HOST}/api/user/unsubscribe>`,
+      Precedence: "Bulk",
+      "X-Auto-Response-Suppress": "OOF",
+    },
+    clickTracking: false,
     html: getDailyQuoteEmailHTML({
       paperTitle: paragraph.paperTitle,
       paperId,

@@ -137,8 +137,7 @@ export class ReadNodeService {
   ): Promise<ReadNode[]> {
     const params = {
       TableName: TABLE_NAME,
-      IndexName: "createdAt-index",
-      KeyConditionExpression: "createdAt BETWEEN :startDate AND :endDate",
+      FilterExpression: "createdAt BETWEEN :startDate AND :endDate",
       ExpressionAttributeValues: {
         ":startDate": startDate.toISOString(),
         ":endDate": endDate.toISOString(),
@@ -146,7 +145,7 @@ export class ReadNodeService {
       ProjectionExpression: "paperId",
     };
 
-    const data = await dynamoDB.query(params).promise();
+    const data = await dynamoDB.scan(params).promise();
     return data.Items as ReadNode[];
   }
 }

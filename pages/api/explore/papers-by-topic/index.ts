@@ -4,6 +4,7 @@ import { Paper, PaperLabel } from "@prisma/client";
 // Relative modules.
 import LabelService from "@/services/label";
 import PaperLabelService from "@/services/paperLabel";
+import { getRedisClient, ONE_WEEK_IN_SECONDS, getCacheKey } from "@/libs/redis";
 
 const labelService = new LabelService();
 const paperLabelService = new PaperLabelService();
@@ -21,6 +22,16 @@ async function handle(req: NextApiRequest, res: NextApiResponse) {
   }
 
   try {
+    const redis = getRedisClient();
+    const cacheKey = getCacheKey("papers-by-topic", { topic });
+
+    // Try to get from cache first
+    const cachedData = await redis.get(cacheKey);
+    if (cachedData) {
+      console.log("Cache hit for papers-by-topic");
+      return res.status(200).json(JSON.parse(cachedData));
+    }
+
     // Find the label ID for the given topic
     const label = await labelService.find({
       where: { name: topic },
@@ -42,7 +53,16 @@ async function handle(req: NextApiRequest, res: NextApiResponse) {
       .slice(0, 3)
       .sort((a, b) => parseInt(a.id) - parseInt(b.id));
 
-    res.status(200).json({ data: papers });
+    const responseData = { data: papers };
+
+    // Store in cache
+    await redis.setex(
+      cacheKey,
+      ONE_WEEK_IN_SECONDS,
+      JSON.stringify(responseData)
+    );
+
+    res.status(200).json(responseData);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Internal server error" });

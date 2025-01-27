@@ -124,7 +124,7 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
       const response = await fetch("/api/explore/most-read");
       const data = await response.json();
       const readPapers = nodes.filter((node) =>
-        data?.data?.includes(node.paperId)
+        data?.data?.topPaperIds?.includes(node.paperId)
       );
       setMostReadPapers(readPapers);
     } catch (error) {
@@ -309,6 +309,7 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
             <div className="mt-4 mb-4 text-center">
               <h1 className="text-5xl font-bold mb-8">Explore</h1>
 
+              {/* Featured Passages */}
               <div className="mb-8">
                 <h2 className="text-base mb-2 pb-2 text-center border-b text-gray-400 border-gray-200 dark:border-gray-600">
                   Featured Passages
@@ -457,6 +458,69 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
                   )}
                 </div>
               )}
+
+              {/* Most Read Papers */}
+              <div className="mb-8">
+                <h2 className="text-base mb-2 pb-2 text-center border-b text-gray-400 border-gray-200 dark:border-gray-600">
+                  Most Read Papers
+                </h2>
+
+                <p className="text-xs text-gray-400 mb-6">
+                  Discover the papers that readers frequently return to.
+                </p>
+
+                {fetchingMostRead ? (
+                  <div className="flex justify-center items-center">
+                    <Spinner />
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    {mostReadPapers.map((paper) => {
+                      const progressResult = progressResults.find(
+                        (result) => result?.paperId === paper.paperId
+                      );
+                      return (
+                        <Link
+                          key={paper.globalId}
+                          href={`/papers/${paperIdToUrl(`${paper.paperId}`)}`}
+                          className="relative flex flex-col items-start text-left justify-between px-4 py-2 mb-2 bg-white dark:bg-neutral-700 hover:dark:bg-neutral-600 rounded transition-colors hover:no-underline hover:shadow-lg hover:dark:shadow-none transition-shadow duration-300"
+                        >
+                          <div className="flex flex-col w-full">
+                            <div className="text-xs text-gray-400 flex items-center justify-between w-full">
+                              {paper.paperId === "0" ? (
+                                "Foreword"
+                              ) : (
+                                <>
+                                  <span>Paper {paper.paperId}</span>
+                                  <span>Part {paper.partId}</span>
+                                </>
+                              )}
+                            </div>
+                            <h3 className="mt-1 text-lg font-bold leading-6 text-gray-600 dark:text-white">
+                              {paper.paperTitle}
+                            </h3>
+                          </div>
+                          <div className="flex flex-col w-full">
+                            <span
+                              className="mt-1 text-xs text-gray-400 truncate w-full"
+                              title={paper.labels.sort().join(" | ")}
+                              dangerouslySetInnerHTML={{
+                                __html: highlightUserInterestLabels(
+                                  paper.labels,
+                                  userInterests
+                                )
+                                  .sort()
+                                  .join(" | "),
+                              }}
+                            />
+                            {deriveProgressBadge(progressResult)}
+                          </div>
+                        </Link>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
 
               {/* Science Papers */}
               <div className="mb-8">

@@ -3,6 +3,7 @@ import moment from "moment";
 import type { NextApiRequest, NextApiResponse } from "next";
 // Relative modules.
 import ReadNodeService from "@/services/readNode";
+import { getRedisClient, ONE_WEEK_IN_SECONDS, getCacheKey } from "@/libs/redis";
 
 const readNodeService = new ReadNodeService();
 
@@ -14,7 +15,17 @@ async function handle(req: NextApiRequest, res: NextApiResponse) {
   }
 
   try {
-    // Get the last 30 days of read nodes using UTC dates
+    const redis = getRedisClient();
+    const cacheKey = getCacheKey("most-read");
+
+    // Try to get from cache first
+    const cachedData = await redis.get(cacheKey);
+    if (cachedData) {
+      console.log("Cache hit for most-read");
+      return res.status(200).json(JSON.parse(cachedData));
+    }
+
+    // If not in cache, proceed with original logic
     const thirtyDaysAgo = moment.utc().subtract(30, "days").toDate();
     const now = moment.utc().toDate();
 
@@ -24,18 +35,32 @@ async function handle(req: NextApiRequest, res: NextApiResponse) {
     );
 
     // Count occurrences of each paperId
-    const paperCounts = readNodes.reduce((acc, node) => {
+    const countsByPaper = readNodes.reduce((acc, node) => {
       acc[node.paperId] = (acc[node.paperId] || 0) + 1;
       return acc;
     }, {} as Record<string, number>);
 
-    // Sort by count and take top 3
-    const topPaperIds = Object.entries(paperCounts)
+    // Sort by count and take top 6
+    const topPaperIds = Object.entries(countsByPaper)
       .sort(([, a], [, b]) => b - a)
-      .slice(0, 3)
+      .slice(0, 6)
       .map(([paperId]) => paperId);
 
-    res.status(200).json({ data: topPaperIds });
+    const responseData = {
+      data: {
+        topPaperIds,
+        countsByPaper,
+      },
+    };
+
+    // Store in cache
+    await redis.setex(
+      cacheKey,
+      ONE_WEEK_IN_SECONDS,
+      JSON.stringify(responseData)
+    );
+
+    res.status(200).json(responseData);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Internal server error" });
