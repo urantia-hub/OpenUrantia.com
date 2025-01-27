@@ -126,7 +126,7 @@ const handleCron = async (_: NextApiRequest, res: NextApiResponse) => {
 
   try {
     // Send the emails
-    await Promise.all(messages.map((message) => resend.emails.send(message)));
+    await resend.batch.send(messages);
 
     // Create sent quotes for each user.
     console.log("[sendDailyQuote] Creating sent quotes");

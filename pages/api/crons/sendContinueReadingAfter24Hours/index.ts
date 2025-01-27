@@ -94,9 +94,7 @@ const handleCron = async (_: NextApiRequest, res: NextApiResponse) => {
 
   try {
     // Send the emails
-    await Promise.all(
-      validMessages.map((message) => resend.emails.send(message))
-    );
+    await resend.batch.send(validMessages);
 
     // Update the lastAskedNotificationsAt field for each user
     await userService.updateMany({
