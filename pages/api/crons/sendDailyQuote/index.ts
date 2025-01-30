@@ -93,7 +93,7 @@ const handleCron = async (_: NextApiRequest, res: NextApiResponse) => {
   // Prepare emails
   console.log("[sendDailyQuote] Preparing emails");
   const messages = usersToSend.map((user) => ({
-    from: `"UrantiaHub" <${process.env.EMAIL_FROM}>`,
+    from: process.env.EMAIL_FROM || "",
     to: user.email as string,
     subject: "Your Daily Quote",
     headers: {

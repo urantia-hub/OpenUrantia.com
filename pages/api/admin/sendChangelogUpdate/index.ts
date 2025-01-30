@@ -53,7 +53,7 @@ const handleSendChangelogUpdate = async (
 
   // Prepare emails
   const messages = users.map((user) => ({
-    from: `"UrantiaHub" <${process.env.EMAIL_FROM}>`,
+    from: process.env.EMAIL_FROM || "",
     to: user.email as string,
     subject: `New Updates to UrantiaHub (v${version})`,
     headers: {

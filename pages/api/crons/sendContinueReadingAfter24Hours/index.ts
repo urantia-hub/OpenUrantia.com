@@ -50,7 +50,7 @@ const handleCron = async (_: NextApiRequest, res: NextApiResponse) => {
       }
 
       const message = {
-        from: `"UrantiaHub" <${process.env.EMAIL_FROM}>`,
+        from: process.env.EMAIL_FROM || "",
         to: user.email as string,
         subject: `Continue reading: ${user.lastVisitedPaperTitle}`,
         headers: {
