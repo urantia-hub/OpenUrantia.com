@@ -977,20 +977,24 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
     }
   };
 
-  const handleCategorySelect = async (category: string) => {
-    if (!selectedBookmark) return;
+  const handleCategorySelect = async (bookmarkId: string, category: string) => {
+    if (!bookmarkId) {
+      toast.error("No bookmark selected, please try again");
+      return;
+    }
 
     try {
-      const response = await fetch(
-        `/api/user/nodes/bookmarks/${selectedBookmark.id}`,
-        {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ category }),
-        }
-      );
+      const response = await fetch(`/api/user/nodes/bookmarks/${bookmarkId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ category }),
+      });
 
-      if (!response.ok) throw new Error("Failed to update bookmark category");
+      if (!response.ok) {
+        console.error("Failed to update bookmark category:", response);
+        toast.error("Failed to update bookmark category, please try again");
+        return;
+      }
 
       const updatedBookmark = await response.json();
       setBookmarks(
@@ -1001,7 +1005,7 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
       toast.success("Bookmark added to category! 🎉");
     } catch (error) {
       console.error("Error updating bookmark category:", error);
-      toast.error("Failed to update bookmark category");
+      toast.error("Failed to assign bookmark to category, please try again");
     }
   };
 

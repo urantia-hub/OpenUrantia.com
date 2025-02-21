@@ -11,7 +11,7 @@ import { toast } from "sonner";
 type BookmarkCategoryModalProps = {
   bookmark?: Bookmark | null;
   node?: UBNode | null;
-  onCategorySelect: (categoryId: string) => Promise<void>;
+  onCategorySelect: (bookmarkId: string, category: string) => Promise<void>;
   onClose?: () => void;
 };
 
@@ -54,13 +54,7 @@ const BookmarkCategoryModal = ({
     }
 
     try {
-      const response = await fetch(`/api/user/nodes/bookmarks/${bookmark.id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ category: newCategoryName }),
-      });
-      const updatedBookmark = await response.json();
-      await onCategorySelect(updatedBookmark.category);
+      await onCategorySelect(bookmark.id, newCategoryName.trim());
       onClose?.();
     } catch (error) {
       console.error("Error creating category:", error);
@@ -97,7 +91,9 @@ const BookmarkCategoryModal = ({
                   <button
                     className="flex items-center gap-3 p-2 border-0 dark:border-0 text-left rounded bg-slate-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-zinc-700 transition-colors"
                     key={category}
-                    onClick={() => onCategorySelect(category)}
+                    onClick={() =>
+                      bookmark && onCategorySelect(bookmark.id, category)
+                    }
                   >
                     {category}
                   </button>
