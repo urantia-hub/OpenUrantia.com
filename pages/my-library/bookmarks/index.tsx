@@ -95,12 +95,6 @@ const BookmarksPage = () => {
             <BookmarkIcon className="w-7 h-7 mr-1 text-emerald-400 fill-emerald-400" />
             Bookmarks
           </h1>
-          <Link
-            href="/my-library"
-            className="text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300"
-          >
-            Back to Library
-          </Link>
         </div>
 
         {loading ? (
