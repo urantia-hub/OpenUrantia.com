@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
 import LogoSymbol from "./LogoSymbol";
 import { deriveReadLink } from "@/utils/readPaperLink";
+import { MenuIcon } from "lucide-react";
 
 const HomepageNavbar = () => {
   // Hooks.
@@ -89,7 +90,7 @@ const HomepageNavbar = () => {
           <LogoSymbol className="flex-1 fill-white h-6 w-6 md:h-8 md:w-8" />
           <div className="flex-1 flex justify-end text-base">
             <Link
-              className="text-center hover:no-underline mr-4 md:mr-8 text-white hover:text-white/80 transition-colors duration-200"
+              className="text-center hover:no-underline mr-4 text-white hover:text-white/80 transition-colors duration-200"
               href={continueReadingLink}
             >
               Read
@@ -97,16 +98,10 @@ const HomepageNavbar = () => {
             {status === "authenticated" && (
               <Link
                 aria-label="More options"
-                className="text-center hover:no-underline mr-4 md:mr-6 text-white hover:text-white/80 transition-colors duration-200"
+                className="text-center hover:no-underline text-white hover:text-white/80 transition-colors duration-200"
                 href="/more"
               >
-                <svg
-                  className="w-6 h-6 fill-current mb-1"
-                  viewBox="0 0 100 100"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path d="M10 15h80v10H10zM10 45h80v10H10zM10 75h80v10H10z" />
-                </svg>
+                <MenuIcon className="w-6 h-6" />
               </Link>
             )}
             {status === "unauthenticated" && (

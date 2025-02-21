@@ -39,7 +39,9 @@ const BookmarksPage = () => {
 
   const fetchBookmarks = async () => {
     try {
-      const response = await fetch("/api/user/activity?filterType=bookmark");
+      const response = await fetch(
+        "/api/user/activity?filterType=bookmark&sortBy=updatedAt"
+      );
       const data = await response.json();
       setBookmarks(data);
     } catch (error) {
@@ -52,7 +54,7 @@ const BookmarksPage = () => {
   // Group bookmarks by category and sort them
   const bookmarksByCategory = Object.entries(
     bookmarks.reduce((acc, bookmark) => {
-      const category = bookmark.category || "General";
+      const category = bookmark.category || "Uncategorized";
       if (!acc[category]) {
         acc[category] = [];
       }
@@ -60,9 +62,9 @@ const BookmarksPage = () => {
       return acc;
     }, {} as Record<string, BookmarkNode[]>)
   ).sort((a, b) => {
-    // Make "General" always come first
-    if (a[0] === "General") return -1;
-    if (b[0] === "General") return 1;
+    // Make "Uncategorized" always come first
+    if (a[0] === "Uncategorized") return -1;
+    if (b[0] === "Uncategorized") return 1;
 
     // Otherwise sort alphabetically
     return a[0].localeCompare(b[0]);
