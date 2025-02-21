@@ -91,9 +91,12 @@ const BookmarkCategoryModal = ({
                   <button
                     className="flex items-center gap-3 p-2 border-0 dark:border-0 text-left rounded bg-slate-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-zinc-700 transition-colors"
                     key={category}
-                    onClick={() =>
-                      bookmark && onCategorySelect(bookmark.id, category)
-                    }
+                    onClick={async () => {
+                      if (bookmark) {
+                        await onCategorySelect(bookmark.id, category);
+                        onClose?.();
+                      }
+                    }}
                   >
                     {category}
                   </button>
