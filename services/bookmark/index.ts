@@ -65,6 +65,62 @@ export class BookmarkService implements BaseService<Bookmark> {
     return await this.model.upsert(args);
   }
 
+  getUserBookmarksWithDetails = async (
+    userId: string,
+    filter: { paperId?: number }
+  ): Promise<(Bookmark & UBNode)[]> => {
+    // Handle fetching all bookmarks for a user.
+    console.log(
+      "[getBookmarksWithDetails] Fetching bookmarks with filter:",
+      filter
+    );
+    const bookmarks = await this.findMany({
+      where: {
+        userId,
+        ...(filter.paperId !== undefined && { paperId: `${filter.paperId}` }),
+      },
+    });
+
+    // If there are no bookmarks, return an empty array.
+    if (!bookmarks?.length) {
+      console.log("[getBookmarksWithDetails] No bookmarks found");
+      return [];
+    }
+
+    // Fetch the paperSectionParagraphIds details for each bookmark.
+    const paperSectionParagraphIds = bookmarks.map(
+      (bookmark) => bookmark.paperSectionParagraphId
+    );
+    console.log(
+      "[getBookmarksWithDetails] Fetching nodes details for paperSectionParagraphIds:",
+      paperSectionParagraphIds
+    );
+    const nodesDetails = await this.getNodesByPaperSectionParagraphIds(
+      paperSectionParagraphIds
+    );
+
+    // Add the paperSectionParagraphId details to each bookmark.
+    console.log("[getBookmarksWithDetails] Adding nodes details to bookmarks");
+    const bookmarksWithDetails = bookmarks.map((bookmark) => {
+      const nodeDetail = nodesDetails.find(
+        (nodeDetail: UBNode) =>
+          nodeDetail.paperSectionParagraphId ===
+          bookmark.paperSectionParagraphId
+      );
+      return {
+        ...bookmark,
+        ...nodeDetail,
+        type: "bookmark",
+      };
+    });
+
+    console.log(
+      "[getBookmarksWithDetails] bookmarksWithDetails:",
+      bookmarksWithDetails?.length
+    );
+    return bookmarksWithDetails;
+  };
+
   async getNodesByPaperSectionParagraphIds(
     paperSectionParagraphIds: string[]
   ): Promise<any> {

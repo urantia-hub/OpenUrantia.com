@@ -3,7 +3,6 @@ import Link from "next/link";
 import React, { useState, useEffect } from "react";
 import moment from "moment";
 import { Note, Bookmark, User } from "@prisma/client";
-import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
 // Relative modules.
 import Footer from "@/components/Footer";
@@ -21,13 +20,8 @@ const MyLibrary = () => {
   // Session.
   const { status } = useSession();
 
-  // Router.
-  const router = useRouter();
-
   // State.
-  const [userData, setUserData] = useState<User | null>(null);
   const [nodes, setNodes] = useState<Activity[]>([]);
-  const [fetchingUser, setFetchingUser] = useState(true);
   const [fetchingNodes, setFetchingNodes] = useState(true);
   const [filterType, setFilterType] = useState<"all" | "note" | "bookmark">(
     "all"
@@ -37,10 +31,6 @@ const MyLibrary = () => {
 
   // Fetch user data on component mount
   useEffect(() => {
-    if (status === "authenticated") {
-      void fetchUserData();
-      return;
-    }
     if (status === "unauthenticated") {
       window.location.href = "/";
       return;
@@ -52,18 +42,6 @@ const MyLibrary = () => {
       void fetchActivityData();
     }
   }, [filterType, sortBy, paperFilter, status]);
-
-  const fetchUserData = async () => {
-    try {
-      const response = await fetch("/api/user");
-      const data = await response.json();
-      setUserData(data);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setFetchingUser(false);
-    }
-  };
 
   const fetchActivityData = async () => {
     try {
@@ -271,7 +249,7 @@ const MyLibrary = () => {
           </div>
 
           {/* Loading */}
-          {(fetchingUser || fetchingNodes) && <Spinner />}
+          {fetchingNodes && <Spinner />}
 
           {/* Activity nodes */}
           {nodes.length && !fetchingNodes ? (

@@ -62,6 +62,59 @@ export class NoteService implements BaseService<Note> {
     return await this.model.upsert(args);
   }
 
+  getUserNotesWithDetails = async (
+    userId: string,
+    filter: { paperId?: number }
+  ) => {
+    // Handle fetching all notes for a user.
+    console.log("[getNotesWithDetails] Fetching notes with filter:", filter);
+    const notes = await this.findMany({
+      where: {
+        userId,
+        ...(filter.paperId && { paperId: `${filter.paperId}` }),
+      },
+    });
+
+    // If there are no notes, return an empty array.
+    if (!notes?.length) {
+      console.log("[getNotesWithDetails] No notes found");
+      return [];
+    }
+
+    // Fetch the paperSectionParagraphId details for each note.
+    const paperSectionParagraphId = notes.map(
+      (note) => note.paperSectionParagraphId
+    );
+    console.log(
+      "[getNotesWithDetails] Fetching nodes details for paperSectionParagraphId:",
+      paperSectionParagraphId
+    );
+    const nodesDetails = await this.getNodesByPaperSectionParagraphIds(
+      paperSectionParagraphId
+    );
+
+    // Add the paperSectionParagraphId details to each note.
+    console.log("[getNotesWithDetails] Adding nodes details to notes");
+    const notesWithDetails = notes.map((note) => {
+      const nodeDetail = nodesDetails.find(
+        (nodeDetail: UBNode) =>
+          nodeDetail.paperSectionParagraphId === note.paperSectionParagraphId
+      );
+      return {
+        ...note,
+        ...nodeDetail,
+        noteText: note.text,
+        type: "note",
+      };
+    });
+
+    console.log(
+      "[getNotesWithDetails] notesWithDetails:",
+      notesWithDetails?.length
+    );
+    return notesWithDetails;
+  };
+
   async getNodesByPaperSectionParagraphIds(
     paperSectionParagraphIds: string[]
   ): Promise<any> {

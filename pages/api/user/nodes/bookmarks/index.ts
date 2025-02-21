@@ -4,7 +4,7 @@ import { User } from "@prisma/client";
 // Relative modules.
 import BookmarkService from "@/services/bookmark";
 import getSessionDetails from "@/utils/getSessionDetails";
-import { enforceGlobalId, enforceString } from "@/utils/typeUtils";
+import { enforceGlobalId } from "@/utils/typeUtils";
 import { withSentry } from "@/middleware/sentry";
 
 const bookmarkService = new BookmarkService();

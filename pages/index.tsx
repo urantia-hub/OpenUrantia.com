@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
-import { toast, Toaster } from "sonner";
+import { toast } from "sonner";
 // Relative modules.
 import Footer from "@/components/Footer";
 import HeadTag from "@/components/HeadTag";

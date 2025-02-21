@@ -45,6 +45,7 @@ model AIExplanation {
 }
 
 model Bookmark {
+  category                String?
   createdAt               DateTime @default(now())
   globalId                String
   id                      String   @id @default(cuid())

@@ -2,17 +2,30 @@
 import Link from "next/link";
 import moment from "moment";
 import throttle from "lodash/throttle";
+import {
+  BookmarkIcon,
+  Ellipsis,
+  MessageSquareTextIcon,
+  Pause,
+  PlayIcon,
+  Share2Icon as ShareIcon,
+  Stars,
+  X,
+} from "lucide-react";
 import { Note as NoteType, ReadNode, Bookmark } from "@prisma/client";
 import { Noto_Serif } from "next/font/google";
+import { toast } from "sonner";
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
 import { useWakeLock } from "react-screen-wake-lock";
 // Relative modules.
-import Note from "@/components/Note";
+import AskAI from "@/components/AskAI";
+import BookmarkCategoryModal from "@/components/BookmarkCategoryModal";
 import Footer from "@/components/Footer";
 import HeadTag from "@/components/HeadTag";
 import Navbar from "@/components/Navbar";
+import Note from "@/components/Note";
 import Share from "@/components/Share";
 import Spinner from "@/components/Spinner";
 import TopReadingNavbar from "@/components/TopReadingNavbar";
@@ -29,9 +42,6 @@ import {
   getValidPaperUrls,
   paperIdToUrl,
 } from "@/utils/paperFormatters";
-import AskAI from "@/components/AskAI";
-import { HelpCircle, MessageCircleQuestion, X } from "lucide-react";
-import { toast } from "sonner";
 
 const notoSerifFont = Noto_Serif({
   subsets: ["latin"],
@@ -107,6 +117,13 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
 
   // Sign-up prompt state.
   const [showSignUpPrompt, setShowSignUpPrompt] = useState<boolean>(false);
+
+  // Add state for modal
+  const [showBookmarkCategoryModal, setShowCategoryModal] = useState(false);
+  const [selectedBookmark, setSelectedBookmark] = useState<Bookmark | null>(
+    null
+  );
+  const [selectedNode, setSelectedNode] = useState<UBNode | null>(null);
 
   // Get the nodes from the paper data.
   const nodes = paperData.data.results;
@@ -960,25 +977,50 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
     }
   };
 
+  const handleCategorySelect = async (category: string) => {
+    if (!selectedBookmark) return;
+
+    try {
+      const response = await fetch(
+        `/api/user/nodes/bookmarks/${selectedBookmark.id}`,
+        {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ category }),
+        }
+      );
+
+      if (!response.ok) throw new Error("Failed to update bookmark category");
+
+      const updatedBookmark = await response.json();
+      setBookmarks(
+        bookmarks.map((b) =>
+          b.id === updatedBookmark.id ? updatedBookmark : b
+        )
+      );
+      toast.success("Bookmark added to category! 🎉");
+    } catch (error) {
+      console.error("Error updating bookmark category:", error);
+      toast.error("Failed to update bookmark category");
+    }
+  };
+
   const onBookmarkClick = (node: UBNode) => async () => {
     // Escape early if we are already saving.
     if (savingGlobalIds.includes(node.globalId)) {
       return;
     }
 
-    // De-bookmark the node if it's already bookmarked.
+    // If it's already bookmarked, handle deletion as before
     if (bookmarks.some((bookmark) => bookmark.globalId === node.globalId)) {
-      // Make request to de-bookmark globalId for user.
       await deleteBookmarkGlobalId(node.globalId);
-
-      // Remove the id.
       setBookmarks(
         bookmarks.filter((bookmark) => bookmark.globalId !== node.globalId)
       );
       return;
     }
 
-    // Make request to bookmark globalId for user.
+    // Create the bookmark first
     const bookmark = await bookmarkGlobalId(
       node.globalId,
       node.paperId,
@@ -986,9 +1028,28 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
       node.paperSectionParagraphId
     );
 
-    // Add the id.
     if (bookmark) {
       setBookmarks([...bookmarks, bookmark]);
+
+      // Show custom toast with button
+      toast.success(
+        <div className="flex items-center justify-between w-full">
+          <span>Bookmark added! 🎉</span>
+          <button
+            className="border-0 px-3 py-1 text-sm bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-white rounded transition-colors shadow-sm text-sm"
+            onClick={() => {
+              setSelectedBookmark(bookmark);
+              setSelectedNode(node);
+              setShowCategoryModal(true);
+            }}
+          >
+            Assign to category
+          </button>
+        </div>,
+        {
+          duration: 10000,
+        }
+      );
     }
   };
 
@@ -1020,7 +1081,7 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
     navigator.clipboard.writeText(paperTextWithNodes);
 
     // Show success toast.
-    toast.success("Paper copied to clipboard");
+    toast.success("Paper copied to clipboard! 🎉");
   };
 
   const renderNode = (node: UBNode) => {
@@ -1135,35 +1196,34 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
                   </span>
                 </div>
                 <div className="flex items-center select-none">
-                  <div className="flex items-center mr-2 fade-in">
+                  <div className="flex items-center mr-2">
                     {/* Explain Button */}
                     {expandedGlobalId === node.globalId && (
                       <button
                         aria-label="Explain"
-                        className="flex items-center bg-transparent border-0 dark:border-0 p-0 dark:p-0 m-0 mr-3 focus:outline-0 focus:dark:outline-0 text-gray-400 dark:text-gray-400 text-sm hover:text-gray-600 hover:dark:text-white transition duration-300 ease-in-out"
+                        className="flex items-center bg-transparent border-0 dark:border-0 p-0 dark:p-0 m-0 mr-3 focus:outline-0 focus:dark:outline-0 text-gray-400 dark:text-gray-400 text-sm hover:text-yellow-500 hover:dark:text-yellow-500 transition duration-300 ease-in-out fade-in"
                         onClick={() =>
                           setSelectedGlobalIdExplain(node.globalId)
                         }
                         type="button"
                       >
-                        <HelpCircle className="w-5 h-5" />{" "}
-                        <span className="ml-2 text-base">Explain</span>
+                        <Stars className="w-5 h-5" />{" "}
+                        <span className="ml-1.5 text-base">Explain</span>
                       </button>
                     )}
 
                     {expandedGlobalId === node.globalId && (
-                      <span className="mr-2">|</span>
+                      <span className="mr-2 bg-gray-200 w-0.5 h-5 rounded-full" />
                     )}
 
                     {/* Audio Button */}
                     {AUDIO_ENABLED &&
                       AUDIO_ENABLED_PAPER_IDS.includes(node.paperId) &&
                       node.mp3Url &&
-                      (expandedGlobalId === node.globalId ||
-                        notesForNode.length > 0) && (
+                      expandedGlobalId === node.globalId && (
                         <button
                           aria-label="Play"
-                          className="flex-shrink-0 text-gray-400 hover:text-gray-600 dark:text-white dark:bg-neutral-700 hover:dark:text-white border-0 rounded-full p-0.5 mr-3 focus:outline-none transition duration-300 ease-in-out relative"
+                          className="flex-shrink-0 text-gray-400 hover:text-gray-600 dark:text-white dark:bg-neutral-700 hover:dark:text-white border-0 rounded-full p-0 focus:outline-none transition duration-300 ease-in-out relative mr-2 fade-in"
                           onClick={() =>
                             currentPlayingNode === nodes.indexOf(node) &&
                             (isPlaying || isTransitioning)
@@ -1172,35 +1232,7 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
                           }
                           type="button"
                         >
-                          {deriveAudioContent(nodes.indexOf(node))}
-                        </button>
-                      )}
-
-                    {/* Notes Button */}
-                    {status === "authenticated" &&
-                      (expandedGlobalId === node.globalId ||
-                        notesForNode.length > 0) && (
-                        <button
-                          aria-label="Notes"
-                          className="bg-transparent border-0 dark:border-0 p-0 dark:p-0 m-0 mr-3 focus:outline-0 focus:dark:outline-0 text-gray-400 dark:text-gray-400 text-sm hover:text-gray-600 hover:dark:text-white transition duration-300 ease-in-out relative"
-                          onClick={onNoteClick(node.globalId)}
-                          type="button"
-                        >
-                          <svg className="w-7 h-7" viewBox="0 0 24 24">
-                            <path
-                              className="fill-current"
-                              d="M3 10h11v2H3zm0-2h11V6H3zm0 8h7v-2H3zm15.01-3.13.71-.71c.39-.39 1.02-.39 1.41 0l.71.71c.39.39.39 1.02 0 1.41l-.71.71zm-.71.71-5.3 5.3V21h2.12l5.3-5.3z"
-                            />
-                          </svg>
-
-                          {/* Number of notes created for the paragraph in top left */}
-                          {notesForNode.length > 0 && (
-                            <span className="absolute -top-1 -right-1 text-white text-xs font-semibold rounded-full px-1 bg-orange-500">
-                              {notesForNode.length > 9
-                                ? "9+"
-                                : notesForNode.length}
-                            </span>
-                          )}
+                          {deriveAudioContent(nodes.indexOf(node), "5")}
                         </button>
                       )}
 
@@ -1208,41 +1240,48 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
                     {expandedGlobalId === node.globalId && (
                       <button
                         aria-label="Share"
-                        className="bg-transparent border-0 dark:border-0 p-0 dark:p-0 m-0 focus:outline-0 focus:dark:outline-0 text-gray-400 dark:text-gray-400 text-sm hover:text-gray-600 hover:dark:text-white transition duration-300 ease-in-out"
+                        className="bg-transparent border-0 dark:border-0 p-0 dark:p-0 m-0 focus:outline-0 focus:dark:outline-0 text-gray-400 dark:text-gray-400 text-sm hover:text-gray-600 hover:dark:text-white transition duration-300 ease-in-out relative mr-2 fade-in"
                         onClick={onShareClick(node.globalId)}
                         type="button"
                       >
-                        <svg className="w-5 h-5" viewBox="0 0 24 24">
-                          <path
-                            className="fill-current"
-                            d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92"
-                          />
-                        </svg>
+                        <ShareIcon className="w-5 h-5" />
                       </button>
                     )}
+
+                    {/* Notes Button */}
+                    {status === "authenticated" &&
+                      (expandedGlobalId === node.globalId ||
+                        notesForNode.length > 0) && (
+                        <button
+                          aria-label="Notes"
+                          className={`bg-transparent border-0 dark:border-0 p-0 dark:p-0 m-0 focus:outline-0 focus:dark:outline-0 text-gray-400 dark:text-gray-400 text-sm hover:text-orange-500 hover:dark:text-orange-500 transition duration-300 ease-in-out relative mr-2 fade-in ${
+                            notesForNode.length > 0 ? "text-orange-500" : ""
+                          }`}
+                          onClick={onNoteClick(node.globalId)}
+                          type="button"
+                        >
+                          <MessageSquareTextIcon className="w-5 h-5" />
+                        </button>
+                      )}
 
                     {/* Bookmark Button */}
                     {status === "authenticated" &&
                       (expandedGlobalId === node.globalId || bookmark) && (
                         <button
                           aria-label="Bookmark"
-                          className="bg-transparent border-0 dark:border-0 p-0 dark:p-0 m-0 ml-4 focus:outline-0 focus:dark:outline-0 text-gray-400 dark:text-gray-400 text-sm hover:text-gray-600 hover:dark:text-white transition duration-300 ease-in-out"
+                          className={`bg-transparent border-0 dark:border-0 p-0 dark:p-0 m-0 focus:outline-0 focus:dark:outline-0 text-sm hover:text-emerald-400 hover:dark:text-emerald-400 transition duration-300 ease-in-out fade-in ${
+                            bookmark
+                              ? "text-emerald-400 dark:text-emerald-400"
+                              : "text-gray-400 dark:text-gray-400"
+                          }`}
                           onClick={onBookmarkClick(node)}
                           type="button"
                         >
-                          <svg className="w-5 h-5" viewBox="0 0 24 24">
-                            {bookmark ? (
-                              <path
-                                className="fill-emerald-400"
-                                d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
-                              />
-                            ) : (
-                              <path
-                                className="stroke-current fill-transparent stroke-2"
-                                d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
-                              />
-                            )}
-                          </svg>
+                          {bookmark ? (
+                            <BookmarkIcon className="w-5 h-5 fill-emerald-400" />
+                          ) : (
+                            <BookmarkIcon className="w-5 h-5" />
+                          )}
                         </button>
                       )}
                   </div>
@@ -1251,16 +1290,11 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
                   {expandedGlobalId !== node.globalId && (
                     <button
                       aria-label="Settings"
-                      className="bg-transparent border-0 dark:border-0 p-0 dark:p-0 m-0 focus:outline-0 focus:dark:outline-0 text-gray-400 dark:text-gray-400 text-sm hover:text-gray-600 hover:dark:text-white transition duration-300 ease-in-out"
+                      className="bg-transparent border-0 dark:border-0 p-0 dark:p-0 m-0 focus:outline-0 focus:dark:outline-0 text-gray-400 dark:text-gray-400 text-sm hover:text-gray-600 hover:dark:text-white transition duration-300 ease-in-out fade-in"
                       onClick={onNodeSettingsClick(node.globalId)}
                       type="button"
                     >
-                      <svg className="w-5 h-5" viewBox="0 0 24 24">
-                        <path
-                          className="fill-current"
-                          d="M6 10c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2m12 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2m-6 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2"
-                        />
-                      </svg>
+                      <Ellipsis className="w-5 h-5" />
                     </button>
                   )}
                 </div>
@@ -1294,38 +1328,41 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
     }
   };
 
-  const deriveAudioContent = (nodeIndex?: number): JSX.Element => {
+  const deriveAudioContent = (
+    nodeIndex?: number,
+    size: string = "6"
+  ): JSX.Element => {
     // If a node index is provided, we can determine if it's playing or not.
     if (typeof nodeIndex !== "undefined") {
       if (currentPlayingNode === nodeIndex && (isPlaying || isTransitioning)) {
         return (
-          <svg className="w-6 h-6" viewBox="0 0 24 24">
-            <path fill="currentColor" d="M14 19h4V5h-4v14zM6 5v14h4V5H6z" />
-          </svg>
+          <Pause
+            className={`w-${size} h-${size} fill-gray-400 stroke-transparent`}
+          />
         );
       }
 
       return (
-        <svg className="w-6 h-6" viewBox="0 0 24 24">
-          <path fill="currentColor" d="M8 5v14l11-7z" />
-        </svg>
+        <PlayIcon
+          className={`w-${size} h-${size} fill-gray-400 stroke-transparent`}
+        />
       );
     }
 
     // If no node index is provided, we can only determine if the audio is playing or not.
     if (isPlaying || isTransitioning) {
       return (
-        <svg className="w-6 h-6" viewBox="0 0 24 24">
-          <path fill="currentColor" d="M14 19h4V5h-4v14zM6 5v14h4V5H6z" />
-        </svg>
+        <Pause
+          className={`w-${size} h-${size} fill-gray-400 stroke-transparent`}
+        />
       );
     }
 
     // Default to play icon.
     return (
-      <svg className="w-6 h-6" viewBox="0 0 24 24">
-        <path fill="currentColor" d="M8 5v14l11-7z" />
-      </svg>
+      <PlayIcon
+        className={`w-${size} h-${size} fill-gray-400 stroke-transparent`}
+      />
     );
   };
 
@@ -1441,6 +1478,19 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
       {/* Share Modal */}
       {selectedGlobalIdShare && (
         <Share onClose={onShareClose} node={shareNode} />
+      )}
+
+      {showBookmarkCategoryModal && (
+        <BookmarkCategoryModal
+          bookmark={selectedBookmark}
+          node={selectedNode}
+          onCategorySelect={handleCategorySelect}
+          onClose={() => {
+            setShowCategoryModal(false);
+            setSelectedBookmark(null);
+            setSelectedNode(null);
+          }}
+        />
       )}
 
       {/* Add Explain Modal */}
