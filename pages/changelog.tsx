@@ -12,6 +12,13 @@ interface ChangelogEntry {
 
 const changelog: ChangelogEntry[] = [
   {
+    date: "2025-05-16",
+    version: "1.0.3",
+    changes: [
+      "Added <strong>Community Resources</strong> page: <strong>/community-resources</strong>",
+    ],
+  },
+  {
     date: "2025-01-25",
     version: "1.0.2",
     changes: [

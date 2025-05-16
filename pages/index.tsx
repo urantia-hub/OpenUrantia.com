@@ -120,7 +120,7 @@ const HomePage = () => {
 
       <main>
         {/* Hero Section */}
-        <section className="hero-background relative min-h-screen pt-8 px-6 text-center bg-cover bg-center bg-slate-100 flex flex-col items-center justify-center overflow-hidden">
+        <section className="bg-hero-homepage relative min-h-screen pt-8 px-6 text-center bg-cover bg-center bg-slate-100 flex flex-col items-center justify-center overflow-hidden">
           {/* Background gradient */}
           <div className="absolute inset-0 bg-gradient-to-b from-blue-900/60 to-blue-800/40 mix-blend-multiply" />
 

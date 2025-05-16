@@ -59,6 +59,14 @@ const Footer = ({ marginBottom }: { marginBottom?: string }) => {
               <li>
                 <Link
                   className="text-gray-400 hover:text-blue-400 transition-colors duration-300 hover:no-underline"
+                  href="/community-resources"
+                >
+                  Community Resources
+                </Link>
+              </li>
+              <li>
+                <Link
+                  className="text-gray-400 hover:text-blue-400 transition-colors duration-300 hover:no-underline"
                   href="https://github.com/urantia-hub/data"
                   target="_blank"
                   rel="noopener noreferrer"

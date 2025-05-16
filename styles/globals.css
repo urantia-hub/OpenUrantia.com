@@ -433,10 +433,14 @@ select.select-selected {
   }
 }
 
-.hero-background {
+.bg-hero-homepage {
   background-image: url('/background.png');
   background-size: cover;
   background-position: center;
+  margin-top: -64px;
+}
+
+.bg-hero-static-page {
   margin-top: -64px;
 }
 
