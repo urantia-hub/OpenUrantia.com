@@ -78,17 +78,17 @@ const resourceCategories = [
         url: "https://www.reddit.com/r/urantia/",
       },
       {
-        name: "Facebook Urantia Community",
+        name: "Facebook - Urantia",
         description: "Largest Facebook group for Urantia Papers readers",
         url: "https://www.facebook.com/groups/urantiagroup",
       },
       {
-        name: "Facebook Urantia Book Science & History",
+        name: "Facebook - Urantia Book: Science & History",
         description: "Discussion group for Urantia Papers science and history",
         url: "https://www.facebook.com/groups/418407648220368",
       },
       {
-        name: "Discord Urantia Think Tank",
+        name: "Discord - Urantia Think Tank",
         description:
           "Real-time discussion community on Discord for Urantia Papers readers",
         url: "https://discord.com/channels/360285389425999873",
