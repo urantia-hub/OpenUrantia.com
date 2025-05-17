@@ -187,7 +187,7 @@ const CommunityResourcesPage = () => {
             </p>
             <a
               href="mailto:openurantia@gmail.com?subject=New%20Urantia%20Resource%20Suggestion"
-              className="inline-flex items-center px-6 py-3 rounded-lg bg-blue-600 text-white font-medium hover:bg-blue-700 transition-colors duration-300"
+              className="inline-flex items-center px-6 py-3 rounded-lg bg-blue-600 text-white font-medium hover:bg-blue-700 transition-colors duration-300 no-underline"
             >
               Submit a Resource
             </a>

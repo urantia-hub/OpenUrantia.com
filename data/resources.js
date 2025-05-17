@@ -69,6 +69,23 @@ const resourceCategories = [
     ],
   },
   {
+    title: "YouTube Channels",
+    resources: [
+      {
+        name: "Urantia Book Network",
+        description:
+          "Non-profit collective connecting creative, educational, and technological resources inspired by the Urantia Book teachings",
+        url: "https://www.youtube.com/@urantiabooknetwork",
+      },
+      {
+        name: "Gary Tonge (Vision Afar)",
+        description:
+          "Visual presentations and animations illustrating concepts from The Urantia Papers",
+        url: "https://www.youtube.com/@GaryTonge",
+      },
+    ],
+  },
+  {
     title: "Online Communities",
     resources: [
       {
