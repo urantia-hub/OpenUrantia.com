@@ -687,7 +687,6 @@ const HomePage = () => {
                 description="Share inspiring passages on social media or copy direct links to your favorite sections to discuss with friends."
               />
               <CommunityFeature
-                comingSoon
                 icon={Bookmark}
                 title="Popular Passages"
                 description="See which passages resonate most with other readers. Discover how many others found specific teachings meaningful and impactful."
