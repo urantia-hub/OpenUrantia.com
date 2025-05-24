@@ -135,7 +135,7 @@ const HomePage = () => {
             <p className="text-xl md:text-2xl text-white mb-14 max-w-2xl mx-auto leading-relaxed drop-shadow">
               Discover the Urantia Papers - a unique revelation that bridges
               lost history with modern science, offering unprecedented insights
-              into our origin, purpose, and destiny.
+              into our origin, history, and destiny.
             </p>
 
             {status === "authenticated" && (
