@@ -1,0 +1,10 @@
+// Node modules.
+import type { NextApiRequest, NextApiResponse } from "next";
+
+const PERMANENT_REDIRECT = 301;
+const TEMPORARY_REDIRECT = 307;
+
+export default function handler(req: NextApiRequest, res: NextApiResponse) {
+  // Redirect to the main website for now.
+  res.redirect(TEMPORARY_REDIRECT, "https://urantiahub.com");
+}
