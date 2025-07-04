@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { X } from "lucide-react";
+import { X, Copy, Check } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 
 import Spinner from "./Spinner";
@@ -32,6 +32,7 @@ const AskAI = ({
   const [loadingMessage, setLoadingMessage] = useState(loadingMessages[0]);
   const [messageOpacity, setMessageOpacity] = useState(1);
   const [error, setError] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
 
   const getPrecedingContext = (currentNode: UBNode, allNodes: UBNode[]) => {
     // Find the index of the current node
@@ -170,6 +171,18 @@ ${precedingParagraphs.map((p, i) => `[${i + 1}] ${p}`).join("\n\n")}`;
     }
   };
 
+  const copyToClipboard = async () => {
+    if (response) {
+      try {
+        await navigator.clipboard.writeText(response);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      } catch (err) {
+        console.error("Failed to copy text: ", err);
+      }
+    }
+  };
+
   if (!node || !selectedText || !isModalOpen) return null;
 
   const currentSection =
@@ -245,9 +258,30 @@ ${precedingParagraphs.map((p, i) => `[${i + 1}] ${p}`).join("\n\n")}`;
                 {error}
               </p>
             ) : response ? (
-              <ReactMarkdown className="text-sm whitespace-pre-wrap text-gray-900 dark:text-white">
-                {response}
-              </ReactMarkdown>
+              <div>
+                <div className="flex justify-end mb-2">
+                  <button
+                    onClick={copyToClipboard}
+                    className="flex items-center gap-1 text-sm px-3 py-1 rounded bg-slate-200 dark:bg-neutral-700 hover:bg-slate-300 dark:hover:bg-neutral-600 transition-colors"
+                    title="Copy to clipboard"
+                  >
+                    {copied ? (
+                      <>
+                        <Check className="w-4 h-4" />
+                        <span>Copied!</span>
+                      </>
+                    ) : (
+                      <>
+                        <Copy className="w-4 h-4" />
+                        <span>Copy</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+                <ReactMarkdown className="text-sm whitespace-pre-wrap text-gray-900 dark:text-white">
+                  {response}
+                </ReactMarkdown>
+              </div>
             ) : null}
           </div>
         </div>
