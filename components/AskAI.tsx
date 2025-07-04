@@ -260,9 +260,12 @@ ${precedingParagraphs.map((p, i) => `[${i + 1}] ${p}`).join("\n\n")}`;
             ) : response ? (
               <div>
                 <div className="flex justify-end mb-2">
+                  <ReactMarkdown className="text-sm whitespace-pre-wrap text-gray-900 dark:text-white">
+                    {response}
+                  </ReactMarkdown>
                   <button
                     onClick={copyToClipboard}
-                    className="flex items-center gap-1 text-sm px-3 py-1 rounded bg-slate-200 dark:bg-neutral-700 hover:bg-slate-300 dark:hover:bg-neutral-600 transition-colors"
+                    className="flex items-center text-center justify-center py-2 px-3 border-0 dark:py-2 dark:px-3 dark:border-0 text-center rounded bg-blue-400 hover:bg-blue-500 dark:bg-blue-500 hover:dark:bg-blue-600 hover:no-underline transition-colors duration-300 ease-in-out"
                     title="Copy to clipboard"
                   >
                     {copied ? (
@@ -278,9 +281,6 @@ ${precedingParagraphs.map((p, i) => `[${i + 1}] ${p}`).join("\n\n")}`;
                     )}
                   </button>
                 </div>
-                <ReactMarkdown className="text-sm whitespace-pre-wrap text-gray-900 dark:text-white">
-                  {response}
-                </ReactMarkdown>
               </div>
             ) : null}
           </div>
