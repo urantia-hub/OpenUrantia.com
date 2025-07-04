@@ -259,27 +259,29 @@ ${precedingParagraphs.map((p, i) => `[${i + 1}] ${p}`).join("\n\n")}`;
               </p>
             ) : response ? (
               <div>
-                <div className="flex justify-end mb-2">
+                <div className="flex flex-col items-center mb-2">
                   <ReactMarkdown className="text-sm whitespace-pre-wrap text-gray-900 dark:text-white">
                     {response}
                   </ReactMarkdown>
-                  <button
-                    onClick={copyToClipboard}
-                    className="flex items-center text-center justify-center py-2 px-3 border-0 dark:py-2 dark:px-3 dark:border-0 text-center rounded bg-blue-400 hover:bg-blue-500 dark:bg-blue-500 hover:dark:bg-blue-600 hover:no-underline transition-colors duration-300 ease-in-out"
-                    title="Copy to clipboard"
-                  >
-                    {copied ? (
-                      <>
-                        <Check className="w-4 h-4" />
-                        <span>Copied!</span>
-                      </>
-                    ) : (
-                      <>
-                        <Copy className="w-4 h-4" />
-                        <span>Copy</span>
-                      </>
-                    )}
-                  </button>
+                  <div>
+                    <button
+                      onClick={copyToClipboard}
+                      className="mt-4 flex items-center text-center justify-center py-2 px-3 border-0 dark:py-2 dark:px-3 dark:border-0 text-center rounded bg-blue-400 hover:bg-blue-500 dark:bg-blue-500 hover:dark:bg-blue-600 hover:no-underline transition-colors duration-300 ease-in-out"
+                      title="Copy to clipboard"
+                    >
+                      {copied ? (
+                        <>
+                          <Check className="w-4 h-4" />
+                          <span>Copied!</span>
+                        </>
+                      ) : (
+                        <>
+                          <Copy className="w-4 h-4" />
+                          <span>Copy</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
                 </div>
               </div>
             ) : null}
