@@ -6,5 +6,8 @@ const TEMPORARY_REDIRECT = 307;
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
   // Redirect to the main website for now.
-  res.redirect(TEMPORARY_REDIRECT, "https://urantiahub.com");
+  res.redirect(
+    TEMPORARY_REDIRECT,
+    "https://www.urantiahub.com/papers/paper-117-god-the-supreme#3:117.6.21"
+  );
 }
