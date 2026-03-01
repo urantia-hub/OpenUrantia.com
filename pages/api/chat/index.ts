@@ -1,13 +1,19 @@
 // pages/api/chat/index.ts
 import { generateText } from "ai";
+import { anthropic } from "@ai-sdk/anthropic";
 import { openai } from "@ai-sdk/openai";
 import type { NextApiRequest, NextApiResponse } from "next";
 
 import AIExplanationService from "@/services/aiExplanation";
 import PaperService from "@/services/paper";
 
-const AI_MODEL = process.env.AI_MODEL || "o1-mini";
+const AI_MODEL = process.env.AI_MODEL || "claude-haiku-4-5-20251001";
 const SUPPORTED_XAI_MODELS = ["grok-beta"];
+const SUPPORTED_ANTHROPIC_MODELS = [
+  "claude-haiku-4-5-20251001",
+  "claude-sonnet-4-6",
+  "claude-opus-4-6",
+];
 
 const aiExplanationService = new AIExplanationService();
 const paperService = new PaperService();
@@ -36,7 +42,7 @@ const generatePaperContext = async (paperId: string) => {
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse,
 ) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
@@ -94,10 +100,16 @@ ${paperContext}`;
     try {
       console.log(
         `Generating explanation for ${globalId} with model ${AI_MODEL} and with system prompt:\n\n${systemPrompt}\n\nAnd with messages:\n\n${JSON.stringify(
-          messages
-        )}`
+          messages,
+        )}`,
       );
-      if (SUPPORTED_XAI_MODELS.includes(AI_MODEL)) {
+      if (SUPPORTED_ANTHROPIC_MODELS.includes(AI_MODEL)) {
+        const response = await generateText({
+          model: anthropic(AI_MODEL),
+          prompt: combinedPrompt,
+        });
+        text = response.text;
+      } else if (SUPPORTED_XAI_MODELS.includes(AI_MODEL)) {
         // Make a request to xAI
         const rawResponse = await fetch(
           "https://api.x.ai/v1/chat/completions",
@@ -116,7 +128,7 @@ ${paperContext}`;
               stream: false,
               temperature: 0,
             }),
-          }
+          },
         );
         const jsonResponse = await rawResponse.json();
         console.log("xAI response:", jsonResponse.choices[0].message);

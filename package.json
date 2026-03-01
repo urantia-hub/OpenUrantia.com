@@ -12,7 +12,8 @@
     "build:with-screenshots": "npm run screenshots && next build"
   },
   "dependencies": {
-    "@ai-sdk/openai": "^0.0.72",
+    "@ai-sdk/anthropic": "^3.0.50",
+    "@ai-sdk/openai": "^3.0.37",
     "@auth/prisma-adapter": "^1.0.9",
     "@paralleldrive/cuid2": "^2.2.2",
     "@prisma/client": "^5.8.0",
@@ -20,7 +21,7 @@
     "@sentry/nextjs": "^8",
     "@vercel/analytics": "^1.1.1",
     "@vercel/speed-insights": "^1.0.2",
-    "ai": "^3.4.33",
+    "ai": "^6.0.105",
     "aws-sdk": "^2.1655.0",
     "axios": "^1.6.2",
     "dotenv": "^16.0.1",
