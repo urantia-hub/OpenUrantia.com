@@ -804,8 +804,6 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
 
       // Remove "Explain |" and other UI elements from the selection
       text = text.replace(/Explain\n\|/g, "");
-      text = text.replace(/Download Full Paper Audio\n*/g, "");
-
       // Format the text:
       text = text
         .replace(/\n+/g, "\n") // First consolidate all newlines
@@ -1427,7 +1425,6 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
               }`
             : undefined
         }
-        audioDownloadUrl={`${process.env.NEXT_PUBLIC_AUDIO_FILES_CDN}/${paperId}.mp3`}
       />
 
       <Navbar

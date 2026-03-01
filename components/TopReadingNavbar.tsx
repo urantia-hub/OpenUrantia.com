@@ -1,5 +1,5 @@
 // Node modules.
-import { Copy, Download } from "lucide-react";
+import { Copy } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
@@ -8,7 +8,6 @@ type NavbarProps = {
   setFontSize: (fontSize: "small" | "medium" | "large") => void;
   onCopyPaper: () => void;
   spotifyUrl?: string;
-  audioDownloadUrl?: string;
 };
 
 const TopReadingNavbar = ({
@@ -16,7 +15,6 @@ const TopReadingNavbar = ({
   setFontSize,
   onCopyPaper,
   spotifyUrl,
-  audioDownloadUrl,
 }: NavbarProps) => {
   // Hidden state.
   const [hidden, setHidden] = useState<boolean>(false);
@@ -72,20 +70,6 @@ const TopReadingNavbar = ({
                   transform="translate(-0.95,0)"
                 ></path>
               </svg>
-            </Link>
-          )}
-
-          {/* Download Audio */}
-          {audioDownloadUrl && (
-            <Link
-              aria-label="Download Audio"
-              className="text-gray-400 hover:text-gray-600 dark:hover:text-white transition-colors duration-300"
-              href={audioDownloadUrl}
-              rel="noopener noreferrer"
-              target="_blank"
-              title="Download Audio"
-            >
-              <Download className="w-5 h-5" />
             </Link>
           )}
 
