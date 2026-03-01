@@ -1,95 +1,98 @@
-import getDynamoDBClient from "@/libs/aws/index";
-import { createId } from "@paralleldrive/cuid2";
-import moment from "moment";
+// Node modules.
+import { Prisma, PrismaClient, UserSearch } from "@prisma/client";
+// Relative modules.
+import { getPrismaClient } from "@/libs/prisma/client";
 
-const dynamoDB = getDynamoDBClient();
-const TABLE_NAME = "UserSearches";
+const prisma = getPrismaClient();
+
+type UserSearchServiceDependencies = {
+  model: PrismaClient["userSearch"];
+};
 
 export class UserSearchService {
-  async create(args: {
-    data: Omit<UserSearch, "id" | "createdAt">;
-  }): Promise<UserSearch> {
-    const id = createId();
-    const createdAt = new Date().toISOString();
-    const newItem = { ...args.data, id, createdAt };
+  private model: PrismaClient["userSearch"];
 
-    const params = {
-      TableName: TABLE_NAME,
-      Item: newItem,
-    };
-
-    await dynamoDB.put(params).promise();
-    return newItem;
+  constructor(
+    dependencies: UserSearchServiceDependencies = {
+      model: prisma.userSearch,
+    }
+  ) {
+    this.model = dependencies.model;
   }
 
-  // Get popular searches within a time range
+  async create(args: {
+    data: { searchQuery: string; resultCount: number; userId?: string };
+  }): Promise<UserSearch> {
+    return await this.model.create({
+      data: {
+        searchQuery: args.data.searchQuery,
+        resultCount: args.data.resultCount,
+        ...(args.data.userId && {
+          user: { connect: { id: args.data.userId } },
+        }),
+      },
+    });
+  }
+
   async getPopularSearches(args: {
     startDate: string;
     endDate: string;
     limit?: number;
   }): Promise<{ searchQuery: string; count: number }[]> {
-    const params = {
-      TableName: TABLE_NAME,
-      FilterExpression: "createdAt BETWEEN :gte AND :lte",
-      ExpressionAttributeValues: {
-        ":gte": args.startDate,
-        ":lte": args.endDate,
+    const results = await this.model.groupBy({
+      by: ["searchQuery"],
+      where: {
+        createdAt: {
+          gte: new Date(args.startDate),
+          lte: new Date(args.endDate),
+        },
       },
-      ProjectionExpression: "searchQuery", // Only fetch the query field since that's all we need
-    };
+      _count: {
+        searchQuery: true,
+      },
+      having: {
+        searchQuery: {
+          _count: {
+            gt: 5,
+          },
+        },
+      },
+      orderBy: {
+        _count: {
+          searchQuery: "desc",
+        },
+      },
+      take: args.limit || 10,
+    });
 
-    const data = await dynamoDB.scan(params).promise();
-    const items = data.Items as UserSearch[];
-
-    // Aggregate searches and count occurrences
-    const searchCounts = items.reduce((acc, item) => {
-      const normalizedQuery = item.searchQuery.trim().toLowerCase(); // Normalize queries to count similar searches
-      acc[normalizedQuery] = (acc[normalizedQuery] || 0) + 1;
-      return acc;
-    }, {} as Record<string, number>);
-
-    // Only return queries that appear more than once
-    return Object.entries(searchCounts)
-      .filter(([_, count]) => count > 5) // Only include searches done over 5 times
-      .map(([searchQuery, count]) => ({ searchQuery, count }))
-      .sort((a, b) => b.count - a.count)
-      .slice(0, args.limit || 10);
+    return results.map((r) => ({
+      searchQuery: r.searchQuery,
+      count: r._count.searchQuery,
+    }));
   }
 
-  // Get recent searches
   async getRecentSearches(args: {
     userId: string;
     limit?: number;
   }): Promise<UserSearch[]> {
-    const maxDate = moment.utc().toISOString();
-    const minDate = moment.utc().subtract(7, "days").toISOString();
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
 
-    const expressionAttributeValues: any = {
-      ":userId": args.userId,
-      ":gte": minDate,
-      ":lte": maxDate,
-    };
+    const results = await this.model.findMany({
+      where: {
+        userId: args.userId,
+        createdAt: {
+          gte: sevenDaysAgo,
+        },
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+      distinct: ["searchQuery"],
+      take: args.limit || 10,
+    });
 
-    const params = {
-      TableName: TABLE_NAME,
-      IndexName: "userId-createdAt-index",
-      KeyConditionExpression:
-        "userId = :userId AND createdAt BETWEEN :gte AND :lte",
-      ExpressionAttributeValues: expressionAttributeValues,
-      ScanIndexForward: false,
-      Limit: args.limit || 10,
-    };
-
-    const data = await dynamoDB.query(params).promise();
-    const items = data.Items as UserSearch[];
-
-    // Filter duplicates
-    const uniqueItems = items.filter(
-      (item, index, self) =>
-        index === self.findIndex((t) => t.searchQuery === item.searchQuery)
-    );
-
-    return uniqueItems;
+    return results;
   }
 }
 

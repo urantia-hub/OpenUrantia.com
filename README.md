@@ -388,7 +388,7 @@ urantia-hub/
 ├── libs/
 │   ├── prisma/client.ts          # Singleton Prisma client
 │   ├── redis/                    # Redis client + helpers
-│   └── aws/                      # AWS SDK client
+│   └── ...                       # Other utilities
 ├── utils/
 │   ├── config.ts                 # Audio config, reading speed, Spotify IDs
 │   ├── paperFormatters.ts        # Paper ID ↔ URL conversions
@@ -428,7 +428,6 @@ urantia-hub/
 | `SEED_EMAIL` | Email for database seeding |
 | `SENTRY_AUTH_TOKEN` | Sentry error tracking |
 | `FIREBASE_SERVICE_ACCOUNT_KEY` | Firebase integration |
-| `AWS_REGION`, `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` | AWS services |
 
 ---
 

@@ -1,116 +1,92 @@
-// services/readNode/index.ts
-import getDynamoDBClient from "@/libs/aws/index";
+// Node modules.
 import axios from "axios";
-import { createId } from "@paralleldrive/cuid2";
-import moment from "moment";
+import { Prisma, PrismaClient, ReadNode } from "@prisma/client";
+// Relative modules.
+import BaseService from "@/services/base";
+import { getPrismaClient } from "@/libs/prisma/client";
 
-const dynamoDB = getDynamoDBClient();
+const prisma = getPrismaClient();
 
-const TABLE_NAME = "ReadNodes";
+type ReadNodeServiceDependencies = {
+  model: PrismaClient["readNode"];
+};
 
-export class ReadNodeService {
-  async create(args: { data: Omit<ReadNode, "id"> }): Promise<ReadNode> {
-    const id = createId();
-    const newItem = { ...args.data, id, createdAt: new Date().toISOString() };
+export class ReadNodeService implements BaseService<ReadNode> {
+  private model: PrismaClient["readNode"];
 
-    const params = {
-      TableName: TABLE_NAME,
-      Item: newItem,
-    };
-
-    await dynamoDB.put(params).promise();
-    return newItem;
-  }
-
-  async find(args: {
-    where: { userId: string; globalId?: string; createdAt?: { gte: string } };
-    orderBy?: { createdAt: "asc" | "desc" };
-  }): Promise<ReadNode | null> {
-    const { userId, globalId, createdAt } = args.where;
-    let keyConditionExpression = "userId = :userId";
-    const expressionAttributeValues: any = { ":userId": userId };
-
-    if (createdAt) {
-      keyConditionExpression += " AND createdAt >= :gte";
-      expressionAttributeValues[":gte"] = createdAt.gte;
-    } else {
-      keyConditionExpression += " AND createdAt = :dummyCreatedAt";
-      expressionAttributeValues[":dummyCreatedAt"] = "1970-01-01T00:00:00.000Z"; // Default minimal value
+  constructor(
+    dependencies: ReadNodeServiceDependencies = {
+      model: prisma.readNode,
     }
-
-    const params = {
-      TableName: TABLE_NAME,
-      IndexName: "userId-createdAt-index",
-      KeyConditionExpression: keyConditionExpression,
-      ExpressionAttributeValues: expressionAttributeValues,
-      ScanIndexForward: args.orderBy?.createdAt === "asc" ? true : false, // Ascending or descending
-      Limit: 1, // Get the most recent one
-      ...(globalId && {
-        FilterExpression: "globalId = :globalId",
-        ExpressionAttributeValues: {
-          ...expressionAttributeValues,
-          ":globalId": globalId,
-        },
-      }),
-    };
-
-    const data = await dynamoDB.query(params).promise();
-    return data.Items ? (data.Items[0] as ReadNode) : null;
+  ) {
+    this.model = dependencies.model;
   }
 
-  async findMany(args: {
-    where: {
-      userId: string;
-      paperId?: string;
-      createdAt?: { gte: string; lte: string };
-    };
-    orderBy?: { createdAt: "asc" | "desc" };
-  }): Promise<ReadNode[]> {
-    const { userId, paperId, createdAt } = args.where;
-
-    const expressionAttributeValues: any = { ":userId": userId };
-    let keyConditionExpression = "userId = :userId";
-
-    if (createdAt) {
-      keyConditionExpression += " AND createdAt BETWEEN :gte AND :lte";
-      expressionAttributeValues[":gte"] = createdAt.gte;
-      expressionAttributeValues[":lte"] = createdAt.lte;
-    } else {
-      keyConditionExpression += " AND createdAt >= :dummyCreatedAt";
-      expressionAttributeValues[":dummyCreatedAt"] = "1970-01-01T00:00:00.000Z"; // Default minimal value
-    }
-
-    const params = {
-      TableName: TABLE_NAME,
-      IndexName: "userId-createdAt-index",
-      KeyConditionExpression: keyConditionExpression,
-      ExpressionAttributeValues: expressionAttributeValues,
-      ScanIndexForward: args.orderBy?.createdAt === "asc" ? true : false, // Ascending or descending
-      ...(paperId && {
-        FilterExpression: "paperId = :paperId",
-        ExpressionAttributeValues: {
-          ...expressionAttributeValues,
-          ":paperId": paperId,
-        },
-      }),
-    };
-
-    const data = await dynamoDB.query(params).promise();
-    return data.Items as ReadNode[];
+  /* BaseService implementation */
+  async create(args: Prisma.ReadNodeCreateArgs): Promise<ReadNode> {
+    return await this.model.create(args);
   }
 
-  async deleteMany(args: {
-    where: { userId: string };
-  }): Promise<{ count: number }> {
-    const { userId } = args.where;
+  async delete(args: Prisma.ReadNodeDeleteArgs): Promise<ReadNode> {
+    return await this.model.delete(args);
+  }
 
-    const items = await this.findMany({ where: { userId } });
-    const deletePromises = items.map((item) =>
-      dynamoDB.delete({ TableName: TABLE_NAME, Key: { id: item.id } }).promise()
-    );
+  async deleteMany(
+    args: Prisma.ReadNodeDeleteManyArgs
+  ): Promise<Prisma.BatchPayload> {
+    return await this.model.deleteMany(args);
+  }
 
-    await Promise.all(deletePromises);
-    return { count: items.length };
+  async find(args: Prisma.ReadNodeFindFirstArgs): Promise<ReadNode | null> {
+    return await this.model.findFirst(args);
+  }
+
+  async findMany(args: Prisma.ReadNodeFindManyArgs): Promise<ReadNode[]> {
+    return await this.model.findMany(args);
+  }
+
+  async get(id: string): Promise<ReadNode | null> {
+    return await this.model.findFirst({
+      where: { id },
+    });
+  }
+
+  async update(
+    id: string,
+    data: Prisma.ReadNodeUpdateInput
+  ): Promise<ReadNode> {
+    return await this.model.update({
+      where: { id },
+      data,
+    });
+  }
+
+  async upsert(args: Prisma.ReadNodeUpsertArgs): Promise<ReadNode> {
+    return await this.model.upsert(args);
+  }
+
+  async findReadsForPopularPapers(
+    startDate: Date,
+    endDate: Date
+  ): Promise<ReadNode[]> {
+    return await this.model.findMany({
+      where: {
+        createdAt: {
+          gte: startDate,
+          lte: endDate,
+        },
+      },
+      select: {
+        id: true,
+        createdAt: true,
+        globalId: true,
+        paperId: true,
+        paperSectionId: true,
+        paperSectionParagraphId: true,
+        updatedAt: true,
+        userId: true,
+      },
+    });
   }
 
   async getNodesByPaperSectionParagraphIds(
@@ -129,24 +105,6 @@ export class ReadNodeService {
       console.error("Unable to fetch nodes by paperSectionParagraphIds", error);
       return [];
     }
-  }
-
-  async findReadsForPopularPapers(
-    startDate: Date,
-    endDate: Date
-  ): Promise<ReadNode[]> {
-    const params = {
-      TableName: TABLE_NAME,
-      FilterExpression: "createdAt BETWEEN :startDate AND :endDate",
-      ExpressionAttributeValues: {
-        ":startDate": startDate.toISOString(),
-        ":endDate": endDate.toISOString(),
-      },
-      ProjectionExpression: "paperId",
-    };
-
-    const data = await dynamoDB.scan(params).promise();
-    return data.Items as ReadNode[];
   }
 }
 

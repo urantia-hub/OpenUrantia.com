@@ -32,7 +32,7 @@ async function handlePOST(
       globalId,
       userId: user.id,
       createdAt: {
-        gte: moment.utc().subtract(5, "minutes").toISOString(),
+        gte: moment.utc().subtract(5, "minutes").toDate(),
       },
     },
   });
@@ -43,13 +43,11 @@ async function handlePOST(
   // Create the read node.
   const readNode = await readNodeService.create({
     data: {
-      createdAt: moment.utc().toISOString(),
       globalId,
       paperId,
       paperSectionId,
       paperSectionParagraphId,
-      updatedAt: moment.utc().toISOString(),
-      userId: user.id,
+      user: { connect: { id: user.id } },
     },
   });
 

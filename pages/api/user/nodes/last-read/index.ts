@@ -29,7 +29,7 @@ async function handleGET(_: NextApiRequest, res: NextApiResponse, user: User) {
   // Define the time range (e.g., last 10 minutes from the latest read node)
   const timeFrameStart = moment(latestReadNode.createdAt)
     .subtract(10, "minutes")
-    .toISOString();
+    .toDate();
 
   // Get read nodes within the time range
   const readNodesInRange = await readNodeService.findMany({
