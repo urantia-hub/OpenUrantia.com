@@ -37,7 +37,7 @@ const AskAI = ({
   const getPrecedingContext = (currentNode: UBNode, allNodes: UBNode[]) => {
     // Find the index of the current node
     const currentIndex = allNodes.findIndex(
-      (n) => n.globalId === currentNode.globalId
+      (n) => n.globalId === currentNode.globalId,
     );
     if (currentIndex === -1) return [];
 
@@ -114,7 +114,7 @@ ${precedingParagraphs.map((p, i) => `[${i + 1}] ${p}`).join("\n\n")}`;
         } catch (error) {
           console.error("Error fetching explanation:", error);
           setError(
-            "We're having trouble reaching our servers. Please try again later."
+            "We're having trouble reaching our servers. Please try again later.",
           );
         } finally {
           setLoading(false);
@@ -174,7 +174,11 @@ ${precedingParagraphs.map((p, i) => `[${i + 1}] ${p}`).join("\n\n")}`;
   const copyToClipboard = async () => {
     if (response) {
       try {
-        await navigator.clipboard.writeText(response);
+        const ref = node?.standardReferenceId
+          ? `(${node.standardReferenceId}) `
+          : "";
+        const textToCopy = `${ref}${selectedText}\n\n${response}`;
+        await navigator.clipboard.writeText(textToCopy);
         setCopied(true);
         setTimeout(() => setCopied(false), 2000);
       } catch (err) {
@@ -196,11 +200,13 @@ ${precedingParagraphs.map((p, i) => `[${i + 1}] ${p}`).join("\n\n")}`;
               .filter(
                 (s) =>
                   s.type === "section" &&
-                  nodes.indexOf(s) <= nodes.indexOf(node)
+                  nodes.indexOf(s) <= nodes.indexOf(node),
               )
-              .map((s) => nodes.indexOf(s))
-          )
+              .map((s) => nodes.indexOf(s)),
+          ),
     )?.sectionTitle || "Introduction";
+
+  const ref = node?.standardReferenceId ? `(${node.standardReferenceId}) ` : "";
 
   return (
     <div
@@ -237,7 +243,8 @@ ${precedingParagraphs.map((p, i) => `[${i + 1}] ${p}`).join("\n\n")}`;
               Text to Explain:
             </p>
             <p className="text-sm text-gray-900 dark:text-white">
-              &quot;{selectedText}&quot;
+              {ref}
+              {selectedText}
             </p>
           </div>
 
@@ -266,7 +273,7 @@ ${precedingParagraphs.map((p, i) => `[${i + 1}] ${p}`).join("\n\n")}`;
                   <div>
                     <button
                       onClick={copyToClipboard}
-                      className="mt-4 flex items-center text-center justify-center py-2 px-3 border-0 dark:py-2 dark:px-3 dark:border-0 text-center rounded bg-blue-400 hover:bg-blue-500 dark:bg-blue-500 hover:dark:bg-blue-600 hover:no-underline transition-colors duration-300 ease-in-out"
+                      className="mt-4 flex items-center gap-2 justify-center py-2 px-3 border-0 dark:py-2 dark:px-3 dark:border-0 rounded bg-blue-400 hover:bg-blue-500 dark:bg-blue-500 hover:dark:bg-blue-600 hover:no-underline transition-colors duration-300 ease-in-out"
                       title="Copy to clipboard"
                     >
                       {copied ? (
