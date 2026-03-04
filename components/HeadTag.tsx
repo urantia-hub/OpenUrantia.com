@@ -6,14 +6,18 @@ const DEFAULT_META_DESCRIPTION =
 type HeadTagProps = {
   metaDescription?: string;
   titlePrefix?: string;
+  canonicalUrl?: string;
 };
 
-const HeadTag = ({ metaDescription, titlePrefix }: HeadTagProps) => {
+const HeadTag = ({ metaDescription, titlePrefix, canonicalUrl }: HeadTagProps) => {
   return (
     <Head>
       <title>
         {titlePrefix ? `${titlePrefix} | UrantiaHub` : "UrantiaHub"}
       </title>
+
+      {/* Canonical URL */}
+      {canonicalUrl && <link rel="canonical" href={canonicalUrl} />}
 
       {/* Favicon */}
       <link rel="icon" href="/logo-symbol.ico" />

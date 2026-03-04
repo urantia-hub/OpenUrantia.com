@@ -497,6 +497,20 @@ const HomePage = () => {
             <p className="text-center mt-16 text-lg md:text-xl text-slate-300 max-w-3xl mx-auto leading-relaxed">
               These topics represent the four major parts of the Urantia Papers.
             </p>
+
+            <div className="text-center mt-8">
+              <Link
+                href="https://urantia.dev"
+                className="inline-flex items-center gap-2 text-blue-300 hover:text-blue-100 transition-colors duration-200 text-lg"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                For Developers: Explore the Urantia Papers API
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                </svg>
+              </Link>
+            </div>
           </div>
         </section>
 
