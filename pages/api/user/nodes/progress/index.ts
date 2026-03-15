@@ -1,5 +1,4 @@
 // Node modules.
-import axios from "axios";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { User } from "@prisma/client";
 // Relative modules.
@@ -7,6 +6,7 @@ import ReadNodeService from "@/services/readNode";
 import UserService from "@/services/user";
 import getSessionDetails from "@/utils/getSessionDetails";
 import { withSentry } from "@/middleware/sentry";
+import { getPaperParagraphCounts } from "@/libs/urantiaApi/paperCounts";
 
 const readNodeService = new ReadNodeService();
 const userService = new UserService();
@@ -38,24 +38,39 @@ async function handleGET(
   }
 
   try {
-    const { data } = await axios.post(
-      `${process.env.NEXT_PUBLIC_URANTIA_DEV_API_HOST}/api/v1/urantia-book/progress`,
-      {
-        paperIds,
-        readGlobalIds: nodes.map((node) => node.globalId),
-      },
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    // Get paragraph counts for each paper from the API (cached)
+    const paperCounts = await getPaperParagraphCounts();
 
-    res.status(200).json(data);
+    // Count read nodes per paper
+    const readCountsByPaper = new Map<string, Set<string>>();
+    for (const node of nodes) {
+      if (!readCountsByPaper.has(node.paperId)) {
+        readCountsByPaper.set(node.paperId, new Set());
+      }
+      readCountsByPaper.get(node.paperId)!.add(node.globalId);
+    }
+
+    // Calculate progress for each paper
+    const progressData: ProgressResult[] = paperIds.map((pid) => {
+      const totalParagraphs = paperCounts.get(pid) ?? 0;
+      const readCount = readCountsByPaper.get(pid)?.size ?? 0;
+      const progress =
+        totalParagraphs > 0
+          ? Math.round((readCount / totalParagraphs) * 100)
+          : 0;
+
+      return {
+        paperId: pid,
+        paperTitle: "", // Will be populated by the frontend from TOC data
+        progress: Math.min(progress, 100),
+      };
+    });
+
+    res.status(200).json({ data: progressData });
   } catch (error) {
     console.error(error);
     res.status(500).json({
-      message: "Unable to fetch progress from Urantia.dev.",
+      message: "Unable to calculate progress.",
     });
   }
 }

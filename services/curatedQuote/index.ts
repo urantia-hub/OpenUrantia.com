@@ -3,7 +3,6 @@ import { CuratedQuote, Prisma, PrismaClient } from "@prisma/client";
 // Relative modules.
 import BaseService from "@/services/base";
 import { getPrismaClient } from "@/libs/prisma/client";
-import axios from "axios";
 
 const prisma = getPrismaClient();
 
@@ -128,15 +127,13 @@ export class CuratedQuoteService implements BaseService<CuratedQuote> {
     return enrichedQuotes;
   }
 
-  async getNodeByGlobalId(globalId: string): Promise<any> {
+  async getNodeByGlobalId(globalId: string): Promise<UBNode | null> {
     try {
-      const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_URANTIA_DEV_API_HOST}/api/v1/urantia-book/paragraphs/${globalId}`
-      );
-      return response.data?.data;
+      const { fetchParagraph } = await import("@/libs/urantiaApi/client");
+      return await fetchParagraph(globalId);
     } catch (error) {
-      console.error("Unable to fetch nodes by globalIds", error);
-      return [];
+      console.error("Unable to fetch node by globalId", error);
+      return null;
     }
   }
 }

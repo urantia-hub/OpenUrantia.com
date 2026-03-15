@@ -1,5 +1,4 @@
 // Node modules.
-import axios from "axios";
 import { Bookmark, Prisma, PrismaClient } from "@prisma/client";
 // Relative modules.
 import BaseService from "@/services/base";
@@ -68,7 +67,7 @@ export class BookmarkService implements BaseService<Bookmark> {
   getUserBookmarksWithDetails = async (
     userId: string,
     filter: { paperId?: number }
-  ): Promise<(Bookmark & UBNode)[]> => {
+  ): Promise<any[]> => {
     // Handle fetching all bookmarks for a user.
     console.log(
       "[getBookmarksWithDetails] Fetching bookmarks with filter:",
@@ -123,16 +122,10 @@ export class BookmarkService implements BaseService<Bookmark> {
 
   async getNodesByPaperSectionParagraphIds(
     paperSectionParagraphIds: string[]
-  ): Promise<any> {
+  ): Promise<UBNode[]> {
     try {
-      const response = await axios.get(
-        `${
-          process.env.NEXT_PUBLIC_URANTIA_DEV_API_HOST
-        }/api/v1/urantia-book/paragraphs?paperSectionParagraphIds=${paperSectionParagraphIds.join(
-          ","
-        )}`
-      );
-      return response.data?.data?.results;
+      const { fetchParagraphs } = await import("@/libs/urantiaApi/client");
+      return await fetchParagraphs(paperSectionParagraphIds);
     } catch (error) {
       console.error("Unable to fetch nodes by paperSectionParagraphIds", error);
       return [];

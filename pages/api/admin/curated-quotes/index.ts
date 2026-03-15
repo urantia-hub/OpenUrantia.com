@@ -77,12 +77,13 @@ async function handleGET(req: NextApiRequest, res: NextApiResponse) {
   }
 
   // Fetch node information for each quote
+  const { fetchParagraph } = await import("@/libs/urantiaApi/client");
   const nodePromises = curatedQuotes.map(async (quote) => {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_URANTIA_DEV_API_HOST}/api/v1/urantia-book/paragraphs/${quote.globalId}`
-    );
-    const data = await res.json();
-    return data?.data || null;
+    try {
+      return await fetchParagraph(quote.globalId);
+    } catch {
+      return null;
+    }
   });
 
   const nodes = await Promise.all(nodePromises);

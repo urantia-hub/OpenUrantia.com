@@ -1,11 +1,8 @@
-# Urantia Ecosystem
+# UrantiaHub
 
-Two Next.js applications that together provide a full-featured reading platform for the Urantia Book.
+A Next.js web application for reading, studying, and engaging with the Urantia Book. Live at [urantiahub.com](https://urantiahub.com).
 
-| App | URL | Port | Purpose |
-|-----|-----|------|---------|
-| **urantia-hub** | [urantiahub.com](https://urantiahub.com) | 3001 | User-facing reading, engagement, and discovery app |
-| **urantia-api** | [urantia.dev](https://urantia.dev) | 3000 | Content delivery and search API |
+Paper content is served by [api.urantia.dev](https://urantia.dev) — a separate Hono + Drizzle API on Cloudflare Workers. UrantiaHub fetches content on demand and stores only user data locally.
 
 ---
 
@@ -18,12 +15,12 @@ Two Next.js applications that together provide a full-featured reading platform 
                            │
                            ▼
 ┌─────────────────────────────────────────────────────────┐
-│                   urantia-hub (Next.js)                 │
+│                 UrantiaHub (Next.js 14)                  │
 │                   urantiahub.com :3001                   │
 │                                                         │
 │  Pages: reading, search, explore, progress, my-library  │
 │  Auth: NextAuth (magic link + Google OAuth)             │
-│  AI: Vercel AI SDK (OpenAI / xAI)                      │
+│  AI: Vercel AI SDK (Anthropic Claude / OpenAI / xAI)   │
 │  Email: Resend + SendGrid                               │
 │                                                         │
 │  ┌─────────┐  ┌──────────┐  ┌────────────────────────┐ │
@@ -36,17 +33,17 @@ Two Next.js applications that together provide a full-featured reading platform 
         │             │                  │ HTTP fetch
         ▼             ▼                  ▼
    PostgreSQL      Redis     ┌──────────────────────────┐
-                             │  urantia-api (Next.js)   │
-                             │  urantia.dev :3000        │
+                             │  api.urantia.dev          │
+                             │  (Hono + Cloudflare       │
+                             │   Workers)                │
                              │                          │
-                             │  REST API: /api/v1/...   │
                              │  Content: 197 papers     │
-                             │  Search: Algolia-backed  │
-                             │  Progress: calculation   │
+                             │  Search: Postgres FTS    │
+                             │  Semantic: pgvector      │
                              │                          │
                              │  ┌────────┐ ┌─────────┐ │
-                             │  │Algolia │ │  Redis  │ │
-                             │  │(Index) │ │ (Cache) │ │
+                             │  │Supabase│ │pgvector │ │
+                             │  │Postgres│ │(embed.) │ │
                              │  └────────┘ └─────────┘ │
                              └──────────────────────────┘
                                          │
@@ -56,130 +53,50 @@ Two Next.js applications that together provide a full-featured reading platform 
 
 ### Tech Stack
 
-| Layer | urantia-hub | urantia-api |
-|-------|-------------|-------------|
-| Framework | Next.js 14 (Pages Router) | Next.js 14 (Pages Router) |
-| Language | TypeScript | TypeScript |
-| Database | PostgreSQL via Prisma | PostgreSQL via Prisma (minimal) |
-| Caching | Redis (ioredis) | Redis (ioredis) |
-| Search | Proxied via urantia-api | Algolia |
-| Auth | NextAuth.js | NextAuth.js (disabled) |
-| AI | Vercel AI SDK, OpenAI, xAI | OpenAI (summary generation) |
-| Email | Resend, SendGrid | -- |
-| Monitoring | Sentry | Sentry |
-| Styling | Tailwind CSS + once-ui | Tailwind CSS |
-| Hosting | Vercel | Vercel |
-| Audio CDN | CloudFront | S3 + CloudFront |
+| Layer | Technology |
+|-------|------------|
+| Framework | Next.js 14 (Pages Router) |
+| Language | TypeScript |
+| Database | PostgreSQL via Prisma |
+| Caching | Redis (ioredis) |
+| Search | Proxied via api.urantia.dev (Postgres FTS + pgvector semantic search) |
+| Auth | NextAuth.js (email magic link + Google OAuth) |
+| AI | Vercel AI SDK — Anthropic Claude (default), OpenAI, xAI |
+| Email | Resend (magic links) + SendGrid (transactional) |
+| Monitoring | Sentry (client, server, edge) |
+| Styling | Tailwind CSS + once-ui design system |
+| Hosting | Vercel |
+| Audio CDN | CloudFront |
 
 ---
 
-## urantia-api Deep Dive
+## External API (api.urantia.dev)
 
-### Purpose
-
-REST API serving the full text of the Urantia Book with search, reading progress calculation, and content discovery. Content is stored as JSON files on disk and indexed in Algolia for search.
-
-### API Endpoints
-
-All endpoints return a standardized response: `{ data, error, message, success }`.
+Paper content is served by `api.urantia.dev` (docs at [urantia.dev](https://urantia.dev)). The hub never stores paper text locally — it fetches on demand and caches with Redis.
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| GET | `/api/v1/urantia-book/toc` | Table of contents — all papers and parts |
-| GET | `/api/v1/urantia-book/read` | Read paragraphs with filters (paperId, sectionId, globalId) |
-| GET | `/api/v1/urantia-book/paragraphs` | Retrieve multiple paragraphs by IDs |
-| GET | `/api/v1/urantia-book/paragraphs/[globalId]` | Retrieve a single paragraph by globalId |
-| GET | `/api/v1/urantia-book/paragraphs/random` | Random paragraph from the entire book |
-| POST | `/api/v1/urantia-book/search` | Full-text search (Algolia-backed, Redis-cached with 3-day TTL) |
-| POST | `/api/v1/urantia-book/progress` | Calculate reading progress across papers given read globalIds |
-| POST | `/api/v1/urantia-book/search/similarity` | Similarity search (placeholder, not yet implemented) |
-
-### Data Model
-
-Content is **not** stored in PostgreSQL. The pipeline is:
-
-```
-HTML source files → convert-html-to-json.sh → JSON files → Algolia index
-  public/data/html/eng/    process_json.py       public/data/json/eng/
-                           (adds labels)          000.json – 196.json
-```
-
-Each JSON file contains an array of nodes with structure:
-- `type`: `"paper"` | `"section"` | `"paragraph"`
-- `globalId`: `"partId:paperId.sectionId.paragraphId"` (e.g., `"1:2.0.1"`)
-- `text` / `htmlText`: plain and HTML content
-- `paperId`, `paperSectionId`, `paperSectionParagraphId`: numeric identifiers
-- `paperTitle`, `sectionTitle`: human-readable titles
-- `labels`: topic tags (e.g., `["Theology", "Philosophy"]`)
-- `language`: language code (e.g., `"eng"`)
-
-The PostgreSQL database is minimal — only `User` and `UserApiKey` models for API key management.
-
-### Scripts & Data Pipeline
-
-| Script | Command | Purpose |
-|--------|---------|---------|
-| `convert-html-to-json.sh` | `yarn convert-html-to-json` | Convert HTML source → JSON |
-| `process_json.py` | -- | Add topic labels to JSON files |
-| `algolia_update_ub_node_index.ts` | `yarn update-algolia-ub-node-index` | Upload JSON to Algolia index |
-| `algolia_update_ub_node_index_settings.ts` | `yarn update-algolia-ub-node-index_settings` | Configure Algolia index settings |
-| `generate_paper_summaries.ts` | `yarn generate-summaries` | Generate AI summaries via OpenAI |
-| `upload_mp3s_to_s3.sh` | `yarn upload-audio-s3` | Upload audio files to S3 |
-| `create_elevenlabs_chapters.sh` | -- | Generate audiobook via ElevenLabs TTS |
-| `sync_json_to_urantia_api.sh` | `yarn publish-open-source-data` | Sync JSON to API |
-
-Full pipeline to update content: `yarn update-algolia:dev` (or `:prod`) runs convert → index → configure.
-
-### Key Directories
-
-```
-urantia-api/
-├── pages/api/v1/urantia-book/   # All API route handlers
-├── public/data/
-│   ├── html/eng/                 # Source HTML files
-│   ├── json/eng/                 # Processed JSON (000.json–196.json)
-│   ├── txt/eng/papers/           # Plain text per paper
-│   ├── mp3/                      # Audio narration files
-│   └── summaries/                # AI-generated paper summaries
-├── scripts/                      # Data pipeline scripts (TS, Python, Shell)
-├── utils/
-│   ├── algolia.ts                # Algolia client + result formatting
-│   ├── apiResponse.ts            # Standardized API response helper
-│   ├── redis.ts                  # Redis singleton client
-│   ├── typeUtils.ts              # Input validation (enforceGlobalId, etc.)
-│   └── config.ts                 # Algolia/GitHub config from env vars
-├── middleware.ts                  # CORS middleware for all /api/* routes
-└── prisma/schema.prisma          # User + UserApiKey models
-```
-
-### Environment Variables (urantia-api)
-
-| Variable | Purpose |
-|----------|---------|
-| `ALGOLIA_APP_ID`, `ALGOLIA_ADMIN_API_KEY` | Algolia search backend |
-| `ALGOLIA_UB_NODE_INDEX_NAME` | Index name (`dev_UB_NODE` / `prod_UB_NODE`) |
-| `DATABASE_URL` | PostgreSQL connection |
-| `REDIS_URL` | Redis cache |
-| `OPENAI_API_KEY` | AI summary generation |
-| `PORT` | Server port (default 3000) |
-| `ALLOWED_ORIGIN`, `ALLOWED_METHODS`, `ALLOWED_HEADERS` | CORS configuration |
+| GET | `/toc` | Table of contents |
+| GET | `/papers` | List all 197 papers |
+| GET | `/papers/{id}` | Single paper with all paragraphs |
+| GET | `/paragraphs/{ref}` | Paragraph by globalId, standardReferenceId, or paperSectionParagraphId |
+| GET | `/paragraphs/{ref}/context` | Paragraph with surrounding context |
+| GET | `/paragraphs/random` | Random paragraph |
+| POST | `/search` | Full-text search |
+| POST | `/search/semantic` | Semantic search via pgvector embeddings |
+| GET | `/audio` | Audio file URLs |
+| GET | `/health` | Health check |
 
 ---
 
-## urantia-hub Deep Dive
-
-### Purpose
-
-User-facing web app for reading, studying, and engaging with the Urantia Book. Paper content is fetched from urantia-api — it is **not** stored in the hub's database.
-
-### Features
+## Features
 
 | Feature | Description |
 |---------|-------------|
 | **Reading** | Full paper reader with section navigation and paragraph-level tracking |
 | **Bookmarks** | Save paragraphs with optional categories |
 | **Notes** | Attach personal notes to any paragraph (max 1000 chars) |
-| **AI Chat** | AI-powered explanations of passages (Vercel AI SDK, cached in `AIExplanation`) |
+| **AI Chat** | AI-powered explanations of passages (Claude Haiku 4.5 default, cached) |
 | **Search** | Full-text search with suggestions, popular/recent queries |
 | **Progress** | Per-paper reading completion percentages |
 | **Audio** | Audio narration from CloudFront CDN with Spotify episode links |
@@ -188,7 +105,9 @@ User-facing web app for reading, studying, and engaging with the Urantia Book. P
 | **Email** | Magic link auth, daily quotes, continue reading reminders, changelog updates |
 | **Admin** | Curated quotes management, changelog email broadcasting |
 
-### Page Routes
+---
+
+## Page Routes
 
 **Core Reading:**
 - `/` — Homepage with hero, features overview, featured passages
@@ -206,20 +125,16 @@ User-facing web app for reading, studying, and engaging with the Urantia Book. P
 - `/settings` — User preferences and notification settings
 - `/settings/interests` — Topic interest management
 - `/onboarding/interests` — First-time interest selection
-- `/auth/sign-in` — Email magic link + Google OAuth login
-- `/auth/verify-request` — Magic link confirmation
-- `/auth/sign-out` — Logout
-- `/auth/error` — Authentication error
+- `/auth/sign-in`, `/auth/verify-request`, `/auth/sign-out`, `/auth/error`
 
 **Content & Legal:**
-- `/changelog` — Release notes
-- `/community-resources` — Links to community resources
-- `/blockchain-archive` — Blockchain archive information
+- `/changelog`, `/community-resources`, `/blockchain-archive`
 - `/privacy-policy`, `/cookie-policy`, `/terms-of-service`
-- `/more` — Additional navigation
 - `/admin/curated-quotes` — Admin curated quotes management
 
-### API Routes (Internal)
+---
+
+## API Routes (Internal)
 
 **User Management:**
 - `GET/PUT/DELETE /api/user` — Profile, notification prefs, account deletion
@@ -239,7 +154,7 @@ User-facing web app for reading, studying, and engaging with the Urantia Book. P
 - `GET/POST /api/user/interests` — Topic interest preferences
 
 **Search:**
-- `POST /api/urantia-book/search` — Proxy to urantia.dev search
+- `POST /api/urantia-book/search` — Proxy to api.urantia.dev search
 - `POST/GET /api/searches` — Track search queries
 - `GET /api/searches/popular` — Popular searches
 - `GET /api/searches/recent` — User's recent searches
@@ -260,29 +175,33 @@ User-facing web app for reading, studying, and engaging with the Urantia Book. P
 - `GET /api/redirect/user/read` — Redirect to last visited paper
 - `GET /api/redirect/papers/by-standard-reference-id/[id]` — Redirect by reference ID
 
-### Service Layer
+---
+
+## Service Layer
 
 All services extend `services/base/index.ts` (BaseService) providing: `create`, `find`, `findMany`, `get`, `update`, `upsert`, `delete`, `deleteMany`, `count`.
 
 | Service | Model | Extra Methods |
 |---------|-------|---------------|
-| `UserService` | User | -- |
+| `UserService` | User | — |
 | `BookmarkService` | Bookmark | `getUserBookmarksWithDetails()` — enriches with paragraph content from API |
 | `NoteService` | Note | `getUserNotesWithDetails()` — enriches with paragraph content from API |
-| `ReadNodeService` | ReadNode | -- |
-| `PaperService` | Paper | -- |
-| `LabelService` | Label | -- |
-| `PaperLabelService` | PaperLabel | -- |
-| `ShareService` | Share | -- |
-| `UserSearchService` | -- | Search history tracking |
-| `UserInterestService` | UserInterest | -- |
+| `ReadNodeService` | ReadNode | — |
+| `PaperService` | Paper | — |
+| `LabelService` | Label | — |
+| `PaperLabelService` | PaperLabel | — |
+| `ShareService` | Share | — |
+| `UserSearchService` | — | Search history tracking |
+| `UserInterestService` | UserInterest | — |
 | `AIExplanationService` | AIExplanation | AI response caching |
-| `CuratedQuoteService` | CuratedQuote | -- |
+| `CuratedQuoteService` | CuratedQuote | — |
 | `SentQuoteService` | SentQuote | Per-user quote tracking |
 | `AccountService` | Account | NextAuth account linking |
 | `SessionService` | Session | Session management |
 
-### Database Schema (Prisma)
+---
+
+## Database Schema (Prisma)
 
 **Core User Models:**
 - `User` — email, name, image, admin flag, email preferences (4 toggles), last visited tracking
@@ -294,7 +213,7 @@ All services extend `services/base/index.ts` (BaseService) providing: `create`, 
 - `Bookmark` — globalId, paperId, sectionId, paragraphId, optional category, userId
 - `Note` — globalId, paperId, sectionId, paragraphId, text, userId
 - `ReadNode` — tracks individual paragraph reads per user
-- `Share` — paragraph shares with platform enum (COPY_LINK, COPY_TEXT, FACEBOOK, INSTAGRAM, WHATSAPP, X) and count
+- `Share` — paragraph shares with platform enum and count
 - `AIExplanation` — cached AI responses keyed by globalId
 
 **Content Metadata Models:**
@@ -305,7 +224,38 @@ All services extend `services/base/index.ts` (BaseService) providing: `create`, 
 - `CuratedQuote` — admin-selected quotes with sentAt tracking
 - `SentQuote` — per-user quote delivery tracking
 
-### Authentication Flow
+---
+
+## Data Model & Node System
+
+### Content Hierarchy
+
+```
+Part (4 parts)
+ └── Paper (197 papers, 0–196)
+      └── Section (variable per paper)
+           └── Paragraph (the atomic unit / "node")
+```
+
+### globalId Format
+
+Every paragraph has a unique `globalId`: `"partId:paperId.sectionId.paragraphId"`
+
+Example: `"1:2.0.1"` = Part 1, Paper 2, Section 0, Paragraph 1
+
+### User Interactions → Nodes
+
+All user interactions reference paragraphs using four identifiers:
+- `globalId` — unique across the entire book
+- `paperId` — which paper (0–196)
+- `paperSectionId` — which section within the paper
+- `paperSectionParagraphId` — which paragraph within the section
+
+Models that reference nodes: `Bookmark`, `Note`, `ReadNode`, `Share`, `AIExplanation`, `CuratedQuote`, `SentQuote`
+
+---
+
+## Authentication Flow
 
 NextAuth.js configured in `pages/api/auth/[...nextauth].ts`:
 
@@ -315,15 +265,20 @@ NextAuth.js configured in `pages/api/auth/[...nextauth].ts`:
 4. **Route Protection** — `utils/getSessionDetails.ts` extracts session in API routes
 5. **Custom Pages** — `/auth/sign-in`, `/auth/verify-request`, `/auth/error`, `/auth/sign-out`
 
-### AI Integration
+---
+
+## AI Integration
 
 - **SDK**: Vercel AI SDK for streaming responses
-- **Models**: OpenAI (`o1-mini` default) or xAI (`grok-beta`), configurable via `AI_MODEL` env var
+- **Default Model**: Anthropic Claude Haiku 4.5 (`claude-haiku-4-5-20251001`)
+- **Supported Models**: Claude Haiku 4.5, Claude Sonnet 4.6, Claude Opus 4.6, Grok Beta, OpenAI o1-mini — configurable via `AI_MODEL` env var
 - **Caching**: Responses cached in `AIExplanation` model keyed by globalId — same paragraph never re-queried
 - **Context**: Current paragraph text + paper context sent with each request
 - **Endpoint**: `POST /api/chat` with streaming response
 
-### Email System
+---
+
+## Email System
 
 **Providers**: Resend (magic link auth) + SendGrid (transactional emails)
 
@@ -335,7 +290,7 @@ NextAuth.js configured in `pages/api/auth/[...nextauth].ts`:
 - `baseEmailTemplate.ts` — shared styling
 
 **Cron Jobs** (secured via `CRON_SECRET` header):
-- `sendDailyQuote` — picks unsent curated quote, emails to subscribed users, tracks delivery via SentQuote
+- `sendDailyQuote` — picks unsent curated quote, emails to subscribed users
 - `sendContinueReadingAfter24Hours` — finds users inactive 24h+, sends resume link
 
 **User Preferences** (4 independent toggles):
@@ -344,17 +299,21 @@ NextAuth.js configured in `pages/api/auth/[...nextauth].ts`:
 - `emailContinueReadingEnabled` — inactivity reminders
 - `emailChangelogEnabled` — product updates
 
-### Caching Strategy
+---
+
+## Caching Strategy
 
 Redis caching via `libs/redis/`:
 
 | Key Pattern | TTL | Purpose |
 |-------------|-----|---------|
 | Most-read papers | 1 week | Explore page top papers |
-| Search results (api) | 3 days | Algolia search response cache |
+| Search results (api) | 3 days | Search response cache |
 | Progress calculation (api) | 3 days | Paper progress percentages |
 
-### Key Directories
+---
+
+## Key Directories
 
 ```
 urantia-hub/
@@ -388,7 +347,7 @@ urantia-hub/
 ├── libs/
 │   ├── prisma/client.ts          # Singleton Prisma client
 │   ├── redis/                    # Redis client + helpers
-│   └── ...                       # Other utilities
+│   └── ...
 ├── utils/
 │   ├── config.ts                 # Audio config, reading speed, Spotify IDs
 │   ├── paperFormatters.ts        # Paper ID ↔ URL conversions
@@ -405,63 +364,6 @@ urantia-hub/
 └── prisma/schema.prisma          # 15 models
 ```
 
-### Environment Variables (urantia-hub)
-
-| Variable | Purpose |
-|----------|---------|
-| `DATABASE_URL` | PostgreSQL connection |
-| `REDIS_URL` | Redis cache |
-| `NEXT_PUBLIC_URANTIA_DEV_API_HOST` | urantia-api URL (`https://urantia.dev`) |
-| `NEXT_PUBLIC_AUDIO_FILES_CDN` | CloudFront CDN for audio |
-| `NEXT_PUBLIC_HOST` | Hub public URL |
-| `NEXTAUTH_URL`, `NEXTAUTH_SECRET` | NextAuth config |
-| `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` | Google OAuth |
-| `RESEND_API_KEY`, `EMAIL_FROM` | Resend (magic link emails) |
-| `SENDGRID_API_KEY`, `SENDGRID_FROM` | SendGrid (transactional emails) |
-| `SENDGRID_SEND_DAILY_QUOTE_TEMPLATE_ID` | Daily quote email template |
-| `SENDGRID_SEND_CONTINUE_READING_TEMPLATE_ID` | Continue reading template |
-| `OPENAI_API_KEY` | OpenAI for AI explanations |
-| `XAI_API_KEY` | xAI (Grok) alternative model |
-| `AI_MODEL` | Model selection (default `o1-mini`) |
-| `CRON_SECRET` | Secures cron job endpoints |
-| `ADMIN_SECRET` | Secures admin endpoints |
-| `SEED_EMAIL` | Email for database seeding |
-| `SENTRY_AUTH_TOKEN` | Sentry error tracking |
-| `FIREBASE_SERVICE_ACCOUNT_KEY` | Firebase integration |
-
----
-
-## Data Model & Node System
-
-### Content Hierarchy
-
-```
-Part (4 parts)
- └── Paper (197 papers, 0–196)
-      └── Section (variable per paper)
-           └── Paragraph (the atomic unit / "node")
-```
-
-### globalId Format
-
-Every paragraph has a unique `globalId`: `"partId:paperId.sectionId.paragraphId"`
-
-Example: `"1:2.0.1"` = Part 1, Paper 2, Section 0, Paragraph 1
-
-### User Interactions → Nodes
-
-All user interactions reference paragraphs using four identifiers:
-- `globalId` — unique across the entire book
-- `paperId` — which paper (0–196)
-- `paperSectionId` — which section within the paper
-- `paperSectionParagraphId` — which paragraph within the section
-
-Models that reference nodes: `Bookmark`, `Note`, `ReadNode`, `Share`, `AIExplanation`, `CuratedQuote`, `SentQuote`
-
-### Content Source
-
-Paper content lives in urantia-api (JSON files + Algolia index). The hub fetches content on demand via HTTP and caches with Redis. The hub's database stores only user data and interaction metadata — never the paper text itself.
-
 ---
 
 ## Getting Started
@@ -471,52 +373,69 @@ Paper content lives in urantia-api (JSON files + Algolia index). The hub fetches
 - Node.js 18+
 - PostgreSQL
 - Redis
-- Yarn
 
-### urantia-api Setup
-
-```bash
-cd urantia-api
-cp .env.example .env          # Fill in Algolia, Redis, PostgreSQL credentials
-yarn install
-npx prisma migrate dev        # Run database migrations
-npx prisma generate           # Generate Prisma client
-yarn update-algolia:dev       # Convert HTML → JSON → Algolia index
-yarn dev                      # Starts on http://localhost:3000
-```
-
-### urantia-hub Setup
+### Setup
 
 ```bash
 cd urantia-hub
 cp .env.example .env          # Fill in all credentials
-yarn install
+npm install
 npx prisma migrate dev        # Run database migrations
 npx prisma generate           # Generate Prisma client
 npm run seed                  # Seed papers, labels, paper-labels
-yarn dev                      # Starts on http://localhost:3001
+npm run dev                   # Starts on http://localhost:3001
 ```
 
-Make sure `NEXT_PUBLIC_URANTIA_DEV_API_HOST` in hub's `.env` points to the running API (default `http://localhost:3000`).
+Set `NEXT_PUBLIC_URANTIA_DEV_API_HOST` in `.env` to `https://api.urantia.dev` (or `http://localhost:3000` if running urantia-dev-api locally).
+
+---
+
+## Environment Variables
+
+Key environment variables (see `.env.example`):
+
+| Variable | Purpose |
+|----------|---------|
+| `DATABASE_URL` | PostgreSQL connection |
+| `REDIS_URL` | Redis cache |
+| `NEXT_PUBLIC_URANTIA_DEV_API_HOST` | api.urantia.dev URL |
+| `NEXT_PUBLIC_AUDIO_FILES_CDN` | CloudFront CDN for audio |
+| `NEXT_PUBLIC_HOST` | Hub public URL |
+| `NEXTAUTH_URL`, `NEXTAUTH_SECRET` | NextAuth config |
+| `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` | Google OAuth |
+| `RESEND_API_KEY`, `EMAIL_FROM` | Resend (magic link emails) |
+| `SENDGRID_API_KEY`, `SENDGRID_FROM` | SendGrid (transactional emails) |
+| `SENDGRID_SEND_DAILY_QUOTE_TEMPLATE_ID` | Daily quote email template |
+| `SENDGRID_SEND_CONTINUE_READING_TEMPLATE_ID` | Continue reading template |
+| `ANTHROPIC_API_KEY` | Anthropic Claude (default AI model) |
+| `OPENAI_API_KEY` | OpenAI for AI explanations |
+| `XAI_API_KEY` | xAI (Grok) alternative model |
+| `AI_MODEL` | Model selection (default `claude-haiku-4-5-20251001`) |
+| `CRON_SECRET` | Secures cron job endpoints |
+| `ADMIN_SECRET` | Secures admin endpoints |
+| `SEED_EMAIL` | Email for database seeding |
+| `SENTRY_AUTH_TOKEN` | Sentry error tracking |
 
 ---
 
 ## Deployment
 
-Both apps deploy to **Vercel**.
+UrantiaHub deploys to **Vercel**.
 
-**Cron Jobs** (Vercel Cron or external scheduler):
+**Cron Jobs** (Vercel Cron):
 - `POST /api/crons/sendDailyQuote` — daily
 - `POST /api/crons/sendContinueReadingAfter24Hours` — daily
 
 Both require `CRON_SECRET` header for authorization.
 
-**Error Tracking**: Sentry configured for client, server, and edge runtimes in both apps.
+**Error Tracking**: Sentry configured for client, server, and edge runtimes.
 
-**Audio Hosting**: MP3 files stored in S3, served via CloudFront CDN at the URL set in `NEXT_PUBLIC_AUDIO_FILES_CDN`.
+**Audio Hosting**: MP3 files stored in S3, served via CloudFront CDN.
 
 ---
 
 ## Further Reading
 
-See `CLAUDE.md` in this directory for development conventions, coding patterns, and guidance for working in the codebase.
+- See `CLAUDE.md` for development conventions and coding patterns
+- See `TODOS.md` for the prioritized improvement roadmap
+- API docs at [urantia.dev](https://urantia.dev)

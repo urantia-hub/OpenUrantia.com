@@ -1648,10 +1648,14 @@ export async function getStaticProps(context: any) {
     };
   }
 
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_URANTIA_DEV_API_HOST}/api/v1/urantia-book/read?paperId=${paperId}`
-  );
-  const paperData = await res.json();
+  const { fetchPaper } = await import("@/libs/urantiaApi/client");
+  let paperData;
+  try {
+    paperData = await fetchPaper(String(paperId));
+  } catch (error) {
+    console.error(`[getStaticProps] Failed to fetch paper ${paperId}:`, error);
+    return { props: { paperData: { data: { results: [] } } }, revalidate: 60 };
+  }
 
   // Add mp3 file URLs for each node if there is one.
   paperData?.data?.results?.forEach((node: UBNode) => {
@@ -1670,8 +1674,10 @@ export async function getStaticProps(context: any) {
 }
 
 export async function getStaticPaths() {
-  const allPaperIds = Array.from(Array(197).keys());
-  const paths = allPaperIds.map((paperId) => {
+  // Only pre-render a small set at build time to avoid rate-limiting the API.
+  // The rest are generated on-demand via fallback: "blocking".
+  const prerenderedPaperIds = [0, 1, 2, 3, 4, 5];
+  const paths = prerenderedPaperIds.map((paperId) => {
     const paperName = paperIdToUrl(String(paperId));
     return { params: { paperName } };
   });

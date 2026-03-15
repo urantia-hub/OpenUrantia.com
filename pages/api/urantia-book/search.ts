@@ -1,45 +1,16 @@
-// Node modules.
-import axios from "axios";
 import type { NextApiRequest, NextApiResponse } from "next";
+import { searchParagraphs } from "@/libs/urantiaApi/client";
 
 // POST handler
 const handlePOST = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     const { q } = req.body;
-    const url = `${process.env.NEXT_PUBLIC_URANTIA_DEV_API_HOST}/api/v1/urantia-book/search`;
+    const result = await searchParagraphs(q);
 
-    const response = await axios.post(
-      url,
-      {
-        acceptOnlyFullMatches: true,
-        q,
-        sortByRelevance: true,
-      },
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-
-    const filteredResults = response.data.data.results.filter(
-      (item: any) => item.type === "paragraph"
-    );
-    response.data.data.results = filteredResults;
-
-    // Return the data to the client
-    res.status(200).json(response.data);
+    // Return the data to the client (same wrapper shape as before)
+    res.status(200).json(result);
   } catch (error) {
-    // Axios wraps the original error in an 'AxiosError' object
-    if (axios.isAxiosError(error)) {
-      // Optionally handle Axios-specific errors here
-      res
-        .status(500)
-        .json({ error: "Error with Axios request", errorDetails: error });
-    } else {
-      // Handle non-Axios errors
-      res.status(500).json({ error: "Urantia.dev API error" });
-    }
+    res.status(500).json({ error: "Search failed" });
   }
 };
 

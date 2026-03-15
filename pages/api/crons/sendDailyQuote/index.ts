@@ -1,5 +1,4 @@
 // Node modules.
-import axios from "axios";
 import { Resend } from "resend";
 import type { NextApiRequest, NextApiResponse } from "next";
 // Relative modules.
@@ -47,15 +46,18 @@ const handleCron = async (_: NextApiRequest, res: NextApiResponse) => {
 
   // Get a random quote
   console.log("[sendDailyQuote] Fetching paragraph");
-  const response = await axios.get(
-    `${process.env.NEXT_PUBLIC_URANTIA_DEV_API_HOST}/api/v1/urantia-book/paragraphs/${curatedQuote.globalId}`
-  );
-  const paragraph = response?.data?.data;
+  const { fetchParagraph } = await import("@/libs/urantiaApi/client");
+  let paragraph: UBNode | null = null;
+  try {
+    paragraph = await fetchParagraph(curatedQuote.globalId);
+  } catch {
+    paragraph = null;
+  }
 
   if (!paragraph) {
     console.log(
-      "[sendDailyQuote] Failed to get a curated quote from urantia.dev",
-      response
+      "[sendDailyQuote] Failed to get a curated quote from urantia.dev for globalId:",
+      curatedQuote.globalId
     );
     return res.status(500).json({
       message: "Failed to get a curated quote from urantia.dev",
@@ -63,7 +65,10 @@ const handleCron = async (_: NextApiRequest, res: NextApiResponse) => {
     });
   }
 
-  const { globalId, text, paperId, standardReferenceId } = paragraph;
+  const globalId = paragraph.globalId;
+  const text = paragraph.text ?? "";
+  const paperId = paragraph.paperId;
+  const standardReferenceId = paragraph.standardReferenceId ?? "";
 
   // Fetch existing sent quotes for this globalId
   console.log("[sendDailyQuote] Fetching existing sent quotes");

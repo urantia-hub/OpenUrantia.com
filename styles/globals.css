@@ -221,6 +221,16 @@ select.select-selected {
   color: rgb(56 189 248); /* text-sky-400 */
 }
 
+.urantia-dev-highlighted {
+  color: rgb(45, 163, 214); /* text-sky-400 */
+  font-style: normal;
+  text-decoration: underline;
+}
+
+.dark .urantia-dev-highlighted {
+  color: rgb(56 189 248); /* text-sky-400 */
+}
+
 [id] { /* Target all elements with an ID */
   scroll-margin-top: 60px;
 }

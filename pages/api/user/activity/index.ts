@@ -28,7 +28,7 @@ async function handleGet(
   }
 
   let bookmarksWithDetails: (Bookmark & UBNode)[] = [];
-  let notesWithDetails = [];
+  let notesWithDetails: any[] = [];
 
   if (filterType === "all" || filterType === "bookmark") {
     console.log("[GET /api/user/activity] Fetching bookmarks");

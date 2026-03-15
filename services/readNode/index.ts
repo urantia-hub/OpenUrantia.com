@@ -1,5 +1,4 @@
 // Node modules.
-import axios from "axios";
 import { Prisma, PrismaClient, ReadNode } from "@prisma/client";
 // Relative modules.
 import BaseService from "@/services/base";
@@ -91,16 +90,10 @@ export class ReadNodeService implements BaseService<ReadNode> {
 
   async getNodesByPaperSectionParagraphIds(
     paperSectionParagraphIds: string[]
-  ): Promise<any> {
+  ): Promise<UBNode[]> {
     try {
-      const response = await axios.get(
-        `${
-          process.env.NEXT_PUBLIC_URANTIA_DEV_API_HOST
-        }/api/v1/urantia-book/paragraphs?paperSectionParagraphIds=${paperSectionParagraphIds.join(
-          ","
-        )}`
-      );
-      return response.data?.data?.results;
+      const { fetchParagraphs } = await import("@/libs/urantiaApi/client");
+      return await fetchParagraphs(paperSectionParagraphIds);
     } catch (error) {
       console.error("Unable to fetch nodes by paperSectionParagraphIds", error);
       return [];

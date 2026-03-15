@@ -40,7 +40,7 @@ npm run build:with-screenshots   # Generate screenshots then build
 - **Caching**: Redis (IORedis)
 - **Error Tracking**: Sentry
 - **Deployment**: Vercel
-- **AI Integration**: Vercel AI SDK with OpenAI/xAI models
+- **AI Integration**: Vercel AI SDK with Anthropic Claude (default), OpenAI, xAI models
 
 ### Project Structure
 
@@ -89,10 +89,12 @@ npm run build:with-screenshots   # Generate screenshots then build
 
 ### External API Integration
 
-The app consumes the Urantia Papers content from `urantia.dev` API:
+The app consumes the Urantia Papers content from `api.urantia.dev` (Hono + Drizzle + Supabase on Cloudflare Workers):
 - Papers metadata and full content fetched via `NEXT_PUBLIC_URANTIA_DEV_API_HOST`
 - Audio files served from CloudFront CDN (`NEXT_PUBLIC_AUDIO_FILES_CDN`)
 - Paper data is not stored locally; fetched as needed and cached with Redis
+- API docs available at [urantia.dev](https://urantia.dev)
+- **Migrated**: All API calls now go through `libs/urantiaApi/client.ts` which handles response mapping from the new API format to the legacy UBNode type.
 
 ### Authentication Flow
 
@@ -126,7 +128,8 @@ NextAuth.js configuration in `pages/api/auth/[...nextauth].ts`:
 AI chat interface (`components/AskAI.tsx`, `pages/api/chat/index.ts`):
 - Uses Vercel AI SDK for streaming responses
 - Context includes current paper/paragraph content
-- Powered by configurable models (OpenAI, xAI)
+- Default model: Anthropic Claude Haiku 4.5 (`claude-haiku-4-5-20251001`)
+- Supported models: Claude Haiku 4.5, Claude Sonnet 4.6, Claude Opus 4.6, Grok Beta, OpenAI o1-mini
 - Model selection via `AI_MODEL` environment variable
 
 ### Middleware & Error Tracking
@@ -143,8 +146,10 @@ Key environment variables (see `.env.example`):
 - `NEXTAUTH_URL`, `NEXTAUTH_SECRET`: NextAuth configuration
 - `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`: OAuth
 - `RESEND_API_KEY`, `EMAIL_FROM`: Email service
-- `NEXT_PUBLIC_URANTIA_DEV_API_HOST`: External API for paper content
-- `OPENAI_API_KEY`, `XAI_API_KEY`: AI models
+- `NEXT_PUBLIC_URANTIA_DEV_API_HOST`: External API for paper content (`https://api.urantia.dev`)
+- `ANTHROPIC_API_KEY`: Anthropic Claude (default AI model)
+- `OPENAI_API_KEY`, `XAI_API_KEY`: Alternative AI models
+- `AI_MODEL`: Model selection (default `claude-haiku-4-5-20251001`)
 - `CRON_SECRET`: Secure cron endpoints
 - `ADMIN_SECRET`: Secure admin endpoints
 
@@ -162,3 +167,36 @@ Key environment variables (see `.env.example`):
 **TypeScript**: The project uses TypeScript; type definitions in `types/` directory
 
 **Styling**: Use Tailwind CSS classes; custom design tokens in `once-ui/` for consistent theming
+
+## API Migration Context
+
+All API calls now go through `libs/urantiaApi/client.ts`, which maps new API responses to legacy types:
+
+| New Endpoint | Client Function | Used By |
+|---|---|---|
+| `GET /toc` | `fetchToc()` | `pages/papers/index.tsx`, `pages/explore/index.tsx` |
+| `GET /papers/{id}` | `fetchPaper(id)` | `pages/papers/[paperName].tsx` |
+| `POST /search` | `searchParagraphs(q)` | `pages/api/urantia-book/search.ts` |
+| `GET /paragraphs/{ref}` | `fetchParagraph(ref)` | cron jobs, admin curated-quotes, services |
+| `GET /paragraphs/{ref}` (batch) | `fetchParagraphs(refs)` | bookmark/note/readNode services |
+| Local computation | `getPaperParagraphCounts()` | `pages/api/user/nodes/progress/index.ts` |
+
+**Response mapping** (`libs/urantiaApi/mapper.ts`):
+- `id` → `globalId`
+- Constructs `paperSectionId` and `paperSectionParagraphId` from component fields
+- Defaults `language` to `"eng"`, `type` to `"paragraph"`
+- Search `htmlText` is already enriched with `<span class=urantia-dev-highlighted>` by the API via `ts_headline`
+
+## Known Technical Debt
+
+These are pre-existing issues — do not fix unless explicitly asked:
+
+- **571 `any` types** across the codebase (TypeScript strictness gaps)
+- **axios still in package.json** — no longer imported in application code but not yet uninstalled
+- **moment.js** — heavy date library (deprecated), used for formatting
+- **Full lodash import** — only `throttle` is used
+- **No test framework** — no unit, integration, or component tests
+- **console.log debugging** — used in API routes and cron jobs instead of structured logging
+- **Dead code** — `pages/sentry-example-page.tsx`, `pages/api/sentry-example-api.ts`
+- **Pre-existing ESLint warnings** in older files
+- **API calls use `libs/urantiaApi/client.ts`** — centralized client with response mapping layer

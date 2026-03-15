@@ -788,17 +788,19 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
 };
 
 export async function getStaticProps() {
-  // Fetch data from your API
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_URANTIA_DEV_API_HOST}/api/v1/urantia-book/toc`
-  );
-  const jsonData = await res.json();
-  const nodes = jsonData?.data?.results || [];
+  const { fetchToc } = await import("@/libs/urantiaApi/client");
+  let nodes: any[] = [];
+  try {
+    nodes = await fetchToc();
+  } catch (error) {
+    console.error("[getStaticProps] Failed to fetch TOC:", error);
+  }
 
   return {
     props: {
       nodes,
     },
+    revalidate: 60,
   };
 }
 

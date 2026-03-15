@@ -1,5 +1,4 @@
 // Node modules.
-import axios from "axios";
 import { Resend } from "resend";
 import type { NextApiRequest, NextApiResponse } from "next";
 // Relative modules.
@@ -34,13 +33,16 @@ const handleCron = async (_: NextApiRequest, res: NextApiResponse) => {
   });
 
   // Prepare emails
+  const { fetchParagraph } = await import("@/libs/urantiaApi/client");
   const messages = await Promise.all(
     users.map(async (user) => {
       // Fetch the paragraph details
-      const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_URANTIA_DEV_API_HOST}/api/v1/urantia-book/paragraphs/${user.lastVisitedGlobalId}`
-      );
-      const paragraph = response?.data?.data;
+      let paragraph: UBNode | null = null;
+      try {
+        paragraph = await fetchParagraph(user.lastVisitedGlobalId as string);
+      } catch {
+        paragraph = null;
+      }
 
       if (!paragraph) {
         console.error(
@@ -62,8 +64,8 @@ const handleCron = async (_: NextApiRequest, res: NextApiResponse) => {
         html: getContinueReadingEmailHTML({
           paperTitle: user.lastVisitedPaperTitle as string,
           paperId: user.lastVisitedPaperId as string,
-          text: paragraph.text,
-          standardReferenceId: paragraph.standardReferenceId,
+          text: paragraph.text ?? "",
+          standardReferenceId: paragraph.standardReferenceId ?? "",
           continueReadingUrl: `${
             process.env.NEXT_PUBLIC_HOST
           }/papers/${paperIdToUrl(`${user.lastVisitedPaperId}`)}#${
@@ -73,8 +75,8 @@ const handleCron = async (_: NextApiRequest, res: NextApiResponse) => {
         text: getContinueReadingEmailText({
           paperTitle: user.lastVisitedPaperTitle as string,
           paperId: user.lastVisitedPaperId as string,
-          text: paragraph.text,
-          standardReferenceId: paragraph.standardReferenceId,
+          text: paragraph.text ?? "",
+          standardReferenceId: paragraph.standardReferenceId ?? "",
           continueReadingUrl: `${
             process.env.NEXT_PUBLIC_HOST
           }/papers/${paperIdToUrl(`${user.lastVisitedPaperId}`)}#${

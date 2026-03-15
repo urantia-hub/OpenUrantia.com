@@ -1,5 +1,4 @@
 // Node modules.
-import axios from "axios";
 import { Account, Prisma, PrismaClient } from "@prisma/client";
 // Relative modules.
 import BaseService from "@/services/base";
