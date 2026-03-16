@@ -80,7 +80,7 @@ export async function fetchPaper(paperId: string) {
           paperId: paper.id,
           paperTitle: paper.title,
           sectionId: sectionId,
-          sectionTitle: p.sectionTitle ?? null,
+          sectionTitle: p.sectionTitle ?? undefined,
           partId: paper.partId,
           labels: [],
           language: "eng",

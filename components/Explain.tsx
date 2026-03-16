@@ -46,6 +46,7 @@ const RelatedWorks = ({ onClose, node }: RelatedWorksProps) => {
     }
   };
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     fetchExplanation(node?.globalId);
   }, []);

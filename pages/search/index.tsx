@@ -31,6 +31,7 @@ const Search = () => {
   const [isLoadingSearches, setIsLoadingSearches] = useState(true);
 
   // On mount, set the query and search if there is a query.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     // Query params.
     const queryParams = new URLSearchParams(router.asPath.split(/\?/)[1]);
@@ -60,6 +61,7 @@ const Search = () => {
     }, 500); // 500 ms delay
 
     return () => clearTimeout(delayDebounceFn);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [query]);
 
   // Fetch popular and recent searches on mount
