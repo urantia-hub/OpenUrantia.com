@@ -30,7 +30,10 @@ const Progress = () => {
       try {
         const response = await fetch("/api/user/nodes/progress");
         const data = await response.json();
-        setProgressResults(data.data);
+        const sorted = (data.data as ProgressResult[]).sort(
+          (a, b) => parseInt(a.paperId) - parseInt(b.paperId),
+        );
+        setProgressResults(sorted);
       } catch (error) {
         console.error(error);
       } finally {
