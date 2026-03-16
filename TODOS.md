@@ -26,7 +26,9 @@ All API calls now go through `libs/urantiaApi/client.ts` with response mapping i
 
 ### Security
 
-- [ ] **Add rate limiting** on auth endpoints (`pages/api/auth/`) and public API routes (search, explore). NextAuth has no built-in rate limiting — consider `next-rate-limit` or similar.
+- [x] **Add rate limiting** — Edge middleware (`middleware.ts`) with in-memory sliding window rate limiter. 5 req/min on `/api/auth`, 20 req/min on `/api/chat`, 60 req/min on all other `/api/` routes. Returns 429 with `Retry-After` header.
+
+- [x] **Add security headers** — `next.config.js` `headers()` config: X-Frame-Options DENY, HSTS, nosniff, Referrer-Policy, Permissions-Policy, DNS Prefetch Control.
 
 - [ ] **Strengthen admin auth** — Replace simple `ADMIN_SECRET` header check with role-based session validation.
 
@@ -82,13 +84,15 @@ All API calls now go through `libs/urantiaApi/client.ts` with response mapping i
 
 ### SEO
 
-- [ ] **Add per-paper meta descriptions** — Use paper title + first paragraph summary in `pages/papers/[paperName].tsx`.
+- [x] **Add Schema.org JSON-LD** — Default `WebSite` schema with `SearchAction` on every page via `HeadTag.tsx`. Per-paper `Article` JSON-LD on all 197 paper pages.
 
-- [ ] **Add Schema.org JSON-LD** — Structured data for Book/Chapter on paper pages.
+- [x] **Fix hardcoded OG/Twitter tags** — `HeadTag.tsx` now uses dynamic `og:title`, `og:url`, `twitter:title`, `twitter:url` from props instead of hardcoded values.
+
+- [x] **Add canonical URLs** — Added to index, search, explore, papers index, and all individual paper pages.
 
 - [ ] **Generate unique OG images per paper** — Or at minimum render paper title into the OG image.
 
-- [ ] **Replace hardcoded URLs** — `pages/sitemap.xml.tsx` and `components/HeadTag.tsx` have hardcoded `https://www.urantiahub.com`. Use `process.env.NEXT_PUBLIC_HOST`.
+- [ ] **Replace hardcoded base URL** — `pages/sitemap.xml.tsx` still has hardcoded `https://www.urantiahub.com`. Use `process.env.NEXT_PUBLIC_HOST`.
 
 ### Performance
 
