@@ -684,6 +684,23 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
         titlePrefix={
           paperIdNumber > 0 ? `Paper ${paperId} - ${paperTitle}` : "Foreword"
         }
+        canonicalUrl={`https://www.urantiahub.com/papers/${paperIdToUrl(paperId)}`}
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@type": "Article",
+          "name": paperIdNumber > 0 ? `Paper ${paperId} - ${paperTitle}` : "Foreword",
+          "description": `${
+            paperIdNumber > 0
+              ? `Urantia Paper ${paperId} - ${paperTitle}`
+              : "Urantia Papers Foreword"
+          } - ${paperData.data.results[2].text}`,
+          "url": `https://www.urantiahub.com/papers/${paperIdToUrl(paperId)}`,
+          "isPartOf": {
+            "@type": "WebSite",
+            "name": "UrantiaHub",
+            "url": "https://www.urantiahub.com"
+          }
+        }}
       />
 
       <TopReadingNavbar

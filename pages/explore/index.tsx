@@ -289,6 +289,7 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
       <HeadTag
         metaDescription="Explore the rich tapestry of wisdom within The Urantia Papers on UrantiaHub, discovering insights and teachings that resonate with you."
         titlePrefix="Explore"
+        canonicalUrl="https://www.urantiahub.com/explore"
       />
 
       <Navbar />

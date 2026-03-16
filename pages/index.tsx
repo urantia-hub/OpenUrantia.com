@@ -114,7 +114,7 @@ const HomePage = () => {
 
   return (
     <div className="flex flex-col min-h-screen bg-slate-100 text-gray-600">
-      <HeadTag />
+      <HeadTag canonicalUrl="https://www.urantiahub.com" />
 
       <HomepageNavbar />
 

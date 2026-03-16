@@ -187,6 +187,7 @@ const Search = () => {
       <HeadTag
         metaDescription="Utilize UrantiaHub's search feature to find specific teachings, papers, or topics within The Urantia Papers, aiding your study and exploration."
         titlePrefix="Search"
+        canonicalUrl="https://www.urantiahub.com/search"
       />
 
       <Navbar />

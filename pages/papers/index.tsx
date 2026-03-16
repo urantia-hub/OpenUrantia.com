@@ -249,6 +249,7 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
       <HeadTag
         metaDescription="Find the Urantia Papers that resonate with you on UrantiaHub. With 197 papers, there is a wealth of wisdom to explore."
         titlePrefix="Papers"
+        canonicalUrl="https://www.urantiahub.com/papers"
       />
 
       <Navbar />
