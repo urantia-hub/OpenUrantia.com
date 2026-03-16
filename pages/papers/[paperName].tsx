@@ -1,7 +1,5 @@
 // Node modules.
 import Link from "next/link";
-import moment from "moment";
-import throttle from "lodash/throttle";
 import {
   BookmarkIcon,
   Ellipsis,
@@ -12,10 +10,10 @@ import {
   Stars,
   X,
 } from "lucide-react";
-import { Note as NoteType, ReadNode, Bookmark } from "@prisma/client";
+import { Note as NoteType, Bookmark } from "@prisma/client";
 import { Noto_Serif } from "next/font/google";
 import { toast } from "sonner";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
 import { useWakeLock } from "react-screen-wake-lock";
@@ -32,8 +30,6 @@ import TopReadingNavbar from "@/components/TopReadingNavbar";
 import {
   AUDIO_ENABLED,
   AUDIO_ENABLED_PAPER_IDS,
-  AVERAGE_READING_SPEED,
-  NEXT_AUDIO_DELAY,
   PAPER_ID_TO_MP3_URL,
   SPOTIFY_EPISODE_IDS,
 } from "@/utils/config";
@@ -42,6 +38,12 @@ import {
   getValidPaperUrls,
   paperIdToUrl,
 } from "@/utils/paperFormatters";
+import { useAudioPlayer } from "@/hooks/useAudioPlayer";
+import { useBookmarks } from "@/hooks/useBookmarks";
+import { useFontSize } from "@/hooks/useFontSize";
+import { useModals } from "@/hooks/useModals";
+import { useNotes } from "@/hooks/useNotes";
+import { useReadProgress } from "@/hooks/useReadProgress";
 
 const notoSerifFont = Noto_Serif({
   subsets: ["latin"],
@@ -67,63 +69,11 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
     onRelease: () => console.log("[Screen Wake Lock]: Released"),
   });
 
-  // Toggled states.
-  const [expandedGlobalId, setExpandedGlobalId] = useState<string>("");
-
-  // Bookmark states.
-  const [bookmarks, setBookmarks] = useState<Bookmark[]>([]);
-
-  // Notes states.
-  const [notes, setNotes] = useState<NoteType[]>([]);
-
-  // Network states.
-  const [savingGlobalIds, setSavingGlobalIds] = useState<string[]>([]);
-  const [savingErrorGlobalIds, setSavingErrorGlobalIds] = useState<string[]>(
-    []
-  );
-
-  // Font size state.
-  const [fontSize, setFontSize] = useState<"small" | "medium" | "large">(
-    "medium"
-  );
-
   // TOC states.
   const [tocExpanded, setTOCExpanded] = useState<boolean>(false);
 
-  // Audio states.
-  const audioTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-  const [isPlaying, setIsPlaying] = useState<boolean>(false);
-  const [isTransitioning, setIsTransitioning] = useState<boolean>(false);
-  const [currentPlayingNode, setCurrentPlayingNode] = useState<number | null>(
-    null
-  );
-  const [playbackRate, setPlaybackRate] = useState<number>(1.0);
-
-  // Modal states.
-  const [selectedGlobalIdNote, setSelectedGlobalIdNote] = useState<string>("");
-  const [selectedGlobalIdExplain, setSelectedGlobalIdExplain] =
-    useState<string>("");
-  const [selectedGlobalIdRelatedWorks, setSelectedGlobalIdRelatedWorks] =
-    useState<string>("");
-  const [selectedGlobalIdShare, setSelectedGlobalIdShare] =
-    useState<string>("");
-
-  // Reading time states.
-  const readingNodesRef = useRef<
-    Record<string, { startsAt: number; node: UBNode }>
-  >({});
-  const [readNodes, setReadNodes] = useState<Set<string>>(new Set());
-
   // Sign-up prompt state.
   const [showSignUpPrompt, setShowSignUpPrompt] = useState<boolean>(false);
-
-  // Add state for modal
-  const [showBookmarkCategoryModal, setShowCategoryModal] = useState(false);
-  const [selectedBookmark, setSelectedBookmark] = useState<Bookmark | null>(
-    null
-  );
-  const [selectedNode, setSelectedNode] = useState<UBNode | null>(null);
 
   // Get the nodes from the paper data.
   const nodes = paperData.data.results;
@@ -131,6 +81,40 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
   // Get paper details.
   const paperId = nodes[0].paperId;
   const paperTitle = nodes[0].paperTitle;
+
+  // Custom hooks.
+  const { fontSize, updateFontSize, getFontSizeClasses } = useFontSize();
+  const {
+    selectedGlobalIdExplain, setSelectedGlobalIdExplain,
+    selectedGlobalIdRelatedWorks, setSelectedGlobalIdRelatedWorks,
+    selectedGlobalIdShare,
+    expandedGlobalId, setExpandedGlobalId,
+    onExplainClose,
+    onShareClick, onShareClose,
+    onRelatedWorksClose,
+    onNodeSettingsClick,
+  } = useModals();
+  const { notes, selectedGlobalIdNote, onNoteClick, onNoteClose } = useNotes(paperId, status);
+  const {
+    bookmarks,
+    showBookmarkCategoryModal, setShowBookmarkCategoryModal,
+    selectedBookmark, setSelectedBookmark,
+    selectedNode, setSelectedNode,
+    handleCategorySelect,
+    onBookmarkClick: hookOnBookmarkClick,
+  } = useBookmarks(paperId, status);
+  const { readNodes, markParagraphAsRead } = useReadProgress(paperId, paperTitle, nodes, status);
+  const {
+    isPlaying,
+    isTransitioning,
+    currentPlayingNode,
+    playbackRate,
+    setPlaybackRate,
+    playAudio,
+    togglePlayPause,
+    skipToNextParagraph,
+    skipToPreviousParagraph,
+  } = useAudioPlayer(nodes, markParagraphAsRead);
   const paperIdNumber = parseInt(nodes[0].paperId);
   const nextPaperId = paperIdNumber < 196 ? paperIdNumber + 1 : null;
 
@@ -148,110 +132,37 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
     ? nodes.find((node) => node.globalId === selectedGlobalIdShare)
     : undefined;
 
-  const getFontSizeClasses = () => {
-    switch (fontSize) {
-      case "small":
-        return "text-sm/6 md:text-base/7";
-      case "large":
-        return "text-lg/8 md:text-xl/9";
-      default:
-        return "text-base/7 md:text-lg/8";
-    }
+  // Wrap hookOnBookmarkClick to show toast with "Assign to category" button
+  const onBookmarkClick = (node: UBNode) => {
+    const hookHandler = hookOnBookmarkClick(node);
+    return async () => {
+      await hookHandler();
+    };
   };
 
-  const playAudio = async (nodeIndex: number = 0) => {
-    if (audioRef.current && currentPlayingNode === nodeIndex) {
-      try {
-        await audioRef.current.play();
-        setTimeout(() => {
-          if (audioRef.current) audioRef.current.playbackRate = playbackRate;
-        }, 100);
-        setIsPlaying(true);
-      } catch (error) {
-        console.error("Error resuming audio:", error);
-      }
-      return;
-    }
-
-    const audio = new Audio(nodes[nodeIndex].mp3Url);
-
-    if (audio) {
-      try {
-        if (audioRef.current && !audioRef.current.paused) {
-          audioRef.current.pause();
+  // Show toast when a new bookmark is created (hook sets selectedBookmark/selectedNode)
+  useEffect(() => {
+    if (selectedBookmark && selectedNode) {
+      const bookmark = selectedBookmark;
+      const node = selectedNode;
+      toast.success(
+        <div className="flex items-center justify-between w-full">
+          <span>Bookmark added! 🎉</span>
+          <button
+            className="border-0 px-3 py-1 text-sm bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-white rounded transition-colors shadow-sm text-sm"
+            onClick={() => {
+              setShowBookmarkCategoryModal(true);
+            }}
+          >
+            Assign to category
+          </button>
+        </div>,
+        {
+          duration: 10000,
         }
-
-        audio.onplay = () => setIsPlaying(true);
-        audio.onpause = () => setIsPlaying(false);
-
-        audioRef.current = audio;
-        await audio.play();
-        setTimeout(() => {
-          audio.playbackRate = playbackRate;
-        }, 100);
-
-        setCurrentPlayingNode(nodeIndex);
-        audio.onended = () => {
-          // Mark the paragraph as read after the audio finishes playing
-          if (nodes[nodeIndex].type === "paragraph") {
-            markParagraphAsRead(nodes[nodeIndex]);
-          }
-          playNextAudio(nodeIndex + 1);
-        };
-      } catch (error) {
-        console.error("Error playing audio:", error);
-        playNextAudio(nodeIndex + 1);
-      }
+      );
     }
-  };
-
-  const playNextAudio = (nodeIndex: number) => {
-    setIsTransitioning(true);
-    audioTimeoutRef.current = setTimeout(() => {
-      if (nodeIndex < nodes.length) {
-        playAudio(nodeIndex);
-      } else {
-        setIsPlaying(false);
-        setCurrentPlayingNode(null);
-      }
-      setIsTransitioning(false);
-    }, NEXT_AUDIO_DELAY);
-  };
-
-  const togglePlayPause = () => {
-    if (audioRef.current) {
-      if (isPlaying) {
-        audioRef.current.pause();
-        setIsPlaying(false);
-      } else {
-        audioRef.current.play();
-        setIsPlaying(true);
-      }
-    } else {
-      playAudio(currentPlayingNode || 0);
-    }
-  };
-
-  const skipToNextParagraph = () => {
-    if (currentPlayingNode !== null && currentPlayingNode < nodes.length - 1) {
-      playAudio(currentPlayingNode + 1);
-    }
-  };
-
-  const skipToPreviousParagraph = () => {
-    const SKIP_THRESHOLD = 3; // Set the threshold time in seconds
-
-    if (currentPlayingNode !== null) {
-      if (audioRef.current && audioRef.current.currentTime > SKIP_THRESHOLD) {
-        // Restart the current node
-        resetAudio();
-        playAudio(currentPlayingNode);
-      } else if (currentPlayingNode > 2) {
-        // Play the previous node
-        playAudio(currentPlayingNode - 1);
-      }
-    }
-  };
+  }, [selectedBookmark, selectedNode]);
 
   const findTopMostVisibleNode = (): HTMLElement | null => {
     const paragraphs = document.querySelectorAll(".paragraph");
@@ -283,215 +194,6 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
     router.push(`/auth/sign-in?callbackUrl=${encodeURIComponent(callbackUrl)}`);
   };
 
-  const fetchNotes = async () => {
-    try {
-      const response = await fetch(
-        `/api/user/nodes/notes?paperId=${paperData.data.results[0].paperId}`
-      );
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      const notes = await response.json();
-      setNotes(notes);
-    } catch (error) {
-      console.error("Error fetching notes:", error);
-    }
-  };
-
-  const estimatedReadTime = (node: UBNode) => {
-    const paragraph = document.getElementById(node.globalId);
-    if (!paragraph) {
-      console.warn(
-        `Could not find paragraph with node.globalId ${node.globalId}, estimated read time will be 0 and paragraph will be immediately marked as read.`
-      );
-      return 0;
-    }
-    const words = paragraph.innerText.split(" ").length;
-    return (words / AVERAGE_READING_SPEED) * 60; // Time in seconds
-  };
-
-  const markParagraphAsRead = async (node: UBNode) => {
-    // Check if the node has already been marked as read
-    if (readNodes.has(node.globalId)) {
-      console.log(`Node ${node.globalId} has already been marked as read.`);
-      return;
-    }
-
-    // Skip if you are not logged in
-    if (status !== "authenticated") {
-      console.log(
-        `Skipping marking node ${node.globalId} as read because user is not logged in.`
-      );
-      return;
-    }
-
-    try {
-      const response = await fetch("/api/user/nodes/read", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          globalId: node.globalId,
-          paperId: node.paperId,
-          paperSectionId: node.paperSectionId,
-          paperSectionParagraphId: node.paperSectionParagraphId,
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const readNode = await response.json();
-      console.log(`✅ Successfully marked node ${readNode.globalId} as read.`);
-
-      // Add the node to the set of read nodes
-      setReadNodes((readNodes) => new Set(readNodes.add(readNode.globalId)));
-    } catch (error) {
-      console.error("Error marking paragraph as read:", error);
-    }
-  };
-
-  const resetReadingTime = (globalId: string) => {
-    const currentReadings = readingNodesRef.current;
-    if (currentReadings[globalId]) {
-      delete currentReadings[globalId];
-      readingNodesRef.current = currentReadings;
-    }
-  };
-
-  const handleParagraphReadInView = (node: UBNode) => {
-    // Check if the node has already been marked as read
-    if (readNodes.has(node.globalId)) {
-      console.log(
-        `Node ${node.globalId} has already been marked as read, skipping.`
-      );
-      return;
-    }
-
-    const currentReadings = readingNodesRef.current;
-    if (!currentReadings[node.globalId]) {
-      currentReadings[node.globalId] = { startsAt: moment().unix(), node };
-      readingNodesRef.current = currentReadings; // Update ref
-    }
-  };
-
-  // Update the fontSize state and also save it to localStorage
-  const updateFontSize = (size: "small" | "medium" | "large") => {
-    setFontSize(size); // Update the state
-    localStorage.setItem("fontSize", size); // Save the font size to localStorage
-  };
-
-  const updateLastVisitedNode = async (
-    globalId: string,
-    paperId: string,
-    paperTitle: string
-  ) => {
-    // Update local storage.
-    localStorage.setItem(
-      "lastVisitedNode",
-      JSON.stringify({ globalId, paperId, paperTitle })
-    );
-
-    // Skip if you are not logged in
-    if (status !== "authenticated") {
-      console.log(
-        `✅ Updated last visited node (${globalId}) in local storage only because user is not logged in.`
-      );
-      return;
-    }
-
-    // Update the user's last visited node.
-    try {
-      const response = await fetch("/api/user/nodes/last-visited", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ globalId, paperId, paperTitle }),
-      });
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      const lastVisitedNode = await response.json();
-      console.log("✅ Updated user with last visited node:", lastVisitedNode);
-
-      // Update the user's last visited node in local storage.
-      localStorage.setItem("lastVisitedNode", JSON.stringify(lastVisitedNode));
-    } catch (error) {
-      console.error("Error updating last visited node:", error);
-    }
-  };
-
-  // Now throttle the safe version of the update function
-  const throttledUpdate = throttle(updateLastVisitedNode, 2000);
-
-  // Reset the audio state.
-  const resetAudio = async () => {
-    // Stop and reset the audio
-    if (audioRef?.current) {
-      audioRef.current.pause();
-      audioRef.current.currentTime = 0;
-      audioRef.current = null;
-    }
-    setIsPlaying(false);
-    setCurrentPlayingNode(null);
-  };
-
-  useEffect(() => {
-    if (currentPlayingNode !== null && nodes?.[currentPlayingNode]?.globalId) {
-      const element = document.getElementById(
-        nodes[currentPlayingNode].globalId
-      );
-      element?.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
-  }, [currentPlayingNode]);
-
-  // Cleanup timeout when component unmounts or currentPlayingNode changes
-  useEffect(() => {
-    return () => {
-      if (audioTimeoutRef.current) {
-        clearTimeout(audioTimeoutRef.current);
-      }
-    };
-  }, [currentPlayingNode]);
-
-  // Cleanup audio when the route changes
-  useEffect(() => {
-    const handleRouteChange = () => {
-      resetAudio();
-    };
-
-    router.events.on("routeChangeStart", handleRouteChange);
-
-    return () => {
-      router.events.off("routeChangeStart", handleRouteChange);
-      resetAudio();
-    };
-  }, [router, nodes]);
-
-  // When playback rate is set, update the audio playback rate
-  useEffect(() => {
-    if (audioRef.current) {
-      audioRef.current.playbackRate = playbackRate;
-    }
-  }, [playbackRate]);
-
-  // Fetch the initial font size from localStorage when the component mounts
-  useEffect(() => {
-    // Get the saved font size from localStorage, if it exists
-    const savedFontSize = localStorage.getItem("fontSize") as
-      | "small"
-      | "medium"
-      | "large";
-
-    // If there's a saved font size, update the state
-    if (savedFontSize) {
-      setFontSize(savedFontSize);
-    }
-  }, []);
-
   useEffect(() => {
     console.log(`[Screen Wake Lock]: isSupported: ${isSupported}`);
     console.log(`[Screen Wake Lock]: Released: ${released}`);
@@ -508,71 +210,6 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
       }
     };
   }, []);
-
-  // Fetch read nodes on mount
-  useEffect(() => {
-    if (status !== "authenticated") {
-      console.log("Skipping fetch read nodes because user is not logged in.");
-      return;
-    }
-
-    const fetchReadNodes = async () => {
-      try {
-        const response = await fetch(`/api/user/nodes/read?paperId=${paperId}`);
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const readNodes = await response.json();
-        if (!readNodes) {
-          console.log("No read nodes found for user.");
-          return;
-        }
-        const globalIds = readNodes.map((node: ReadNode) => node.globalId);
-        setReadNodes(new Set(globalIds));
-      } catch (error) {
-        console.error("Error fetching read nodes:", error);
-      }
-    };
-
-    fetchReadNodes();
-  }, [status, paperId]);
-
-  // Fetch bookmarked globalIds on mount
-  useEffect(() => {
-    if (status !== "authenticated") {
-      console.log(
-        "Skipping bookmarked globalIds because user is not logged in."
-      );
-      return;
-    }
-
-    const fetchBookmarkedGlobalIds = async () => {
-      try {
-        const response = await fetch(
-          `/api/user/nodes/bookmarks?paperId=${paperData.data.results[0].paperId}`
-        );
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const bookmarks = await response.json();
-        setBookmarks(bookmarks);
-      } catch (error) {
-        console.error("Error fetching bookmarked globalIds:", error);
-      }
-    };
-
-    fetchBookmarkedGlobalIds();
-  }, [paperData.data.results, status]);
-
-  // Fetch notes on mount
-  useEffect(() => {
-    if (status !== "authenticated") {
-      console.log("Skipping notes because user is not logged in.");
-      return;
-    }
-
-    fetchNotes();
-  }, [paperData.data.results, status]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -600,143 +237,6 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
     // Cleanup function to remove the event listener
     return () => window.removeEventListener("scroll", handleScroll);
   }, [status]);
-
-  // Start reading timer checks.
-  useEffect(() => {
-    if (status !== "authenticated") {
-      console.log(
-        "Skipping reading timer checks because user is not logged in."
-      );
-      return;
-    }
-
-    const interval = setInterval(() => {
-      const currentReadings = readingNodesRef.current;
-      Object.entries(currentReadings).forEach(
-        ([globalId, readingStartTime]) => {
-          const now = moment().unix(); // Current time in seconds
-          const timeElapsed = now - readingStartTime.startsAt; // Elapsed time in seconds
-          const timeRemaining =
-            estimatedReadTime(readingStartTime.node) - timeElapsed;
-
-          console.log(
-            `Node ${readingStartTime.node.globalId} has been in view for ${timeElapsed} seconds and has ${timeRemaining} seconds remaining.`
-          );
-
-          if (timeElapsed > estimatedReadTime(readingStartTime.node)) {
-            console.log(
-              `Marking node ${readingStartTime.node.globalId} as read.`
-            );
-            // The paragraph has been in view long enough
-            markParagraphAsRead(readingStartTime.node);
-
-            // Remove the node from the current readings.
-            delete currentReadings[globalId];
-            readingNodesRef.current = currentReadings; // Update ref
-          }
-        }
-      );
-    }, 1000); // Check every second
-
-    return () => clearInterval(interval);
-  }, [status]);
-
-  // Start observing paragraphs and when they come into view, start the reading timer.
-  useEffect(() => {
-    if (status !== "authenticated") {
-      console.log(
-        "Skipping paragraph observer (for reading) because user is not logged in."
-      );
-      return;
-    }
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          const globalId = entry.target.getAttribute("id");
-          if (!globalId) {
-            console.warn(
-              `Could not find globalId for paragraph with id ${entry.target.id}.`
-            );
-            return;
-          }
-
-          const node = paperData.data.results.find(
-            (n) => n.globalId === globalId
-          );
-          if (!node) {
-            console.warn(
-              `Could not find node with globalId ${globalId} in paperData.`
-            );
-            return;
-          }
-
-          if (entry.isIntersecting) {
-            // Paragraph comes into view
-            handleParagraphReadInView(node);
-          } else {
-            // Paragraph leaves view
-            resetReadingTime(globalId);
-          }
-        });
-      },
-      { threshold: 0.2 } // Threshold means that 50% of the paragraph must be in the viewport
-    );
-
-    document.querySelectorAll(".paragraph").forEach((node) => {
-      observer.observe(node);
-    });
-
-    return () => observer.disconnect();
-  }, [paperData, status]);
-
-  // Start observing paragraphs and when they come into view, update the user's last visited node.
-  useEffect(() => {
-    let visibleNodes = new Map();
-    let currentTopNode: any = null;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          const globalId = entry.target.getAttribute("id");
-
-          if (entry.isIntersecting) {
-            visibleNodes.set(globalId, entry.target);
-          } else {
-            visibleNodes.delete(globalId);
-          }
-
-          if (visibleNodes.size > 0) {
-            // Find the topmost visible node
-            const topNode = Array.from(visibleNodes.values()).reduce(
-              (top, current) =>
-                top.getBoundingClientRect().top <
-                current.getBoundingClientRect().top
-                  ? top
-                  : current
-            );
-
-            // Update the user's last visited node if it has changed
-            if (
-              topNode &&
-              topNode.getAttribute("id") !== currentTopNode &&
-              window.location.href.includes("/papers/")
-            ) {
-              currentTopNode = topNode.getAttribute("id");
-              throttledUpdate(currentTopNode, paperId, paperTitle);
-            }
-          }
-        });
-      },
-      { threshold: 0.2 } // Threshold means that 20% of the paragraph must be in the viewport
-    );
-
-    document.querySelectorAll(".paragraph").forEach((node) => {
-      observer.observe(node);
-    });
-
-    return () => observer.disconnect();
-  }, [paperData]);
 
   // Scroll to the hash on mount and highlight the query text if there is one.
   useEffect(() => {
@@ -826,234 +326,6 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
   if (!paperData) {
     return <Spinner />;
   }
-
-  // Helpers.
-  const onExplainClose = () => {
-    setSelectedGlobalIdExplain("");
-  };
-
-  const onNoteClose = () => {
-    setSelectedGlobalIdNote("");
-    void fetchNotes();
-  };
-
-  const onNoteClick = (globalId: string) => () => {
-    setSelectedGlobalIdNote(globalId);
-  };
-
-  const onRelatedWorksClose = () => {
-    setSelectedGlobalIdRelatedWorks("");
-  };
-
-  const onShareClose = () => {
-    setSelectedGlobalIdShare("");
-  };
-
-  const onShareClick = (globalId: string) => () => {
-    setSelectedGlobalIdShare(globalId);
-  };
-
-  const onNodeSettingsClick =
-    (globalId: string, options?: { onlyOpen: boolean }) => () => {
-      if (options?.onlyOpen) {
-        setExpandedGlobalId(globalId);
-        return;
-      }
-
-      if (expandedGlobalId === globalId) {
-        setExpandedGlobalId("");
-        return;
-      }
-
-      setExpandedGlobalId(globalId);
-    };
-
-  const bookmarkGlobalId = async (
-    globalId: string,
-    paperId: string,
-    paperSectionId?: string,
-    paperSectionParagraphId?: string
-  ): Promise<Bookmark | undefined> => {
-    // Escape early if we are already saving.
-    if (savingGlobalIds.includes(globalId)) {
-      return;
-    }
-
-    // Escape early if we aren't logged in.
-    if (status !== "authenticated") {
-      console.warn("User is not logged in, cannot bookmark global ID.");
-      return;
-    }
-
-    // Set saving state + reset error for globalId.
-    setSavingGlobalIds([...savingGlobalIds, globalId]);
-    const updatedSavingErrorGlobalIds = savingErrorGlobalIds.filter(
-      (id) => id !== globalId
-    );
-    setSavingErrorGlobalIds(updatedSavingErrorGlobalIds);
-
-    try {
-      // Make request to bookmark node for user.
-      const response = await fetch(`/api/user/nodes/bookmarks`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          globalId,
-          paperId,
-          paperSectionId,
-          paperSectionParagraphId,
-        }),
-      });
-      if (response.status !== 201) {
-        throw new Error(
-          `Unexpected response status ${response.status} when attempting to bookmark global ID ${globalId} for user.`
-        );
-      }
-      const bookmark = await response.json();
-      return bookmark;
-    } catch (error: any) {
-      // Set error state for globalId.
-      console.error("Error attempting to bookmark global ID for user:", error);
-      setSavingErrorGlobalIds([...savingErrorGlobalIds, globalId]);
-      return;
-    } finally {
-      // Remove globalId from saving list.
-      const updatedSavingGlobalIds = savingGlobalIds.filter(
-        (id) => id !== globalId
-      );
-      setSavingGlobalIds(updatedSavingGlobalIds);
-    }
-  };
-
-  const deleteBookmarkGlobalId = async (globalId: string) => {
-    // Escape early if we are already saving.
-    if (savingGlobalIds.includes(globalId)) {
-      return;
-    }
-
-    // Escape early if we aren't logged in.
-    if (status !== "authenticated") {
-      console.warn("User is not logged in, cannot de-bookmark global ID.");
-      return;
-    }
-
-    // Set saving state + reset error for globalId.
-    setSavingGlobalIds([...savingGlobalIds, globalId]);
-    const updatedSavingErrorGlobalIds = savingErrorGlobalIds.filter(
-      (id) => id !== globalId
-    );
-    setSavingErrorGlobalIds(updatedSavingErrorGlobalIds);
-
-    try {
-      // Make request to de-bookmark node for user.
-      const response = await fetch(
-        `/api/user/nodes/bookmarks?globalId=${globalId}`,
-        {
-          method: "DELETE",
-        }
-      );
-      if (response.status !== 204) {
-        throw new Error(
-          `Unexpected response status ${response.status} when attempting to delete bookmark global ID ${globalId} for user.`
-        );
-      }
-    } catch (error: any) {
-      // Set error state for globalId.
-      console.error(
-        "Error attempting to de-bookmark global ID for user:",
-        error
-      );
-      setSavingErrorGlobalIds([...savingErrorGlobalIds, globalId]);
-    } finally {
-      // Remove globalId from saving list.
-      const updatedSavingGlobalIds = savingGlobalIds.filter(
-        (id) => id !== globalId
-      );
-      setSavingGlobalIds(updatedSavingGlobalIds);
-    }
-  };
-
-  const handleCategorySelect = async (bookmarkId: string, category: string) => {
-    if (!bookmarkId) {
-      toast.error("No bookmark selected, please try again");
-      return;
-    }
-
-    try {
-      const response = await fetch(`/api/user/nodes/bookmarks/${bookmarkId}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ category }),
-      });
-
-      if (!response.ok) {
-        console.error("Failed to update bookmark category:", response);
-        toast.error("Failed to update bookmark category, please try again");
-        return;
-      }
-
-      const updatedBookmark = await response.json();
-      setBookmarks(
-        bookmarks.map((b) =>
-          b.id === updatedBookmark.id ? updatedBookmark : b
-        )
-      );
-      toast.success("Bookmark added to category! 🎉");
-    } catch (error) {
-      console.error("Error updating bookmark category:", error);
-      toast.error("Failed to assign bookmark to category, please try again");
-    }
-  };
-
-  const onBookmarkClick = (node: UBNode) => async () => {
-    // Escape early if we are already saving.
-    if (savingGlobalIds.includes(node.globalId)) {
-      return;
-    }
-
-    // If it's already bookmarked, handle deletion as before
-    if (bookmarks.some((bookmark) => bookmark.globalId === node.globalId)) {
-      await deleteBookmarkGlobalId(node.globalId);
-      setBookmarks(
-        bookmarks.filter((bookmark) => bookmark.globalId !== node.globalId)
-      );
-      return;
-    }
-
-    // Create the bookmark first
-    const bookmark = await bookmarkGlobalId(
-      node.globalId,
-      node.paperId,
-      node.paperSectionId,
-      node.paperSectionParagraphId
-    );
-
-    if (bookmark) {
-      setBookmarks([...bookmarks, bookmark]);
-
-      // Show custom toast with button
-      toast.success(
-        <div className="flex items-center justify-between w-full">
-          <span>Bookmark added! 🎉</span>
-          <button
-            className="border-0 px-3 py-1 text-sm bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-white rounded transition-colors shadow-sm text-sm"
-            onClick={() => {
-              setSelectedBookmark(bookmark);
-              setSelectedNode(node);
-              setShowCategoryModal(true);
-            }}
-          >
-            Assign to category
-          </button>
-        </div>,
-        {
-          duration: 10000,
-        }
-      );
-    }
-  };
 
   const onCopyPaper = () => {
     // Collect all the text from the nodes.
@@ -1487,7 +759,7 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
           node={selectedNode}
           onCategorySelect={handleCategorySelect}
           onClose={() => {
-            setShowCategoryModal(false);
+            setShowBookmarkCategoryModal(false);
             setSelectedBookmark(null);
             setSelectedNode(null);
           }}

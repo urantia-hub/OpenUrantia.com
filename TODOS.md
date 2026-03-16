@@ -19,10 +19,10 @@ All API calls now go through `libs/urantiaApi/client.ts` with response mapping i
 - [x] **Migrate progress endpoint** — Computed locally using `libs/urantiaApi/paperCounts.ts` + Redis cache
 - [x] **Standardize HTTP client** — All calls use native fetch; axios imports removed
 
-**Remaining:**
-- [ ] **Uninstall axios** — `npm uninstall axios` (no longer imported but still in package.json)
-- [ ] **Deploy urantia-dev-api** with `highlightedHtmlText` in search results (added `ts_headline()` to `src/routes/search.ts`)
-- [ ] **Update Vercel env var** — Set `NEXT_PUBLIC_URANTIA_DEV_API_HOST` to `https://api.urantia.dev`
+- [x] **Uninstall axios** — removed from package.json
+- [x] **Deploy urantia-dev-api** with search highlighting via `ts_headline()` enriching `htmlText`
+- [x] **Update Vercel env var** — `NEXT_PUBLIC_URANTIA_DEV_API_HOST` set to `https://api.urantia.dev`
+- [x] **Add `.urantia-dev-highlighted` CSS** — search result highlighting styles in `globals.css`
 
 ### Security
 
