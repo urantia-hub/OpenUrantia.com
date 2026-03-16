@@ -191,12 +191,26 @@ All API calls now go through `libs/urantiaApi/client.ts`, which maps new API res
 
 These are pre-existing issues — do not fix unless explicitly asked:
 
-- **571 `any` types** across the codebase (TypeScript strictness gaps)
-- **axios still in package.json** — no longer imported in application code but not yet uninstalled
-- **moment.js** — heavy date library (deprecated), used for formatting
-- **Full lodash import** — only `throttle` is used
-- **No test framework** — no unit, integration, or component tests
-- **console.log debugging** — used in API routes and cron jobs instead of structured logging
-- **Dead code** — `pages/sentry-example-page.tsx`, `pages/api/sentry-example-api.ts`
+- **Remaining `any` types** — Reduced significantly in services/utils/API routes, but some remain in components and client-side pages
+- **moment.js** — heavy date library (user chose to keep for now), used for formatting
 - **Pre-existing ESLint warnings** in older files
+- **Pre-existing TypeScript errors** in some test files (unknown types)
 - **API calls use `libs/urantiaApi/client.ts`** — centralized client with response mapping layer
+
+## Logging
+
+Use `utils/logger.ts` for server-side logging instead of `console.log`/`console.error`:
+```typescript
+import createLogger from "@/utils/logger";
+const logger = createLogger("moduleName");
+logger.info("message", { key: value });
+logger.error("message", error);
+```
+
+## Testing
+
+- Framework: Vitest + React Testing Library
+- Run: `npm run test`
+- Tests cover: hooks (6), services (4), API routes (4), components (4)
+- Service tests use dependency injection to mock Prisma models
+- API route tests mock `getSessionDetails`, services, and `withSentry`

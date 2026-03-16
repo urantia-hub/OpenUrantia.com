@@ -1,5 +1,6 @@
 // Node modules.
 import type { NextApiRequest, NextApiResponse } from "next";
+import type { Session } from "next-auth";
 import { User } from "@prisma/client";
 import { getServerSession } from "next-auth/next";
 // Relative modules.
@@ -12,7 +13,7 @@ const getSessionDetails = async (
   req: NextApiRequest,
   res: NextApiResponse,
   options?: { isAdmin?: boolean; skipUnauthorized?: boolean }
-): Promise<{ session: any; user: User } | undefined> => {
+): Promise<{ session: Session; user: User } | undefined> => {
   const session = await getServerSession(req, res, authOptions);
   if (!session?.user?.email) {
     if (!options?.skipUnauthorized)

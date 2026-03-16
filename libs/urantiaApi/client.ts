@@ -53,7 +53,45 @@ export async function fetchPaper(paperId: string) {
       );
     }
     const json: ApiPaperDetailResponse = await res.json();
-    const nodes = json.data.paragraphs.map(mapParagraphToUBNode);
+    const { paper, paragraphs } = json.data;
+
+    // Build the interspersed node array: paper header + (section headers + paragraphs)
+    const nodes: UBNode[] = [];
+
+    // Paper header node
+    nodes.push({
+      globalId: `${paper.partId}:${paper.id}`,
+      paperId: paper.id,
+      paperTitle: paper.title,
+      partId: paper.partId,
+      labels: paper.labels ?? [],
+      language: "eng",
+      type: "paper",
+      objectID: `${paper.partId}:${paper.id}`,
+    });
+
+    // Paragraphs with section headers injected before each new section
+    let lastSectionId: string | null = null;
+    for (const p of paragraphs) {
+      const sectionId = p.sectionId ?? "0";
+      if (sectionId !== lastSectionId) {
+        nodes.push({
+          globalId: `${paper.partId}:${paper.id}.${sectionId}`,
+          paperId: paper.id,
+          paperTitle: paper.title,
+          sectionId: sectionId,
+          sectionTitle: p.sectionTitle ?? null,
+          partId: paper.partId,
+          labels: [],
+          language: "eng",
+          type: "section",
+          objectID: `${paper.partId}:${paper.id}.${sectionId}`,
+        });
+        lastSectionId = sectionId;
+      }
+      nodes.push(mapParagraphToUBNode(p));
+    }
+
     return { data: { results: nodes } };
   } catch (error) {
     console.error(`[urantiaApi] fetchPaper failed for ${url}:`, error);

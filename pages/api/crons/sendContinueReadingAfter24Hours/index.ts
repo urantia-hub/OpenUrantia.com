@@ -1,5 +1,6 @@
 // Node modules.
 import { Resend } from "resend";
+import * as Sentry from "@sentry/nextjs";
 import type { NextApiRequest, NextApiResponse } from "next";
 // Relative modules.
 import UserService from "@/services/user";
@@ -8,6 +9,10 @@ import {
   getContinueReadingEmailHTML,
   getContinueReadingEmailText,
 } from "@/utils/email-templates/continueReading24Hours";
+import createLogger from "@/utils/logger";
+import { withSentry } from "@/middleware/sentry";
+
+const logger = createLogger("sendContinueReading");
 
 const userService = new UserService();
 
@@ -45,9 +50,7 @@ const handleCron = async (_: NextApiRequest, res: NextApiResponse) => {
       }
 
       if (!paragraph) {
-        console.error(
-          `Failed to fetch paragraph ${user.lastVisitedGlobalId} for user ${user.id}`
-        );
+        logger.error("Failed to fetch paragraph", undefined, { globalId: user.lastVisitedGlobalId as string, userId: user.id });
         return null;
       }
 
@@ -113,24 +116,25 @@ const handleCron = async (_: NextApiRequest, res: NextApiResponse) => {
     res
       .status(200)
       .json({ users: users.map((user) => user.email), success: true });
-  } catch (error: any) {
-    console.error(error);
-    if (error?.response) {
-      console.error(error?.response.body);
+  } catch (error: unknown) {
+    logger.error("Operation failed", error);
+    Sentry.captureException(error);
+    if (error instanceof Object && "response" in error) {
+      logger.error("Response body", (error as Record<string, unknown>).response);
     }
-    res.status(500).json({ message: "Failed to send emails", success: false });
+    res.status(500).json({ error: "Failed to send emails", success: false });
   }
 };
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   // Check if the secret key matches
   if (req.headers.authorization !== `Bearer ${process.env.CRON_SECRET}`) {
-    return res.status(401).json({ message: "Unauthorized" });
+    return res.status(401).json({ error: "Unauthorized" });
   }
 
-  console.log("Sending continue reading emails");
+  logger.info("Sending continue reading emails");
 
   await handleCron(req, res);
 };
 
-export default handler;
+export default withSentry(handler);

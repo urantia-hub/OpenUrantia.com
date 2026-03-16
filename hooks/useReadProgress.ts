@@ -1,8 +1,25 @@
 import { useState, useRef, useEffect } from "react";
 import moment from "moment";
-import throttle from "lodash/throttle";
 import { ReadNode } from "@prisma/client";
 import { AVERAGE_READING_SPEED } from "@/utils/config";
+
+function throttle<T extends (...args: any[]) => any>(fn: T, ms: number): T {
+  let lastCall = 0;
+  let timeout: ReturnType<typeof setTimeout> | null = null;
+  return ((...args: any[]) => {
+    const now = Date.now();
+    if (now - lastCall >= ms) {
+      lastCall = now;
+      fn(...args);
+    } else if (!timeout) {
+      timeout = setTimeout(() => {
+        lastCall = Date.now();
+        timeout = null;
+        fn(...args);
+      }, ms - (now - lastCall));
+    }
+  }) as T;
+}
 
 export function useReadProgress(paperId: string, paperTitle: string, nodes: UBNode[], status: string) {
   const [readNodes, setReadNodes] = useState<Set<string>>(new Set());

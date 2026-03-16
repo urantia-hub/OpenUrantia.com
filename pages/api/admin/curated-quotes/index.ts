@@ -14,8 +14,12 @@ import {
 } from "@/utils/node";
 import { CuratedQuote } from "@prisma/client";
 import getSessionDetails from "@/utils/getSessionDetails";
+import createLogger from "@/utils/logger";
 import UserService from "@/services/user";
 import SentQuoteService from "@/services/sentQuote";
+import { withSentry } from "@/middleware/sentry";
+
+const logger = createLogger("admin/curated-quotes");
 
 const curatedQuoteService = new CuratedQuoteService();
 const userService = new UserService();
@@ -147,16 +151,16 @@ async function handlePOST(req: NextApiRequest, res: NextApiResponse) {
   if (globalId) {
     try {
       enforceGlobalId("globalId", globalId);
-    } catch (error: any) {
-      return res.status(400).json({ error: error.message });
+    } catch (error: unknown) {
+      return res.status(400).json({ error: error instanceof Error ? error.message : String(error) });
     }
   }
 
   if (standardReferenceId) {
     try {
       enforceStandardReferenceId("standardReferenceId", standardReferenceId);
-    } catch (error: any) {
-      return res.status(400).json({ error: error.message });
+    } catch (error: unknown) {
+      return res.status(400).json({ error: error instanceof Error ? error.message : String(error) });
     }
   }
 
@@ -180,9 +184,9 @@ async function handlePOST(req: NextApiRequest, res: NextApiResponse) {
           error: `Unable to get globalId from standardReferenceId: ${standardReferenceId}`,
         });
       }
-    } catch (error: any) {
-      console.error("Error getting globalId from standardReferenceId:", error);
-      return res.status(400).json({ error: error.message });
+    } catch (error: unknown) {
+      logger.error("Error getting globalId from standardReferenceId", error);
+      return res.status(400).json({ error: error instanceof Error ? error.message : String(error) });
     }
   }
 
@@ -190,35 +194,30 @@ async function handlePOST(req: NextApiRequest, res: NextApiResponse) {
 
   try {
     enforcePaperId("paperId", paperId);
-  } catch (error: any) {
-    console.error("Error enforcing paperId:", error);
-    return res.status(500).json({ error: error.message });
+  } catch (error: unknown) {
+    logger.error("Error enforcing paperId", error);
+    return res.status(500).json({ error: error instanceof Error ? error.message : String(error) });
   }
 
   let curatedQuote;
   try {
-    console.log(
-      "Creating curated quote with globalId:",
-      globalId,
-      "and paperId:",
-      paperId
-    );
+    logger.info("Creating curated quote", { globalId, paperId });
     curatedQuote = await curatedQuoteService.create({
       data: {
         globalId,
         paperId,
       },
     });
-  } catch (error: any) {
-    console.error("Error creating curated quote:", error);
-    return res.status(500).json({ error: error.message });
+  } catch (error: unknown) {
+    logger.error("Error creating curated quote", error);
+    return res.status(500).json({ error: error instanceof Error ? error.message : String(error) });
   }
 
   res.status(201).json(curatedQuote);
 }
 
 // Handler for the API endpoints.
-export default async function handle(
+async function handle(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
@@ -236,3 +235,5 @@ export default async function handle(
       res.status(405).end(`Method ${method} Not Allowed`);
   }
 }
+
+export default withSentry(handle);

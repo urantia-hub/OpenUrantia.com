@@ -10,6 +10,9 @@ import ShareService from "@/services/share";
 import UserService from "@/services/user";
 import getSessionDetails from "@/utils/getSessionDetails";
 import { withSentry } from "@/middleware/sentry";
+import createLogger from "@/utils/logger";
+
+const logger = createLogger("api/user");
 
 // Services.
 const accountService = new AccountService();
@@ -69,42 +72,27 @@ const handleDelete = async (
   try {
     await accountService.deleteMany({ where: { userId: user.id } });
   } catch (error) {
-    console.error(
-      `Error attempting to delete accounts for userId ${user.id}`,
-      error
-    );
+    logger.error("Error attempting to delete accounts", error, { userId: user.id });
   }
   try {
     await bookmarkService.deleteMany({ where: { userId: user.id } });
   } catch (error) {
-    console.error(
-      `Error attempting to delete bookmarks for userId ${user.id}`,
-      error
-    );
+    logger.error("Error attempting to delete bookmarks", error, { userId: user.id });
   }
   try {
     await noteService.deleteMany({ where: { userId: user.id } });
   } catch (error) {
-    console.error(
-      `Error attempting to delete notes for userId ${user.id}`,
-      error
-    );
+    logger.error("Error attempting to delete notes", error, { userId: user.id });
   }
   try {
     await sessionService.deleteMany({ where: { userId: user.id } });
   } catch (error) {
-    console.error(
-      `Error attempting to delete sessions for userId ${user.id}`,
-      error
-    );
+    logger.error("Error attempting to delete sessions", error, { userId: user.id });
   }
   try {
     await shareService.deleteMany({ where: { userId: user.id } });
   } catch (error) {
-    console.error(
-      `Error attempting to delete shares for userId ${user.id}`,
-      error
-    );
+    logger.error("Error attempting to delete shares", error, { userId: user.id });
   }
 
   // Ensure we error if we can't delete the user.

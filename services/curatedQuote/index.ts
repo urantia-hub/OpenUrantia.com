@@ -3,6 +3,9 @@ import { CuratedQuote, Prisma, PrismaClient } from "@prisma/client";
 // Relative modules.
 import BaseService from "@/services/base";
 import { getPrismaClient } from "@/libs/prisma/client";
+import createLogger from "@/utils/logger";
+
+const logger = createLogger("CuratedQuoteService");
 
 const prisma = getPrismaClient();
 
@@ -132,7 +135,7 @@ export class CuratedQuoteService implements BaseService<CuratedQuote> {
       const { fetchParagraph } = await import("@/libs/urantiaApi/client");
       return await fetchParagraph(globalId);
     } catch (error) {
-      console.error("Unable to fetch node by globalId", error);
+      logger.error("Unable to fetch node by globalId", error);
       return null;
     }
   }

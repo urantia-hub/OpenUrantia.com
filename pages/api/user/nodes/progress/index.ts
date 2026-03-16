@@ -7,6 +7,9 @@ import UserService from "@/services/user";
 import getSessionDetails from "@/utils/getSessionDetails";
 import { withSentry } from "@/middleware/sentry";
 import { getPaperParagraphCounts } from "@/libs/urantiaApi/paperCounts";
+import createLogger from "@/utils/logger";
+
+const logger = createLogger("api/user/progress");
 
 const readNodeService = new ReadNodeService();
 const userService = new UserService();
@@ -68,7 +71,7 @@ async function handleGET(
 
     res.status(200).json({ data: progressData });
   } catch (error) {
-    console.error(error);
+    logger.error("Unable to calculate progress", error);
     res.status(500).json({
       message: "Unable to calculate progress.",
     });

@@ -73,8 +73,8 @@ async function handleDELETE(
 
   try {
     enforceGlobalId("globalId", globalId);
-  } catch (error: any) {
-    return res.status(400).json({ message: error.message });
+  } catch (error: unknown) {
+    return res.status(400).json({ message: error instanceof Error ? error.message : String(error) });
   }
 
   const bookmark = await bookmarkService.find({

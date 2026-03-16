@@ -11,6 +11,9 @@ import {
   getMagicLinkEmailHTML,
   getMagicLinkEmailText,
 } from "@/utils/email-templates/magicLink";
+import createLogger from "@/utils/logger";
+
+const logger = createLogger("auth");
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -23,7 +26,7 @@ export const authOptions = {
       from: process.env.EMAIL_FROM,
       sendVerificationRequest: async ({ identifier: email, url }) => {
         try {
-          console.log("Sending magic link email to", email);
+          logger.info("Sending magic link email", { email });
           await resend.emails.send({
             from: process.env.EMAIL_FROM as string,
             to: email,
@@ -31,9 +34,9 @@ export const authOptions = {
             html: getMagicLinkEmailHTML(url),
             text: getMagicLinkEmailText(url),
           });
-          console.log("Magic link sent successfully.");
-        } catch (error: any) {
-          console.error("Error sending magic link email", error);
+          logger.info("Magic link sent successfully");
+        } catch (error: unknown) {
+          logger.error("Error sending magic link email", error);
           throw new Error("Error sending magic link email");
         }
       },

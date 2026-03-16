@@ -6,6 +6,10 @@ import type { NextApiRequest, NextApiResponse } from "next";
 
 import AIExplanationService from "@/services/aiExplanation";
 import PaperService from "@/services/paper";
+import { withSentry } from "@/middleware/sentry";
+import createLogger from "@/utils/logger";
+
+const logger = createLogger("api/chat");
 
 const AI_MODEL = process.env.AI_MODEL || "claude-haiku-4-5-20251001";
 const SUPPORTED_XAI_MODELS = ["grok-beta"];
@@ -40,7 +44,7 @@ const generatePaperContext = async (paperId: string) => {
     .join("\n");
 };
 
-export default async function handler(
+async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
@@ -98,11 +102,7 @@ ${paperContext}`;
 
     let text;
     try {
-      console.log(
-        `Generating explanation for ${globalId} with model ${AI_MODEL} and with system prompt:\n\n${systemPrompt}\n\nAnd with messages:\n\n${JSON.stringify(
-          messages,
-        )}`,
-      );
+      logger.info("Generating explanation", { globalId, model: AI_MODEL, systemPrompt, messages });
       if (SUPPORTED_ANTHROPIC_MODELS.includes(AI_MODEL)) {
         const response = await generateText({
           model: anthropic(AI_MODEL),
@@ -131,7 +131,7 @@ ${paperContext}`;
           },
         );
         const jsonResponse = await rawResponse.json();
-        console.log("xAI response:", jsonResponse.choices[0].message);
+        logger.info("xAI response", { message: jsonResponse.choices[0].message });
         text = jsonResponse.choices[0].message.content;
       } else {
         const response = await generateText({
@@ -141,7 +141,7 @@ ${paperContext}`;
         text = response.text;
       }
     } catch (error) {
-      console.error("Error generating text:", error);
+      logger.error("Error generating text", error);
       return res.status(500).json({ error: "Unable to generate explanation" });
     }
 
@@ -157,12 +157,14 @@ ${paperContext}`;
         },
       });
     } catch (error) {
-      console.error("Error caching explanation:", error);
+      logger.error("Error caching explanation", error);
     }
 
     return res.status(200).json({ text });
   } catch (error) {
-    console.error("Chat API error:", error);
+    logger.error("Chat API error", error);
     return res.status(500).json({ error: "Internal server error" });
   }
 }
+
+export default withSentry(handler);

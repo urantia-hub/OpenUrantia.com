@@ -2,6 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { User } from "@prisma/client";
 import BookmarkService from "@/services/bookmark";
 import getSessionDetails from "@/utils/getSessionDetails";
+import { withSentry } from "@/middleware/sentry";
 
 const bookmarkService = new BookmarkService();
 
@@ -14,14 +15,14 @@ async function handlePATCH(
   const { category } = req.body;
 
   if (!category && category !== "") {
-    return res.status(400).json({ message: "Category is required" });
+    return res.status(400).json({ error: "Category is required" });
   }
 
   const bookmark = await bookmarkService.find({
     where: { id: id as string, userId: user.id },
   });
   if (!bookmark) {
-    return res.status(404).json({ message: "Bookmark not found" });
+    return res.status(404).json({ error: "Bookmark not found" });
   }
 
   const updatedBookmark = await bookmarkService.update(bookmark.id, {
@@ -31,7 +32,7 @@ async function handlePATCH(
   res.status(200).json(updatedBookmark);
 }
 
-export default async function handle(
+async function handle(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
@@ -47,3 +48,5 @@ export default async function handle(
       res.status(405).end(`Method ${method} Not Allowed`);
   }
 }
+
+export default withSentry(handle);

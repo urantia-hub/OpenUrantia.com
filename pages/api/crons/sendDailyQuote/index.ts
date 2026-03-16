@@ -1,5 +1,6 @@
 // Node modules.
 import { Resend } from "resend";
+import * as Sentry from "@sentry/nextjs";
 import type { NextApiRequest, NextApiResponse } from "next";
 // Relative modules.
 import SentQuoteService from "@/services/sentQuote";
@@ -10,6 +11,10 @@ import {
   getDailyQuoteEmailHTML,
   getDailyQuoteEmailText,
 } from "@/utils/email-templates/dailyQuote";
+import createLogger from "@/utils/logger";
+import { withSentry } from "@/middleware/sentry";
+
+const logger = createLogger("sendDailyQuote");
 
 const curatedQuoteService = new CuratedQuoteService();
 const sentQuoteService = new SentQuoteService();
@@ -19,7 +24,7 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 
 const handleCron = async (_: NextApiRequest, res: NextApiResponse) => {
   // Get users who have both general and daily quote notifications enabled
-  console.log("[sendDailyQuote] Fetching users");
+  logger.info("Fetching users");
   const users = await userService.findMany({
     where: {
       emailNotificationsEnabled: true,
@@ -28,24 +33,22 @@ const handleCron = async (_: NextApiRequest, res: NextApiResponse) => {
   });
 
   // Get a curated quote
-  console.log("[sendDailyQuote] Fetching curated quote");
+  logger.info("Fetching curated quote");
   const curatedQuotes = await curatedQuoteService.getRandom({
     sent: false,
   });
   const curatedQuote = curatedQuotes?.[0];
 
   if (!curatedQuote?.globalId) {
-    console.log(
-      "[sendDailyQuote] Failed to get a curated quote, are there any unsent curated quotes left?"
-    );
+    logger.info("Failed to get a curated quote, are there any unsent curated quotes left?");
     return res.status(500).json({
-      message: "Failed to get a curated quote",
+      error: "Failed to get a curated quote",
       success: false,
     });
   }
 
   // Get a random quote
-  console.log("[sendDailyQuote] Fetching paragraph");
+  logger.info("Fetching paragraph");
   const { fetchParagraph } = await import("@/libs/urantiaApi/client");
   let paragraph: UBNode | null = null;
   try {
@@ -55,12 +58,9 @@ const handleCron = async (_: NextApiRequest, res: NextApiResponse) => {
   }
 
   if (!paragraph) {
-    console.log(
-      "[sendDailyQuote] Failed to get a curated quote from urantia.dev for globalId:",
-      curatedQuote.globalId
-    );
+    logger.info("Failed to get a curated quote from urantia.dev", { globalId: curatedQuote.globalId });
     return res.status(500).json({
-      message: "Failed to get a curated quote from urantia.dev",
+      error: "Failed to get a curated quote from urantia.dev",
       success: false,
     });
   }
@@ -71,7 +71,7 @@ const handleCron = async (_: NextApiRequest, res: NextApiResponse) => {
   const standardReferenceId = paragraph.standardReferenceId ?? "";
 
   // Fetch existing sent quotes for this globalId
-  console.log("[sendDailyQuote] Fetching existing sent quotes");
+  logger.info("Fetching existing sent quotes");
   const existingSentQuotes = await sentQuoteService.findMany({
     where: {
       globalId,
@@ -82,21 +82,19 @@ const handleCron = async (_: NextApiRequest, res: NextApiResponse) => {
   });
 
   // Extract user IDs from existing sent quotes
-  console.log("[sendDailyQuote] Extracting user IDs from existing sent quotes");
+  logger.info("Extracting user IDs from existing sent quotes");
   const usersWithSentQuote = existingSentQuotes.map(
     (sentQuote) => sentQuote.userId
   );
 
   // Filter users who have not received this quote
-  console.log(
-    "[sendDailyQuote] Filtering users who have not received this quote"
-  );
+  logger.info("Filtering users who have not received this quote");
   const usersToSend = users.filter(
     (user) => !usersWithSentQuote.includes(user.id)
   );
 
   // Prepare emails
-  console.log("[sendDailyQuote] Preparing emails");
+  logger.info("Preparing emails");
   const messages = usersToSend.map((user) => ({
     from: process.env.EMAIL_FROM || "",
     to: user.email as string,
@@ -134,7 +132,7 @@ const handleCron = async (_: NextApiRequest, res: NextApiResponse) => {
     await resend.batch.send(messages);
 
     // Create sent quotes for each user.
-    console.log("[sendDailyQuote] Creating sent quotes");
+    logger.info("Creating sent quotes");
     await Promise.all(
       usersToSend.map((user) =>
         sentQuoteService.create({
@@ -148,33 +146,34 @@ const handleCron = async (_: NextApiRequest, res: NextApiResponse) => {
     );
 
     // Update curated quote to mark it as sent
-    console.log("[sendDailyQuote] Updating curated quote to mark it as sent");
+    logger.info("Updating curated quote to mark it as sent");
     await curatedQuoteService.update(curatedQuote.id, {
       sentAt: new Date(),
     });
 
-    console.log("[sendDailyQuote] Emails sent successfully");
+    logger.info("Emails sent successfully");
     res
       .status(200)
       .json({ users: usersToSend.map((user) => user.email), success: true });
-  } catch (error: any) {
-    console.error(error);
-    if (error?.response) {
-      console.error(error?.response.body);
+  } catch (error: unknown) {
+    logger.error("Operation failed", error);
+    Sentry.captureException(error);
+    if (error instanceof Object && "response" in error) {
+      logger.error("Response body", (error as Record<string, unknown>).response);
     }
-    res.status(500).json({ message: "Failed to send emails", success: false });
+    res.status(500).json({ error: "Failed to send emails", success: false });
   }
 };
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   // Check if the secret key matches
   if (req.headers.authorization !== `Bearer ${process.env.CRON_SECRET}`) {
-    return res.status(401).json({ message: "Unauthorized" });
+    return res.status(401).json({ error: "Unauthorized" });
   }
 
-  console.log("Sending daily quote emails");
+  logger.info("Sending daily quote emails");
 
   await handleCron(req, res);
 };
 
-export default handler;
+export default withSentry(handler);

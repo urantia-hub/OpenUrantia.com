@@ -22,7 +22,7 @@ export class UserInterestService implements BaseService<UserInterest> {
   }
   get(
     id: string,
-    options: any
+    options?: Record<string, unknown>
   ): Promise<{
     createdAt: Date;
     labelId: string;
@@ -34,7 +34,7 @@ export class UserInterestService implements BaseService<UserInterest> {
 
   update(
     id: string,
-    data: any
+    data: Record<string, unknown>
   ): Promise<{
     createdAt: Date;
     labelId: string;

@@ -90,8 +90,6 @@ footer a:hover {
 }
 
 select {
-  -moz-appearance: none;
-  -webkit-appearance: none;
   appearance: none;
   background-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 140 140" xmlns="http://www.w3.org/2000/svg"><polygon points="70,90 100,50 40,50" style="fill:%239ca3af;"/></svg>');
   background-position: right 0.5rem center;
@@ -104,8 +102,6 @@ select.select-selected {
 }
 
 .dark select {
-  -moz-appearance: none;
-  -webkit-appearance: none;
   appearance: none;
   background-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 140 140" xmlns="http://www.w3.org/2000/svg"><polygon points="70,90 100,50 40,50" style="fill:%23ffffff;"/></svg>');
   background-position: right 0.5rem center;
@@ -128,7 +124,6 @@ select.select-selected {
 }
 
 .dot1, .dot2 {
-  -webkit-animation: bounce 2.0s infinite ease-in-out;
   animation: bounce 2.0s infinite ease-in-out;
   background-color: rgb(156 163 175);
   border-radius: 50%;
@@ -141,17 +136,11 @@ select.select-selected {
 }
 
 .dot2 {
-  -webkit-animation-delay: -1.0s;
   animation-delay: -1.0s;
 }
 
 .button-spinner .dot1, .button-spinner .dot2 {
   background-color: #fff;
-}
-
-@-webkit-keyframes bounce {
-  0%, 100% { transform: scale(0.0) }
-  50% { transform: scale(1.0) }
 }
 
 @keyframes bounce {
@@ -184,9 +173,6 @@ select.select-selected {
   width: 100%;
 }
 
-.modal .content-outer {
-
-}
 
 .modal .content {
   background: #262626;
@@ -203,12 +189,6 @@ select.select-selected {
   .modal .content {
     max-height: calc(100% - 120px);
   }
-}
-
-.todo {
-  /* backdrop-filter: blur(2px); */
-  background: rgba(0, 0, 0, 0.9);
-  mix-blend-mode: normal;
 }
 
 .urantia-api-highlighted {
@@ -313,11 +293,6 @@ select.select-selected {
   margin-bottom: 0;
 }
 
-.urantia-dev-pb-4 {
-  display: block;
-  margin-bottom: 2rem;
-}
-
 .urantia-dev-py-4 {
   display: block;
   margin-bottom: 2rem;
@@ -400,10 +375,8 @@ select.select-selected {
 }
 
 .select-style {
-  -webkit-appearance: none;  /* Remove default arrow in WebKit browsers */
-  -moz-appearance: none;     /* Remove default arrow in older Firefox browsers */
-  appearance: none;          /* Remove default arrow from standard-compliant browsers */
-  background-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 140 140" xmlns="http://www.w3.org/2000/svg"><polygon points="70,90 100,50 40,50" style="fill:#9ca3af;"/></svg>'); /* Custom arrow */
+  appearance: none;
+  background-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 140 140" xmlns="http://www.w3.org/2000/svg"><polygon points="70,90 100,50 40,50" style="fill:#9ca3af;"/></svg>');
   background-repeat: no-repeat;
   background-position: right 0.5rem center;
   background-size: 1.3em;
@@ -411,10 +384,8 @@ select.select-selected {
 }
 
 .dark .select-style {
-  -webkit-appearance: none;  /* Remove default arrow in WebKit browsers */
-  -moz-appearance: none;     /* Remove default arrow in older Firefox browsers */
-  appearance: none;          /* Remove default arrow from standard-compliant browsers */
-  background-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 140 140" xmlns="http://www.w3.org/2000/svg"><polygon points="70,90 100,50 40,50" style="fill:%23ffffff;"/></svg>'); /* Custom arrow */
+  appearance: none;
+  background-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 140 140" xmlns="http://www.w3.org/2000/svg"><polygon points="70,90 100,50 40,50" style="fill:%23ffffff;"/></svg>');
   background-repeat: no-repeat;
   background-position: right 0.5rem center;
   background-size: 1.3em;
@@ -620,11 +591,6 @@ select.select-selected {
 @keyframes float {
   0%, 100% { transform: translateY(0) rotate(0deg); }
   50% { transform: translateY(-20px) rotate(180deg); }
-}
-
-@keyframes pulse {
-  0%, 100% { transform: scale(1); opacity: 0.1; }
-  50% { transform: scale(1.2); opacity: 0.2; }
 }
 
 /* Geometric shape animations */

@@ -132,6 +132,7 @@ const ReadPage = ({ nodes }: TOCPageProps) => {
           (node) =>
             currentNode.partId === node.partId &&
             node.type === "paper" &&
+            node.paperId !== "0" &&
             shouldShowPaper(node.labels)
         );
 

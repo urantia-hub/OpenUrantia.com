@@ -7,11 +7,6 @@ vi.mock("moment", () => ({
   default: () => ({ unix: () => 1000 }),
 }));
 
-// Mock lodash/throttle to call immediately
-vi.mock("lodash/throttle", () => ({
-  default: (fn: Function) => fn,
-}));
-
 // Mock config
 vi.mock("@/utils/config", () => ({
   AVERAGE_READING_SPEED: 200,

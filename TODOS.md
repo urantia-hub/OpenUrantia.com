@@ -36,35 +36,33 @@ All API calls now go through `libs/urantiaApi/client.ts` with response mapping i
 
 ### Code Quality
 
-- [ ] **Reduce `any` types** — 571 instances of TypeScript `any` across the codebase. Start with service layer and API routes where types are well-defined.
+- [x] **Reduce `any` types** — Reduced in services/base, utils/typeUtils, utils/getSessionDetails, SentryErrorBoundary, and API routes. Replaced with `unknown`, `Record<string, unknown>`, and proper Prisma/React types.
 
-- [ ] **Refactor paper reader page** — `pages/papers/[paperName].tsx` has 20+ useState calls. Extract into custom hooks: `usePaperReader`, `useAudioPlayer`, `useBookmarks`, `useNotes`, etc.
+- [x] **Refactor paper reader page** — Extracted 6 hooks (`useAudioPlayer`, `useBookmarks`, `useNotes`, `useReadProgress`, `useModals`, `useFontSize`). File reduced from 1692 to 963 lines.
 
-- [ ] **Replace moment.js** — 300kb+ and deprecated. Use `date-fns` or native `Intl.DateTimeFormat`.
+- [x] **Replace full lodash import** — Replaced `lodash/throttle` with native throttle implementation in `useReadProgress.ts`. Uninstalled `lodash` and `@types/lodash`.
 
-- [ ] **Replace full lodash import** — Only used for `throttle`. Use `lodash.throttle` standalone package or native implementation.
+- [x] **Replace console.log debugging** — Created `utils/logger.ts` structured logging utility. Replaced console.log/error across all API routes, cron jobs, and services with `createLogger()`.
 
-- [ ] **Replace console.log debugging** — Use structured logging utility (`utils/logger.ts`) that can be silenced in production and integrates with Sentry.
+- [x] **Remove dead code** — Deleted `pages/sentry-example-page.tsx` and `pages/api/sentry-example-api.ts`.
 
-- [ ] **Remove dead code** — `pages/sentry-example-page.tsx`, `pages/api/sentry-example-api.ts` (Sentry example/demo files, not linked anywhere).
-
-- [ ] **Clean up globals.css** — Remove commented-out `.todo` class, fix duplicate CSS rules (`.urantia-dev-pb-4`, `@keyframes pulse`), remove deprecated vendor prefixes.
+- [x] **Clean up globals.css** — Removed empty `.modal .content-outer` rule, unused `.todo` class, duplicate `.urantia-dev-pb-4`, duplicate `@keyframes pulse`, deprecated `-webkit-`/`-moz-` vendor prefixes, and `@-webkit-keyframes bounce`.
 
 ### Testing
 
-- [ ] **Set up testing framework** — Vitest + React Testing Library. Add `vitest.config.ts` and test scripts to `package.json`.
+- [x] **Set up testing framework** — Vitest + React Testing Library configured. 25 tests passing across 6 hook test files.
 
-- [ ] **Add service layer tests** — Unit tests for BaseService, BookmarkService, NoteService, ReadNodeService, UserService.
+- [x] **Add service layer tests** — Unit tests for UserService, BookmarkService, NoteService, ReadNodeService.
 
-- [ ] **Add API route tests** — Integration tests for critical routes: search proxy, progress, bookmarks, notes, auth.
+- [x] **Add API route tests** — Tests for search proxy, progress, bookmarks, notes API routes.
 
-- [ ] **Add component tests** — Paper reader core functionality, search page, modals (AskAI, Share, Note, BookmarkCategory).
+- [x] **Add component tests** — Tests for Modal, Share, Note, BookmarkCategoryModal components.
 
 ### Error Handling
 
-- [ ] **Add React Error Boundaries** — Wrap paper reader, search, explore, and my-library pages with error boundary components that show user-friendly fallback UI.
+- [x] **Add React Error Boundaries** — Improved `SentryErrorBoundary` with user-friendly fallback UI (retry + go home buttons) instead of auto-redirect. Already wraps all pages via `_app.tsx`.
 
-- [ ] **Improve API error responses** — Replace generic 500s with console.error with structured error responses leveraging Sentry's `captureException`.
+- [x] **Improve API error responses** — Applied `withSentry` wrapper to all API route exports. Standardized `catch (error: unknown)` and added `Sentry.captureException()` in critical routes.
 
 ---
 
@@ -110,7 +108,59 @@ All API calls now go through `libs/urantiaApi/client.ts` with response mapping i
 
 ---
 
-## P3 — Nice to Have / Future
+## P3 — Ecosystem Builds
+
+### Guided Reading Plans (Build #1)
+
+Highest-impact feature for new reader retention. YouVersion found 3-21 day plans produce the best completion rates.
+
+- [ ] **Reading plan UI** — Plan browser, daily plan view with progress tracking, streak visualization. Leverage existing progress tracking + bookmark infrastructure. Depends on `GET /plans` API endpoints from urantia-dev-api.
+
+- [ ] **"Where Should I Start?" quiz** — Interactive onboarding quiz assessing reader background and interests → personalized plan recommendation. Addresses the #1 newcomer pain point (overwhelmed by 2,097 pages). Depends on `POST /plans/recommend` API.
+
+- [ ] **Passage of the Day** — Daily featured passage with shareable image cards, push notifications, and email digest integration. Ties into existing daily quote cron job infrastructure. Depends on `GET /daily-passage` API.
+
+- [ ] **Reading streaks & milestones** — Gentle progress visualization with badges (papers completed, streak days, Parts finished). Borrowing from Quran.com's planner UX. Uses existing ReadNode data.
+
+- [ ] **Plans with Friends** — Social accountability layer: invite a friend to a plan, see each other's progress. Biggest retention driver per YouVersion research.
+
+### Interconnected Knowledge System (Build #2)
+
+Turn the reading experience into a knowledge network — Sefaria-style cross-referencing.
+
+- [ ] **Inline cross-references** — When reading a paragraph, show related passages in a sidebar/popover. One-click navigation to connected content across Papers. Depends on `GET /paragraphs/{ref}/cross-references` API.
+
+- [ ] **Topic & concept pages** — 200+ browse-able topic pages (Thought Adjusters, Morontia, Paradise, etc.) aggregating every relevant passage. New `/topics` and `/topics/{slug}` pages. Depends on `GET /topics` API.
+
+- [ ] **Knowledge graph visualization** — Interactive visual map of entity relationships and concept connections. Could be a standout explore page feature.
+
+### Study Group Toolkit (Build #3)
+
+Purpose-built tools for the 463+ study groups operating with Zoom + email + physical books.
+
+- [ ] **Public Notes / passage-level discussions** — Community-visible annotations and reflections on paragraphs. Experienced readers post insights that newcomers discover in-context. Fills the void left by TruthBook forum closing (Oct 2024). Modeled on SuttaCentral's per-sutta discussion threads.
+
+- [ ] **Source sheet builder** — Allow study group leaders to curate collections of related passages with their own commentary for each session. Inspired by Sefaria's most popular feature. Depends on `/source-sheets` API.
+
+- [ ] **AI discussion question generator** — Study group leaders get AI-generated discussion questions for selected passages, with human review/editing. Depends on `POST /study/questions` API.
+
+- [ ] **Shared reading sessions** — Synchronized reading view where group members see the facilitator's highlights and annotations in real-time. WebSocket-based.
+
+### AI Study Companion (Build #5)
+
+Evolve AskAI from a basic chatbot into a RAG-grounded study companion.
+
+- [ ] **RAG-grounded responses** — Every AI response cites actual Urantia Papers text with clickable paragraph links. Uses paragraph-level vector embeddings for retrieval. Eliminates hallucination (e.g., AI incorrectly stating the virgin birth).
+
+- [ ] **Multiple AI modes** — "Explain this passage simply" for newcomers, "Show me related passages" using cross-references, "What should I read next?" based on reading history and interests. Mode selector in the AskAI panel.
+
+- [ ] **Difficulty indicators** — Per-paper and per-section difficulty ratings (Beginner-Friendly / Intermediate / Advanced Cosmology). Inspired by SuttaCentral's difficulty ratings. Helps newcomers navigate without external advice.
+
+- [ ] **Multimedia introductions** — Short audio/video introductions for each Part and major section. AI-generated audio summaries at easy/intermediate/advanced levels. Integrated into the reading flow before each Part/Paper.
+
+---
+
+## P4 — Nice to Have / Future
 
 ### Architecture
 

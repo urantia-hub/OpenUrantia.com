@@ -2,11 +2,12 @@
 import { getGlobalIdFromStandardReferenceId } from "@/utils/node";
 import { paperIdToUrl } from "@/utils/paperFormatters";
 import type { NextApiRequest, NextApiResponse } from "next";
+import { withSentry } from "@/middleware/sentry";
 
 const PERMANENT_REDIRECT = 301;
 const TEMPORARY_REDIRECT = 307;
 
-export default function handler(req: NextApiRequest, res: NextApiResponse) {
+function handler(req: NextApiRequest, res: NextApiResponse) {
   const { standardReferenceId } = req.query;
 
   // 404 if standardReferenceId is not provided.
@@ -45,3 +46,5 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
     res.redirect(PERMANENT_REDIRECT, `/papers/${paperIdToUrl(`${paperId}`)}`);
   }
 }
+
+export default withSentry(handler);

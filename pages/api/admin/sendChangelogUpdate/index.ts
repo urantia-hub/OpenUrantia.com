@@ -1,5 +1,6 @@
 // Node modules.
 import { Resend } from "resend";
+import * as Sentry from "@sentry/nextjs";
 import type { NextApiRequest, NextApiResponse } from "next";
 // Relative modules.
 import UserService from "@/services/user";
@@ -8,6 +9,10 @@ import {
   getChangelogUpdateEmailText,
 } from "@/utils/email-templates/changelogUpdate";
 import getSessionDetails from "@/utils/getSessionDetails";
+import { withSentry } from "@/middleware/sentry";
+import createLogger from "@/utils/logger";
+
+const logger = createLogger("sendChangelogUpdate");
 
 const userService = new UserService();
 const resend = new Resend(process.env.RESEND_API_KEY);
@@ -19,14 +24,14 @@ const handleSendChangelogUpdate = async (
   const sessionDetails = await getSessionDetails(req, res, { isAdmin: true });
   if (!sessionDetails) return;
 
-  console.log("Sending changelog update emails");
+  logger.info("Sending changelog update emails");
 
   // Get the changelog data from the request body
   const { excludedUserEmails, version, changes, images } = req.body;
 
   if (!version || !changes || !Array.isArray(changes)) {
     return res.status(400).json({
-      message:
+      error:
         "Invalid request body. Required: version (string) and changes (string[])",
       success: false,
     });
@@ -45,9 +50,7 @@ const handleSendChangelogUpdate = async (
 
   const userEmails = users?.map((user) => user.email) || [];
 
-  console.log(`Sending changelog update emails to ${userEmails.length} users`, {
-    userEmails,
-  });
+  logger.info(`Sending changelog update emails to ${userEmails.length} users`, { userEmails: userEmails as unknown as Record<string, unknown> });
 
   const changelogUrl = `${process.env.NEXT_PUBLIC_HOST}/changelog`;
 
@@ -83,22 +86,23 @@ const handleSendChangelogUpdate = async (
       userEmails,
       success: true,
     });
-  } catch (error: any) {
-    console.error(error);
-    if (error?.response) {
-      console.error(error?.response.body);
+  } catch (error: unknown) {
+    logger.error("Operation failed", error);
+    Sentry.captureException(error);
+    if (error instanceof Object && "response" in error) {
+      logger.error("Response body", (error as Record<string, unknown>).response);
     }
-    res.status(500).json({ message: "Failed to send emails", success: false });
+    res.status(500).json({ error: "Failed to send emails", success: false });
   }
 };
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   // Only allow POST requests
   if (req.method !== "POST") {
-    return res.status(405).json({ message: "Method not allowed" });
+    return res.status(405).json({ error: "Method not allowed" });
   }
 
   await handleSendChangelogUpdate(req, res);
 };
 
-export default handler;
+export default withSentry(handler);

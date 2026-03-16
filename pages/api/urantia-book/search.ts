@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { searchParagraphs } from "@/libs/urantiaApi/client";
+import { withSentry } from "@/middleware/sentry";
 
 // POST handler
 const handlePOST = async (req: NextApiRequest, res: NextApiResponse) => {
@@ -15,7 +16,7 @@ const handlePOST = async (req: NextApiRequest, res: NextApiResponse) => {
 };
 
 // Handler for the API endpoints.
-export default async function handle(
+async function handle(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
@@ -28,3 +29,5 @@ export default async function handle(
       res.status(405).end(`Method ${method} Not Allowed`);
   }
 }
+
+export default withSentry(handle);

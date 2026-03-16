@@ -8,6 +8,9 @@ import getSessionDetails from "@/utils/getSessionDetails";
 import { createSortId } from "@/utils/node";
 import { enforceStringNumber } from "@/utils/typeUtils";
 import { withSentry } from "@/middleware/sentry";
+import createLogger from "@/utils/logger";
+
+const logger = createLogger("api/user/activity");
 
 const noteService = new NoteService();
 const bookmarkService = new BookmarkService();
@@ -22,7 +25,7 @@ async function handleGet(
 
   const filter: any = {};
   if (paperId) {
-    console.log("[GET /api/user/activity] paperId:", paperId);
+    logger.info("paperId", { paperId: paperId as unknown as Record<string, unknown> });
     enforceStringNumber("paperId", paperId);
     filter.paperId = parseInt(paperId as string, 10);
   }
@@ -31,7 +34,7 @@ async function handleGet(
   let notesWithDetails: any[] = [];
 
   if (filterType === "all" || filterType === "bookmark") {
-    console.log("[GET /api/user/activity] Fetching bookmarks");
+    logger.info("Fetching bookmarks");
     bookmarksWithDetails = await bookmarkService.getUserBookmarksWithDetails(
       user.id,
       filter
@@ -39,7 +42,7 @@ async function handleGet(
   }
 
   if (filterType === "all" || filterType === "note") {
-    console.log("[GET /api/user/activity] Fetching notes");
+    logger.info("Fetching notes");
     notesWithDetails = await noteService.getUserNotesWithDetails(
       user.id,
       filter
@@ -47,23 +50,23 @@ async function handleGet(
   }
 
   // Combine bookmarks and notes.
-  console.log("[GET /api/user/activity] Combining bookmarks and notes");
+  logger.info("Combining bookmarks and notes");
   let activity = [...bookmarksWithDetails, ...notesWithDetails];
 
   let sortedActivity = [...activity];
 
   // Then apply sorting to this new array
   if (sortBy === "updatedAt") {
-    console.log("[GET /api/user/activity] Sorting by updatedAt");
+    logger.info("Sorting by updatedAt");
     sortedActivity.sort(
       (a, b) =>
         new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
     );
   } else if (sortBy === "globalId") {
-    console.log("[GET /api/user/activity] Sorting by globalId");
+    logger.info("Sorting by globalId");
     sortedActivity.sort((a, b) => {
       if (!a.globalId || !b.globalId) {
-        console.error("Missing globalId in node", a, b);
+        logger.error("Missing globalId in node", undefined, { a: a as unknown as Record<string, unknown>, b: b as unknown as Record<string, unknown> });
       }
       const sortIdA = createSortId(a.globalId);
       const sortIdB = createSortId(b.globalId);

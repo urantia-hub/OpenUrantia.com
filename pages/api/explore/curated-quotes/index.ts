@@ -4,6 +4,10 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import CuratedQuoteService from "@/services/curatedQuote";
 import { CuratedQuote } from "@prisma/client";
 import { getRedisClient, ONE_WEEK_IN_SECONDS, getCacheKey } from "@/libs/redis";
+import { withSentry } from "@/middleware/sentry";
+import createLogger from "@/utils/logger";
+
+const logger = createLogger("api/explore/curated-quotes");
 
 const curatedQuoteService = new CuratedQuoteService();
 
@@ -21,7 +25,7 @@ async function handleGET(req: NextApiRequest, res: NextApiResponse) {
     // Try to get from cache first
     const cachedData = await redis.get(cacheKey);
     if (cachedData) {
-      console.log("Cache hit for curated-quotes");
+      logger.info("Cache hit for curated-quotes");
       return res.status(200).json(JSON.parse(cachedData));
     }
 
@@ -96,7 +100,7 @@ async function handleGET(req: NextApiRequest, res: NextApiResponse) {
 }
 
 // Handler for the API endpoints.
-export default async function handle(
+async function handle(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
@@ -109,3 +113,5 @@ export default async function handle(
       res.status(405).end(`Method ${method} Not Allowed`);
   }
 }
+
+export default withSentry(handle);

@@ -3,6 +3,9 @@ import { Bookmark, Prisma, PrismaClient } from "@prisma/client";
 // Relative modules.
 import BaseService from "@/services/base";
 import { getPrismaClient } from "@/libs/prisma/client";
+import createLogger from "@/utils/logger";
+
+const logger = createLogger("BookmarkService");
 
 const prisma = getPrismaClient();
 
@@ -69,10 +72,7 @@ export class BookmarkService implements BaseService<Bookmark> {
     filter: { paperId?: number }
   ): Promise<any[]> => {
     // Handle fetching all bookmarks for a user.
-    console.log(
-      "[getBookmarksWithDetails] Fetching bookmarks with filter:",
-      filter
-    );
+    logger.info("Fetching bookmarks with filter", { filter: filter as unknown as Record<string, unknown> });
     const bookmarks = await this.findMany({
       where: {
         userId,
@@ -82,7 +82,7 @@ export class BookmarkService implements BaseService<Bookmark> {
 
     // If there are no bookmarks, return an empty array.
     if (!bookmarks?.length) {
-      console.log("[getBookmarksWithDetails] No bookmarks found");
+      logger.info("No bookmarks found");
       return [];
     }
 
@@ -90,16 +90,13 @@ export class BookmarkService implements BaseService<Bookmark> {
     const paperSectionParagraphIds = bookmarks.map(
       (bookmark) => bookmark.paperSectionParagraphId
     );
-    console.log(
-      "[getBookmarksWithDetails] Fetching nodes details for paperSectionParagraphIds:",
-      paperSectionParagraphIds
-    );
+    logger.info("Fetching nodes details for paperSectionParagraphIds", { paperSectionParagraphIds: paperSectionParagraphIds as unknown as Record<string, unknown> });
     const nodesDetails = await this.getNodesByPaperSectionParagraphIds(
       paperSectionParagraphIds
     );
 
     // Add the paperSectionParagraphId details to each bookmark.
-    console.log("[getBookmarksWithDetails] Adding nodes details to bookmarks");
+    logger.info("Adding nodes details to bookmarks");
     const bookmarksWithDetails = bookmarks.map((bookmark) => {
       const nodeDetail = nodesDetails.find(
         (nodeDetail: UBNode) =>
@@ -113,10 +110,7 @@ export class BookmarkService implements BaseService<Bookmark> {
       };
     });
 
-    console.log(
-      "[getBookmarksWithDetails] bookmarksWithDetails:",
-      bookmarksWithDetails?.length
-    );
+    logger.info("bookmarksWithDetails", { count: bookmarksWithDetails?.length as unknown as Record<string, unknown> });
     return bookmarksWithDetails;
   };
 
@@ -127,7 +121,7 @@ export class BookmarkService implements BaseService<Bookmark> {
       const { fetchParagraphs } = await import("@/libs/urantiaApi/client");
       return await fetchParagraphs(paperSectionParagraphIds);
     } catch (error) {
-      console.error("Unable to fetch nodes by paperSectionParagraphIds", error);
+      logger.error("Unable to fetch nodes by paperSectionParagraphIds", error);
       return [];
     }
   }

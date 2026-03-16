@@ -23,7 +23,7 @@ export class PaperLabelService implements BaseService<PaperLabel> {
 
   get(
     id: string,
-    options: any
+    options?: Record<string, unknown>
   ): Promise<{
     createdAt: Date;
     paperId: string;
@@ -35,7 +35,7 @@ export class PaperLabelService implements BaseService<PaperLabel> {
 
   update(
     id: string,
-    data: any
+    data: Record<string, unknown>
   ): Promise<{
     createdAt: Date;
     paperId: string;

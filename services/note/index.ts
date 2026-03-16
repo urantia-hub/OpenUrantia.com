@@ -3,6 +3,9 @@ import { Note, Prisma, PrismaClient } from "@prisma/client";
 // Relative modules.
 import BaseService from "@/services/base";
 import { getPrismaClient } from "@/libs/prisma/client";
+import createLogger from "@/utils/logger";
+
+const logger = createLogger("NoteService");
 
 const prisma = getPrismaClient();
 
@@ -66,7 +69,7 @@ export class NoteService implements BaseService<Note> {
     filter: { paperId?: number }
   ) => {
     // Handle fetching all notes for a user.
-    console.log("[getNotesWithDetails] Fetching notes with filter:", filter);
+    logger.info("Fetching notes with filter", { filter: filter as unknown as Record<string, unknown> });
     const notes = await this.findMany({
       where: {
         userId,
@@ -76,7 +79,7 @@ export class NoteService implements BaseService<Note> {
 
     // If there are no notes, return an empty array.
     if (!notes?.length) {
-      console.log("[getNotesWithDetails] No notes found");
+      logger.info("No notes found");
       return [];
     }
 
@@ -84,16 +87,13 @@ export class NoteService implements BaseService<Note> {
     const paperSectionParagraphId = notes.map(
       (note) => note.paperSectionParagraphId
     );
-    console.log(
-      "[getNotesWithDetails] Fetching nodes details for paperSectionParagraphId:",
-      paperSectionParagraphId
-    );
+    logger.info("Fetching nodes details for paperSectionParagraphId", { paperSectionParagraphId: paperSectionParagraphId as unknown as Record<string, unknown> });
     const nodesDetails = await this.getNodesByPaperSectionParagraphIds(
       paperSectionParagraphId
     );
 
     // Add the paperSectionParagraphId details to each note.
-    console.log("[getNotesWithDetails] Adding nodes details to notes");
+    logger.info("Adding nodes details to notes");
     const notesWithDetails = notes.map((note) => {
       const nodeDetail = nodesDetails.find(
         (nodeDetail: UBNode) =>
@@ -107,10 +107,7 @@ export class NoteService implements BaseService<Note> {
       };
     });
 
-    console.log(
-      "[getNotesWithDetails] notesWithDetails:",
-      notesWithDetails?.length
-    );
+    logger.info("notesWithDetails", { count: notesWithDetails?.length as unknown as Record<string, unknown> });
     return notesWithDetails;
   };
 
@@ -121,7 +118,7 @@ export class NoteService implements BaseService<Note> {
       const { fetchParagraphs } = await import("@/libs/urantiaApi/client");
       return await fetchParagraphs(paperSectionParagraphIds);
     } catch (error) {
-      console.error("Unable to fetch nodes by paperSectionParagraphIds", error);
+      logger.error("Unable to fetch nodes by paperSectionParagraphIds", error);
       return [];
     }
   }

@@ -1,10 +1,11 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import getSessionDetails from "@/utils/getSessionDetails";
 import BookmarkService from "@/services/bookmark";
+import { withSentry } from "@/middleware/sentry";
 
 const bookmarkService = new BookmarkService();
 
-export default async function handle(
+async function handle(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
@@ -34,3 +35,5 @@ export default async function handle(
       res.status(405).end(`Method ${method} Not Allowed`);
   }
 }
+
+export default withSentry(handle);

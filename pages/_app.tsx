@@ -5,6 +5,8 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Lato } from "next/font/google";
 import { useEffect } from "react";
 import * as Sentry from "@sentry/nextjs";
+import type { AppProps } from "next/app";
+import type { NextComponentType, NextPageContext } from "next";
 // Relative modules.
 import { ThemeProvider } from "@/context/theme";
 import "@/styles/globals.css";
@@ -16,8 +18,13 @@ const googleFont = Lato({
   weight: ["300", "400", "700"],
 });
 
+interface AppContentProps {
+  Component: NextComponentType<NextPageContext, unknown, Record<string, unknown>>;
+  pageProps: Record<string, unknown>;
+}
+
 // Wrap the actual app content with session tracking
-function AppContent({ Component, pageProps }: any) {
+function AppContent({ Component, pageProps }: AppContentProps) {
   const { data: session, status } = useSession();
 
   useEffect(() => {
@@ -41,7 +48,7 @@ function AppContent({ Component, pageProps }: any) {
 export default function App({
   Component,
   pageProps: { session, ...pageProps },
-}: any) {
+}: AppProps) {
   return (
     <div className={googleFont.className}>
       <ThemeProvider>

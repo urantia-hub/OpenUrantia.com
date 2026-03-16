@@ -5,7 +5,7 @@ import * as Sentry from "@sentry/nextjs";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
 
 export function withSentry(
-  handler: (req: NextApiRequest, res: NextApiResponse) => Promise<void>
+  handler: (req: NextApiRequest, res: NextApiResponse) => unknown
 ) {
   return async (req: NextApiRequest, res: NextApiResponse) => {
     try {

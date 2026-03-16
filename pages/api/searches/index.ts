@@ -1,10 +1,14 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import getSessionDetails from "@/utils/getSessionDetails";
 import UserSearchService from "@/services/userSearch";
+import { withSentry } from "@/middleware/sentry";
+import createLogger from "@/utils/logger";
+
+const logger = createLogger("api/searches");
 
 const userSearchService = new UserSearchService();
 
-export default async function handle(
+async function handle(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
@@ -39,7 +43,9 @@ export default async function handle(
 
     return res.status(201).json(search);
   } catch (error) {
-    console.error("Failed to create search:", error);
+    logger.error("Failed to create search", error);
     return res.status(500).json({ error: "Failed to create search" });
   }
 }
+
+export default withSentry(handle);

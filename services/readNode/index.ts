@@ -3,6 +3,9 @@ import { Prisma, PrismaClient, ReadNode } from "@prisma/client";
 // Relative modules.
 import BaseService from "@/services/base";
 import { getPrismaClient } from "@/libs/prisma/client";
+import createLogger from "@/utils/logger";
+
+const logger = createLogger("ReadNodeService");
 
 const prisma = getPrismaClient();
 
@@ -95,7 +98,7 @@ export class ReadNodeService implements BaseService<ReadNode> {
       const { fetchParagraphs } = await import("@/libs/urantiaApi/client");
       return await fetchParagraphs(paperSectionParagraphIds);
     } catch (error) {
-      console.error("Unable to fetch nodes by paperSectionParagraphIds", error);
+      logger.error("Unable to fetch nodes by paperSectionParagraphIds", error);
       return [];
     }
   }

@@ -4,6 +4,9 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import UserService from "@/services/user";
 import getSessionDetails from "@/utils/getSessionDetails";
 import { withSentry } from "@/middleware/sentry";
+import createLogger from "@/utils/logger";
+
+const logger = createLogger("api/user/unsubscribe");
 
 const userService = new UserService();
 
@@ -35,7 +38,7 @@ async function handle(req: NextApiRequest, res: NextApiResponse) {
     // Redirect to the homepage with a success message
     res.redirect(302, `${process.env.NEXT_PUBLIC_HOST}?unsubscribed=true`);
   } catch (error) {
-    console.error("Failed to unsubscribe user:", error);
+    logger.error("Failed to unsubscribe user", error);
     res.redirect(302, `${process.env.NEXT_PUBLIC_HOST}?unsubscribed=false`);
   }
 }
