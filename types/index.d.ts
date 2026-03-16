@@ -10,8 +10,8 @@ type UBNode = {
   paperSectionParagraphId?: string;
   paperTitle: string;
   partId: string;
-  sectionId?: string;
-  sectionTitle?: string;
+  sectionId?: string | null;
+  sectionTitle?: string | null;
   standardReferenceId?: string;
   text?: string;
   type: string;
