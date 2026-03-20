@@ -24,7 +24,8 @@ const HeadTag = ({ metaDescription, titlePrefix, canonicalUrl, jsonLd }: HeadTag
       {canonicalUrl && <link rel="canonical" href={canonicalUrl} />}
 
       {/* Favicon */}
-      <link rel="icon" href="/logo-symbol.ico" />
+      <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+      <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 
       {/* Web App Manifest */}
       <link rel="manifest" href="/manifest.json" />
