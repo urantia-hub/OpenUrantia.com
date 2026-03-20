@@ -93,10 +93,18 @@ const Footer = ({ marginBottom }: { marginBottom?: string }) => {
               <li>
                 <a
                   className="text-gray-400 hover:text-blue-400 transition-colors duration-300 hover:no-underline"
-                  href="mailto:openurantia@gmail.com"
+                  href="mailto:team@urantiahub.com"
                 >
                   Contact
                 </a>
+              </li>
+              <li>
+                <Link
+                  className="text-gray-400 hover:text-blue-400 transition-colors duration-300 hover:no-underline"
+                  href="/about"
+                >
+                  About
+                </Link>
               </li>
             </ul>
           </div>
