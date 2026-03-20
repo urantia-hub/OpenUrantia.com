@@ -95,7 +95,7 @@ const HomepageNavbar = ({
               Hub
             </h1>
           </Link>
-          <LogoSymbol className="flex-1 fill-white h-6 w-6 md:h-8 md:w-8" />
+          <LogoSymbol className="flex-1 text-white h-6 w-6 md:h-8 md:w-8" />
           <div className="flex-1 flex justify-end text-base">
             <Link
               className="text-center hover:no-underline mr-4 text-white hover:text-white/80 transition-colors duration-200"
