@@ -115,16 +115,12 @@ const About = () => {
 
             <h2 className="text-2xl font-bold">Contact</h2>
             <p>
-              UrantiaHub is operated by Adams Technologies LLC, a Texas limited
-              liability company.
-            </p>
-            <p>
-              Email:{" "}
+              UrantiaHub is built and maintained by Kelson. Questions?{" "}
               <a
-                href="mailto:team@urantiahub.com"
+                href="mailto:kelson@urantiahub.com"
                 className="text-blue-400 hover:underline"
               >
-                team@urantiahub.com
+                kelson@urantiahub.com
               </a>
             </p>
           </div>
