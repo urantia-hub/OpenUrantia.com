@@ -603,6 +603,12 @@ export const SPOTIFY_EPISODE_IDS = {
   "0": "3qweaV0OaBcYyv4oAmj5rU",
 };
 
+// YouTube
+// ===========================
+// Map paperId -> YouTube video ID. Empty string = not yet uploaded.
+// Populate as videos are uploaded to the UrantiaHub YouTube channel.
+export const YOUTUBE_VIDEO_IDS: Record<string, string> = {};
+
 // Reading
 // ===========================
 export const AVERAGE_READING_SPEED = 400; // Words per minute

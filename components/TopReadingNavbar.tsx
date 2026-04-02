@@ -7,6 +7,7 @@ type NavbarProps = {
   fontSize: "small" | "medium" | "large";
   setFontSize: (fontSize: "small" | "medium" | "large") => void;
   onCopyPaper: () => void;
+  youtubeUrl?: string;
   spotifyUrl?: string;
 };
 
@@ -14,6 +15,7 @@ const TopReadingNavbar = ({
   fontSize,
   setFontSize,
   onCopyPaper,
+  youtubeUrl,
   spotifyUrl,
 }: NavbarProps) => {
   // Hidden state.
@@ -51,6 +53,25 @@ const TopReadingNavbar = ({
       <div className="max-w-3xl px-4 w-full flex items-center justify-between">
         {/* Left side - Action Icons */}
         <div className="flex items-center gap-3">
+          {/* YouTube */}
+          {youtubeUrl && (
+            <Link
+              aria-label="Watch on YouTube"
+              href={youtubeUrl}
+              rel="noopener noreferrer"
+              target="_blank"
+              title="Watch on YouTube"
+            >
+              <svg
+                aria-label="YouTube"
+                className="w-5 h-5 fill-gray-400 hover:fill-gray-600 dark:fill-gray-400 hover:dark:fill-white transition-colors duration-300"
+                viewBox="0 0 24 24"
+              >
+                <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
+              </svg>
+            </Link>
+          )}
+
           {/* Spotify */}
           {spotifyUrl && (
             <Link
