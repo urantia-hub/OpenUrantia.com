@@ -32,7 +32,6 @@ import {
   AUDIO_ENABLED_PAPER_IDS,
   PAPER_ID_TO_MP3_URL,
   SPOTIFY_EPISODE_IDS,
-  YOUTUBE_VIDEO_IDS,
 } from "@/utils/config";
 import {
   getPaperIdFromPaperUrl,
@@ -708,13 +707,7 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
         fontSize={fontSize}
         setFontSize={updateFontSize}
         onCopyPaper={onCopyPaper}
-        youtubeUrl={
-          YOUTUBE_VIDEO_IDS[paperId as keyof typeof YOUTUBE_VIDEO_IDS]
-            ? `https://youtube.com/watch?v=${
-                YOUTUBE_VIDEO_IDS[paperId as keyof typeof YOUTUBE_VIDEO_IDS]
-              }`
-            : undefined
-        }
+        watchUrl={`/watch/${paperIdToUrl(paperId)}`}
         spotifyUrl={
           SPOTIFY_EPISODE_IDS[paperId as keyof typeof SPOTIFY_EPISODE_IDS]
             ? `https://open.spotify.com/episode/${

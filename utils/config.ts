@@ -603,6 +603,14 @@ export const SPOTIFY_EPISODE_IDS = {
   "0": "3qweaV0OaBcYyv4oAmj5rU",
 };
 
+// Video CDN
+// ===========================
+export const VIDEO_CDN_BASE = "https://video.urantiahub.com";
+export const videoUrl = (paperId: string) =>
+  `${VIDEO_CDN_BASE}/tts-1-hd-nova-${paperId}.mp4`;
+export const videoThumbnailUrl = (paperId: string) =>
+  `${VIDEO_CDN_BASE}/thumbnail-${paperId}.png`;
+
 // YouTube
 // ===========================
 // Map paperId -> YouTube video ID. Empty string = not yet uploaded.
