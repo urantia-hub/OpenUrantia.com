@@ -49,6 +49,17 @@ const TopReadingNavbar = ({
       <div className="max-w-3xl px-4 w-full flex items-center justify-between">
         {/* Left side - Action Icons */}
         <div className="flex items-center gap-3">
+          {/* Watch */}
+          {watchUrl && (
+            <Link
+              href={watchUrl}
+              className="flex items-center gap-1.5 text-sm text-gray-400 hover:text-gray-600 dark:text-gray-400 dark:hover:text-white transition-colors duration-300"
+              title="Watch this paper"
+            >
+              <Video className="w-5 h-5" />
+            </Link>
+          )}
+
           {/* Spotify */}
           {spotifyUrl && (
             <Link
@@ -81,18 +92,6 @@ const TopReadingNavbar = ({
             <Copy className="w-5 h-5 dark:text-gray-400 text-gray-400 hover:text-gray-600 dark:hover:text-white transition-colors duration-300" />
           </button>
         </div>
-
-        {/* Right side - Watch button */}
-        {watchUrl && (
-          <Link
-            href={watchUrl}
-            className="flex items-center gap-1.5 text-sm text-gray-400 hover:text-gray-600 dark:text-gray-400 dark:hover:text-white transition-colors duration-300"
-            title="Watch this paper"
-          >
-            <Video className="w-4 h-4" />
-            Watch
-          </Link>
-        )}
       </div>
     </div>
   );
