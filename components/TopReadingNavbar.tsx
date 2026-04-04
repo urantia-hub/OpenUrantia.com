@@ -44,7 +44,7 @@ const TopReadingNavbar = ({
     <div
       className={`flex items-center justify-center py-1 px-2 fixed top-0 left-0 right-0 z-10 bg-white dark:bg-neutral-800 dark:border-t dark:border-neutral-700 mx-auto dark:shadow-none shadow ${
         hidden ? "-translate-y-14" : "translate-y-0"
-      } transition-transform duration-300 ease-in-out`}
+      } transition-transform duration-300 ease-in-out h-8`}
     >
       <div className="max-w-3xl px-4 w-full flex items-center justify-between">
         {/* Left side - Action Icons */}
@@ -56,7 +56,7 @@ const TopReadingNavbar = ({
               className="flex items-center gap-1.5 text-sm text-gray-400 hover:text-gray-600 dark:text-gray-400 dark:hover:text-white transition-colors duration-300"
               title="Watch this paper"
             >
-              <Video className="w-5 h-5" />
+              <Video className="w-6 h-6" />
             </Link>
           )}
 
