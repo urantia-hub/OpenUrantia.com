@@ -38,16 +38,16 @@ const WatchPage = ({
         canonicalUrl={`https://www.urantiahub.com/watch/${paperUrl}`}
       />
 
-      <div className="min-h-screen bg-white dark:bg-neutral-900">
+      <div className="flex flex-col min-h-screen bg-white dark:bg-neutral-900">
         <Navbar />
 
-        <main className="max-w-3xl mx-auto px-4 pt-8 pb-16">
+        <main className="max-w-3xl mx-auto px-4 pt-8 pb-16 flex-1">
           {/* Video Player */}
           <div className="relative w-full aspect-video bg-black rounded-lg overflow-hidden">
             <video
               className="w-full h-full"
               controls
-              autoPlay={false}
+              autoPlay
               preload="metadata"
               poster={videoThumbnailUrl(paperId)}
               src={videoUrl(paperId)}
@@ -72,7 +72,7 @@ const WatchPage = ({
               className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-white transition-colors shrink-0 mt-1"
             >
               <BookOpen className="w-4 h-4" />
-              Read along
+              Read this paper
             </Link>
           </div>
 
