@@ -704,8 +704,6 @@ const PaperPage = ({ paperData }: PaperPageProps) => {
       />
 
       <TopReadingNavbar
-        fontSize={fontSize}
-        setFontSize={updateFontSize}
         onCopyPaper={onCopyPaper}
         watchUrl={`/watch/${paperIdToUrl(paperId)}`}
         spotifyUrl={

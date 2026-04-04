@@ -1,19 +1,15 @@
 // Node modules.
-import { Copy, Play } from "lucide-react";
+import { Copy, Video } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
 type NavbarProps = {
-  fontSize: "small" | "medium" | "large";
-  setFontSize: (fontSize: "small" | "medium" | "large") => void;
   onCopyPaper: () => void;
   watchUrl?: string;
   spotifyUrl?: string;
 };
 
 const TopReadingNavbar = ({
-  fontSize,
-  setFontSize,
   onCopyPaper,
   watchUrl,
   spotifyUrl,
@@ -53,17 +49,6 @@ const TopReadingNavbar = ({
       <div className="max-w-3xl px-4 w-full flex items-center justify-between">
         {/* Left side - Action Icons */}
         <div className="flex items-center gap-3">
-          {/* Watch */}
-          {watchUrl && (
-            <Link
-              aria-label="Watch this paper"
-              href={watchUrl}
-              title="Watch this paper"
-            >
-              <Play className="w-5 h-5 dark:text-gray-400 text-gray-400 hover:text-gray-600 dark:hover:text-white transition-colors duration-300" />
-            </Link>
-          )}
-
           {/* Spotify */}
           {spotifyUrl && (
             <Link
@@ -97,45 +82,17 @@ const TopReadingNavbar = ({
           </button>
         </div>
 
-        {/* Right side - Font Size Controls */}
-        <div className="flex items-baseline">
-          {/* Small */}
-          <button
-            aria-label="Small font size"
-            className={`px-1.5 bg-transparent border-0 dark:border-0 focus:outline-0 dark:focus:outline-0 outline-0 dark:outline-0 dark:hover:text-blue-200 text-xs text-center ${
-              fontSize === "small"
-                ? "text-gray-600 dark:text-white underline"
-                : "text-gray-400 dark:text-gray-400"
-            } focus:outline-0`}
-            onClick={() => setFontSize("small")}
+        {/* Right side - Watch button */}
+        {watchUrl && (
+          <Link
+            href={watchUrl}
+            className="flex items-center gap-1.5 text-sm text-gray-400 hover:text-gray-600 dark:text-gray-400 dark:hover:text-white transition-colors duration-300"
+            title="Watch this paper"
           >
-            A
-          </button>
-          {/* Medium */}
-          <button
-            aria-label="Medium font size"
-            className={`px-1.5 bg-transparent border-0 dark:border-0 focus:outline-0 dark:focus:outline-0 outline-0 dark:outline-0 dark:hover:text-blue-200 text-sm text-center ${
-              fontSize === "medium"
-                ? "text-gray-600 dark:text-white underline"
-                : "text-gray-400 dark:text-gray-400"
-            } focus:outline-0`}
-            onClick={() => setFontSize("medium")}
-          >
-            A
-          </button>
-          {/* Large */}
-          <button
-            aria-label="Large font size"
-            className={`px-1.5 bg-transparent border-0 dark:border-0 focus:outline-0 dark:focus:outline-0 outline-0 dark:outline-0 dark:hover:text-blue-200 text-base text-center ${
-              fontSize === "large"
-                ? "text-gray-600 dark:text-white underline"
-                : "text-gray-400 dark:text-gray-400"
-            } focus:outline-0`}
-            onClick={() => setFontSize("large")}
-          >
-            A
-          </button>
-        </div>
+            <Video className="w-4 h-4" />
+            Watch
+          </Link>
+        )}
       </div>
     </div>
   );
